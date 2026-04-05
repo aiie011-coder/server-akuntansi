@@ -1,0 +1,13 @@
+{
+  "name": "akuntansipro-license-server",
+  "version": "1.0.0",
+  "description": "License activation server for AkuntansiPro",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
