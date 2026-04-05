@@ -10,6 +10,22 @@ import {
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET || '';
 
+// Fungsi untuk membaca body request secara manual (diperlukan di Vercel)
+async function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(body));
+      } catch {
+        resolve({});
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
 function generateKey() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let key = '';
@@ -41,7 +57,9 @@ export default async function handler(req, res) {
   if (!ADMIN_SECRET || auth !== `Bearer ${ADMIN_SECRET}`)
     return res.status(401).json({ error: 'Unauthorized' });
 
-  const { action, key, data } = req.body || {};
+  // Baca body secara manual (perbaikan utama)
+  const body = await parseBody(req);
+  const { action, key, data } = body;
 
   try {
     switch (action) {
