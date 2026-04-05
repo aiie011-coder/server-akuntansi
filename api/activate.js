@@ -5,6 +5,22 @@
 
 import { getLicense, activateLicense } from '../lib/db.js';
 
+// Fungsi untuk membaca body request secara manual (diperlukan di Vercel)
+async function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try {
+        resolve(JSON.parse(body));
+      } catch {
+        resolve({});
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -14,7 +30,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { key, hwid } = req.body || {};
+    // Baca body secara manual (perbaikan utama)
+    const body = await parseBody(req);
+    const { key, hwid } = body;
 
     if (!key || typeof key !== 'string')
       return res.status(400).json({ valid: false, message: 'Kode lisensi tidak boleh kosong.' });
