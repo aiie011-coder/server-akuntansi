@@ -1,6 +1,5 @@
 // File: api/admin-action.js
 // Endpoint khusus untuk admin panel yang sudah login via cookie
-// Tidak butuh Bearer token — cukup session cookie
 
 import {
   getLicense, saveLicense, updateLicenseStatus,
@@ -8,6 +7,18 @@ import {
 } from '../lib/db.js';
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET || '';
+
+async function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => body += chunk);
+    req.on('end', () => {
+      try { resolve(JSON.parse(body)); }
+      catch { resolve({}); }
+    });
+    req.on('error', reject);
+  });
+}
 
 function generateKey() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -44,7 +55,8 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
-  const { action, key, data } = req.body || {};
+  const body = await parseBody(req);
+  const { action, key, data } = body;
 
   try {
     switch (action) {
