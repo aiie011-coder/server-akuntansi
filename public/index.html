@@ -1448,6 +1448,8 @@ textarea.form-control { resize:vertical; min-height:80px; }
               <select class="form-control" id="komp-jenis" onchange="renderKomparasi()">
                 <option value="laba-rugi">Laba Rugi</option>
                 <option value="neraca">Neraca</option>
+                <option value="perubahan-ekuitas">Perubahan Ekuitas</option>
+                <option value="arus-kas">Arus Kas</option>
                 <option value="ringkasan">Ringkasan KPI</option>
               </select>
             </div>
@@ -4758,6 +4760,40 @@ function deltaStr(curr, prev) {
   return `<span style="font-size:11px;color:${color};margin-left:8px;">${sign}${pct}%</span>`;
 }
 
+
+function getArusKasForCompany(coId) {
+  const kasIds = DB.accounts.filter(a => a.company_id==coId && a.type==='Aset' && a.normal_balance==='Debit'
+    && (a.name.toLowerCase().includes('kas') || a.name.toLowerCase().includes('bank'))).map(a=>a.id);
+  const investasiIds = DB.accounts.filter(a => a.company_id==coId && a.type==='Aset' && a.normal_balance==='Debit'
+    && !a.name.toLowerCase().includes('kas') && !a.name.toLowerCase().includes('bank')
+    && !a.name.toLowerCase().includes('piutang') && !a.name.toLowerCase().includes('persediaan')
+    && !a.name.toLowerCase().includes('perlengkapan')).map(a=>a.id);
+  const pendanaanIds = DB.accounts.filter(a => a.company_id==coId && (a.type==='Ekuitas'
+    || (a.type==='Kewajiban' && (a.name.toLowerCase().includes('pinjaman')||a.name.toLowerCase().includes('hutang bank')||a.name.toLowerCase().includes('hutang jangka')||a.name.toLowerCase().includes('obligasi'))))).map(a=>a.id);
+  const JEids = DB.journal_entries.filter(je=>je.company_id==coId).map(je=>je.id);
+  let kasOperasi=0, kasInvestasi=0, kasPendanaan=0;
+  JEids.forEach(jeId=>{
+    const details = DB.journal_details.filter(d=>d.journal_id===jeId);
+    const kasLines = details.filter(d=>kasIds.includes(d.account_id));
+    if (!kasLines.length) return;
+    const netKas = kasLines.reduce((s,d)=>s+d.debit-d.kredit,0);
+    if (!netKas) return;
+    const counterIds = details.filter(d=>!kasIds.includes(d.account_id)).map(d=>d.account_id);
+    if (counterIds.some(id=>investasiIds.includes(id))) kasInvestasi+=netKas;
+    else if (counterIds.some(id=>pendanaanIds.includes(id))) kasPendanaan+=netKas;
+    else kasOperasi+=netKas;
+  });
+  return { kasOperasi, kasInvestasi, kasPendanaan, kasAkhir: kasOperasi+kasInvestasi+kasPendanaan };
+}
+
+function getEkuitasForCompany(coId) {
+  const ekAcss = getBalForCompany(coId, 'Ekuitas');
+  const { laba } = getLabaForCompany(coId);
+  const totalModal = ekAcss.filter(a=>a.normal_balance==='Kredit').reduce((s,a)=>s+a.balance,0);
+  const totalPrive = ekAcss.filter(a=>a.normal_balance==='Debit').reduce((s,a)=>s+a.balance,0);
+  return { totalModal, laba, totalPrive, ekAkhir: totalModal - totalPrive + laba, modalAcss: ekAcss.filter(a=>a.normal_balance==='Kredit'), priveAcss: ekAcss.filter(a=>a.normal_balance==='Debit') };
+}
+
 function renderKomparasi() {
   const p1id = parseInt(document.getElementById('komp-p1')?.value);
   const p2id = parseInt(document.getElementById('komp-p2')?.value);
@@ -4871,6 +4907,81 @@ function renderKomparasi() {
       </tbody>
     </table>`;
 
+  } else if (jenis === 'perubahan-ekuitas') {
+    const data = cos.map(co => ({ co, ...getEkuitasForCompany(co.id) }));
+    // Semua nama akun ekuitas modal unik lintas periode
+    const modalNames = [...new Set(periods.flatMap(id => getEkuitasForCompany(id).modalAcss.map(a=>a.name)))];
+    const priveNames = [...new Set(periods.flatMap(id => getEkuitasForCompany(id).priveAcss.map(a=>a.name)))];
+
+    const modalRows = modalNames.map(name =>
+      `<tr><td style="padding-left:20px;font-size:12px;">${name}</td>${data.map((d,i)=>{
+        const v = d.modalAcss.find(a=>a.name===name)?.balance||0;
+        const pv = i>0?(data[i-1].modalAcss.find(a=>a.name===name)?.balance||0):null;
+        return `<td class="td-mono" style="text-align:right;">${v?fmtC(v):'—'}${i>0?deltaStr(v,pv):''}</td>`;
+      }).join('')}</tr>`).join('');
+
+    const priveRows = priveNames.map(name =>
+      `<tr style="color:var(--danger)"><td style="padding-left:20px;font-size:12px;">(-) ${name}</td>${data.map(d=>{
+        const v = d.priveAcss.find(a=>a.name===name)?.balance||0;
+        return `<td class="td-mono" style="text-align:right;">${v?'('+fmtC(v)+')':'—'}</td>`;
+      }).join('')}</tr>`).join('');
+
+    body = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr><th style="text-align:left;background:var(--bg);">Keterangan</th>${colHeader.replace(/<th /g,'<th style="text-align:right;min-width:150px;background:var(--bg);" ')}</tr></thead>
+      <tbody>
+        <tr><td colspan="${periods.length+1}" style="padding:10px 14px;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--bg2);">MODAL / EKUITAS AWAL</td></tr>
+        ${modalRows}
+        <tr style="background:var(--bg);font-weight:700;"><td>Total Modal Awal</td>${data.map((d,i)=>
+          `<td class="td-mono" style="text-align:right;font-weight:700;">${fmtC(d.totalModal)}${i>0?deltaStr(d.totalModal,data[i-1].totalModal):''}</td>`).join('')}</tr>
+        <tr><td colspan="${periods.length+1}" style="padding:10px 14px;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--bg2);">PERUBAHAN PERIODE</td></tr>
+        <tr><td style="padding-left:20px;font-size:12px;">Laba Bersih Periode</td>${data.map((d,i)=>
+          `<td class="td-mono" style="text-align:right;color:${d.laba>=0?'var(--accent2)':'var(--danger)'};">${d.laba>=0?'':'-'}${fmtC(Math.abs(d.laba))}${i>0?deltaStr(d.laba,data[i-1].laba):''}</td>`).join('')}</tr>
+        ${priveRows}
+        <tr style="background:var(--bg);font-weight:700;"><td>Net Perubahan</td>${data.map((d,i)=>{
+          const net = d.laba - d.totalPrive;
+          return `<td class="td-mono" style="text-align:right;font-weight:700;color:${net>=0?'var(--accent2)':'var(--danger)'};">${net>=0?'':'-'}${fmtC(Math.abs(net))}${i>0?deltaStr(net,data[i-1].laba-data[i-1].totalPrive):''}</td>`;
+        }).join('')}</tr>
+        <tr style="background:var(--primary);color:#fff;font-weight:800;font-size:13px;"><td>EKUITAS AKHIR PERIODE</td>${data.map((d,i)=>
+          `<td class="td-mono" style="text-align:right;color:#86efac;font-weight:800;">${fmtC(d.ekAkhir)}${i>0?`<span style="font-size:11px;color:#fff;opacity:.8;margin-left:5px;">${deltaStr(d.ekAkhir,data[i-1].ekAkhir).replace(/color:[^;"]+/g,'color:#fff')}</span>`:''}</td>`).join('')}</tr>
+      </tbody>
+    </table>`;
+
+  } else if (jenis === 'arus-kas') {
+    const data = cos.map(co => ({ co, ...getArusKasForCompany(co.id) }));
+    const fmtK = v => `${v<0?'(':''}${fmtC(Math.abs(v))}${v<0?')':''}`;
+    const clr  = v => v>=0?'var(--accent2)':'var(--danger)';
+
+    const akRows = [
+      { label: 'I. Arus Kas dari Operasi',   key: 'kasOperasi',   indent: false, bold: true },
+      { label: 'II. Arus Kas dari Investasi', key: 'kasInvestasi', indent: false, bold: true },
+      { label: 'III. Arus Kas dari Pendanaan',key: 'kasPendanaan', indent: false, bold: true },
+    ].map(row =>
+      `<tr style="${row.bold?'background:var(--bg);':''}">
+        <td style="padding-left:${row.indent?'20':'14'}px;font-size:13px;${row.bold?'font-weight:700;':''}font-style:${row.bold?'':'italic'}">${row.label}</td>
+        ${data.map((d,i)=>{
+          const v = d[row.key];
+          return `<td class="td-mono" style="text-align:right;color:${clr(v)};${row.bold?'font-weight:700;':''}">${fmtK(v)}${i>0?deltaStr(v,data[i-1][row.key]):''}</td>`;
+        }).join('')}
+      </tr>`
+    ).join('');
+
+    body = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr><th style="text-align:left;background:var(--bg);">Keterangan</th>${colHeader.replace(/<th /g,'<th style="text-align:right;min-width:150px;background:var(--bg);" ')}</tr></thead>
+      <tbody>
+        ${akRows}
+        <tr style="background:var(--primary);color:#fff;font-weight:800;font-size:13px;">
+          <td>KAS DAN SETARA KAS AKHIR</td>
+          ${data.map((d,i)=>
+            `<td class="td-mono" style="text-align:right;color:#86efac;font-weight:800;">${fmtK(d.kasAkhir)}${i>0?`<span style="font-size:11px;color:#fff;opacity:.8;margin-left:5px;">${deltaStr(d.kasAkhir,data[i-1].kasAkhir).replace(/color:[^;"]+/g,'color:#fff')}</span>`:''}</td>`).join('')}
+        </tr>
+        <tr style="background:var(--bg2);">
+          <td style="font-size:11px;color:var(--text2);padding:8px 14px;" colspan="${periods.length+1}">
+            💡 Arus kas diklasifikasikan otomatis berdasarkan tipe akun lawan dari setiap jurnal yang melibatkan kas. Untuk detail transaksi per periode, lihat halaman Arus Kas masing-masing perusahaan.
+          </td>
+        </tr>
+      </tbody>
+    </table>`;
+
   } else {
     // Ringkasan KPI
     const data = cos.map(co => {
@@ -4915,7 +5026,12 @@ function renderKomparasi() {
   el.innerHTML = `
     <div class="card">
       <div class="card-header">
-        <div class="card-title">${jenis==='laba-rugi'?'📈 Laporan Laba Rugi':jenis==='neraca'?'🧾 Neraca':' 📊 Ringkasan KPI'} — Perbandingan ${cos.length} Periode</div>
+        <div class="card-title">${
+          jenis==='laba-rugi'?'📈 Laba Rugi':
+          jenis==='neraca'?'🧾 Neraca':
+          jenis==='perubahan-ekuitas'?'🔄 Perubahan Ekuitas':
+          jenis==='arus-kas'?'💧 Arus Kas':
+          '📊 Ringkasan KPI'} — Perbandingan ${cos.length} Periode</div>
         <div style="font-size:12px;color:var(--text2);">Perubahan (%) dihitung relatif terhadap periode sebelumnya di kiri</div>
       </div>
       <div class="table-wrap" style="overflow-x:auto;">${body}</div>
