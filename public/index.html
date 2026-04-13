@@ -422,6 +422,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
     <div class="nav-item" onclick="navigate('jurnal-pembalik')"><span class="nav-icon">↩️</span> Jurnal Pembalik</div>
 
     <div class="nav-group-label">Sistem</div>
+    <div class="nav-item" onclick="navigate('komparasi')"><span class="nav-icon">📊</span> Komparasi Multi-Tahun</div>
     <div class="nav-item" onclick="navigate('settings')"><span class="nav-icon">⚙️</span> Pengaturan</div>
   </div>
   <div id="sidebar-footer">
@@ -1404,6 +1405,62 @@ textarea.form-control { resize:vertical; min-height:80px; }
     </div>
 
     <!-- ═══ SETTINGS ═══ -->
+    <!-- ═══ KOMPARASI MULTI-TAHUN ═══ -->
+    <div id="page-komparasi" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Komparasi Multi-Tahun</div>
+          <div class="page-subtitle">Bandingkan laporan keuangan antar periode/tahun</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary" onclick="printReport('komparasi')">🖨️ Print</button>
+          <button class="btn btn-secondary" onclick="exportExcel('komparasi')">📊 Excel</button>
+        </div>
+      </div>
+
+      <!-- Pemilihan periode -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header">
+          <div class="card-title">⚙️ Pilih Periode untuk Dibandingkan</div>
+        </div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px;">
+            <div class="form-group">
+              <label>Periode 1 (Wajib)</label>
+              <select class="form-control" id="komp-p1" onchange="renderKomparasi()">
+                <option value="">— Pilih Periode —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Periode 2 (Wajib)</label>
+              <select class="form-control" id="komp-p2" onchange="renderKomparasi()">
+                <option value="">— Pilih Periode —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Periode 3 (Opsional)</label>
+              <select class="form-control" id="komp-p3" onchange="renderKomparasi()">
+                <option value="">— Tidak dipilih —</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Tampilkan</label>
+              <select class="form-control" id="komp-jenis" onchange="renderKomparasi()">
+                <option value="laba-rugi">Laba Rugi</option>
+                <option value="neraca">Neraca</option>
+                <option value="ringkasan">Ringkasan KPI</option>
+              </select>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text2);">💡 Setiap "Perusahaan" di ZeQui dapat mewakili satu tahun buku. Tambahkan perusahaan baru untuk setiap tahun fiskal.</div>
+        </div>
+      </div>
+
+      <div id="komparasi-content">
+        <div class="empty-state"><div class="empty-icon">📊</div><p>Pilih minimal dua periode di atas untuk melihat perbandingan.</p></div>
+      </div>
+    </div>
+
     <div id="page-settings" class="page">
       <div class="page-header"><div><div class="page-title">Pengaturan</div></div></div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
@@ -2066,6 +2123,7 @@ function renderPage(page) {
     'arus-kas': renderArusKas,
     'jurnal-penutup': renderJurnalPenutup,
     'jurnal-pembalik': renderJurnalPembalik,
+    'komparasi': renderKomparasiPage,
     companies: renderCompanies,
   };
   if (r[page]) r[page]();
@@ -4631,6 +4689,244 @@ function buildArusKasDetail(kategori) {
 // ══════════════════════════════════════════
 // JURNAL PENUTUP
 // ══════════════════════════════════════════
+
+// ══════════════════════════════════════════
+// KOMPARASI MULTI-TAHUN
+// ══════════════════════════════════════════
+
+function populateKomparasiSelects() {
+  const companies = DB.companies;
+  const makeOpts = (selectedId, emptyLabel) =>
+    `<option value="">${emptyLabel}</option>` +
+    companies.map(co =>
+      `<option value="${co.id}" ${co.id == selectedId ? 'selected' : ''}>${co.name} (${co.period_start ? co.period_start.substring(0,4) : '?'})</option>`
+    ).join('');
+
+  const p1 = document.getElementById('komp-p1');
+  const p2 = document.getElementById('komp-p2');
+  const p3 = document.getElementById('komp-p3');
+  if (!p1) return;
+  const v1=p1.value, v2=p2.value, v3=p3.value;
+  p1.innerHTML = makeOpts(v1, '— Pilih Periode —');
+  p2.innerHTML = makeOpts(v2, '— Pilih Periode —');
+  p3.innerHTML = makeOpts(v3, '— Tidak dipilih —');
+}
+
+// Hitung saldo akun untuk company tertentu (tanpa bergantung pada co() global)
+function getBalForCompany(coId, accType, inclAdj=true) {
+  const accs = DB.accounts.filter(a => a.company_id == coId && a.type === accType);
+  return accs.map(a => {
+    const JEs = DB.journal_entries.filter(je => je.company_id == coId).map(je => je.id);
+    let totD=0, totK=0;
+    DB.journal_details.filter(d => JEs.includes(d.journal_id) && d.account_id == a.id)
+      .forEach(d => { totD += d.debit; totK += d.kredit; });
+    if (inclAdj) {
+      DB.penyesuaian.filter(p => p.company_id == coId && p.debit_acc == a.id).forEach(p => totD += p.amount);
+      DB.penyesuaian.filter(p => p.company_id == coId && p.kredit_acc == a.id).forEach(p => totK += p.amount);
+    }
+    const bal = (a.saldo_awal || 0) + (a.normal_balance === 'Debit' ? totD - totK : totK - totD);
+    return { ...a, balance: bal };
+  }).filter(a => a.balance !== 0);
+}
+
+function getLabaForCompany(coId) {
+  const rev = getBalForCompany(coId, 'Pendapatan').reduce((s,a) => s + a.balance, 0);
+  const exp = getBalForCompany(coId, 'Beban').reduce((s,a) => s + a.balance, 0);
+  return { rev, exp, laba: rev - exp };
+}
+
+function getNeracaForCompany(coId) {
+  const asetAll  = getBalForCompany(coId, 'Aset');
+  const asetBruto = asetAll.filter(a => a.normal_balance === 'Debit').reduce((s,a) => s + a.balance, 0);
+  const contra    = asetAll.filter(a => a.normal_balance === 'Kredit').reduce((s,a) => s + a.balance, 0);
+  const totAset   = asetBruto - contra;
+  const totKew    = getBalForCompany(coId, 'Kewajiban').reduce((s,a) => s + a.balance, 0);
+  const ekAcss    = getBalForCompany(coId, 'Ekuitas');
+  const modal     = ekAcss.filter(a => a.normal_balance === 'Kredit').reduce((s,a) => s + a.balance, 0);
+  const prive     = ekAcss.filter(a => a.normal_balance === 'Debit').reduce((s,a) => s + a.balance, 0);
+  const { laba }  = getLabaForCompany(coId);
+  const totEk     = modal - prive + laba;
+  return { totAset, totKew, totEk };
+}
+
+function deltaStr(curr, prev) {
+  if (!prev) return '';
+  const d = curr - prev;
+  const pct = prev !== 0 ? ((d / Math.abs(prev)) * 100).toFixed(1) : '—';
+  const color = d >= 0 ? '#0F6E56' : '#A32D2D';
+  const sign  = d >= 0 ? '+' : '';
+  return `<span style="font-size:11px;color:${color};margin-left:8px;">${sign}${pct}%</span>`;
+}
+
+function renderKomparasi() {
+  const p1id = parseInt(document.getElementById('komp-p1')?.value);
+  const p2id = parseInt(document.getElementById('komp-p2')?.value);
+  const p3id = parseInt(document.getElementById('komp-p3')?.value) || null;
+  const jenis = document.getElementById('komp-jenis')?.value || 'laba-rugi';
+  const el = document.getElementById('komparasi-content');
+  if (!el) return;
+
+  if (!p1id || !p2id) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><p>Pilih minimal dua periode untuk melihat perbandingan.</p></div>';
+    return;
+  }
+  if (p1id === p2id) {
+    el.innerHTML = '<div class="empty-state" style="color:var(--danger)"><div class="empty-icon">⚠️</div><p>Pilih periode yang berbeda.</p></div>';
+    return;
+  }
+
+  const periods = [p1id, p2id, ...(p3id && p3id !== p1id && p3id !== p2id ? [p3id] : [])];
+  const cos = periods.map(id => DB.companies.find(c => c.id == id)).filter(Boolean);
+
+  const colHeader = cos.map(co =>
+    `<th style="text-align:right;min-width:150px;">${co.name}<br><small style="font-weight:400;color:var(--text3);">${co.period_start||''} s/d ${co.period_end||''}</small></th>`
+  ).join('');
+
+  let body = '';
+
+  if (jenis === 'laba-rugi') {
+    const data = cos.map(co => ({ co, ...getLabaForCompany(co.id) }));
+    // Kumpulkan semua kode akun pendapatan & beban unik lintas periode
+    const revAccNames = [...new Set(periods.flatMap(id => getBalForCompany(id,'Pendapatan').map(a => a.name)))];
+    const expAccNames = [...new Set(periods.flatMap(id => getBalForCompany(id,'Beban').map(a => a.name)))];
+
+    const revRows = revAccNames.map(name => {
+      const vals = data.map((d,i) => {
+        const acc = getBalForCompany(d.co.id,'Pendapatan').find(a => a.name === name);
+        const val = acc ? acc.balance : 0;
+        return { val, delta: i > 0 ? deltaStr(val, data[i-1].rev) : '' };
+      });
+      return `<tr><td style="padding-left:20px;font-size:12px;">${name}</td>${vals.map((v,i) =>
+        `<td class="td-mono" style="text-align:right;">${v.val ? fmtC(v.val) : '—'}${i>0?deltaStr(v.val, (data[i-1] ? getBalForCompany(data[i-1].co.id,'Pendapatan').find(a=>a.name===name)?.balance||0 : 0)):''}</td>`).join('')}</tr>`;
+    }).join('');
+
+    const expRows = expAccNames.map(name => {
+      const vals = data.map(d => {
+        const acc = getBalForCompany(d.co.id,'Beban').find(a => a.name === name);
+        return acc ? acc.balance : 0;
+      });
+      return `<tr><td style="padding-left:20px;font-size:12px;">${name}</td>${vals.map((v,i) =>
+        `<td class="td-mono" style="text-align:right;">${v ? fmtC(v) : '—'}${i>0?deltaStr(v, vals[i-1]):''}</td>`).join('')}</tr>`;
+    }).join('');
+
+    const totRevRow = `<tr style="background:var(--bg);font-weight:700;"><td>Total Pendapatan</td>${data.map((d,i) =>
+      `<td class="td-mono" style="text-align:right;font-weight:700;">${fmtC(d.rev)}${i>0?deltaStr(d.rev,data[i-1].rev):''}</td>`).join('')}</tr>`;
+    const totExpRow = `<tr style="background:var(--bg);font-weight:700;"><td>Total Beban</td>${data.map((d,i) =>
+      `<td class="td-mono" style="text-align:right;font-weight:700;">${fmtC(d.exp)}${i>0?deltaStr(d.exp,data[i-1].exp):''}</td>`).join('')}</tr>`;
+    const labaRow = `<tr style="background:var(--primary);color:#fff;font-weight:800;font-size:13px;"><td>LABA / RUGI BERSIH</td>${data.map((d,i) =>
+      `<td class="td-mono" style="text-align:right;color:${d.laba>=0?'#86efac':'#fca5a5'};font-weight:800;">${fmtC(Math.abs(d.laba))} ${d.laba<0?'(Rugi)':''}${i>0?`<span style="font-size:11px;color:#fff;opacity:.8;margin-left:6px;">${deltaStr(d.laba,data[i-1].laba).replace(/color:[^;]+/,'color:#fff')}</span>`:''}` +
+      `</td>`).join('')}</tr>`;
+
+    body = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr><th style="text-align:left;background:var(--bg);">Keterangan</th>${colHeader.replace(/\<th /g,'<th style="text-align:right;min-width:150px;background:var(--bg);" ')}</tr></thead>
+      <tbody>
+        <tr><td colspan="${periods.length+1}" style="padding:10px 14px;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--bg2);">PENDAPATAN</td></tr>
+        ${revRows}
+        ${totRevRow}
+        <tr><td colspan="${periods.length+1}" style="padding:10px 14px;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--bg2);">BEBAN</td></tr>
+        ${expRows}
+        ${totExpRow}
+        ${labaRow}
+      </tbody>
+    </table>`;
+
+  } else if (jenis === 'neraca') {
+    const data = cos.map(co => ({ co, ...getNeracaForCompany(co.id) }));
+
+    const asetRows = [...new Set(periods.flatMap(id => getBalForCompany(id,'Aset').filter(a=>a.normal_balance==='Debit').map(a=>a.name)))].map(name =>
+      `<tr><td style="padding-left:20px;font-size:12px;">${name}</td>${data.map((d,i) => {
+        const v = getBalForCompany(d.co.id,'Aset').find(a=>a.name===name&&a.normal_balance==='Debit')?.balance||0;
+        const pv = i>0 ? (getBalForCompany(data[i-1].co.id,'Aset').find(a=>a.name===name&&a.normal_balance==='Debit')?.balance||0) : null;
+        return `<td class="td-mono" style="text-align:right;">${v?fmtC(v):'—'}${i>0?deltaStr(v,pv):''}</td>`;
+      }).join('')}</tr>`).join('');
+
+    const contraRows = [...new Set(periods.flatMap(id => getBalForCompany(id,'Aset').filter(a=>a.normal_balance==='Kredit').map(a=>a.name)))].map(name =>
+      `<tr style="color:var(--danger)"><td style="padding-left:20px;font-size:12px;">(-) ${name}</td>${data.map(d => {
+        const v = getBalForCompany(d.co.id,'Aset').find(a=>a.name===name&&a.normal_balance==='Kredit')?.balance||0;
+        return `<td class="td-mono" style="text-align:right;">${v?'('+fmtC(v)+')':'—'}</td>`;
+      }).join('')}</tr>`).join('');
+
+    const kewRows = [...new Set(periods.flatMap(id => getBalForCompany(id,'Kewajiban').map(a=>a.name)))].map(name =>
+      `<tr><td style="padding-left:20px;font-size:12px;">${name}</td>${data.map((d,i) => {
+        const v = getBalForCompany(d.co.id,'Kewajiban').find(a=>a.name===name)?.balance||0;
+        const pv = i>0 ? (getBalForCompany(data[i-1].co.id,'Kewajiban').find(a=>a.name===name)?.balance||0) : null;
+        return `<td class="td-mono" style="text-align:right;">${v?fmtC(v):'—'}${i>0?deltaStr(v,pv):''}</td>`;
+      }).join('')}</tr>`).join('');
+
+    body = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr><th style="text-align:left;background:var(--bg);">Keterangan</th>${colHeader.replace(/\<th /g,'<th style="text-align:right;min-width:150px;background:var(--bg);" ')}</tr></thead>
+      <tbody>
+        <tr><td colspan="${periods.length+1}" style="padding:10px 14px;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--bg2);">ASET</td></tr>
+        ${asetRows}${contraRows}
+        <tr style="background:var(--bg);font-weight:700;"><td>Total Aset (Bersih)</td>${data.map((d,i)=>
+          `<td class="td-mono" style="text-align:right;font-weight:700;">${fmtC(d.totAset)}${i>0?deltaStr(d.totAset,data[i-1].totAset):''}</td>`).join('')}</tr>
+        <tr><td colspan="${periods.length+1}" style="padding:10px 14px;font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);background:var(--bg2);">KEWAJIBAN</td></tr>
+        ${kewRows}
+        <tr style="background:var(--bg);font-weight:700;"><td>Total Kewajiban</td>${data.map((d,i)=>
+          `<td class="td-mono" style="text-align:right;font-weight:700;">${fmtC(d.totKew)}${i>0?deltaStr(d.totKew,data[i-1].totKew):''}</td>`).join('')}</tr>
+        <tr style="background:var(--bg);font-weight:700;"><td>Total Ekuitas</td>${data.map((d,i)=>
+          `<td class="td-mono" style="text-align:right;font-weight:700;">${fmtC(d.totEk)}${i>0?deltaStr(d.totEk,data[i-1].totEk):''}</td>`).join('')}</tr>
+        <tr style="background:var(--primary);color:#fff;font-weight:800;font-size:13px;"><td>Total Kewajiban + Ekuitas</td>${data.map((d,i)=>
+          `<td class="td-mono" style="text-align:right;color:${Math.abs(d.totAset-(d.totKew+d.totEk))<1?'#86efac':'#fca5a5'};font-weight:800;">${fmtC(d.totKew+d.totEk)} ${Math.abs(d.totAset-(d.totKew+d.totEk))<1?'✓':'⚠️'}</td>`).join('')}</tr>
+      </tbody>
+    </table>`;
+
+  } else {
+    // Ringkasan KPI
+    const data = cos.map(co => {
+      const { rev, exp, laba } = getLabaForCompany(co.id);
+      const { totAset, totKew, totEk } = getNeracaForCompany(co.id);
+      const kas = getBalForCompany(co.id,'Aset').filter(a=>a.normal_balance==='Debit'&&(a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank'))).reduce((s,a)=>s+a.balance,0);
+      const marginLaba = rev > 0 ? ((laba/rev)*100).toFixed(1) : '—';
+      const rasioKew   = totAset > 0 ? ((totKew/totAset)*100).toFixed(1) : '—';
+      return { co, rev, exp, laba, totAset, totKew, totEk, kas, marginLaba, rasioKew };
+    });
+
+    const kpiRows = [
+      { label: '💰 Total Pendapatan', key: 'rev', fmt: fmtC },
+      { label: '📉 Total Beban', key: 'exp', fmt: fmtC },
+      { label: '📈 Laba / Rugi Bersih', key: 'laba', fmt: v => `${v<0?'(':''}${fmtC(Math.abs(v))}${v<0?')':''}`, bold: true },
+      { label: '📊 Margin Laba (%)', key: 'marginLaba', fmt: v => v+'%' },
+      { label: '🏦 Total Aset', key: 'totAset', fmt: fmtC },
+      { label: '🔴 Total Kewajiban', key: 'totKew', fmt: fmtC },
+      { label: '🟢 Total Ekuitas', key: 'totEk', fmt: fmtC },
+      { label: '💵 Kas & Setara Kas', key: 'kas', fmt: fmtC },
+      { label: '⚠️ Rasio Hutang/Aset (%)', key: 'rasioKew', fmt: v => v+'%' },
+    ].map(row =>
+      `<tr ${row.bold?'style="background:rgba(37,99,235,.06);font-weight:800;"':''}>
+        <td style="font-size:13px;">${row.label}</td>
+        ${data.map((d,i) => {
+          const v = d[row.key];
+          const pv = i > 0 ? data[i-1][row.key] : null;
+          const numV = parseFloat(v);
+          const numPv = parseFloat(pv);
+          const delta = (i > 0 && !isNaN(numV) && !isNaN(numPv)) ? deltaStr(numV, numPv) : '';
+          return `<td class="td-mono" style="text-align:right;${row.bold&&parseFloat(v)<0?'color:var(--danger)':row.bold?'color:var(--accent2)':''}">${row.fmt(v)}${delta}</td>`;
+        }).join('')}
+      </tr>`
+    ).join('');
+
+    body = `<table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr><th style="text-align:left;background:var(--bg);">Indikator KPI</th>${colHeader.replace(/\<th /g,'<th style="text-align:right;min-width:150px;background:var(--bg);" ')}</tr></thead>
+      <tbody>${kpiRows}</tbody>
+    </table>`;
+  }
+
+  el.innerHTML = `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">${jenis==='laba-rugi'?'📈 Laporan Laba Rugi':jenis==='neraca'?'🧾 Neraca':' 📊 Ringkasan KPI'} — Perbandingan ${cos.length} Periode</div>
+        <div style="font-size:12px;color:var(--text2);">Perubahan (%) dihitung relatif terhadap periode sebelumnya di kiri</div>
+      </div>
+      <div class="table-wrap" style="overflow-x:auto;">${body}</div>
+    </div>`;
+}
+
+function renderKomparasiPage() {
+  populateKomparasiSelects();
+  renderKomparasi();
+}
+
 function buatJurnalPenutup() {
   const revenues = getAccsByType('Pendapatan');
   const expenses = getAccsByType('Beban');
@@ -5158,6 +5454,17 @@ function printReport(type) {
       setTimeout(()=>printReport(t), i*300);
     });
     return;
+  }
+
+  else if (type === 'komparasi') {
+    const p1id = parseInt(document.getElementById('komp-p1')?.value);
+    const p2id = parseInt(document.getElementById('komp-p2')?.value);
+    if (!p1id || !p2id) { toast('Pilih periode terlebih dahulu','error'); return; }
+    // Re-use the rendered table content for print
+    const content = document.getElementById('komparasi-content')?.innerHTML || '';
+    const jenis = document.getElementById('komp-jenis')?.value || '';
+    title = 'Komparasi Multi-Tahun — ' + (jenis==='laba-rugi'?'Laba Rugi':jenis==='neraca'?'Neraca':'KPI');
+    body = content.replace(/class="card[^"]*"/g,'').replace(/class="card-header[^"]*"/g,'').replace(/class="card-body[^"]*"/g,'').replace(/class="card-title[^"]*"/g,'style="font-weight:800;font-size:15px;margin-bottom:8px;"').replace(/class="table-wrap[^"]*"/g,'').replace(/class="td-mono[^"]*"/g,'class="num"');
   }
 
   // Build print window
