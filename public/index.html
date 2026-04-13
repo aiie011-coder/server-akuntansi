@@ -72,10 +72,6 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); overflo
 .nav-item .badge { margin-left:auto; background:var(--danger); color:#fff; font-size:10px; padding:2px 6px; border-radius:20px; }
 
 #sidebar-footer { padding:12px 16px; border-top:1px solid rgba(255,255,255,.07); }
-#year-quick-switch { padding:8px 16px; border-top:1px solid rgba(255,255,255,.07); display:flex; gap:6px; }
-.year-qs-btn { flex:1; padding:5px 8px; border-radius:6px; border:1px solid rgba(255,255,255,.15); background:transparent; color:var(--sidebar-text); font-size:11px; font-weight:600; cursor:pointer; transition:.2s; text-align:center; }
-.year-qs-btn:hover { background:rgba(255,255,255,.08); color:#fff; }
-.year-qs-btn.active { background:var(--primary-light); color:#fff; border-color:var(--primary-light); }
 .save-btn-main {
   width:100%; padding:10px; background:linear-gradient(135deg, #2563eb, #06b6d4);
   border:none; border-radius:var(--radius2); color:#fff; font-family:var(--font);
@@ -428,12 +424,8 @@ textarea.form-control { resize:vertical; min-height:80px; }
     <div class="nav-group-label">Sistem</div>
     <div class="nav-item" onclick="navigate('settings')"><span class="nav-icon">⚙️</span> Pengaturan</div>
   </div>
-  <div id="year-quick-switch">
-    <button class="year-qs-btn" id="qs-btn-curr" onclick="switchToLatestYear()" title="Tahun Berjalan">📅 Berjalan</button>
-    <button class="year-qs-btn" id="qs-btn-prev" onclick="switchToPrevYear()" title="Tahun Lalu">📅 Lalu</button>
-  </div>
   <div id="sidebar-footer">
-    <button class="save-btn-main" onclick="saveToFile()">💾 Simpan &amp; Update File</button>
+    <button class="save-btn-main" onclick="saveToFile()">💾 Backup File</button>
   </div>
 </nav>
 
@@ -447,13 +439,6 @@ textarea.form-control { resize:vertical; min-height:80px; }
         <div>
           <div class="co-name" id="hdr-company-name">PT MAndiri</div>
           <div class="co-period" id="hdr-company-period">2025-01-01 s/d 2025-12-31</div>
-        </div>
-        <!-- Year Switcher -->
-        <div id="year-switcher-bar" onclick="openModal('modal-fiscal-year')" title="Kelola Tahun Buku">
-          <span style="font-size:13px;">📅</span>
-          <span style="font-size:12px;font-weight:700;color:var(--text);" id="hdr-active-year">—</span>
-          <span id="hdr-year-badge" class="year-badge-curr">Berjalan</span>
-          <span style="font-size:10px;color:var(--text3);">▼</span>
         </div>
         <span style="margin-left:auto; color:var(--text3);">▾</span>
       </div>
@@ -499,7 +484,8 @@ textarea.form-control { resize:vertical; min-height:80px; }
           </div>
         </div>
       </div>
-      <button class="hdr-btn primary" onclick="saveToFile()">💾 Simpan</button>
+      <span id="save-indicator" style="font-size:11px;font-weight:600;color:#10b981;opacity:0;transition:opacity .5s;margin-right:4px;"></span>
+      <button class="hdr-btn primary" onclick="saveToFile()">💾 Backup File</button>
     </div>
   </div>
 
@@ -1421,10 +1407,48 @@ textarea.form-control { resize:vertical; min-height:80px; }
     <div id="page-settings" class="page">
       <div class="page-header"><div><div class="page-title">Pengaturan</div></div></div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+
+        <!-- Storage Monitor Card — full width -->
+        <div class="card" style="grid-column:1/-1;">
+          <div class="card-header" style="justify-content:space-between;">
+            <div class="card-title">🗄️ Status Penyimpanan IndexedDB</div>
+            <button class="btn btn-secondary btn-sm" onclick="renderSettings()">🔄 Refresh</button>
+          </div>
+          <div class="card-body">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px;">
+              <div style="padding:12px 16px;background:rgba(16,185,129,.08);border-radius:8px;border:1px solid rgba(16,185,129,.2);text-align:center;">
+                <div style="font-size:11px;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Status</div>
+                <div id="settings-idb-status" style="font-size:16px;font-weight:800;color:#10b981;">✅ Aktif</div>
+              </div>
+              <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;">
+                <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Ukuran Data</div>
+                <div id="settings-storage-text" style="font-size:16px;font-weight:800;color:var(--primary-light);">—</div>
+              </div>
+              <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;">
+                <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Kapasitas</div>
+                <div style="font-size:16px;font-weight:800;color:var(--primary-light);">Ratusan MB</div>
+              </div>
+              <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;">
+                <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Terakhir Disimpan</div>
+                <div id="settings-last-saved" style="font-size:12px;font-weight:700;color:var(--text);">—</div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:var(--text3);line-height:1.8;padding:12px;background:var(--bg);border-radius:8px;">
+              💡 <strong>IndexedDB</strong> menyimpan data otomatis setiap ada perubahan, kapasitas jauh lebih besar dari sebelumnya.<br>
+              📥 <strong>Download Backup File</strong> tetap disarankan secara berkala (mingguan/bulanan) sebagai cadangan jika browser di-reset atau komputer rusak.<br>
+              🔄 <strong>Export JSON</strong> berguna untuk pindah ke komputer lain atau backup arsip.
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Management Card -->
         <div class="card">
-          <div class="card-header"><div class="card-title">💾 Data</div></div>
+          <div class="card-header"><div class="card-title">💾 Data &amp; Backup</div></div>
           <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-            <button class="btn btn-primary" onclick="saveToFile()">💾 Simpan &amp; Update File</button>
+            <div style="padding:8px 12px;background:rgba(16,185,129,.08);border-radius:6px;border-left:3px solid #10b981;font-size:11px;color:#065f46;">
+              🗄️ Data tersimpan otomatis di IndexedDB. Download backup sebagai cadangan.
+            </div>
+            <button class="btn btn-primary" onclick="saveToFile()">💾 Download Backup File</button>
             <button class="btn btn-success" onclick="loadSampleData()">📚 Muat Data Contoh SAK EMKM &amp; EP</button>
             <button class="btn btn-secondary" onclick="exportExcel('semua')">📊 Export Semua ke Excel</button>
             <button class="btn btn-secondary" onclick="exportJSON()">📤 Export JSON (Backup)</button>
@@ -1432,6 +1456,8 @@ textarea.form-control { resize:vertical; min-height:80px; }
             <button class="btn btn-danger" onclick="clearAllData()">🗑️ Hapus Semua Data</button>
           </div>
         </div>
+
+        <!-- Info Card -->
         <div class="card">
           <div class="card-header"><div class="card-title">📐 Persamaan Akuntansi</div></div>
           <div class="card-body" style="font-size:12px;color:var(--text2);line-height:2;">
@@ -1450,6 +1476,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
             <p>SAK UMUM · SAK EP · SAK EMKM · SAP · SAK SYARIAH</p>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -1789,43 +1816,6 @@ textarea.form-control { resize:vertical; min-height:80px; }
   </div>
 </div>
 
-
-<!-- Modal Tahun Buku -->
-<div class="modal-overlay" id="modal-fiscal-year">
-  <div class="modal" style="max-width:520px;">
-    <div class="modal-header">
-      <div class="modal-title">📅 Manajemen Tahun Buku</div>
-      <button class="modal-close" onclick="closeModal('modal-fiscal-year')">✕</button>
-    </div>
-    <div class="modal-body">
-      <!-- Daftar tahun buku -->
-      <div id="fiscal-year-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;"></div>
-      <!-- Buat tahun buku baru -->
-      <div style="padding:14px 16px;border-radius:var(--radius2);border:1.5px dashed var(--border);background:var(--bg);">
-        <div style="font-weight:700;font-size:13px;margin-bottom:12px;">➕ Buat Tahun Buku Baru</div>
-        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;">
-          <div class="form-group">
-            <label>Tahun</label>
-            <input class="form-control" type="number" id="fy-new-year" placeholder="2026" min="2000" max="2100">
-          </div>
-          <div class="form-group">
-            <label>Periode Mulai</label>
-            <input class="form-control" type="date" id="fy-new-start">
-          </div>
-          <div class="form-group">
-            <label>Periode Akhir</label>
-            <input class="form-control" type="date" id="fy-new-end">
-          </div>
-        </div>
-        <div style="margin-top:8px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:6px;font-size:12px;color:var(--text2);line-height:1.6;">
-          💡 <strong>Carry-forward otomatis:</strong> Saldo akhir akun Aset, Kewajiban, dan Ekuitas dari tahun sebelumnya akan digunakan sebagai saldo awal tahun baru. Akun Pendapatan &amp; Beban direset ke nol.
-        </div>
-        <button class="btn btn-primary" style="margin-top:12px;width:100%;" onclick="createFiscalYear()">📅 Buat Tahun Buku Baru</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- Toast Container -->
 <div id="toast-container"></div>
 
@@ -1838,144 +1828,193 @@ const DB_KEY = '__akuntansipro_data__';
 
 let DB = {
   companies: [],
-  fiscal_years: [],       // {id, company_id, year, period_start, period_end, is_closed}
   accounts: [],
   transactions: [],
-  journal_entries: [],    // tambah field: fiscal_year_id
+  journal_entries: [],
   journal_details: [],
-  penyesuaian: [],        // tambah field: fiscal_year_id
+  penyesuaian: [],
   hutang: [],
   piutang: [],
   persediaan: [],
   perlengkapan: [],
   aset_tetap: [],
   current_company_id: null,
-  current_fiscal_year_id: null,  // tahun buku aktif
   _id_counter: 1
 };
 
-// ─── Active Fiscal Year helpers ───
-function getFiscalYear(fyId) {
-  return DB.fiscal_years.find(fy => fy.id == fyId);
-}
-function getActiveFY() {
-  if (!DB.current_fiscal_year_id) return null;
-  return DB.fiscal_years.find(fy => fy.id == DB.current_fiscal_year_id);
-}
-function coFYFilter(arr) {
-  // Filter by company AND fiscal year aktif
-  const fyId = DB.current_fiscal_year_id;
-  const coFYs = DB.fiscal_years ? DB.fiscal_years.filter(fy => fy.company_id == co()) : [];
-  return arr.filter(x => {
-    if (x.company_id != co()) return false;
-    if (!fyId) return true; // belum ada FY → tampilkan semua
-    // Item dengan fiscal_year_id eksplisit: cocokkan
-    if (x.fiscal_year_id != null && x.fiscal_year_id != undefined) {
-      return x.fiscal_year_id == fyId;
-    }
-    // Legacy item (tanpa fiscal_year_id):
-    // Jika perusahaan ini memiliki FY → hanya tampilkan di FY yang periode-nya cocok
-    if (coFYs.length > 0 && x.date) {
-      const fy = DB.fiscal_years.find(f => f.id == fyId);
-      if (fy && x.date >= fy.period_start && x.date <= fy.period_end) return true;
-      return false;
-    }
-    return true; // perusahaan tanpa FY: tampilkan semua
-  });
-}
-
-// Dapatkan semua tahun buku milik perusahaan aktif, diurutkan desc
-function getCompanyFYs() {
-  if (!co()) return [];
-  return DB.fiscal_years.filter(fy => fy.company_id == co()).sort((a,b)=>b.year-a.year);
-}
-
-// Pastikan perusahaan punya minimal 1 tahun buku; buat otomatis jika belum ada
-function ensureFiscalYear() {
-  if (!co()) return;
-  const company = getCompany();
-  if (!company) return;
-  const fys = getCompanyFYs();
-  if (!fys.length) {
-    // Buat dari period_start/period_end perusahaan
-    const year = company.period_start ? parseInt(company.period_start.substring(0,4)) : new Date().getFullYear();
-    const fy = {
-      id: genId(),
-      company_id: co(),
-      year,
-      period_start: company.period_start || year+'-01-01',
-      period_end: company.period_end || year+'-12-31',
-      is_closed: false
-    };
-    DB.fiscal_years.push(fy);
-    DB.current_fiscal_year_id = fy.id;
-    autoSave();
-    return;
-  }
-  // Pilih tahun terbaru (berjalan) jika belum ada pilihan / pilihan tidak valid untuk company ini
-  const valid = fys.find(fy => fy.id == DB.current_fiscal_year_id);
-  if (!valid) {
-    DB.current_fiscal_year_id = fys[0].id;
-    autoSave();
-  }
-}
-
-// Migrasi: pasang fiscal_year_id ke data lama (journal_entries & penyesuaian tanpa fiscal_year_id)
-function migrateLegacyFiscalYear() {
-  // Untuk setiap perusahaan yg sudah punya fiscal year, tandai jurnal lama
-  DB.fiscal_years.forEach(fy => {
-    DB.journal_entries.filter(je =>
-      je.company_id == fy.company_id &&
-      (je.fiscal_year_id == null || je.fiscal_year_id == undefined) &&
-      je.date >= fy.period_start && je.date <= fy.period_end
-    ).forEach(je => { je.fiscal_year_id = fy.id; });
-
-    DB.penyesuaian.filter(p =>
-      p.company_id == fy.company_id &&
-      (p.fiscal_year_id == null || p.fiscal_year_id == undefined) &&
-      p.date >= fy.period_start && p.date <= fy.period_end
-    ).forEach(p => { p.fiscal_year_id = fy.id; });
-
-    DB.transactions.filter(t =>
-      t.company_id == fy.company_id &&
-      (t.fiscal_year_id == null || t.fiscal_year_id == undefined) &&
-      t.date >= fy.period_start && t.date <= fy.period_end
-    ).forEach(t => { t.fiscal_year_id = fy.id; });
-  });
-}
-
 // ─── Load from embedded data (for "save to file" feature) ───
-const EMBEDDED_DATA = {"fiscal_years":[],"current_fiscal_year_id":null,"companies":[{"id":2,"name":"PT MAndiri","standard":"SAK EP","type":"Jasa","period_start":"2025-01-01","period_end":"2025-12-31"},{"id":37,"name":"CV Berkah Mandiri","standard":"SAK EMKM","type":"Perdagangan","period_start":"2024-01-01","period_end":"2024-12-31"},{"id":125,"name":"PT Nusantara Sejahtera","standard":"SAK EP","type":"Jasa Konsultan","period_start":"2024-01-01","period_end":"2024-12-31"}],"accounts":[{"id":3,"company_id":2,"code":"1-001","name":"Kas","type":"Aset","normal_balance":"Debit"},{"id":4,"company_id":2,"code":"1-002","name":"Bank","type":"Aset","normal_balance":"Debit"},{"id":5,"company_id":2,"code":"1-003","name":"Piutang Usaha","type":"Aset","normal_balance":"Debit"},{"id":6,"company_id":2,"code":"1-004","name":"Persediaan","type":"Aset","normal_balance":"Debit"},{"id":7,"company_id":2,"code":"1-005","name":"Perlengkapan","type":"Aset","normal_balance":"Debit"},{"id":8,"company_id":2,"code":"1-006","name":"Aset Tetap","type":"Aset","normal_balance":"Debit"},{"id":9,"company_id":2,"code":"1-007","name":"Akumulasi Penyusutan","type":"Aset","normal_balance":"Kredit"},{"id":10,"company_id":2,"code":"2-001","name":"Hutang Usaha","type":"Kewajiban","normal_balance":"Kredit"},{"id":11,"company_id":2,"code":"2-002","name":"Hutang Jangka Panjang","type":"Kewajiban","normal_balance":"Kredit"},{"id":12,"company_id":2,"code":"3-001","name":"Modal","type":"Ekuitas","normal_balance":"Kredit"},{"id":13,"company_id":2,"code":"3-002","name":"Prive","type":"Ekuitas","normal_balance":"Debit"},{"id":14,"company_id":2,"code":"3-003","name":"Laba Ditahan","type":"Ekuitas","normal_balance":"Kredit"},{"id":15,"company_id":2,"code":"4-001","name":"Pendapatan Usaha","type":"Pendapatan","normal_balance":"Kredit"},{"id":16,"company_id":2,"code":"4-002","name":"Pendapatan Lain-lain","type":"Pendapatan","normal_balance":"Kredit"},{"id":17,"company_id":2,"code":"5-001","name":"Harga Pokok Penjualan","type":"Beban","normal_balance":"Debit"},{"id":18,"company_id":2,"code":"5-002","name":"Beban Gaji","type":"Beban","normal_balance":"Debit"},{"id":19,"company_id":2,"code":"5-003","name":"Beban Sewa","type":"Beban","normal_balance":"Debit"},{"id":20,"company_id":2,"code":"5-004","name":"Beban Perlengkapan","type":"Beban","normal_balance":"Debit"},{"id":21,"company_id":2,"code":"5-005","name":"Beban Penyusutan","type":"Beban","normal_balance":"Debit"},{"id":22,"company_id":2,"code":"5-006","name":"Beban Listrik & Air","type":"Beban","normal_balance":"Debit"},{"id":23,"company_id":2,"code":"5-007","name":"Beban Lain-lain","type":"Beban","normal_balance":"Debit"},{"id":38,"company_id":37,"code":"1-101","name":"Kas","type":"Aset","normal_balance":"Debit"},{"id":39,"company_id":37,"code":"1-102","name":"Bank BCA","type":"Aset","normal_balance":"Debit"},{"id":40,"company_id":37,"code":"1-103","name":"Piutang Usaha","type":"Aset","normal_balance":"Debit"},{"id":41,"company_id":37,"code":"1-104","name":"Persediaan Barang Dagang","type":"Aset","normal_balance":"Debit"},{"id":42,"company_id":37,"code":"1-105","name":"Perlengkapan Toko","type":"Aset","normal_balance":"Debit"},{"id":43,"company_id":37,"code":"1-201","name":"Peralatan","type":"Aset","normal_balance":"Debit"},{"id":44,"company_id":37,"code":"1-202","name":"Akumulasi Penyusutan Peralatan","type":"Aset","normal_balance":"Kredit"},{"id":45,"company_id":37,"code":"2-101","name":"Hutang Dagang","type":"Kewajiban","normal_balance":"Kredit"},{"id":46,"company_id":37,"code":"2-102","name":"Hutang Gaji","type":"Kewajiban","normal_balance":"Kredit"},{"id":47,"company_id":37,"code":"3-101","name":"Modal Pemilik","type":"Ekuitas","normal_balance":"Kredit"},{"id":48,"company_id":37,"code":"3-102","name":"Prive Pemilik","type":"Ekuitas","normal_balance":"Debit"},{"id":49,"company_id":37,"code":"4-101","name":"Pendapatan Penjualan","type":"Pendapatan","normal_balance":"Kredit"},{"id":50,"company_id":37,"code":"5-101","name":"Harga Pokok Penjualan","type":"Beban","normal_balance":"Debit"},{"id":51,"company_id":37,"code":"5-102","name":"Beban Gaji Karyawan","type":"Beban","normal_balance":"Debit"},{"id":52,"company_id":37,"code":"5-103","name":"Beban Sewa Toko","type":"Beban","normal_balance":"Debit"},{"id":53,"company_id":37,"code":"5-104","name":"Beban Perlengkapan","type":"Beban","normal_balance":"Debit"},{"id":54,"company_id":37,"code":"5-105","name":"Beban Penyusutan Peralatan","type":"Beban","normal_balance":"Debit"},{"id":55,"company_id":37,"code":"5-106","name":"Beban Listrik & Air","type":"Beban","normal_balance":"Debit"},{"id":56,"company_id":37,"code":"5-107","name":"Beban Lain-lain","type":"Beban","normal_balance":"Debit"},{"id":126,"company_id":125,"code":"1-101","name":"Kas dan Setara Kas","type":"Aset","normal_balance":"Debit"},{"id":127,"company_id":125,"code":"1-102","name":"Bank Mandiri","type":"Aset","normal_balance":"Debit"},{"id":128,"company_id":125,"code":"1-103","name":"Piutang Usaha","type":"Aset","normal_balance":"Debit"},{"id":129,"company_id":125,"code":"1-104","name":"Piutang Lain-lain","type":"Aset","normal_balance":"Debit"},{"id":130,"company_id":125,"code":"1-105","name":"Perlengkapan Kantor","type":"Aset","normal_balance":"Debit"},{"id":131,"company_id":125,"code":"1-106","name":"Biaya Dibayar Dimuka","type":"Aset","normal_balance":"Debit"},{"id":132,"company_id":125,"code":"1-201","name":"Gedung Kantor","type":"Aset","normal_balance":"Debit"},{"id":133,"company_id":125,"code":"1-202","name":"Peralatan Komputer","type":"Aset","normal_balance":"Debit"},{"id":134,"company_id":125,"code":"1-203","name":"Kendaraan Operasional","type":"Aset","normal_balance":"Debit"},{"id":135,"company_id":125,"code":"1-204","name":"Akumulasi Penyusutan Gedung","type":"Aset","normal_balance":"Kredit"},{"id":136,"company_id":125,"code":"1-205","name":"Akumulasi Penyusutan Peralatan","type":"Aset","normal_balance":"Kredit"},{"id":137,"company_id":125,"code":"1-206","name":"Akumulasi Penyusutan Kendaraan","type":"Aset","normal_balance":"Kredit"},{"id":138,"company_id":125,"code":"2-101","name":"Hutang Usaha","type":"Kewajiban","normal_balance":"Kredit"},{"id":139,"company_id":125,"code":"2-102","name":"Hutang Gaji","type":"Kewajiban","normal_balance":"Kredit"},{"id":140,"company_id":125,"code":"2-103","name":"Hutang Pajak Penghasilan","type":"Kewajiban","normal_balance":"Kredit"},{"id":141,"company_id":125,"code":"2-104","name":"Pendapatan Diterima Dimuka","type":"Kewajiban","normal_balance":"Kredit"},{"id":142,"company_id":125,"code":"2-201","name":"Pinjaman Bank Jangka Panjang","type":"Kewajiban","normal_balance":"Kredit"},{"id":143,"company_id":125,"code":"3-101","name":"Modal Saham","type":"Ekuitas","normal_balance":"Kredit"},{"id":144,"company_id":125,"code":"3-102","name":"Agio Saham","type":"Ekuitas","normal_balance":"Kredit"},{"id":145,"company_id":125,"code":"3-103","name":"Laba Ditahan","type":"Ekuitas","normal_balance":"Kredit"},{"id":146,"company_id":125,"code":"3-201","name":"Dividen","type":"Ekuitas","normal_balance":"Debit"},{"id":147,"company_id":125,"code":"4-101","name":"Pendapatan Jasa Konsultasi","type":"Pendapatan","normal_balance":"Kredit"},{"id":148,"company_id":125,"code":"4-102","name":"Pendapatan Proyek","type":"Pendapatan","normal_balance":"Kredit"},{"id":149,"company_id":125,"code":"4-103","name":"Pendapatan Bunga","type":"Pendapatan","normal_balance":"Kredit"},{"id":150,"company_id":125,"code":"5-101","name":"Beban Gaji & Tunjangan","type":"Beban","normal_balance":"Debit"},{"id":151,"company_id":125,"code":"5-102","name":"Beban Penyusutan Gedung","type":"Beban","normal_balance":"Debit"},{"id":152,"company_id":125,"code":"5-103","name":"Beban Penyusutan Peralatan","type":"Beban","normal_balance":"Debit"},{"id":153,"company_id":125,"code":"5-104","name":"Beban Penyusutan Kendaraan","type":"Beban","normal_balance":"Debit"},{"id":154,"company_id":125,"code":"5-105","name":"Beban Sewa Kantor","type":"Beban","normal_balance":"Debit"},{"id":155,"company_id":125,"code":"5-106","name":"Beban Pemasaran","type":"Beban","normal_balance":"Debit"},{"id":156,"company_id":125,"code":"5-107","name":"Beban Komunikasi & Internet","type":"Beban","normal_balance":"Debit"},{"id":157,"company_id":125,"code":"5-108","name":"Beban Listrik & Air","type":"Beban","normal_balance":"Debit"},{"id":158,"company_id":125,"code":"5-109","name":"Beban Perlengkapan Kantor","type":"Beban","normal_balance":"Debit"},{"id":159,"company_id":125,"code":"5-110","name":"Beban Bunga Pinjaman","type":"Beban","normal_balance":"Debit"},{"id":160,"company_id":125,"code":"5-111","name":"Beban Pajak Penghasilan","type":"Beban","normal_balance":"Debit"},{"id":161,"company_id":125,"code":"5-112","name":"Beban Administrasi Lain","type":"Beban","normal_balance":"Debit"}],"transactions":[{"id":24,"company_id":2,"date":"2026-04-05","description":"penerimaan modal"},{"id":28,"company_id":2,"date":"2026-04-05","description":"Penarikan Hutang Bank"},{"id":33,"company_id":2,"date":"2026-04-05","description":"pembayaran hutang bank"},{"id":57,"company_id":37,"date":"2024-01-02","description":"Setoran modal awal pemilik"},{"id":62,"company_id":37,"date":"2024-01-05","description":"Pembelian peralatan toko tunai"},{"id":66,"company_id":37,"date":"2024-01-08","description":"Pembelian persediaan barang dagang secara kredit"},{"id":70,"company_id":37,"date":"2024-01-10","description":"Pembelian perlengkapan toko tunai"},{"id":74,"company_id":37,"date":"2024-01-15","description":"Pembayaran sewa toko 1 bulan"},{"id":78,"company_id":37,"date":"2024-02-03","description":"Penjualan barang dagang secara tunai kepada pelanggan"},{"id":82,"company_id":37,"date":"2024-02-03","description":"Mencatat HPP atas penjualan barang"},{"id":86,"company_id":37,"date":"2024-02-15","description":"Penjualan barang dagang secara kredit kepada Toko Maju"},{"id":90,"company_id":37,"date":"2024-02-15","description":"HPP atas penjualan kredit"},{"id":94,"company_id":37,"date":"2024-02-20","description":"Pembayaran hutang dagang kepada pemasok"},{"id":98,"company_id":37,"date":"2024-03-05","description":"Penerimaan piutang dari Toko Maju"},{"id":102,"company_id":37,"date":"2024-03-31","description":"Pembayaran gaji karyawan bulan Maret"},{"id":106,"company_id":37,"date":"2024-03-20","description":"Penjualan barang dagang tunai"},{"id":110,"company_id":37,"date":"2024-03-20","description":"HPP atas penjualan Maret"},{"id":114,"company_id":37,"date":"2024-03-28","description":"Beban listrik dan air bulan Maret"},{"id":118,"company_id":37,"date":"2024-03-31","description":"Pengambilan prive oleh pemilik"},{"id":162,"company_id":125,"date":"2024-01-02","description":"Penerbitan modal saham perdana"},{"id":167,"company_id":125,"date":"2024-01-02","description":"Pembukuan laba ditahan awal periode"},{"id":171,"company_id":125,"date":"2024-01-05","description":"Pembelian gedung kantor"},{"id":176,"company_id":125,"date":"2024-01-08","description":"Pembelian peralatan komputer dan server"},{"id":180,"company_id":125,"date":"2024-01-10","description":"Pembelian kendaraan operasional"},{"id":185,"company_id":125,"date":"2024-01-15","description":"Penerimaan uang muka proyek konsultasi IT dari PT Maju"},{"id":189,"company_id":125,"date":"2024-01-20","description":"Pembayaran asuransi kantor 1 tahun dimuka"},{"id":193,"company_id":125,"date":"2024-01-31","description":"Pembayaran gaji karyawan bulan Januari"},{"id":197,"company_id":125,"date":"2024-02-05","description":"Pendapatan jasa konsultasi — PT Anugerah"},{"id":201,"company_id":125,"date":"2024-02-10","description":"Penagihan proyek sistem ERP kepada PT Berkah"},{"id":205,"company_id":125,"date":"2024-02-15","description":"Pengakuan pendapatan atas uang muka proyek PT Maju (50%)"},{"id":209,"company_id":125,"date":"2024-02-20","description":"Beban pemasaran dan promosi"},{"id":213,"company_id":125,"date":"2024-02-28","description":"Pembayaran gaji karyawan bulan Februari"},{"id":217,"company_id":125,"date":"2024-03-10","description":"Penerimaan pembayaran dari PT Berkah atas proyek ERP"},{"id":221,"company_id":125,"date":"2024-03-15","description":"Pendapatan jasa konsultasi — CV Cemerlang"},{"id":225,"company_id":125,"date":"2024-03-28","description":"Pendapatan bunga deposito bank"},{"id":229,"company_id":125,"date":"2024-03-28","description":"Beban listrik, air, dan internet Q1"},{"id":234,"company_id":125,"date":"2024-03-31","description":"Angsuran pinjaman bank + bunga"},{"id":239,"company_id":125,"date":"2024-03-31","description":"Pembayaran gaji karyawan bulan Maret"},{"id":243,"company_id":125,"date":"2024-03-31","description":"Pembagian dividen kepada pemegang saham"},{"id":254,"company_id":2,"date":"2026-04-05","description":"Penjualan barang/jasa secara tunai"},{"id":258,"company_id":2,"date":"2026-04-05","description":"Penjualan barang/jasa secara kredit"},{"id":265,"company_id":2,"date":"2026-04-05","description":"Pembelian persediaan barang dagang secara kredit"},{"id":271,"company_id":2,"date":"2026-04-05","description":"Pembayaran hutang kepada Pembelian persediaan barang dagang secar"},{"id":275,"company_id":2,"date":"2026-04-05","description":"Pembelian aset tetap (Toko Cahaya)"},{"id":281,"company_id":2,"date":"2026-04-05","description":"Pembelian perlengkapan kantor/toko"},{"id":287,"company_id":2,"date":"2026-04-05","description":"Penjualan kredit kepada zean"}],"journal_entries":[{"id":25,"company_id":2,"transaction_id":24,"date":"2026-04-05","description":"penerimaan modal"},{"id":29,"company_id":2,"transaction_id":28,"date":"2026-04-05","description":"Penarikan Hutang Bank"},{"id":34,"company_id":2,"transaction_id":33,"date":"2026-04-05","description":"pembayaran hutang bank"},{"id":58,"company_id":37,"transaction_id":57,"date":"2024-01-02","description":"Setoran modal awal pemilik"},{"id":63,"company_id":37,"transaction_id":62,"date":"2024-01-05","description":"Pembelian peralatan toko tunai"},{"id":67,"company_id":37,"transaction_id":66,"date":"2024-01-08","description":"Pembelian persediaan barang dagang secara kredit"},{"id":71,"company_id":37,"transaction_id":70,"date":"2024-01-10","description":"Pembelian perlengkapan toko tunai"},{"id":75,"company_id":37,"transaction_id":74,"date":"2024-01-15","description":"Pembayaran sewa toko 1 bulan"},{"id":79,"company_id":37,"transaction_id":78,"date":"2024-02-03","description":"Penjualan barang dagang secara tunai kepada pelanggan"},{"id":83,"company_id":37,"transaction_id":82,"date":"2024-02-03","description":"Mencatat HPP atas penjualan barang"},{"id":87,"company_id":37,"transaction_id":86,"date":"2024-02-15","description":"Penjualan barang dagang secara kredit kepada Toko Maju"},{"id":91,"company_id":37,"transaction_id":90,"date":"2024-02-15","description":"HPP atas penjualan kredit"},{"id":95,"company_id":37,"transaction_id":94,"date":"2024-02-20","description":"Pembayaran hutang dagang kepada pemasok"},{"id":99,"company_id":37,"transaction_id":98,"date":"2024-03-05","description":"Penerimaan piutang dari Toko Maju"},{"id":103,"company_id":37,"transaction_id":102,"date":"2024-03-31","description":"Pembayaran gaji karyawan bulan Maret"},{"id":107,"company_id":37,"transaction_id":106,"date":"2024-03-20","description":"Penjualan barang dagang tunai"},{"id":111,"company_id":37,"transaction_id":110,"date":"2024-03-20","description":"HPP atas penjualan Maret"},{"id":115,"company_id":37,"transaction_id":114,"date":"2024-03-28","description":"Beban listrik dan air bulan Maret"},{"id":119,"company_id":37,"transaction_id":118,"date":"2024-03-31","description":"Pengambilan prive oleh pemilik"},{"id":163,"company_id":125,"transaction_id":162,"date":"2024-01-02","description":"Penerbitan modal saham perdana"},{"id":168,"company_id":125,"transaction_id":167,"date":"2024-01-02","description":"Pembukuan laba ditahan awal periode"},{"id":172,"company_id":125,"transaction_id":171,"date":"2024-01-05","description":"Pembelian gedung kantor"},{"id":177,"company_id":125,"transaction_id":176,"date":"2024-01-08","description":"Pembelian peralatan komputer dan server"},{"id":181,"company_id":125,"transaction_id":180,"date":"2024-01-10","description":"Pembelian kendaraan operasional"},{"id":186,"company_id":125,"transaction_id":185,"date":"2024-01-15","description":"Penerimaan uang muka proyek konsultasi IT dari PT Maju"},{"id":190,"company_id":125,"transaction_id":189,"date":"2024-01-20","description":"Pembayaran asuransi kantor 1 tahun dimuka"},{"id":194,"company_id":125,"transaction_id":193,"date":"2024-01-31","description":"Pembayaran gaji karyawan bulan Januari"},{"id":198,"company_id":125,"transaction_id":197,"date":"2024-02-05","description":"Pendapatan jasa konsultasi — PT Anugerah"},{"id":202,"company_id":125,"transaction_id":201,"date":"2024-02-10","description":"Penagihan proyek sistem ERP kepada PT Berkah"},{"id":206,"company_id":125,"transaction_id":205,"date":"2024-02-15","description":"Pengakuan pendapatan atas uang muka proyek PT Maju (50%)"},{"id":210,"company_id":125,"transaction_id":209,"date":"2024-02-20","description":"Beban pemasaran dan promosi"},{"id":214,"company_id":125,"transaction_id":213,"date":"2024-02-28","description":"Pembayaran gaji karyawan bulan Februari"},{"id":218,"company_id":125,"transaction_id":217,"date":"2024-03-10","description":"Penerimaan pembayaran dari PT Berkah atas proyek ERP"},{"id":222,"company_id":125,"transaction_id":221,"date":"2024-03-15","description":"Pendapatan jasa konsultasi — CV Cemerlang"},{"id":226,"company_id":125,"transaction_id":225,"date":"2024-03-28","description":"Pendapatan bunga deposito bank"},{"id":230,"company_id":125,"transaction_id":229,"date":"2024-03-28","description":"Beban listrik, air, dan internet Q1"},{"id":235,"company_id":125,"transaction_id":234,"date":"2024-03-31","description":"Angsuran pinjaman bank + bunga"},{"id":240,"company_id":125,"transaction_id":239,"date":"2024-03-31","description":"Pembayaran gaji karyawan bulan Maret"},{"id":244,"company_id":125,"transaction_id":243,"date":"2024-03-31","description":"Pembagian dividen kepada pemegang saham"},{"id":255,"company_id":2,"transaction_id":254,"date":"2026-04-05","description":"Penjualan barang/jasa secara tunai"},{"id":259,"company_id":2,"transaction_id":258,"date":"2026-04-05","description":"Penjualan barang/jasa secara kredit"},{"id":266,"company_id":2,"transaction_id":265,"date":"2026-04-05","description":"Pembelian persediaan barang dagang secara kredit"},{"id":272,"company_id":2,"transaction_id":271,"date":"2026-04-05","description":"Pembayaran hutang kepada Pembelian persediaan barang dagang secar"},{"id":276,"company_id":2,"transaction_id":275,"date":"2026-04-05","description":"Pembelian aset tetap (Toko Cahaya)"},{"id":282,"company_id":2,"transaction_id":281,"date":"2026-04-05","description":"Pembelian perlengkapan kantor/toko"},{"id":288,"company_id":2,"transaction_id":287,"date":"2026-04-05","description":"Penjualan kredit kepada zean"}],"journal_details":[{"id":26,"journal_id":25,"account_id":3,"debit":10000000,"kredit":0},{"id":27,"journal_id":25,"account_id":12,"debit":0,"kredit":10000000},{"id":30,"journal_id":29,"account_id":4,"debit":20000000,"kredit":0},{"id":31,"journal_id":29,"account_id":10,"debit":0,"kredit":20000000},{"id":35,"journal_id":34,"account_id":10,"debit":5000000,"kredit":0},{"id":36,"journal_id":34,"account_id":4,"debit":0,"kredit":5000000},{"id":59,"journal_id":58,"account_id":38,"debit":50000000,"kredit":0},{"id":60,"journal_id":58,"account_id":39,"debit":100000000,"kredit":0},{"id":61,"journal_id":58,"account_id":47,"debit":0,"kredit":150000000},{"id":64,"journal_id":63,"account_id":43,"debit":20000000,"kredit":0},{"id":65,"journal_id":63,"account_id":38,"debit":0,"kredit":20000000},{"id":68,"journal_id":67,"account_id":41,"debit":40000000,"kredit":0},{"id":69,"journal_id":67,"account_id":45,"debit":0,"kredit":40000000},{"id":72,"journal_id":71,"account_id":42,"debit":3000000,"kredit":0},{"id":73,"journal_id":71,"account_id":38,"debit":0,"kredit":3000000},{"id":76,"journal_id":75,"account_id":52,"debit":5000000,"kredit":0},{"id":77,"journal_id":75,"account_id":38,"debit":0,"kredit":5000000},{"id":80,"journal_id":79,"account_id":38,"debit":35000000,"kredit":0},{"id":81,"journal_id":79,"account_id":49,"debit":0,"kredit":35000000},{"id":84,"journal_id":83,"account_id":50,"debit":22000000,"kredit":0},{"id":85,"journal_id":83,"account_id":41,"debit":0,"kredit":22000000},{"id":88,"journal_id":87,"account_id":40,"debit":18000000,"kredit":0},{"id":89,"journal_id":87,"account_id":49,"debit":0,"kredit":18000000},{"id":92,"journal_id":91,"account_id":50,"debit":11000000,"kredit":0},{"id":93,"journal_id":91,"account_id":41,"debit":0,"kredit":11000000},{"id":96,"journal_id":95,"account_id":45,"debit":25000000,"kredit":0},{"id":97,"journal_id":95,"account_id":39,"debit":0,"kredit":25000000},{"id":100,"journal_id":99,"account_id":39,"debit":18000000,"kredit":0},{"id":101,"journal_id":99,"account_id":40,"debit":0,"kredit":18000000},{"id":104,"journal_id":103,"account_id":51,"debit":8000000,"kredit":0},{"id":105,"journal_id":103,"account_id":38,"debit":0,"kredit":8000000},{"id":108,"journal_id":107,"account_id":38,"debit":28000000,"kredit":0},{"id":109,"journal_id":107,"account_id":49,"debit":0,"kredit":28000000},{"id":112,"journal_id":111,"account_id":50,"debit":17000000,"kredit":0},{"id":113,"journal_id":111,"account_id":41,"debit":0,"kredit":17000000},{"id":116,"journal_id":115,"account_id":55,"debit":1200000,"kredit":0},{"id":117,"journal_id":115,"account_id":38,"debit":0,"kredit":1200000},{"id":120,"journal_id":119,"account_id":48,"debit":5000000,"kredit":0},{"id":121,"journal_id":119,"account_id":39,"debit":0,"kredit":5000000},{"id":164,"journal_id":163,"account_id":127,"debit":500000000,"kredit":0},{"id":165,"journal_id":163,"account_id":143,"debit":0,"kredit":400000000},{"id":166,"journal_id":163,"account_id":144,"debit":0,"kredit":100000000},{"id":169,"journal_id":168,"account_id":127,"debit":80000000,"kredit":0},{"id":170,"journal_id":168,"account_id":145,"debit":0,"kredit":80000000},{"id":173,"journal_id":172,"account_id":132,"debit":300000000,"kredit":0},{"id":174,"journal_id":172,"account_id":127,"debit":0,"kredit":200000000},{"id":175,"journal_id":172,"account_id":142,"debit":0,"kredit":100000000},{"id":178,"journal_id":177,"account_id":133,"debit":80000000,"kredit":0},{"id":179,"journal_id":177,"account_id":127,"debit":0,"kredit":80000000},{"id":182,"journal_id":181,"account_id":134,"debit":150000000,"kredit":0},{"id":183,"journal_id":181,"account_id":127,"debit":0,"kredit":100000000},{"id":184,"journal_id":181,"account_id":142,"debit":0,"kredit":50000000},{"id":187,"journal_id":186,"account_id":127,"debit":60000000,"kredit":0},{"id":188,"journal_id":186,"account_id":141,"debit":0,"kredit":60000000},{"id":191,"journal_id":190,"account_id":131,"debit":24000000,"kredit":0},{"id":192,"journal_id":190,"account_id":127,"debit":0,"kredit":24000000},{"id":195,"journal_id":194,"account_id":150,"debit":45000000,"kredit":0},{"id":196,"journal_id":194,"account_id":127,"debit":0,"kredit":45000000},{"id":199,"journal_id":198,"account_id":126,"debit":35000000,"kredit":0},{"id":200,"journal_id":198,"account_id":147,"debit":0,"kredit":35000000},{"id":203,"journal_id":202,"account_id":128,"debit":120000000,"kredit":0},{"id":204,"journal_id":202,"account_id":148,"debit":0,"kredit":120000000},{"id":207,"journal_id":206,"account_id":141,"debit":30000000,"kredit":0},{"id":208,"journal_id":206,"account_id":148,"debit":0,"kredit":30000000},{"id":211,"journal_id":210,"account_id":155,"debit":8000000,"kredit":0},{"id":212,"journal_id":210,"account_id":127,"debit":0,"kredit":8000000},{"id":215,"journal_id":214,"account_id":150,"debit":45000000,"kredit":0},{"id":216,"journal_id":214,"account_id":127,"debit":0,"kredit":45000000},{"id":219,"journal_id":218,"account_id":127,"debit":120000000,"kredit":0},{"id":220,"journal_id":218,"account_id":128,"debit":0,"kredit":120000000},{"id":223,"journal_id":222,"account_id":126,"debit":25000000,"kredit":0},{"id":224,"journal_id":222,"account_id":147,"debit":0,"kredit":25000000},{"id":227,"journal_id":226,"account_id":127,"debit":2500000,"kredit":0},{"id":228,"journal_id":226,"account_id":149,"debit":0,"kredit":2500000},{"id":231,"journal_id":230,"account_id":157,"debit":4500000,"kredit":0},{"id":232,"journal_id":230,"account_id":156,"debit":3000000,"kredit":0},{"id":233,"journal_id":230,"account_id":127,"debit":0,"kredit":7500000},{"id":236,"journal_id":235,"account_id":142,"debit":5000000,"kredit":0},{"id":237,"journal_id":235,"account_id":159,"debit":1875000,"kredit":0},{"id":238,"journal_id":235,"account_id":127,"debit":0,"kredit":6875000},{"id":241,"journal_id":240,"account_id":150,"debit":47000000,"kredit":0},{"id":242,"journal_id":240,"account_id":127,"debit":0,"kredit":47000000},{"id":245,"journal_id":244,"account_id":146,"debit":10000000,"kredit":0},{"id":246,"journal_id":244,"account_id":127,"debit":0,"kredit":10000000},{"id":256,"journal_id":255,"account_id":3,"debit":5000000,"kredit":0},{"id":257,"journal_id":255,"account_id":15,"debit":0,"kredit":5000000},{"id":260,"journal_id":259,"account_id":5,"debit":1000000,"kredit":0},{"id":261,"journal_id":259,"account_id":15,"debit":0,"kredit":1000000},{"id":262,"journal_id":259,"account_id":17,"debit":700000,"kredit":0},{"id":263,"journal_id":259,"account_id":6,"debit":0,"kredit":700000},{"id":267,"journal_id":266,"account_id":6,"debit":500000,"kredit":0},{"id":268,"journal_id":266,"account_id":10,"debit":0,"kredit":500000},{"id":273,"journal_id":272,"account_id":10,"debit":500000,"kredit":0},{"id":274,"journal_id":272,"account_id":3,"debit":0,"kredit":500000},{"id":277,"journal_id":276,"account_id":8,"debit":5000000,"kredit":0},{"id":278,"journal_id":276,"account_id":10,"debit":0,"kredit":5000000},{"id":283,"journal_id":282,"account_id":7,"debit":1000000,"kredit":0},{"id":284,"journal_id":282,"account_id":3,"debit":0,"kredit":1000000},{"id":289,"journal_id":288,"account_id":5,"debit":2000000,"kredit":0},{"id":290,"journal_id":288,"account_id":15,"debit":0,"kredit":2000000}],"penyesuaian":[{"id":122,"company_id":37,"date":"2024-03-31","description":"Penyusutan peralatan Q1 2024","debit_acc":54,"kredit_acc":44,"amount":1000000},{"id":123,"company_id":37,"date":"2024-03-31","description":"Perlengkapan yang terpakai Q1 2024","debit_acc":53,"kredit_acc":42,"amount":1500000},{"id":124,"company_id":37,"date":"2024-03-31","description":"Akrual gaji yang belum dibayar","debit_acc":51,"kredit_acc":46,"amount":2000000},{"id":247,"company_id":125,"date":"2024-03-31","description":"Penyusutan gedung kantor Q1 2024","debit_acc":151,"kredit_acc":135,"amount":3750000},{"id":248,"company_id":125,"date":"2024-03-31","description":"Penyusutan peralatan komputer Q1 2024","debit_acc":152,"kredit_acc":136,"amount":5000000},{"id":249,"company_id":125,"date":"2024-03-31","description":"Penyusutan kendaraan operasional Q1 2024","debit_acc":153,"kredit_acc":137,"amount":7500000},{"id":250,"company_id":125,"date":"2024-03-31","description":"Amortisasi asuransi dibayar dimuka Q1","debit_acc":154,"kredit_acc":131,"amount":6000000},{"id":251,"company_id":125,"date":"2024-03-31","description":"Akrual gaji karyawan yang belum dibayar","debit_acc":150,"kredit_acc":139,"amount":5000000},{"id":252,"company_id":125,"date":"2024-03-31","description":"Estimasi beban pajak penghasilan Q1 2024","debit_acc":160,"kredit_acc":140,"amount":7500000},{"id":253,"company_id":125,"date":"2024-03-31","description":"Perlengkapan kantor yang terpakai","debit_acc":158,"kredit_acc":130,"amount":3000000}],"hutang":[{"id":32,"company_id":2,"nama_kreditur":"Bank BRI","jumlah":20000000,"tanggal":"2026-04-05","jatuh_tempo":"2026-12-31","sisa":15000000,"status":"Sebagian"},{"id":270,"company_id":2,"nama_kreditur":"Pembelian persediaan barang dagang secar","jumlah":500000,"sisa":0,"status":"Lunas","tanggal":"2026-04-05","jatuh_tempo":"","ref_transaction_id":265,"ref_journal_id":266},{"id":280,"company_id":2,"nama_kreditur":"Pembelian aset tetap (Toko Cahaya)","jumlah":5000000,"sisa":5000000,"status":"Belum Lunas","tanggal":"2026-04-05","jatuh_tempo":"","ref_transaction_id":275,"ref_journal_id":276}],"piutang":[{"id":264,"company_id":2,"nama_debitur":"Penjualan barang/jasa secara kredit","jumlah":1000000,"sisa":1000000,"status":"Belum Lunas","tanggal":"2026-04-05","jatuh_tempo":"","ref_transaction_id":258,"ref_journal_id":259},{"id":286,"company_id":2,"nama_debitur":"zean","jumlah":2000000,"tanggal":"2026-04-05","jatuh_tempo":"2026-04-30","sisa":2000000,"status":"Belum Lunas"}],"persediaan":[{"id":269,"company_id":2,"nama_barang":"laptop","jumlah":1,"harga_satuan":500000,"total_nilai":500000}],"perlengkapan":[{"id":285,"company_id":2,"nama_item":"ATK","jumlah":1,"nilai":1000000}],"aset_tetap":[{"id":279,"company_id":2,"nama_aset":"Laptop","harga_perolehan":5000000,"tahun_perolehan":2026,"masa_manfaat":4,"akumulasi_penyusutan":0,"beban_penyusutan":1250000,"tambahan_aset":0,"pengurangan_aset":0,"nilai_buku":5000000}],"current_company_id":2,"_id_counter":290}; // PLACEHOLDER — replaced by saveToFile
+const EMBEDDED_DATA = {"companies":[{"id":2,"name":"PT MAndiri","standard":"SAK EP","type":"Jasa","period_start":"2025-01-01","period_end":"2025-12-31"},{"id":37,"name":"CV Berkah Mandiri","standard":"SAK EMKM","type":"Perdagangan","period_start":"2024-01-01","period_end":"2024-12-31"},{"id":125,"name":"PT Nusantara Sejahtera","standard":"SAK EP","type":"Jasa Konsultan","period_start":"2024-01-01","period_end":"2024-12-31"}],"accounts":[{"id":3,"company_id":2,"code":"1-001","name":"Kas","type":"Aset","normal_balance":"Debit"},{"id":4,"company_id":2,"code":"1-002","name":"Bank","type":"Aset","normal_balance":"Debit"},{"id":5,"company_id":2,"code":"1-003","name":"Piutang Usaha","type":"Aset","normal_balance":"Debit"},{"id":6,"company_id":2,"code":"1-004","name":"Persediaan","type":"Aset","normal_balance":"Debit"},{"id":7,"company_id":2,"code":"1-005","name":"Perlengkapan","type":"Aset","normal_balance":"Debit"},{"id":8,"company_id":2,"code":"1-006","name":"Aset Tetap","type":"Aset","normal_balance":"Debit"},{"id":9,"company_id":2,"code":"1-007","name":"Akumulasi Penyusutan","type":"Aset","normal_balance":"Kredit"},{"id":10,"company_id":2,"code":"2-001","name":"Hutang Usaha","type":"Kewajiban","normal_balance":"Kredit"},{"id":11,"company_id":2,"code":"2-002","name":"Hutang Jangka Panjang","type":"Kewajiban","normal_balance":"Kredit"},{"id":12,"company_id":2,"code":"3-001","name":"Modal","type":"Ekuitas","normal_balance":"Kredit"},{"id":13,"company_id":2,"code":"3-002","name":"Prive","type":"Ekuitas","normal_balance":"Debit"},{"id":14,"company_id":2,"code":"3-003","name":"Laba Ditahan","type":"Ekuitas","normal_balance":"Kredit"},{"id":15,"company_id":2,"code":"4-001","name":"Pendapatan Usaha","type":"Pendapatan","normal_balance":"Kredit"},{"id":16,"company_id":2,"code":"4-002","name":"Pendapatan Lain-lain","type":"Pendapatan","normal_balance":"Kredit"},{"id":17,"company_id":2,"code":"5-001","name":"Harga Pokok Penjualan","type":"Beban","normal_balance":"Debit"},{"id":18,"company_id":2,"code":"5-002","name":"Beban Gaji","type":"Beban","normal_balance":"Debit"},{"id":19,"company_id":2,"code":"5-003","name":"Beban Sewa","type":"Beban","normal_balance":"Debit"},{"id":20,"company_id":2,"code":"5-004","name":"Beban Perlengkapan","type":"Beban","normal_balance":"Debit"},{"id":21,"company_id":2,"code":"5-005","name":"Beban Penyusutan","type":"Beban","normal_balance":"Debit"},{"id":22,"company_id":2,"code":"5-006","name":"Beban Listrik & Air","type":"Beban","normal_balance":"Debit"},{"id":23,"company_id":2,"code":"5-007","name":"Beban Lain-lain","type":"Beban","normal_balance":"Debit"},{"id":38,"company_id":37,"code":"1-101","name":"Kas","type":"Aset","normal_balance":"Debit"},{"id":39,"company_id":37,"code":"1-102","name":"Bank BCA","type":"Aset","normal_balance":"Debit"},{"id":40,"company_id":37,"code":"1-103","name":"Piutang Usaha","type":"Aset","normal_balance":"Debit"},{"id":41,"company_id":37,"code":"1-104","name":"Persediaan Barang Dagang","type":"Aset","normal_balance":"Debit"},{"id":42,"company_id":37,"code":"1-105","name":"Perlengkapan Toko","type":"Aset","normal_balance":"Debit"},{"id":43,"company_id":37,"code":"1-201","name":"Peralatan","type":"Aset","normal_balance":"Debit"},{"id":44,"company_id":37,"code":"1-202","name":"Akumulasi Penyusutan Peralatan","type":"Aset","normal_balance":"Kredit"},{"id":45,"company_id":37,"code":"2-101","name":"Hutang Dagang","type":"Kewajiban","normal_balance":"Kredit"},{"id":46,"company_id":37,"code":"2-102","name":"Hutang Gaji","type":"Kewajiban","normal_balance":"Kredit"},{"id":47,"company_id":37,"code":"3-101","name":"Modal Pemilik","type":"Ekuitas","normal_balance":"Kredit"},{"id":48,"company_id":37,"code":"3-102","name":"Prive Pemilik","type":"Ekuitas","normal_balance":"Debit"},{"id":49,"company_id":37,"code":"4-101","name":"Pendapatan Penjualan","type":"Pendapatan","normal_balance":"Kredit"},{"id":50,"company_id":37,"code":"5-101","name":"Harga Pokok Penjualan","type":"Beban","normal_balance":"Debit"},{"id":51,"company_id":37,"code":"5-102","name":"Beban Gaji Karyawan","type":"Beban","normal_balance":"Debit"},{"id":52,"company_id":37,"code":"5-103","name":"Beban Sewa Toko","type":"Beban","normal_balance":"Debit"},{"id":53,"company_id":37,"code":"5-104","name":"Beban Perlengkapan","type":"Beban","normal_balance":"Debit"},{"id":54,"company_id":37,"code":"5-105","name":"Beban Penyusutan Peralatan","type":"Beban","normal_balance":"Debit"},{"id":55,"company_id":37,"code":"5-106","name":"Beban Listrik & Air","type":"Beban","normal_balance":"Debit"},{"id":56,"company_id":37,"code":"5-107","name":"Beban Lain-lain","type":"Beban","normal_balance":"Debit"},{"id":126,"company_id":125,"code":"1-101","name":"Kas dan Setara Kas","type":"Aset","normal_balance":"Debit"},{"id":127,"company_id":125,"code":"1-102","name":"Bank Mandiri","type":"Aset","normal_balance":"Debit"},{"id":128,"company_id":125,"code":"1-103","name":"Piutang Usaha","type":"Aset","normal_balance":"Debit"},{"id":129,"company_id":125,"code":"1-104","name":"Piutang Lain-lain","type":"Aset","normal_balance":"Debit"},{"id":130,"company_id":125,"code":"1-105","name":"Perlengkapan Kantor","type":"Aset","normal_balance":"Debit"},{"id":131,"company_id":125,"code":"1-106","name":"Biaya Dibayar Dimuka","type":"Aset","normal_balance":"Debit"},{"id":132,"company_id":125,"code":"1-201","name":"Gedung Kantor","type":"Aset","normal_balance":"Debit"},{"id":133,"company_id":125,"code":"1-202","name":"Peralatan Komputer","type":"Aset","normal_balance":"Debit"},{"id":134,"company_id":125,"code":"1-203","name":"Kendaraan Operasional","type":"Aset","normal_balance":"Debit"},{"id":135,"company_id":125,"code":"1-204","name":"Akumulasi Penyusutan Gedung","type":"Aset","normal_balance":"Kredit"},{"id":136,"company_id":125,"code":"1-205","name":"Akumulasi Penyusutan Peralatan","type":"Aset","normal_balance":"Kredit"},{"id":137,"company_id":125,"code":"1-206","name":"Akumulasi Penyusutan Kendaraan","type":"Aset","normal_balance":"Kredit"},{"id":138,"company_id":125,"code":"2-101","name":"Hutang Usaha","type":"Kewajiban","normal_balance":"Kredit"},{"id":139,"company_id":125,"code":"2-102","name":"Hutang Gaji","type":"Kewajiban","normal_balance":"Kredit"},{"id":140,"company_id":125,"code":"2-103","name":"Hutang Pajak Penghasilan","type":"Kewajiban","normal_balance":"Kredit"},{"id":141,"company_id":125,"code":"2-104","name":"Pendapatan Diterima Dimuka","type":"Kewajiban","normal_balance":"Kredit"},{"id":142,"company_id":125,"code":"2-201","name":"Pinjaman Bank Jangka Panjang","type":"Kewajiban","normal_balance":"Kredit"},{"id":143,"company_id":125,"code":"3-101","name":"Modal Saham","type":"Ekuitas","normal_balance":"Kredit"},{"id":144,"company_id":125,"code":"3-102","name":"Agio Saham","type":"Ekuitas","normal_balance":"Kredit"},{"id":145,"company_id":125,"code":"3-103","name":"Laba Ditahan","type":"Ekuitas","normal_balance":"Kredit"},{"id":146,"company_id":125,"code":"3-201","name":"Dividen","type":"Ekuitas","normal_balance":"Debit"},{"id":147,"company_id":125,"code":"4-101","name":"Pendapatan Jasa Konsultasi","type":"Pendapatan","normal_balance":"Kredit"},{"id":148,"company_id":125,"code":"4-102","name":"Pendapatan Proyek","type":"Pendapatan","normal_balance":"Kredit"},{"id":149,"company_id":125,"code":"4-103","name":"Pendapatan Bunga","type":"Pendapatan","normal_balance":"Kredit"},{"id":150,"company_id":125,"code":"5-101","name":"Beban Gaji & Tunjangan","type":"Beban","normal_balance":"Debit"},{"id":151,"company_id":125,"code":"5-102","name":"Beban Penyusutan Gedung","type":"Beban","normal_balance":"Debit"},{"id":152,"company_id":125,"code":"5-103","name":"Beban Penyusutan Peralatan","type":"Beban","normal_balance":"Debit"},{"id":153,"company_id":125,"code":"5-104","name":"Beban Penyusutan Kendaraan","type":"Beban","normal_balance":"Debit"},{"id":154,"company_id":125,"code":"5-105","name":"Beban Sewa Kantor","type":"Beban","normal_balance":"Debit"},{"id":155,"company_id":125,"code":"5-106","name":"Beban Pemasaran","type":"Beban","normal_balance":"Debit"},{"id":156,"company_id":125,"code":"5-107","name":"Beban Komunikasi & Internet","type":"Beban","normal_balance":"Debit"},{"id":157,"company_id":125,"code":"5-108","name":"Beban Listrik & Air","type":"Beban","normal_balance":"Debit"},{"id":158,"company_id":125,"code":"5-109","name":"Beban Perlengkapan Kantor","type":"Beban","normal_balance":"Debit"},{"id":159,"company_id":125,"code":"5-110","name":"Beban Bunga Pinjaman","type":"Beban","normal_balance":"Debit"},{"id":160,"company_id":125,"code":"5-111","name":"Beban Pajak Penghasilan","type":"Beban","normal_balance":"Debit"},{"id":161,"company_id":125,"code":"5-112","name":"Beban Administrasi Lain","type":"Beban","normal_balance":"Debit"}],"transactions":[{"id":24,"company_id":2,"date":"2026-04-05","description":"penerimaan modal"},{"id":28,"company_id":2,"date":"2026-04-05","description":"Penarikan Hutang Bank"},{"id":33,"company_id":2,"date":"2026-04-05","description":"pembayaran hutang bank"},{"id":57,"company_id":37,"date":"2024-01-02","description":"Setoran modal awal pemilik"},{"id":62,"company_id":37,"date":"2024-01-05","description":"Pembelian peralatan toko tunai"},{"id":66,"company_id":37,"date":"2024-01-08","description":"Pembelian persediaan barang dagang secara kredit"},{"id":70,"company_id":37,"date":"2024-01-10","description":"Pembelian perlengkapan toko tunai"},{"id":74,"company_id":37,"date":"2024-01-15","description":"Pembayaran sewa toko 1 bulan"},{"id":78,"company_id":37,"date":"2024-02-03","description":"Penjualan barang dagang secara tunai kepada pelanggan"},{"id":82,"company_id":37,"date":"2024-02-03","description":"Mencatat HPP atas penjualan barang"},{"id":86,"company_id":37,"date":"2024-02-15","description":"Penjualan barang dagang secara kredit kepada Toko Maju"},{"id":90,"company_id":37,"date":"2024-02-15","description":"HPP atas penjualan kredit"},{"id":94,"company_id":37,"date":"2024-02-20","description":"Pembayaran hutang dagang kepada pemasok"},{"id":98,"company_id":37,"date":"2024-03-05","description":"Penerimaan piutang dari Toko Maju"},{"id":102,"company_id":37,"date":"2024-03-31","description":"Pembayaran gaji karyawan bulan Maret"},{"id":106,"company_id":37,"date":"2024-03-20","description":"Penjualan barang dagang tunai"},{"id":110,"company_id":37,"date":"2024-03-20","description":"HPP atas penjualan Maret"},{"id":114,"company_id":37,"date":"2024-03-28","description":"Beban listrik dan air bulan Maret"},{"id":118,"company_id":37,"date":"2024-03-31","description":"Pengambilan prive oleh pemilik"},{"id":162,"company_id":125,"date":"2024-01-02","description":"Penerbitan modal saham perdana"},{"id":167,"company_id":125,"date":"2024-01-02","description":"Pembukuan laba ditahan awal periode"},{"id":171,"company_id":125,"date":"2024-01-05","description":"Pembelian gedung kantor"},{"id":176,"company_id":125,"date":"2024-01-08","description":"Pembelian peralatan komputer dan server"},{"id":180,"company_id":125,"date":"2024-01-10","description":"Pembelian kendaraan operasional"},{"id":185,"company_id":125,"date":"2024-01-15","description":"Penerimaan uang muka proyek konsultasi IT dari PT Maju"},{"id":189,"company_id":125,"date":"2024-01-20","description":"Pembayaran asuransi kantor 1 tahun dimuka"},{"id":193,"company_id":125,"date":"2024-01-31","description":"Pembayaran gaji karyawan bulan Januari"},{"id":197,"company_id":125,"date":"2024-02-05","description":"Pendapatan jasa konsultasi — PT Anugerah"},{"id":201,"company_id":125,"date":"2024-02-10","description":"Penagihan proyek sistem ERP kepada PT Berkah"},{"id":205,"company_id":125,"date":"2024-02-15","description":"Pengakuan pendapatan atas uang muka proyek PT Maju (50%)"},{"id":209,"company_id":125,"date":"2024-02-20","description":"Beban pemasaran dan promosi"},{"id":213,"company_id":125,"date":"2024-02-28","description":"Pembayaran gaji karyawan bulan Februari"},{"id":217,"company_id":125,"date":"2024-03-10","description":"Penerimaan pembayaran dari PT Berkah atas proyek ERP"},{"id":221,"company_id":125,"date":"2024-03-15","description":"Pendapatan jasa konsultasi — CV Cemerlang"},{"id":225,"company_id":125,"date":"2024-03-28","description":"Pendapatan bunga deposito bank"},{"id":229,"company_id":125,"date":"2024-03-28","description":"Beban listrik, air, dan internet Q1"},{"id":234,"company_id":125,"date":"2024-03-31","description":"Angsuran pinjaman bank + bunga"},{"id":239,"company_id":125,"date":"2024-03-31","description":"Pembayaran gaji karyawan bulan Maret"},{"id":243,"company_id":125,"date":"2024-03-31","description":"Pembagian dividen kepada pemegang saham"},{"id":254,"company_id":2,"date":"2026-04-05","description":"Penjualan barang/jasa secara tunai"},{"id":258,"company_id":2,"date":"2026-04-05","description":"Penjualan barang/jasa secara kredit"},{"id":265,"company_id":2,"date":"2026-04-05","description":"Pembelian persediaan barang dagang secara kredit"},{"id":271,"company_id":2,"date":"2026-04-05","description":"Pembayaran hutang kepada Pembelian persediaan barang dagang secar"},{"id":275,"company_id":2,"date":"2026-04-05","description":"Pembelian aset tetap (Toko Cahaya)"},{"id":281,"company_id":2,"date":"2026-04-05","description":"Pembelian perlengkapan kantor/toko"},{"id":287,"company_id":2,"date":"2026-04-05","description":"Penjualan kredit kepada zean"}],"journal_entries":[{"id":25,"company_id":2,"transaction_id":24,"date":"2026-04-05","description":"penerimaan modal"},{"id":29,"company_id":2,"transaction_id":28,"date":"2026-04-05","description":"Penarikan Hutang Bank"},{"id":34,"company_id":2,"transaction_id":33,"date":"2026-04-05","description":"pembayaran hutang bank"},{"id":58,"company_id":37,"transaction_id":57,"date":"2024-01-02","description":"Setoran modal awal pemilik"},{"id":63,"company_id":37,"transaction_id":62,"date":"2024-01-05","description":"Pembelian peralatan toko tunai"},{"id":67,"company_id":37,"transaction_id":66,"date":"2024-01-08","description":"Pembelian persediaan barang dagang secara kredit"},{"id":71,"company_id":37,"transaction_id":70,"date":"2024-01-10","description":"Pembelian perlengkapan toko tunai"},{"id":75,"company_id":37,"transaction_id":74,"date":"2024-01-15","description":"Pembayaran sewa toko 1 bulan"},{"id":79,"company_id":37,"transaction_id":78,"date":"2024-02-03","description":"Penjualan barang dagang secara tunai kepada pelanggan"},{"id":83,"company_id":37,"transaction_id":82,"date":"2024-02-03","description":"Mencatat HPP atas penjualan barang"},{"id":87,"company_id":37,"transaction_id":86,"date":"2024-02-15","description":"Penjualan barang dagang secara kredit kepada Toko Maju"},{"id":91,"company_id":37,"transaction_id":90,"date":"2024-02-15","description":"HPP atas penjualan kredit"},{"id":95,"company_id":37,"transaction_id":94,"date":"2024-02-20","description":"Pembayaran hutang dagang kepada pemasok"},{"id":99,"company_id":37,"transaction_id":98,"date":"2024-03-05","description":"Penerimaan piutang dari Toko Maju"},{"id":103,"company_id":37,"transaction_id":102,"date":"2024-03-31","description":"Pembayaran gaji karyawan bulan Maret"},{"id":107,"company_id":37,"transaction_id":106,"date":"2024-03-20","description":"Penjualan barang dagang tunai"},{"id":111,"company_id":37,"transaction_id":110,"date":"2024-03-20","description":"HPP atas penjualan Maret"},{"id":115,"company_id":37,"transaction_id":114,"date":"2024-03-28","description":"Beban listrik dan air bulan Maret"},{"id":119,"company_id":37,"transaction_id":118,"date":"2024-03-31","description":"Pengambilan prive oleh pemilik"},{"id":163,"company_id":125,"transaction_id":162,"date":"2024-01-02","description":"Penerbitan modal saham perdana"},{"id":168,"company_id":125,"transaction_id":167,"date":"2024-01-02","description":"Pembukuan laba ditahan awal periode"},{"id":172,"company_id":125,"transaction_id":171,"date":"2024-01-05","description":"Pembelian gedung kantor"},{"id":177,"company_id":125,"transaction_id":176,"date":"2024-01-08","description":"Pembelian peralatan komputer dan server"},{"id":181,"company_id":125,"transaction_id":180,"date":"2024-01-10","description":"Pembelian kendaraan operasional"},{"id":186,"company_id":125,"transaction_id":185,"date":"2024-01-15","description":"Penerimaan uang muka proyek konsultasi IT dari PT Maju"},{"id":190,"company_id":125,"transaction_id":189,"date":"2024-01-20","description":"Pembayaran asuransi kantor 1 tahun dimuka"},{"id":194,"company_id":125,"transaction_id":193,"date":"2024-01-31","description":"Pembayaran gaji karyawan bulan Januari"},{"id":198,"company_id":125,"transaction_id":197,"date":"2024-02-05","description":"Pendapatan jasa konsultasi — PT Anugerah"},{"id":202,"company_id":125,"transaction_id":201,"date":"2024-02-10","description":"Penagihan proyek sistem ERP kepada PT Berkah"},{"id":206,"company_id":125,"transaction_id":205,"date":"2024-02-15","description":"Pengakuan pendapatan atas uang muka proyek PT Maju (50%)"},{"id":210,"company_id":125,"transaction_id":209,"date":"2024-02-20","description":"Beban pemasaran dan promosi"},{"id":214,"company_id":125,"transaction_id":213,"date":"2024-02-28","description":"Pembayaran gaji karyawan bulan Februari"},{"id":218,"company_id":125,"transaction_id":217,"date":"2024-03-10","description":"Penerimaan pembayaran dari PT Berkah atas proyek ERP"},{"id":222,"company_id":125,"transaction_id":221,"date":"2024-03-15","description":"Pendapatan jasa konsultasi — CV Cemerlang"},{"id":226,"company_id":125,"transaction_id":225,"date":"2024-03-28","description":"Pendapatan bunga deposito bank"},{"id":230,"company_id":125,"transaction_id":229,"date":"2024-03-28","description":"Beban listrik, air, dan internet Q1"},{"id":235,"company_id":125,"transaction_id":234,"date":"2024-03-31","description":"Angsuran pinjaman bank + bunga"},{"id":240,"company_id":125,"transaction_id":239,"date":"2024-03-31","description":"Pembayaran gaji karyawan bulan Maret"},{"id":244,"company_id":125,"transaction_id":243,"date":"2024-03-31","description":"Pembagian dividen kepada pemegang saham"},{"id":255,"company_id":2,"transaction_id":254,"date":"2026-04-05","description":"Penjualan barang/jasa secara tunai"},{"id":259,"company_id":2,"transaction_id":258,"date":"2026-04-05","description":"Penjualan barang/jasa secara kredit"},{"id":266,"company_id":2,"transaction_id":265,"date":"2026-04-05","description":"Pembelian persediaan barang dagang secara kredit"},{"id":272,"company_id":2,"transaction_id":271,"date":"2026-04-05","description":"Pembayaran hutang kepada Pembelian persediaan barang dagang secar"},{"id":276,"company_id":2,"transaction_id":275,"date":"2026-04-05","description":"Pembelian aset tetap (Toko Cahaya)"},{"id":282,"company_id":2,"transaction_id":281,"date":"2026-04-05","description":"Pembelian perlengkapan kantor/toko"},{"id":288,"company_id":2,"transaction_id":287,"date":"2026-04-05","description":"Penjualan kredit kepada zean"}],"journal_details":[{"id":26,"journal_id":25,"account_id":3,"debit":10000000,"kredit":0},{"id":27,"journal_id":25,"account_id":12,"debit":0,"kredit":10000000},{"id":30,"journal_id":29,"account_id":4,"debit":20000000,"kredit":0},{"id":31,"journal_id":29,"account_id":10,"debit":0,"kredit":20000000},{"id":35,"journal_id":34,"account_id":10,"debit":5000000,"kredit":0},{"id":36,"journal_id":34,"account_id":4,"debit":0,"kredit":5000000},{"id":59,"journal_id":58,"account_id":38,"debit":50000000,"kredit":0},{"id":60,"journal_id":58,"account_id":39,"debit":100000000,"kredit":0},{"id":61,"journal_id":58,"account_id":47,"debit":0,"kredit":150000000},{"id":64,"journal_id":63,"account_id":43,"debit":20000000,"kredit":0},{"id":65,"journal_id":63,"account_id":38,"debit":0,"kredit":20000000},{"id":68,"journal_id":67,"account_id":41,"debit":40000000,"kredit":0},{"id":69,"journal_id":67,"account_id":45,"debit":0,"kredit":40000000},{"id":72,"journal_id":71,"account_id":42,"debit":3000000,"kredit":0},{"id":73,"journal_id":71,"account_id":38,"debit":0,"kredit":3000000},{"id":76,"journal_id":75,"account_id":52,"debit":5000000,"kredit":0},{"id":77,"journal_id":75,"account_id":38,"debit":0,"kredit":5000000},{"id":80,"journal_id":79,"account_id":38,"debit":35000000,"kredit":0},{"id":81,"journal_id":79,"account_id":49,"debit":0,"kredit":35000000},{"id":84,"journal_id":83,"account_id":50,"debit":22000000,"kredit":0},{"id":85,"journal_id":83,"account_id":41,"debit":0,"kredit":22000000},{"id":88,"journal_id":87,"account_id":40,"debit":18000000,"kredit":0},{"id":89,"journal_id":87,"account_id":49,"debit":0,"kredit":18000000},{"id":92,"journal_id":91,"account_id":50,"debit":11000000,"kredit":0},{"id":93,"journal_id":91,"account_id":41,"debit":0,"kredit":11000000},{"id":96,"journal_id":95,"account_id":45,"debit":25000000,"kredit":0},{"id":97,"journal_id":95,"account_id":39,"debit":0,"kredit":25000000},{"id":100,"journal_id":99,"account_id":39,"debit":18000000,"kredit":0},{"id":101,"journal_id":99,"account_id":40,"debit":0,"kredit":18000000},{"id":104,"journal_id":103,"account_id":51,"debit":8000000,"kredit":0},{"id":105,"journal_id":103,"account_id":38,"debit":0,"kredit":8000000},{"id":108,"journal_id":107,"account_id":38,"debit":28000000,"kredit":0},{"id":109,"journal_id":107,"account_id":49,"debit":0,"kredit":28000000},{"id":112,"journal_id":111,"account_id":50,"debit":17000000,"kredit":0},{"id":113,"journal_id":111,"account_id":41,"debit":0,"kredit":17000000},{"id":116,"journal_id":115,"account_id":55,"debit":1200000,"kredit":0},{"id":117,"journal_id":115,"account_id":38,"debit":0,"kredit":1200000},{"id":120,"journal_id":119,"account_id":48,"debit":5000000,"kredit":0},{"id":121,"journal_id":119,"account_id":39,"debit":0,"kredit":5000000},{"id":164,"journal_id":163,"account_id":127,"debit":500000000,"kredit":0},{"id":165,"journal_id":163,"account_id":143,"debit":0,"kredit":400000000},{"id":166,"journal_id":163,"account_id":144,"debit":0,"kredit":100000000},{"id":169,"journal_id":168,"account_id":127,"debit":80000000,"kredit":0},{"id":170,"journal_id":168,"account_id":145,"debit":0,"kredit":80000000},{"id":173,"journal_id":172,"account_id":132,"debit":300000000,"kredit":0},{"id":174,"journal_id":172,"account_id":127,"debit":0,"kredit":200000000},{"id":175,"journal_id":172,"account_id":142,"debit":0,"kredit":100000000},{"id":178,"journal_id":177,"account_id":133,"debit":80000000,"kredit":0},{"id":179,"journal_id":177,"account_id":127,"debit":0,"kredit":80000000},{"id":182,"journal_id":181,"account_id":134,"debit":150000000,"kredit":0},{"id":183,"journal_id":181,"account_id":127,"debit":0,"kredit":100000000},{"id":184,"journal_id":181,"account_id":142,"debit":0,"kredit":50000000},{"id":187,"journal_id":186,"account_id":127,"debit":60000000,"kredit":0},{"id":188,"journal_id":186,"account_id":141,"debit":0,"kredit":60000000},{"id":191,"journal_id":190,"account_id":131,"debit":24000000,"kredit":0},{"id":192,"journal_id":190,"account_id":127,"debit":0,"kredit":24000000},{"id":195,"journal_id":194,"account_id":150,"debit":45000000,"kredit":0},{"id":196,"journal_id":194,"account_id":127,"debit":0,"kredit":45000000},{"id":199,"journal_id":198,"account_id":126,"debit":35000000,"kredit":0},{"id":200,"journal_id":198,"account_id":147,"debit":0,"kredit":35000000},{"id":203,"journal_id":202,"account_id":128,"debit":120000000,"kredit":0},{"id":204,"journal_id":202,"account_id":148,"debit":0,"kredit":120000000},{"id":207,"journal_id":206,"account_id":141,"debit":30000000,"kredit":0},{"id":208,"journal_id":206,"account_id":148,"debit":0,"kredit":30000000},{"id":211,"journal_id":210,"account_id":155,"debit":8000000,"kredit":0},{"id":212,"journal_id":210,"account_id":127,"debit":0,"kredit":8000000},{"id":215,"journal_id":214,"account_id":150,"debit":45000000,"kredit":0},{"id":216,"journal_id":214,"account_id":127,"debit":0,"kredit":45000000},{"id":219,"journal_id":218,"account_id":127,"debit":120000000,"kredit":0},{"id":220,"journal_id":218,"account_id":128,"debit":0,"kredit":120000000},{"id":223,"journal_id":222,"account_id":126,"debit":25000000,"kredit":0},{"id":224,"journal_id":222,"account_id":147,"debit":0,"kredit":25000000},{"id":227,"journal_id":226,"account_id":127,"debit":2500000,"kredit":0},{"id":228,"journal_id":226,"account_id":149,"debit":0,"kredit":2500000},{"id":231,"journal_id":230,"account_id":157,"debit":4500000,"kredit":0},{"id":232,"journal_id":230,"account_id":156,"debit":3000000,"kredit":0},{"id":233,"journal_id":230,"account_id":127,"debit":0,"kredit":7500000},{"id":236,"journal_id":235,"account_id":142,"debit":5000000,"kredit":0},{"id":237,"journal_id":235,"account_id":159,"debit":1875000,"kredit":0},{"id":238,"journal_id":235,"account_id":127,"debit":0,"kredit":6875000},{"id":241,"journal_id":240,"account_id":150,"debit":47000000,"kredit":0},{"id":242,"journal_id":240,"account_id":127,"debit":0,"kredit":47000000},{"id":245,"journal_id":244,"account_id":146,"debit":10000000,"kredit":0},{"id":246,"journal_id":244,"account_id":127,"debit":0,"kredit":10000000},{"id":256,"journal_id":255,"account_id":3,"debit":5000000,"kredit":0},{"id":257,"journal_id":255,"account_id":15,"debit":0,"kredit":5000000},{"id":260,"journal_id":259,"account_id":5,"debit":1000000,"kredit":0},{"id":261,"journal_id":259,"account_id":15,"debit":0,"kredit":1000000},{"id":262,"journal_id":259,"account_id":17,"debit":700000,"kredit":0},{"id":263,"journal_id":259,"account_id":6,"debit":0,"kredit":700000},{"id":267,"journal_id":266,"account_id":6,"debit":500000,"kredit":0},{"id":268,"journal_id":266,"account_id":10,"debit":0,"kredit":500000},{"id":273,"journal_id":272,"account_id":10,"debit":500000,"kredit":0},{"id":274,"journal_id":272,"account_id":3,"debit":0,"kredit":500000},{"id":277,"journal_id":276,"account_id":8,"debit":5000000,"kredit":0},{"id":278,"journal_id":276,"account_id":10,"debit":0,"kredit":5000000},{"id":283,"journal_id":282,"account_id":7,"debit":1000000,"kredit":0},{"id":284,"journal_id":282,"account_id":3,"debit":0,"kredit":1000000},{"id":289,"journal_id":288,"account_id":5,"debit":2000000,"kredit":0},{"id":290,"journal_id":288,"account_id":15,"debit":0,"kredit":2000000}],"penyesuaian":[{"id":122,"company_id":37,"date":"2024-03-31","description":"Penyusutan peralatan Q1 2024","debit_acc":54,"kredit_acc":44,"amount":1000000},{"id":123,"company_id":37,"date":"2024-03-31","description":"Perlengkapan yang terpakai Q1 2024","debit_acc":53,"kredit_acc":42,"amount":1500000},{"id":124,"company_id":37,"date":"2024-03-31","description":"Akrual gaji yang belum dibayar","debit_acc":51,"kredit_acc":46,"amount":2000000},{"id":247,"company_id":125,"date":"2024-03-31","description":"Penyusutan gedung kantor Q1 2024","debit_acc":151,"kredit_acc":135,"amount":3750000},{"id":248,"company_id":125,"date":"2024-03-31","description":"Penyusutan peralatan komputer Q1 2024","debit_acc":152,"kredit_acc":136,"amount":5000000},{"id":249,"company_id":125,"date":"2024-03-31","description":"Penyusutan kendaraan operasional Q1 2024","debit_acc":153,"kredit_acc":137,"amount":7500000},{"id":250,"company_id":125,"date":"2024-03-31","description":"Amortisasi asuransi dibayar dimuka Q1","debit_acc":154,"kredit_acc":131,"amount":6000000},{"id":251,"company_id":125,"date":"2024-03-31","description":"Akrual gaji karyawan yang belum dibayar","debit_acc":150,"kredit_acc":139,"amount":5000000},{"id":252,"company_id":125,"date":"2024-03-31","description":"Estimasi beban pajak penghasilan Q1 2024","debit_acc":160,"kredit_acc":140,"amount":7500000},{"id":253,"company_id":125,"date":"2024-03-31","description":"Perlengkapan kantor yang terpakai","debit_acc":158,"kredit_acc":130,"amount":3000000}],"hutang":[{"id":32,"company_id":2,"nama_kreditur":"Bank BRI","jumlah":20000000,"tanggal":"2026-04-05","jatuh_tempo":"2026-12-31","sisa":15000000,"status":"Sebagian"},{"id":270,"company_id":2,"nama_kreditur":"Pembelian persediaan barang dagang secar","jumlah":500000,"sisa":0,"status":"Lunas","tanggal":"2026-04-05","jatuh_tempo":"","ref_transaction_id":265,"ref_journal_id":266},{"id":280,"company_id":2,"nama_kreditur":"Pembelian aset tetap (Toko Cahaya)","jumlah":5000000,"sisa":5000000,"status":"Belum Lunas","tanggal":"2026-04-05","jatuh_tempo":"","ref_transaction_id":275,"ref_journal_id":276}],"piutang":[{"id":264,"company_id":2,"nama_debitur":"Penjualan barang/jasa secara kredit","jumlah":1000000,"sisa":1000000,"status":"Belum Lunas","tanggal":"2026-04-05","jatuh_tempo":"","ref_transaction_id":258,"ref_journal_id":259},{"id":286,"company_id":2,"nama_debitur":"zean","jumlah":2000000,"tanggal":"2026-04-05","jatuh_tempo":"2026-04-30","sisa":2000000,"status":"Belum Lunas"}],"persediaan":[{"id":269,"company_id":2,"nama_barang":"laptop","jumlah":1,"harga_satuan":500000,"total_nilai":500000}],"perlengkapan":[{"id":285,"company_id":2,"nama_item":"ATK","jumlah":1,"nilai":1000000}],"aset_tetap":[{"id":279,"company_id":2,"nama_aset":"Laptop","harga_perolehan":5000000,"tahun_perolehan":2026,"masa_manfaat":4,"akumulasi_penyusutan":0,"beban_penyusutan":1250000,"tambahan_aset":0,"pengurangan_aset":0,"nilai_buku":5000000}],"current_company_id":2,"_id_counter":290}; // PLACEHOLDER — replaced by saveToFile
 
 // Flag: hanya true jika server sudah konfirmasi lisensi valid
 let __licenseVerified = false;
 
-function initDB() {
+// ══════════════════════════════════════════
+// INDEXEDDB ENGINE
+// ══════════════════════════════════════════
+const IDB_NAME    = 'ZeQuiDB';
+const IDB_VERSION = 1;
+const IDB_STORE   = 'appdata';
+const IDB_KEY_ID  = 'zeqdata';
+let   __idb       = null;          // handle koneksi IDB
+let   __saveTimer = null;          // debounce timer
+let   __savePending = false;       // ada perubahan yang belum tersimpan
+
+// Buka / buat IndexedDB
+function openIDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, IDB_VERSION);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(IDB_STORE)) {
+        db.createObjectStore(IDB_STORE, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror   = e => reject(e.target.error);
+  });
+}
+
+// Tulis DB ke IndexedDB (async, debounced 800ms)
+function autoSave() {
+  __savePending = true;
+  clearTimeout(__saveTimer);
+  __saveTimer = setTimeout(_flushSave, 800);
+}
+
+async function _flushSave() {
+  if (!__savePending) return;
+  __savePending = false;
+  try {
+    if (!__idb) __idb = await openIDB();
+    await new Promise((resolve, reject) => {
+      const tx  = __idb.transaction(IDB_STORE, 'readwrite');
+      const st  = tx.objectStore(IDB_STORE);
+      const req = st.put({ id: IDB_KEY_ID, data: DB });
+      tx.oncomplete = resolve;
+      tx.onerror    = e => reject(e.target.error);
+    });
+    _updateSaveIndicator('saved');
+  } catch (err) {
+    console.error('IDB save error:', err);
+    _updateSaveIndicator('error');
+    // Fallback ke localStorage
+    try { localStorage.setItem(DB_KEY, JSON.stringify(DB)); } catch(_) {}
+  }
+}
+
+// Paksa simpan segera (tanpa debounce) — untuk operasi kritis
+async function forceSave() {
+  clearTimeout(__saveTimer);
+  __savePending = false;
+  if (!__idb) __idb = await openIDB();
+  return new Promise((resolve, reject) => {
+    const tx  = __idb.transaction(IDB_STORE, 'readwrite');
+    const st  = tx.objectStore(IDB_STORE);
+    const req = st.put({ id: IDB_KEY_ID, data: DB });
+    tx.oncomplete = () => { _updateSaveIndicator('saved'); resolve(); };
+    tx.onerror    = e => reject(e.target.error);
+  });
+}
+
+// Baca data dari IndexedDB
+async function loadFromIDB() {
+  if (!__idb) __idb = await openIDB();
+  return new Promise((resolve, reject) => {
+    const tx  = __idb.transaction(IDB_STORE, 'readonly');
+    const st  = tx.objectStore(IDB_STORE);
+    const req = st.get(IDB_KEY_ID);
+    req.onsuccess = e => resolve(e.target.result?.data || null);
+    req.onerror   = e => reject(e.target.error);
+  });
+}
+
+// Hapus semua data dari IndexedDB
+async function clearIDB() {
+  if (!__idb) __idb = await openIDB();
+  return new Promise((resolve, reject) => {
+    const tx  = __idb.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).clear();
+    tx.oncomplete = resolve;
+    tx.onerror    = e => reject(e.target.error);
+  });
+}
+
+// Indikator status simpan di header
+function _updateSaveIndicator(state) {
+  const el = document.getElementById('save-indicator');
+  if (!el) return;
+  const states = {
+    saving : { text: '⏳ Menyimpan...', color: '#f59e0b' },
+    saved  : { text: '✅ Tersimpan',    color: '#10b981' },
+    error  : { text: '❌ Gagal simpan', color: '#ef4444' },
+  };
+  const s = states[state] || states.saved;
+  el.textContent  = s.text;
+  el.style.color  = s.color;
+  el.style.opacity = '1';
+  if (state === 'saved') {
+    clearTimeout(el._hideTimer);
+    el._hideTimer = setTimeout(() => { el.style.opacity = '0'; }, 3000);
+  }
+}
+
+// ── initDB: async, prioritas IDB → EMBEDDED_DATA → localStorage lama ──
+async function initDB() {
   if (!__licenseVerified) {
     console.warn('initDB diblokir: lisensi belum diverifikasi server');
     return;
   }
-  if (EMBEDDED_DATA) {
-    DB = EMBEDDED_DATA;
-    toast('Data sebelumnya berhasil dimuat! ✅', 'success');
-  } else {
-    const saved = localStorage.getItem(DB_KEY);
-    if (saved) {
-      try { DB = JSON.parse(saved); } catch(e) {}
+  _updateSaveIndicator('saving');
+  try {
+    const idbData = await loadFromIDB();
+    if (idbData) {
+      // Ada data di IndexedDB — pakai ini (paling up-to-date)
+      DB = idbData;
+      _updateSaveIndicator('saved');
+      toast('✅ Data dimuat dari penyimpanan lokal', 'success');
+    } else if (EMBEDDED_DATA) {
+      // Tidak ada di IDB tapi ada EMBEDDED_DATA (buka file yang sudah di-save)
+      DB = EMBEDDED_DATA;
+      await forceSave();   // langsung migrasikan ke IDB
+      toast('✅ Data berhasil dimuat & dipindahkan ke penyimpanan lokal', 'success', 4000);
+    } else {
+      // Coba fallback dari localStorage lama (migrasi dari versi sebelumnya)
+      const saved = localStorage.getItem(DB_KEY);
+      if (saved) {
+        try {
+          DB = JSON.parse(saved);
+          await forceSave();   // migrasikan ke IDB
+          localStorage.removeItem(DB_KEY);  // bersihkan localStorage lama
+          toast('✅ Data lama berhasil dipindahkan ke penyimpanan baru (IndexedDB)', 'success', 5000);
+        } catch(e) {
+          _updateSaveIndicator('error');
+        }
+      } else {
+        _updateSaveIndicator('saved');
+      }
     }
+  } catch (err) {
+    console.error('initDB IDB error:', err);
+    // Fallback penuh ke localStorage
+    if (EMBEDDED_DATA) {
+      DB = EMBEDDED_DATA;
+    } else {
+      const saved = localStorage.getItem(DB_KEY);
+      if (saved) try { DB = JSON.parse(saved); } catch(_) {}
+    }
+    _updateSaveIndicator('error');
+    toast('⚠️ IndexedDB tidak tersedia, menggunakan penyimpanan sementara', 'warning', 5000);
   }
-  // Pastikan hanya ada 1 interval autoSave yang berjalan
-  if (window.__autoSaveInterval) clearInterval(window.__autoSaveInterval);
-  window.__autoSaveInterval = setInterval(autoSave, 30000);
-  // Inisialisasi fiscal year jika belum ada
-  if (!DB.fiscal_years) DB.fiscal_years = [];
-  if (DB.current_fiscal_year_id === undefined) DB.current_fiscal_year_id = null;
-  ensureFiscalYear();
-  migrateLegacyFiscalYear();
+  // Tidak lagi butuh setInterval — autoSave dipanggil langsung di setiap operasi
 }
 
-function autoSave() {
-  localStorage.setItem(DB_KEY, JSON.stringify(DB));
+function getStorageInfo() {
+  // Untuk IDB tidak bisa ukur langsung; kembalikan estimasi dari JSON size
+  const approxBytes = JSON.stringify(DB).length;
+  const usedKB  = Math.round(approxBytes / 1024);
+  const usedMB  = (approxBytes / (1024 * 1024)).toFixed(2);
+  const pct     = 0; // IDB tidak punya batas praktis yang bisa dihitung di browser
+  return { usedKB, usedMB, pct, unlimited: true };
 }
 
 function genId() {
@@ -2163,15 +2202,7 @@ function saveCompany() {
   closeModal('modal-company');
   renderCompanies();
   toast('Perusahaan disimpan','success');
-  if (!DB.current_company_id) {
-    selectCompany(obj.id);
-  } else if (!id) {
-    // Perusahaan baru: buat fiscal year otomatis
-    const _prev = DB.current_company_id;
-    DB.current_company_id = obj.id;
-    ensureFiscalYear();
-    DB.current_company_id = _prev;
-  }
+  if (!DB.current_company_id) selectCompany(obj.id);
 }
 
 function editCompany(id) {
@@ -2222,18 +2253,31 @@ function updateHeader() {
   const co = DB.companies.find(c=>c.id==DB.current_company_id);
   document.getElementById('hdr-company-name').textContent = co ? co.name : 'Pilih Perusahaan';
   document.getElementById('hdr-company-period').textContent = co ? `${co.period_start||''} s/d ${co.period_end||''}` : '—';
-  // Update year switcher badge
-  const fy = getActiveFY();
-  const allFYs = getCompanyFYs();
-  const isLatest = fy && allFYs.length > 0 && allFYs[0].id === fy.id;
-  const yearEl = document.getElementById('hdr-active-year');
-  const badgeEl = document.getElementById('hdr-year-badge');
-  if (yearEl) yearEl.textContent = fy ? fy.year : '—';
-  if (badgeEl && fy) {
-    badgeEl.textContent = isLatest ? 'Berjalan' : 'Lalu';
-    badgeEl.className = isLatest ? 'year-badge-curr' : 'year-badge-prev';
+}
+
+async function renderSettings() {
+  // Cek IDB status
+  const idbEl = document.getElementById('settings-idb-status');
+  const textEl = document.getElementById('settings-storage-text');
+  const lastEl = document.getElementById('settings-last-saved');
+
+  try {
+    if (!__idb) __idb = await openIDB();
+    if (idbEl) { idbEl.textContent = '✅ Aktif'; idbEl.style.color = '#10b981'; }
+  } catch(e) {
+    if (idbEl) { idbEl.textContent = '❌ Tidak tersedia'; idbEl.style.color = '#ef4444'; }
   }
-  updateSidebarYearButtons();
+
+  // Ukuran data (estimasi dari JSON)
+  const bytes = JSON.stringify(DB).length;
+  const kb = (bytes / 1024).toFixed(1);
+  const mb = (bytes / (1024*1024)).toFixed(2);
+  if (textEl) textEl.textContent = bytes < 1024*1024 ? kb + ' KB' : mb + ' MB';
+
+  // Waktu terakhir disimpan
+  if (lastEl) {
+    lastEl.textContent = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  }
 }
 
 // ══════════════════════════════════════════
@@ -2694,17 +2738,17 @@ function saveTransaction() {
   if (editId) {
     trxId = parseInt(editId);
     const ti = DB.transactions.findIndex(t=>t.id==trxId);
-    DB.transactions[ti] = {id:trxId, company_id:co(), date, description:desc, fiscal_year_id:DB.current_fiscal_year_id};
+    DB.transactions[ti] = {id:trxId, company_id:co(), date, description:desc};
     const oldJE = DB.journal_entries.filter(je=>je.transaction_id==trxId);
     oldJE.forEach(je=>{ DB.journal_details = DB.journal_details.filter(jd=>jd.journal_id!=je.id); });
     DB.journal_entries = DB.journal_entries.filter(je=>je.transaction_id!=trxId);
   } else {
     trxId = genId();
-    DB.transactions.push({id:trxId, company_id:co(), date, description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+    DB.transactions.push({id:trxId, company_id:co(), date, description:desc});
   }
 
   const jeId = genId();
-  DB.journal_entries.push({id:jeId, company_id:co(), transaction_id:trxId, date, description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+  DB.journal_entries.push({id:jeId, company_id:co(), transaction_id:trxId, date, description:desc});
   details.forEach(d=>{
     DB.journal_details.push({id:genId(), journal_id:jeId, account_id:d.account_id, debit:d.debit, kredit:d.kredit});
   });
@@ -2726,7 +2770,7 @@ function saveTransaction() {
 }
 
 function renderTransactions() {
-  const trxs = coFYFilter(DB.transactions).sort((a,b)=>b.date.localeCompare(a.date));
+  const trxs = coFilter(DB.transactions).sort((a,b)=>b.date.localeCompare(a.date));
   const tbody = document.getElementById('trx-tbody');
   if (!trxs.length) {
     tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">💸</div><p>Belum ada transaksi.</p></div></td></tr>`;
@@ -2778,7 +2822,7 @@ function deleteTransaction(id) {
 // JURNAL UMUM
 // ══════════════════════════════════════════
 function renderJurnal() {
-  const JEs = coFYFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date));
+  const JEs = coFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date));
   const tbody = document.getElementById('jurnal-tbody');
   let rows = [];
   JEs.forEach(je=>{
@@ -2821,7 +2865,7 @@ function getBukuBesarData(accId, includeAdj) {
   });
 
   if (includeAdj) {
-    const penRows = coFYFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId||p.kredit_acc==accId);
+    const penRows = coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId||p.kredit_acc==accId);
     penRows.forEach(p=>{
       const d = p.debit_acc==accId ? p.amount : 0;
       const k = p.kredit_acc==accId ? p.amount : 0;
@@ -3013,7 +3057,7 @@ function printBukuBesar() {
 <div class="header">
   <h1>${coName}</h1>
   <h2>BUKU BESAR</h2>
-  <p>Periode: ${period}${getActiveFY() ? ' | Tahun Buku: '+getActiveFY().year : ''}</p>
+  <p>Periode: ${period}</p>
   <p>Dicetak: ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
 </div>
 ${body}
@@ -3067,21 +3111,13 @@ function getAccountBalance(accId, includePenyesuaian=false) {
   const acc = DB.accounts.find(a=>a.id==accId);
   if (!acc) return 0;
   let totD=0, totK=0;
-  // Gunakan coFYFilter agar saldo sesuai tahun buku aktif
-  const JEs = coFYFilter(DB.journal_entries).map(je=>je.id);
+  const JEs = coFilter(DB.journal_entries).map(je=>je.id);
   DB.journal_details.filter(d=>JEs.includes(d.journal_id)&&d.account_id==accId).forEach(d=>{totD+=d.debit; totK+=d.kredit;});
   if (includePenyesuaian) {
-    coFYFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId).forEach(p=>totD+=p.amount);
-    coFYFilter(DB.penyesuaian).filter(p=>p.kredit_acc==accId).forEach(p=>totK+=p.amount);
+    coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId).forEach(p=>totD+=p.amount);
+    coFilter(DB.penyesuaian).filter(p=>p.kredit_acc==accId).forEach(p=>totK+=p.amount);
   }
-  // saldo_awal per fiscal year: cek di fy_saldo_awal jika ada, fallback ke acc.saldo_awal
-  const fyId = DB.current_fiscal_year_id;
-  let saldoAwal = 0;
-  if (fyId && acc.fy_saldo_awal && acc.fy_saldo_awal[fyId] !== undefined) {
-    saldoAwal = acc.fy_saldo_awal[fyId];
-  } else {
-    saldoAwal = acc.saldo_awal || 0;
-  }
+  const saldoAwal = acc.saldo_awal || 0;
   const mutasi = acc.normal_balance=='Debit' ? totD-totK : totK-totD;
   return saldoAwal + mutasi;
 }
@@ -3113,7 +3149,7 @@ function renderPenyesuaian() {
   document.getElementById('pen-debit-acc').innerHTML = '<option value="">— Pilih —</option>'+opts;
   document.getElementById('pen-kredit-acc').innerHTML = '<option value="">— Pilih —</option>'+opts;
 
-  const pens = coFYFilter(DB.penyesuaian).sort((a,b)=>a.date.localeCompare(b.date));
+  const pens = coFilter(DB.penyesuaian).sort((a,b)=>a.date.localeCompare(b.date));
   const tbody = document.getElementById('penyesuaian-tbody');
   if (!pens.length) {
     tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🔧</div><p>Belum ada penyesuaian.</p></div></td></tr>`;
@@ -3142,7 +3178,7 @@ function savePenyesuaian() {
   const kAcc=document.getElementById('pen-kredit-acc').value;
   const amount=parseFloat(document.getElementById('pen-amount').value)||0;
   if (!date||!desc||!dAcc||!kAcc||!amount) { toast('Semua field wajib diisi','error'); return; }
-  DB.penyesuaian.push({id:genId(),company_id:co(),date,description:desc,debit_acc:parseInt(dAcc),kredit_acc:parseInt(kAcc),amount,fiscal_year_id:DB.current_fiscal_year_id});
+  DB.penyesuaian.push({id:genId(),company_id:co(),date,description:desc,debit_acc:parseInt(dAcc),kredit_acc:parseInt(kAcc),amount});
   autoSave(); closeModal('modal-penyesuaian'); renderPenyesuaian(); toast('Penyesuaian disimpan','success');
 }
 
@@ -3222,8 +3258,8 @@ function saveHutang() {
     if (hutAcc&&persAcc) {
       const desc=`Pembelian kredit dari ${nama}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:persAcc.id,debit:jumlah,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:jumlah});
       toast(`✅ Hutang + jurnal otomatis: ${persAcc.name} (D) / ${hutAcc.name} (K)`,'success',4000);
@@ -3282,8 +3318,8 @@ function savePiutang() {
     if (piuAcc&&pendAcc) {
       const desc=`Penjualan kredit kepada ${nama}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:piuAcc.id,debit:jumlah,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:pendAcc.id,debit:0,kredit:jumlah});
       toast(`✅ Piutang + jurnal otomatis: ${piuAcc.name} (D) / ${pendAcc.name} (K)`,'success',4000);
@@ -3325,8 +3361,8 @@ function processBayar() {
     if (hutAcc&&kasAcc) {
       const desc=`Pembayaran hutang kepada ${rec.nama_kreditur}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:bayar,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:bayar});
       toast(`✅ Hutang dibayar Rp ${bayar.toLocaleString('id-ID')} + jurnal: ${hutAcc.name}(D)/${kasAcc.name}(K)`,'success',4000);
@@ -3339,8 +3375,8 @@ function processBayar() {
     if (piuAcc&&kasAcc) {
       const desc=`Penerimaan piutang dari ${rec.nama_debitur}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:bayar,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:piuAcc.id,debit:0,kredit:bayar});
       toast(`✅ Piutang diterima Rp ${bayar.toLocaleString('id-ID')} + jurnal: ${kasAcc.name}(D)/${piuAcc.name}(K)`,'success',4000);
@@ -3439,8 +3475,8 @@ function savePersediaan() {
       if (metode==='tunai' && persAcc && kasAcc) {
         const desc=ket||`Pembelian persediaan tunai: ${nama}`;
         const tid=genId(),jeid=genId();
-        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
+        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:persAcc.id,debit:nilai,kredit:0});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:nilai});
         DB.persediaan[DB.persediaan.length-1].ref_journal_id=jeid;
@@ -3448,8 +3484,8 @@ function savePersediaan() {
       } else if (metode==='kredit' && persAcc && hutAcc) {
         const desc=ket||`Pembelian persediaan kredit: ${nama}`;
         const tid=genId(),jeid=genId();
-        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
+        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:persAcc.id,debit:nilai,kredit:0});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:nilai});
         // Otomatis catat di Hutang juga
@@ -3534,8 +3570,8 @@ function processJualPersediaan() {
   if ((metode==='tunai'?kasAcc:piuAcc) && pendAcc) {
     const desc=`Penjualan persediaan kepada ${pembeli}: ${p.nama_barang} (${qty} unit)`;
     const tid=genId(),jeid=genId();
-    DB.transactions.push({id:tid,company_id:co(),date:today,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-    DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+    DB.transactions.push({id:tid,company_id:co(),date:today,description:desc});
+    DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc});
     const debitAcc=metode==='tunai'?kasAcc:piuAcc;
     DB.journal_details.push({id:genId(),journal_id:jeid,account_id:debitAcc.id,debit:penjualan,kredit:0});
     DB.journal_details.push({id:genId(),journal_id:jeid,account_id:pendAcc.id,debit:0,kredit:penjualan});
@@ -3548,8 +3584,8 @@ function processJualPersediaan() {
   if (hppAcc && persAcc) {
     const descHpp=`HPP penjualan ${p.nama_barang} (${qty} unit)`;
     const tid2=genId(),jeid2=genId();
-    DB.transactions.push({id:tid2,company_id:co(),date:today,description:descHpp, fiscal_year_id:DB.current_fiscal_year_id});
-    DB.journal_entries.push({id:jeid2,company_id:co(),transaction_id:tid2,date:today,description:descHpp, fiscal_year_id:DB.current_fiscal_year_id});
+    DB.transactions.push({id:tid2,company_id:co(),date:today,description:descHpp});
+    DB.journal_entries.push({id:jeid2,company_id:co(),transaction_id:tid2,date:today,description:descHpp});
     DB.journal_details.push({id:genId(),journal_id:jeid2,account_id:hppAcc.id,debit:hpp,kredit:0});
     DB.journal_details.push({id:genId(),journal_id:jeid2,account_id:persAcc.id,debit:0,kredit:hpp});
   }
@@ -3628,8 +3664,8 @@ function savePerlengkapan() {
       if (metode==='tunai' && perlAcc && kasAcc) {
         const desc=ket||`Pembelian perlengkapan tunai: ${nama}`;
         const tid=genId(),jeid=genId();
-        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
+        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:perlAcc.id,debit:nilai,kredit:0});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:nilai});
         DB.perlengkapan[DB.perlengkapan.length-1].ref_journal_id=jeid;
@@ -3637,8 +3673,8 @@ function savePerlengkapan() {
       } else if (metode==='kredit' && perlAcc && hutAcc) {
         const desc=ket||`Pembelian perlengkapan kredit: ${nama}`;
         const tid=genId(),jeid=genId();
-        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
+        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:perlAcc.id,debit:nilai,kredit:0});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:nilai});
         DB.hutang.push({id:genId(),company_id:co(),nama_kreditur:nama,jumlah:nilai,tanggal,jatuh_tempo:'',sisa:nilai,status:'Belum Lunas',ref_journal_id:jeid});
@@ -3778,8 +3814,8 @@ function saveAset() {
     if (metode==='tunai' && asetAcc && kasAcc) {
       const desc=ket||`Pembelian aset tetap tunai: ${nama}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:asetAcc.id,debit:harga,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:harga});
       DB.aset_tetap[DB.aset_tetap.length-1].ref_journal_id=jeid;
@@ -3787,8 +3823,8 @@ function saveAset() {
     } else if (metode==='kredit' && asetAcc && hutAcc) {
       const desc=ket||`Pembelian aset tetap kredit: ${nama}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc, fiscal_year_id:DB.current_fiscal_year_id});
+      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:asetAcc.id,debit:harga,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:harga});
       DB.hutang.push({id:genId(),company_id:co(),nama_kreditur:nama,jumlah:harga,tanggal,jatuh_tempo:'',sisa:harga,status:'Belum Lunas',ref_journal_id:jeid});
@@ -3846,7 +3882,7 @@ function hitung_penyusutan_all() {
   let skipped=0, added=0;
   as.forEach(a=>{
     // Cek apakah penyusutan periode ini sudah pernah dihitung untuk aset ini
-    const sudahAda = coFYFilter(DB.penyesuaian).some(p=>
+    const sudahAda = coFilter(DB.penyesuaian).some(p=>
       p.description===('Penyusutan '+a.nama_aset+' ('+periodeLabel+')')
     );
     if (sudahAda) { skipped++; return; }
@@ -3984,7 +4020,7 @@ function calcArusKas() {
       )))
     .map(a => a.id);
 
-  const JEids = coFYFilter(DB.journal_entries).map(je => je.id);
+  const JEids = coFilter(DB.journal_entries).map(je => je.id);
   let kasOperasi=0, kasInvestasi=0, kasPendanaan=0;
 
   JEids.forEach(jeId => {
@@ -4026,7 +4062,7 @@ function renderLabaRugi() {
     <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);">
       <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div>
       <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">LAPORAN LABA RUGI</div>
-      <div style="font-size:12px;color:var(--text3);">Tahun Buku: ${getActiveFY()?.year||'—'} | ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | ${co_data?.standard||'—'}</div>
+      <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Standar: ${co_data?.standard||'—'}</div>
     </div>
     <div class="report-section">
       <div class="report-section-title">PENDAPATAN</div>
@@ -4081,7 +4117,7 @@ function renderPerubahanEkuitas() {
     <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);">
       <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div>
       <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">LAPORAN PERUBAHAN EKUITAS</div>
-      <div style="font-size:12px;color:var(--text3);">Tahun Buku: ${getActiveFY()?.year||'—'} | ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}</div>
+      <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}</div>
     </div>
     <div style="max-width:560px;">
 
@@ -4213,7 +4249,7 @@ function renderNeraca() {
     <div style="text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--border);">
       <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div>
       <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">NERACA (BALANCE SHEET)</div>
-      <div style="font-size:12px;color:var(--text3);">Tahun Buku: ${getActiveFY()?.year||'—'} | Per: ${getActiveFY()?.period_end||co_data?.period_end||new Date().toISOString().split('T')[0]} | ${co_data?.standard||'—'}</div>
+      <div style="font-size:12px;color:var(--text3);">Per tanggal: ${co_data?.period_end||new Date().toISOString().split('T')[0]} | ${co_data?.standard||'—'}</div>
     </div>
 
     <!-- Status balance -->
@@ -4548,7 +4584,7 @@ function buildArusKasDetail(kategori) {
       )))
     .map(a => a.id);
 
-  const JEids = coFYFilter(DB.journal_entries)
+  const JEids = coFilter(DB.journal_entries)
     .sort((a,b) => a.date.localeCompare(b.date))
     .map(je => je.id);
   let rows = [];
@@ -4620,7 +4656,7 @@ function renderJurnalPenutup() { buatJurnalPenutup(); }
 // JURNAL PEMBALIK
 // ══════════════════════════════════════════
 function buatJurnalPembalik() {
-  const pens = coFYFilter(DB.penyesuaian);
+  const pens = coFilter(DB.penyesuaian);
   if (!pens.length) { toast('Tidak ada jurnal penyesuaian untuk dibalik','error'); return; }
   const nextYear = new Date(); nextYear.setFullYear(nextYear.getFullYear()+1); nextYear.setMonth(0); nextYear.setDate(1);
   const nextDate = nextYear.toISOString().split('T')[0];
@@ -4654,9 +4690,7 @@ function renderJurnalPembalik() { buatJurnalPembalik(); }
 function renderDashboard() {
   if (!co()) return;
   const co_data = getCompany();
-  const _fy = getActiveFY();
-  const _fyLabel = _fy ? ` | Tahun ${_fy.year}` : '';
-  document.getElementById('dash-subtitle').textContent = `${co_data?.name||'—'} — ${_fy?.period_start||co_data?.period_start||''} s/d ${_fy?.period_end||co_data?.period_end||''}${_fyLabel}`;
+  document.getElementById('dash-subtitle').textContent = `${co_data?.name||'—'} — ${co_data?.period_start||''} s/d ${co_data?.period_end||''}`;
 
   const revenues = getAccsByType('Pendapatan').filter(a=>a.balance!==0);
   const expenses  = getAccsByType('Beban').filter(a=>a.balance!==0);
@@ -4679,7 +4713,7 @@ function renderDashboard() {
   `;
 
   // Recent transactions
-  const recentTrx = coFYFilter(DB.transactions).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+  const recentTrx = coFilter(DB.transactions).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
   document.getElementById('dash-recent-tbody').innerHTML = recentTrx.map(t=>{
     const je=DB.journal_entries.find(e=>e.transaction_id==t.id);
     const jds=je?DB.journal_details.filter(d=>d.journal_id==je.id):[];
@@ -4747,7 +4781,7 @@ function saveToFile() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  toast('✅ File berhasil disimpan! Ganti file lama dengan file yang baru diunduh.', 'success', 5000);
+  toast('✅ File backup berhasil diunduh! Simpan sebagai cadangan — data utama sudah aman di IndexedDB browser ini.', 'success', 6000);
 }
 
 // ══════════════════════════════════════════
@@ -4766,23 +4800,26 @@ function importJSON(input) {
   const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     try {
       const data = JSON.parse(e.target.result);
       if (!confirm('Import akan mengganti semua data. Lanjutkan?')) return;
-      DB = data; autoSave(); updateHeader();
+      DB = data;
+      await forceSave();
+      updateHeader();
       navigate('dashboard');
-      toast('Data berhasil diimpor','success');
+      toast('✅ Data berhasil diimpor & disimpan ke IndexedDB','success');
     } catch { toast('File tidak valid','error'); }
   };
   reader.readAsText(file);
 }
 
-function clearAllData() {
+async function clearAllData() {
   if (!confirm('HAPUS SEMUA DATA? Tindakan ini tidak bisa dibatalkan!')) return;
   if (!confirm('Yakin? Semua perusahaan dan transaksi akan hilang!')) return;
   DB = {companies:[],accounts:[],transactions:[],journal_entries:[],journal_details:[],penyesuaian:[],hutang:[],piutang:[],persediaan:[],perlengkapan:[],aset_tetap:[],current_company_id:null,_id_counter:1};
-  localStorage.removeItem(DB_KEY);
+  try { await clearIDB(); } catch(_) {}
+  localStorage.removeItem(DB_KEY); // bersihkan juga localStorage lama
   updateHeader(); navigate('companies');
   toast('Semua data dihapus','info');
 }
@@ -4817,7 +4854,7 @@ function printReport(type) {
 
   if (type === 'jurnal') {
     title = 'Jurnal Umum';
-    const JEs = coFYFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date));
+    const JEs = coFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date));
     let rows = '';
     JEs.forEach(je => {
       const jds = DB.journal_details.filter(d=>d.journal_id==je.id);
@@ -4969,7 +5006,7 @@ function printReport(type) {
         const investasiIds = coFilter(DB.accounts).filter(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&!a.name.toLowerCase().includes('kas')&&!a.name.toLowerCase().includes('bank')&&!a.name.toLowerCase().includes('piutang')&&!a.name.toLowerCase().includes('persediaan')&&!a.name.toLowerCase().includes('perlengkapan')).map(a=>a.id);
         const pendanaanIds = coFilter(DB.accounts).filter(a=>a.type==='Ekuitas'||(a.type==='Kewajiban'&&(a.name.toLowerCase().includes('pinjaman')||a.name.toLowerCase().includes('hutang bank')||a.name.toLowerCase().includes('hutang jangka')||a.name.toLowerCase().includes('obligasi')))).map(a=>a.id);
         let out = '';
-        coFYFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date)).forEach(je=>{
+        coFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date)).forEach(je=>{
           const details = DB.journal_details.filter(d=>d.journal_id===je.id);
           const kasLines = details.filter(d=>kasIds.includes(d.account_id));
           if (!kasLines.length) return;
@@ -5019,7 +5056,7 @@ function printReport(type) {
         const investasiIds = coFilter(DB.accounts).filter(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&!a.name.toLowerCase().includes('kas')&&!a.name.toLowerCase().includes('bank')&&!a.name.toLowerCase().includes('piutang')&&!a.name.toLowerCase().includes('persediaan')&&!a.name.toLowerCase().includes('perlengkapan')).map(a=>a.id);
         const pendanaanIds = coFilter(DB.accounts).filter(a=>a.type==='Ekuitas'||(a.type==='Kewajiban'&&(a.name.toLowerCase().includes('pinjaman')||a.name.toLowerCase().includes('hutang bank')||a.name.toLowerCase().includes('hutang jangka')||a.name.toLowerCase().includes('obligasi')))).map(a=>a.id);
         let out = '';
-        coFYFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date)).forEach(je=>{
+        coFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date)).forEach(je=>{
           const details = DB.journal_details.filter(d=>d.journal_id===je.id);
           const kasLines = details.filter(d=>kasIds.includes(d.account_id));
           if (!kasLines.length) return;
@@ -5147,7 +5184,7 @@ function printReport(type) {
 <div class="header">
   <h1>${coName}</h1>
   <h2>${title}</h2>
-  <p>Periode: ${period}${getActiveFY() ? ' | Tahun Buku: '+getActiveFY().year : ''}</p>
+  <p>Periode: ${period}</p>
   <p>Dicetak: ${new Date().toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</p>
 </div>
 ${body}
@@ -5200,7 +5237,7 @@ function exportExcel(type) {
 
   if (type === 'jurnal' || type === 'semua') {
     const rows = [['Tanggal','No. Ref','Keterangan','Akun','Debit','Kredit']];
-    const JEs = coFYFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date));
+    const JEs = coFilter(DB.journal_entries).sort((a,b)=>a.date.localeCompare(b.date));
     JEs.forEach(je => {
       const jds = DB.journal_details.filter(d=>d.journal_id==je.id);
       let first = true;
@@ -5690,43 +5727,6 @@ document.querySelector('[onclick="openModal(\'modal-transaction\')"]')?.setAttri
 // LICENSE SYSTEM
 // ══════════════════════════════════════════
 
-
-// ══════════════════════════════════════════
-// YEAR QUICK SWITCH (Sidebar)
-// ══════════════════════════════════════════
-function switchToLatestYear() {
-  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
-  ensureFiscalYear();
-  const fys = getCompanyFYs();
-  if (!fys.length) { toast('Belum ada tahun buku','error'); return; }
-  if (DB.current_fiscal_year_id === fys[0].id) { toast('Sudah di tahun berjalan','info'); return; }
-  selectFiscalYear(fys[0].id);
-}
-
-function switchToPrevYear() {
-  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
-  ensureFiscalYear();
-  const fys = getCompanyFYs();
-  if (fys.length < 2) { toast('Belum ada tahun buku sebelumnya. Buat dulu via 📅 di header.','error',4000); return; }
-  if (DB.current_fiscal_year_id === fys[1].id) { toast('Sudah di tahun lalu','info'); return; }
-  selectFiscalYear(fys[1].id);
-}
-
-function updateSidebarYearButtons() {
-  const fys = getCompanyFYs();
-  const currBtn = document.getElementById('qs-btn-curr');
-  const prevBtn = document.getElementById('qs-btn-prev');
-  if (!currBtn || !prevBtn) return;
-  const activeId = DB.current_fiscal_year_id;
-  currBtn.classList.toggle('active', fys.length > 0 && fys[0].id === activeId);
-  prevBtn.classList.toggle('active', fys.length > 1 && fys[1].id === activeId);
-  currBtn.title = fys.length > 0 ? 'Tahun ' + fys[0].year + ' (Berjalan)' : 'Tahun Berjalan';
-  prevBtn.title = fys.length > 1 ? 'Tahun ' + fys[1].year + ' (Lalu)' : 'Belum ada tahun lalu';
-  prevBtn.style.opacity = fys.length < 2 ? '0.4' : '1';
-  currBtn.textContent = fys.length > 0 ? '📅 ' + fys[0].year : '📅 Berjalan';
-  prevBtn.textContent = fys.length > 1 ? '📅 ' + fys[1].year : '📅 Lalu';
-}
-
 const LIC_KEY = 'akpro_lic_v3';
 const LIC_SERVER = 'https://server-akuntansi-aiie.vercel.app';
 
@@ -5867,131 +5867,6 @@ function licUnlock(lic) {
     setTimeout(()=>{ toast('Selamat datang! Mulai dengan menambahkan perusahaan.','info',5000); navigate('companies'); },500);
   }
 }
-
-
-// ══════════════════════════════════════════
-// FISCAL YEAR MANAGEMENT
-// ══════════════════════════════════════════
-
-function renderFiscalYearModal() {
-  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
-  ensureFiscalYear();
-  const fys = getCompanyFYs();
-  const list = document.getElementById('fiscal-year-list');
-
-  if (!fys.length) {
-    list.innerHTML = '<div style="text-align:center;color:var(--text3);padding:16px;">Belum ada tahun buku.</div>';
-    return;
-  }
-
-  list.innerHTML = fys.map((fy, idx) => {
-    const isActive = fy.id === DB.current_fiscal_year_id;
-    const isLatest = idx === 0;
-    const jeCnt = DB.journal_entries.filter(je => je.company_id == co() && je.fiscal_year_id == fy.id).length;
-    const badge = isLatest
-      ? '<span class="year-badge-curr">Berjalan</span>'
-      : '<span class="year-badge-prev">Lalu</span>';
-    return `
-      <div class="year-card ${isActive ? 'active-year' : ''}" onclick="selectFiscalYear(${fy.id})">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:22px;">📅</span>
-          <div>
-            <div style="font-weight:800;font-size:15px;">Tahun ${fy.year} ${badge}</div>
-            <div style="font-size:12px;color:var(--text2);">${fy.period_start} s/d ${fy.period_end}</div>
-            <div style="font-size:11px;color:var(--text3);">${jeCnt} jurnal • ${fy.is_closed ? '🔒 Ditutup' : '🟢 Aktif'}</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          ${isActive ? '<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">AKTIF</span>' : ''}
-          ${!fy.is_closed && !isLatest ? `<button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();closeFiscalYear(${fy.id})">🔒 Tutup</button>` : ''}
-        </div>
-      </div>`;
-  }).join('');
-
-  // Pre-fill form tahun baru
-  const nextYear = fys.length > 0 ? fys[0].year + 1 : new Date().getFullYear();
-  document.getElementById('fy-new-year').value = nextYear;
-  document.getElementById('fy-new-start').value = nextYear + '-01-01';
-  document.getElementById('fy-new-end').value = nextYear + '-12-31';
-}
-
-function selectFiscalYear(fyId) {
-  DB.current_fiscal_year_id = fyId;
-  autoSave();
-  updateHeader();
-  closeModal('modal-fiscal-year');
-  renderPage(currentPage);
-  const fy = getFiscalYear(fyId);
-  const fys = getCompanyFYs();
-  const isLatest = fys.length > 0 && fys[0].id === fyId;
-  toast(`📅 Beralih ke Tahun ${fy?.year} (${isLatest ? 'Berjalan' : 'Lalu'})`, 'info');
-}
-
-function createFiscalYear() {
-  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
-  const year = parseInt(document.getElementById('fy-new-year').value);
-  const start = document.getElementById('fy-new-start').value;
-  const end = document.getElementById('fy-new-end').value;
-  if (!year || !start || !end) { toast('Semua field wajib diisi','error'); return; }
-  if (start >= end) { toast('Periode akhir harus setelah periode mulai','error'); return; }
-
-  // Cek duplikasi tahun
-  if (DB.fiscal_years.find(fy => fy.company_id == co() && fy.year == year)) {
-    toast('Tahun ' + year + ' sudah ada untuk perusahaan ini','error'); return;
-  }
-
-  // Carry-forward: ambil saldo akhir akun Aset/Kewajiban/Ekuitas dari tahun sebelumnya
-  const prevFYs = getCompanyFYs(); // sorted desc, semua tahun sebelumnya
-  const newFY = {
-    id: genId(), company_id: co(), year, period_start: start, period_end: end, is_closed: false
-  };
-  DB.fiscal_years.push(newFY);
-
-  // Carry-forward saldo awal per akun
-  if (prevFYs.length > 0) {
-    const prevFY = prevFYs[0]; // tahun paling baru sebelumnya
-    const prevFYId = DB.current_fiscal_year_id;
-
-    // Sementara set active ke prev FY untuk hitung saldo akhir
-    DB.current_fiscal_year_id = prevFY.id;
-
-    const accs = coFilter(DB.accounts);
-    accs.forEach(acc => {
-      // Hanya carry-forward Aset, Kewajiban, Ekuitas (neraca)
-      if (['Aset','Kewajiban','Ekuitas'].includes(acc.type)) {
-        const saldoAkhir = getAccountBalance(acc.id, true);
-        if (!acc.fy_saldo_awal) acc.fy_saldo_awal = {};
-        acc.fy_saldo_awal[newFY.id] = saldoAkhir;
-      }
-      // Pendapatan & Beban: saldo awal 0 (tidak di-carry)
-    });
-
-    // Kembalikan ke FY baru
-    DB.current_fiscal_year_id = newFY.id;
-  } else {
-    DB.current_fiscal_year_id = newFY.id;
-  }
-
-  autoSave();
-  updateHeader();
-  renderFiscalYearModal();
-  toast(`✅ Tahun Buku ${year} berhasil dibuat dengan carry-forward saldo`, 'success', 4000);
-}
-
-function closeFiscalYear(fyId) {
-  if (!confirm('Tutup tahun buku ini? Setelah ditutup, jurnal tidak bisa ditambah ke tahun ini.')) return;
-  const fy = DB.fiscal_years.find(f => f.id == fyId);
-  if (fy) { fy.is_closed = true; autoSave(); renderFiscalYearModal(); toast('Tahun buku ditutup','info'); }
-}
-
-// Override openModal untuk fiscal-year agar renderFiscalYearModal otomatis dipanggil
-// (openModal didefinisikan di bawah, jadi kita patch via event)
-document.addEventListener('click', function(e) {
-  if (e.target.closest('#year-switcher-bar')) {
-    if (co()) renderFiscalYearModal();
-    else toast('Pilih perusahaan dulu','error');
-  }
-});
 
 // ── INIT: cek lisensi saat startup ──
 (async function licInit() {
