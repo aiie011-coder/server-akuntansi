@@ -52,7 +52,8 @@ export default async function handler(req, res) {
       }
 
       case 'generate': {
-        const { name, type = 'lifetime', note = '', count = 1 } = data || {};
+        // max_devices: 1 = single, 2-20 = tim
+        const { name, type = 'lifetime', note = '', count = 1, max_devices = 1 } = data || {};
         const generated = [];
         for (let i = 0; i < Math.min(count, 20); i++) {
           const newKey = generateKey();
@@ -61,7 +62,8 @@ export default async function handler(req, res) {
             name: name || 'Tidak diisi',
             type,
             note,
-            expires: getExpiry(type)
+            expires: getExpiry(type),
+            max_devices: Math.min(Math.max(parseInt(max_devices) || 1, 1), 20)
           });
           generated.push(newKey);
         }
