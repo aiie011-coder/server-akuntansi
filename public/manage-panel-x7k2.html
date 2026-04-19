@@ -117,13 +117,17 @@ select.form-control{cursor:pointer;}
 
 <nav id="sidebar">
   <div class="sb-logo">
-    <div class="ico">📊</div>
+    <div class="ico" id="sb-logo-wrap" style="background:transparent;padding:0;overflow:hidden;">
+      <img id="sb-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;">
+      <div id="sb-logo-default" style="width:36px;height:36px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📊</div>
+    </div>
     <div><div class="txt">ZeQui Admin</div><div class="sub">v5.0 · Panel Kontrol</div></div>
   </div>
   <div class="sb-nav">
     <div class="sb-item active" onclick="showPanel('users')" id="nav-users"><span class="ico2">👥</span> Manajemen User</div>
     <div class="sb-item" onclick="showPanel('licenses')" id="nav-licenses"><span class="ico2">🔑</span> Lisensi</div>
     <div class="sb-item" onclick="showPanel('stats')" id="nav-stats"><span class="ico2">📈</span> Statistik</div>
+    <div class="sb-item" onclick="showPanel('settings')" id="nav-settings"><span class="ico2">⚙️</span> Pengaturan</div>
   </div>
   <div class="sb-footer">server-akuntansi-aiie.vercel.app</div>
 </nav>
@@ -228,6 +232,90 @@ select.form-control{cursor:pointer;}
         </div>
       </div>
     </div>
+
+    <!-- PANEL: SETTINGS -->
+    <div class="panel" id="panel-settings">
+      <div class="card">
+        <div class="card-header"><div class="card-title">⚙️ Pengaturan Aplikasi</div></div>
+        <div class="card-body">
+
+          <!-- Logo Sekarang -->
+          <div style="margin-bottom:24px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:12px;">Logo ZeQui Saat Ini</div>
+            <div id="current-logo-wrap" style="width:80px;height:80px;border:2px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--bg);overflow:hidden;">
+              <div id="current-logo-placeholder" style="font-size:32px;color:var(--text3);">📊</div>
+              <img id="current-logo-img" src="" alt="Logo" style="width:80px;height:80px;object-fit:contain;display:none;">
+            </div>
+            <div id="current-logo-url" style="font-size:11px;color:var(--text3);margin-top:6px;font-family:var(--mono);word-break:break-all;max-width:400px;"></div>
+          </div>
+
+          <!-- Upload Logo Baru -->
+          <div style="margin-bottom:20px;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:8px;">Upload Logo Baru</div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:12px;">Format: PNG, JPG, SVG. Disarankan ukuran 200×200px atau lebih, background transparan (PNG).</div>
+
+            <!-- Drop Zone -->
+            <div id="logo-dropzone"
+              style="border:2px dashed var(--border);border-radius:12px;padding:32px;text-align:center;cursor:pointer;transition:.2s;background:var(--bg);"
+              onclick="document.getElementById('logo-file-input').click()"
+              ondragover="event.preventDefault();this.style.borderColor='var(--primary)'"
+              ondragleave="this.style.borderColor='var(--border)'"
+              ondrop="handleLogoDrop(event)">
+              <div style="font-size:36px;margin-bottom:8px;">🖼️</div>
+              <div style="font-size:13px;font-weight:600;color:var(--text);">Klik atau drag & drop file logo</div>
+              <div style="font-size:11px;color:var(--text3);margin-top:4px;">PNG, JPG, SVG — Maks. 2MB</div>
+            </div>
+            <input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="handleLogoFile(this.files[0])">
+
+            <!-- Preview -->
+            <div id="logo-preview-wrap" style="display:none;margin-top:16px;padding:16px;background:var(--bg);border-radius:12px;border:1px solid var(--border);">
+              <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;">Preview Logo:</div>
+              <div style="display:flex;align-items:center;gap:16px;">
+                <!-- Preview di sidebar (dark) -->
+                <div style="background:#0f2140;padding:12px 16px;border-radius:10px;display:flex;align-items:center;gap:10px;">
+                  <img id="logo-preview-img" src="" alt="" style="width:36px;height:36px;object-fit:contain;border-radius:6px;">
+                  <div>
+                    <div style="color:#fff;font-weight:800;font-size:14px;">ZeQui</div>
+                    <div style="color:#64748b;font-size:10px;">Zenith Quality Accounting</div>
+                  </div>
+                </div>
+                <!-- Preview di background terang -->
+                <div style="background:#f0f4f8;padding:12px 16px;border-radius:10px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);">
+                  <img id="logo-preview-img2" src="" alt="" style="width:36px;height:36px;object-fit:contain;border-radius:6px;">
+                  <div>
+                    <div style="color:#1e293b;font-weight:800;font-size:14px;">ZeQui</div>
+                    <div style="color:#64748b;font-size:10px;">Zenith Quality Accounting</div>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:12px;display:flex;gap:8px;">
+                <button class="btn btn-primary" onclick="uploadLogo()">☁️ Upload & Simpan Logo</button>
+                <button class="btn btn-secondary" onclick="cancelLogoPreview()">✕ Batal</button>
+              </div>
+            </div>
+
+            <!-- Progress -->
+            <div id="logo-upload-progress" style="display:none;margin-top:12px;">
+              <div style="font-size:13px;color:var(--text2);margin-bottom:6px;">⏳ Mengupload logo...</div>
+              <div style="background:var(--border);border-radius:4px;height:6px;overflow:hidden;">
+                <div style="background:var(--primary);height:100%;width:60%;border-radius:4px;animation:progress 1.5s ease infinite alternate;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hapus Logo -->
+          <div style="border-top:1px solid var(--border);padding-top:16px;">
+            <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">Ingin kembali ke logo default (emoji 📊)?</div>
+            <button class="btn btn-danger btn-sm" onclick="deleteLogo()">🗑️ Hapus Logo & Kembali ke Default</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <style>
+    @keyframes progress { from{width:20%} to{width:90%} }
+    </style>
 
   </div>
 </div>
@@ -450,6 +538,120 @@ select.form-control{cursor:pointer;}
 const SERVER = 'https://server-akuntansi-aiie.vercel.app';
 let ADMIN_KEY = '';
 let allUsers  = [];
+let currentLogoUrl = null;
+let pendingLogoFile = null;
+
+// ─── Logo Helpers ───
+function applyLogo(url) {
+  currentLogoUrl = url;
+  if (url) {
+    // Sidebar admin
+    document.getElementById('sb-logo-img').src = url;
+    document.getElementById('sb-logo-img').style.display = 'block';
+    document.getElementById('sb-logo-default').style.display = 'none';
+    // Panel settings
+    document.getElementById('current-logo-img').src = url;
+    document.getElementById('current-logo-img').style.display = 'block';
+    document.getElementById('current-logo-placeholder').style.display = 'none';
+    document.getElementById('current-logo-url').textContent = url;
+  } else {
+    document.getElementById('sb-logo-img').style.display = 'none';
+    document.getElementById('sb-logo-default').style.display = 'flex';
+    document.getElementById('current-logo-img').style.display = 'none';
+    document.getElementById('current-logo-placeholder').style.display = 'flex';
+    document.getElementById('current-logo-url').textContent = 'Belum ada logo — menggunakan default';
+  }
+}
+
+async function loadLogoFromServer() {
+  try {
+    const r = await fetch(`${SERVER}/api/settings`);
+    if (r.ok) {
+      const data = await r.json();
+      if (data.logo_url) applyLogo(data.logo_url);
+    }
+  } catch(e) { /* offline — tidak apa */ }
+}
+
+function handleLogoFile(file) {
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { toast('File terlalu besar! Maks. 2MB', 'error'); return; }
+  pendingLogoFile = file;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const url = e.target.result;
+    document.getElementById('logo-preview-img').src  = url;
+    document.getElementById('logo-preview-img2').src = url;
+    document.getElementById('logo-preview-wrap').style.display = 'block';
+    document.getElementById('logo-dropzone').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleLogoDrop(e) {
+  e.preventDefault();
+  document.getElementById('logo-dropzone').style.borderColor = 'var(--border)';
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) handleLogoFile(file);
+  else toast('File harus berupa gambar', 'error');
+}
+
+function cancelLogoPreview() {
+  pendingLogoFile = null;
+  document.getElementById('logo-preview-wrap').style.display = 'none';
+  document.getElementById('logo-dropzone').style.display = 'block';
+  document.getElementById('logo-file-input').value = '';
+}
+
+async function uploadLogo() {
+  if (!pendingLogoFile) return;
+  document.getElementById('logo-preview-wrap').style.display = 'none';
+  document.getElementById('logo-upload-progress').style.display = 'block';
+  try {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64 = e.target.result;
+      const r = await fetch(`${SERVER}/api/admin/upload-logo`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          admin_key: ADMIN_KEY,
+          image_base64: base64,
+          file_name: pendingLogoFile.name,
+          mime_type: pendingLogoFile.type,
+        }),
+      });
+      const data = await r.json();
+      document.getElementById('logo-upload-progress').style.display = 'none';
+      document.getElementById('logo-dropzone').style.display = 'block';
+      if (data.success) {
+        applyLogo(data.logo_url);
+        toast('✅ Logo berhasil diupload!', 'success');
+        pendingLogoFile = null;
+        document.getElementById('logo-file-input').value = '';
+      } else {
+        toast('❌ ' + (data.error || 'Gagal upload'), 'error');
+      }
+    };
+    reader.readAsDataURL(pendingLogoFile);
+  } catch(e) {
+    document.getElementById('logo-upload-progress').style.display = 'none';
+    document.getElementById('logo-dropzone').style.display = 'block';
+    toast('❌ Gagal terhubung ke server', 'error');
+  }
+}
+
+async function deleteLogo() {
+  if (!confirm('Hapus logo dan kembali ke default (📊)?')) return;
+  try {
+    const r = await fetch(`${SERVER}/api/admin/upload-logo`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ admin_key: ADMIN_KEY, image_base64: '', file_name: '', delete_logo: true }),
+    });
+    applyLogo(null);
+    toast('✅ Logo dihapus', 'success');
+  } catch(e) { toast('❌ Gagal terhubung', 'error'); }
 
 // ─── Admin Login ───
 function adminLogin() {
@@ -466,6 +668,7 @@ if (savedKey) { ADMIN_KEY = savedKey; document.getElementById('admin-login').sty
 // ─── Init ───
 async function init() {
   updateServerStatus();
+  await loadLogoFromServer();
   await loadUsers();
 }
 
@@ -799,7 +1002,12 @@ function showPanel(name) {
   document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
   document.getElementById('panel-' + name)?.classList.add('active');
   document.getElementById('nav-' + name)?.classList.add('active');
-  const titles = { users:'👥 Manajemen User & Paket', licenses:'🔑 Lisensi', stats:'📊 Statistik' };
+  const titles = {
+    users:'👥 Manajemen User & Paket',
+    licenses:'🔑 Lisensi',
+    stats:'📊 Statistik',
+    settings:'⚙️ Pengaturan Aplikasi'
+  };
   document.getElementById('topbar-title').textContent = titles[name] || '';
 }
 
