@@ -1,12 +1,8 @@
-// ============================================================
-// AkuntansiPro — Admin API Endpoint
 // File: api/admin.js
-// ============================================================
-
-import {
+const {
   getLicense, saveLicense, updateLicenseStatus,
   resetLicenseHWID, listAllLicenses, deleteLicense
-} from '../lib/db.js';
+} = require('../lib/db');
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET || '';
 
@@ -29,7 +25,7 @@ function getExpiry(type) {
   return d.toISOString().split('T')[0];
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -52,7 +48,6 @@ export default async function handler(req, res) {
       }
 
       case 'generate': {
-        // max_devices: 1 = single, 2-20 = tim
         const { name, type = 'lifetime', note = '', count = 1, max_devices = 1 } = data || {};
         const generated = [];
         for (let i = 0; i < Math.min(count, 20); i++) {
@@ -95,4 +90,4 @@ export default async function handler(req, res) {
     console.error('Admin API error:', err);
     return res.status(500).json({ error: err.message });
   }
-}
+};
