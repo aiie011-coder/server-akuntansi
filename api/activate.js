@@ -46,19 +46,57 @@ export default async function handler(req, res) {
     if (license.expires && new Date(license.expires) < new Date())
       return res.json({ valid: false, message: `Lisensi telah kadaluarsa sejak ${new Date(license.expires).toLocaleDateString('id-ID')}.` });
 
-    if (license.hwid && license.hwid !== hwid)
-      return res.json({ valid: false, message: 'Lisensi ini sudah terdaftar di perangkat lain. Hubungi penjual untuk reset.' });
+    // Normalisasi hwids — kompatibel dengan data lama yang belum punya kolom hwids
+    const currentHwids = Array.isArray(license.hwids) ? license.hwids : 
+                         (license.hwid ? [license.hwid] : []);
+    const maxDevices = license.max_devices || 1;
 
-    if (!license.hwid) {
-      await activateLicense(cleanKey, hwid);
+    // Perangkat ini sudah terdaftar — langsung izinkan masuk
+    if (currentHwids.includes(hwid)) {
+      return res.json({
+        valid: true,
+        message: `Selamat datang kembali, ${license.name || 'Pengguna'}!`,
+        expires: license.expires || null,
+        name: license.name || '',
+        type: license.type || 'lifetime',
+        devices: currentHwids.length,
+        max_devices: maxDevices
+      });
     }
+
+    // Perangkat berbeda — cek apakah lisensi single dan sudah dipakai perangkat lain
+    if (maxDevices === 1 && currentHwids.length >= 1) {
+      return res.json({
+        valid: false,
+        message: 'Lisensi ini sudah terdaftar di perangkat lain. Hubungi penjual untuk reset.'
+      });
+    }
+
+    // Coba aktivasi (akan throw jika sudah penuh)
+    try {
+      await activateLicense(cleanKey, hwid);
+    } catch (err) {
+      if (err.message.startsWith('DEVICE_LIMIT:')) {
+        const limit = err.message.split(':')[1];
+        return res.json({
+          valid: false,
+          message: `Lisensi Tim ini sudah mencapai batas ${limit} perangkat. Hubungi penjual untuk upgrade.`
+        });
+      }
+      throw err;
+    }
+
+    // Hitung jumlah perangkat setelah aktivasi
+    const newCount = currentHwids.length + 1;
 
     return res.json({
       valid: true,
       message: `Selamat datang, ${license.name || 'Pengguna'}! Lisensi berhasil diaktivasi.`,
       expires: license.expires || null,
       name: license.name || '',
-      type: license.type || 'lifetime'
+      type: license.type || 'lifetime',
+      devices: newCount,
+      max_devices: maxDevices
     });
 
   } catch (err) {
