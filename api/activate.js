@@ -1,23 +1,7 @@
-// ============================================================
-// AkuntansiPro — License Activation Endpoint
 // File: api/activate.js
-// ============================================================
+const { getLicense, activateLicense } = require('../lib/db');
 
-import { getLicense, activateLicense } from '../lib/db.js';
-
-async function parseBody(req) {
-  return new Promise((resolve, reject) => {
-    let body = '';
-    req.on('data', chunk => body += chunk);
-    req.on('end', () => {
-      try { resolve(JSON.parse(body)); }
-      catch { resolve({}); }
-    });
-    req.on('error', reject);
-  });
-}
-
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -26,8 +10,7 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const body = await parseBody(req);
-    const { key, hwid } = body;
+    const { key, hwid } = req.body || {};
 
     if (!key || typeof key !== 'string')
       return res.status(400).json({ valid: false, message: 'Kode lisensi tidak boleh kosong.' });
@@ -46,12 +29,10 @@ export default async function handler(req, res) {
     if (license.expires && new Date(license.expires) < new Date())
       return res.json({ valid: false, message: `Lisensi telah kadaluarsa sejak ${new Date(license.expires).toLocaleDateString('id-ID')}.` });
 
-    // Normalisasi hwids — kompatibel dengan data lama yang belum punya kolom hwids
-    const currentHwids = Array.isArray(license.hwids) ? license.hwids : 
+    const currentHwids = Array.isArray(license.hwids) ? license.hwids :
                          (license.hwid ? [license.hwid] : []);
     const maxDevices = license.max_devices || 1;
 
-    // Perangkat ini sudah terdaftar — langsung izinkan masuk
     if (currentHwids.includes(hwid)) {
       return res.json({
         valid: true,
@@ -64,7 +45,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Perangkat berbeda — cek apakah lisensi single dan sudah dipakai perangkat lain
     if (maxDevices === 1 && currentHwids.length >= 1) {
       return res.json({
         valid: false,
@@ -72,7 +52,6 @@ export default async function handler(req, res) {
       });
     }
 
-    // Coba aktivasi (akan throw jika sudah penuh)
     try {
       await activateLicense(cleanKey, hwid);
     } catch (err) {
@@ -86,7 +65,6 @@ export default async function handler(req, res) {
       throw err;
     }
 
-    // Hitung jumlah perangkat setelah aktivasi
     const newCount = currentHwids.length + 1;
 
     return res.json({
@@ -103,4 +81,4 @@ export default async function handler(req, res) {
     console.error('Activation error:', err);
     return res.status(500).json({ valid: false, message: 'Terjadi kesalahan server. Coba lagi.' });
   }
-}
+};
