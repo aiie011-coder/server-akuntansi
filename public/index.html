@@ -402,6 +402,42 @@ textarea.form-control { resize:vertical; min-height:80px; }
   display:flex; justify-content:space-between; align-items:center; z-index:200;
 }
 #lic-info-bar span { font-family:var(--mono); }
+
+/* ─── PLAN / PAKET SYSTEM ─── */
+.nav-locked { opacity: 0.5; }
+.nav-locked:hover { background: rgba(239,68,68,.08) !important; color: #f87171 !important; cursor: pointer; }
+.plan-lock { font-size:11px; }
+.plan-badge-nav {
+  margin-left:auto; font-size:10px; font-weight:700; padding:2px 7px;
+  border-radius:20px; background:rgba(245,158,11,.15); color:#f59e0b;
+}
+
+#expired-banner {
+  display:none; position:fixed; top:0; left:0; right:0; z-index:9999;
+  background:#ef4444; color:#fff; padding:8px 24px;
+  font-size:13px; font-weight:700; align-items:center; justify-content:center; gap:12px;
+}
+#expired-banner a { color:#fff; text-decoration:underline; cursor:pointer; }
+
+/* Modal upgrade */
+.upgrade-modal-body { text-align:center; padding:32px 24px 24px; }
+.upgrade-icon { font-size:48px; margin-bottom:12px; }
+.upgrade-title { font-size:20px; font-weight:800; color:var(--text); margin-bottom:8px; }
+.upgrade-desc { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:24px; }
+.upgrade-plans { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:20px; }
+.upgrade-plan-card {
+  border:1.5px solid var(--border); border-radius:var(--radius); padding:14px 10px;
+  text-align:center; transition:.2s; cursor:default;
+}
+.upgrade-plan-card.recommended { border-color:#8b5cf6; background:rgba(139,92,246,.06); }
+.upgrade-plan-card .plan-name { font-weight:800; font-size:14px; margin-bottom:6px; }
+.upgrade-plan-card .plan-price { font-size:12px; color:var(--text2); margin-bottom:8px; }
+.upgrade-plan-card .plan-features { font-size:11px; color:var(--text3); line-height:1.8; text-align:left; }
+.upgrade-plan-card.recommended .plan-name { color:#8b5cf6; }
+.current-plan-badge {
+  display:inline-block; background:rgba(37,99,235,.1); color:var(--primary-light);
+  font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; margin-bottom:20px;
+}
 </style>
 </head>
 <body>
@@ -428,9 +464,15 @@ textarea.form-control { resize:vertical; min-height:80px; }
   </div>
 </div>
 
+<!-- EXPIRED BANNER -->
+<div id="expired-banner">
+  ⚠️ Masa aktif paket Anda sudah berakhir. Data masih bisa dilihat, tapi fitur terbatas.
+  <a onclick="showUpgradeModal('komparasi')">Perpanjang sekarang →</a>
+</div>
+
 <!-- LICENSE INFO BAR (shown when activated) -->
 <div id="lic-info-bar" style="display:none;">
-  <span>✅ Lisensi Aktif</span>
+  <span>✅ Lisensi Aktif &nbsp;|&nbsp; <span id="lic-info-plan" style="font-weight:700;">Trial</span></span>
   <span id="lic-info-key" style="color:rgba(148,163,184,.4);">-</span>
   <span id="lic-info-exp"></span>
 </div>
@@ -582,7 +624,10 @@ textarea.form-control { resize:vertical; min-height:80px; }
     <div id="page-companies" class="page">
       <div class="page-header">
         <div><div class="page-title">Perusahaan</div><div class="page-subtitle">Kelola data perusahaan Anda</div></div>
-        <div class="page-actions"><button class="btn btn-primary" onclick="openCompanyModal()">➕ Tambah Perusahaan</button></div>
+        <div class="page-actions">
+          <span id="co-limit-badge" style="font-size:12px;color:var(--text3);margin-right:8px;"></span>
+          <button class="btn btn-primary" onclick="openCompanyModal()">➕ Tambah Perusahaan</button>
+        </div>
       </div>
       <div id="company-cards" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div>
     </div>
@@ -1670,6 +1715,64 @@ textarea.form-control { resize:vertical; min-height:80px; }
   </div>
 </div>
 
+<!-- ═══ UPGRADE MODAL ═══ -->
+<div class="modal-overlay" id="modal-upgrade">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title">🚀 Upgrade Paket</div>
+      <button class="modal-close" onclick="closeModal('modal-upgrade')">✕</button>
+    </div>
+    <div class="upgrade-modal-body">
+      <div class="upgrade-icon">🔒</div>
+      <div class="upgrade-title">Fitur Ini Memerlukan Upgrade</div>
+      <div class="upgrade-desc">
+        <strong id="upgrade-modal-feature">Fitur Premium</strong> tidak tersedia di paket Anda saat ini.<br>
+        Upgrade ke paket <strong id="upgrade-modal-plan">Pro</strong> untuk mengakses fitur ini dan banyak fitur lainnya.
+      </div>
+      <div class="current-plan-badge">Paket aktif Anda: <span id="upgrade-modal-current">Trial</span></div>
+      <div class="upgrade-plans">
+        <div class="upgrade-plan-card">
+          <div class="plan-name" style="color:#3b82f6;">Starter</div>
+          <div class="plan-price">Untuk UMKM &amp; pemula</div>
+          <div class="plan-features">
+            ✓ 3 perusahaan<br>
+            ✓ Export Excel<br>
+            ✓ Print lengkap<br>
+            ✓ Jurnal Penutup<br>
+            ✓ Jurnal Pembalik
+          </div>
+        </div>
+        <div class="upgrade-plan-card recommended">
+          <div class="plan-name">Pro ⭐</div>
+          <div class="plan-price">Untuk bisnis berkembang</div>
+          <div class="plan-features">
+            ✓ 10 perusahaan<br>
+            ✓ Semua fitur Starter<br>
+            ✓ Aset Tetap (2 metode)<br>
+            ✓ Komparasi Multi-Tahun<br>
+            ✓ Modul SAP (LRA/LSAL)
+          </div>
+        </div>
+        <div class="upgrade-plan-card">
+          <div class="plan-name" style="color:#10b981;">Enterprise</div>
+          <div class="plan-price">Untuk organisasi besar</div>
+          <div class="plan-features">
+            ✓ Perusahaan tak terbatas<br>
+            ✓ Semua fitur Pro<br>
+            ✓ Multi-user / seat<br>
+            ✓ Prioritas support<br>
+            ✓ Konfigurasi khusus
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content:center;gap:12px;">
+      <button class="btn btn-secondary" onclick="closeModal('modal-upgrade')">Nanti Saja</button>
+      <button class="btn btn-primary" onclick="closeModal('modal-upgrade');toast('Hubungi penjual untuk upgrade paket Anda.','info',5000);">💬 Hubungi Penjual</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast Container -->
 <div id="toast-container"></div>
 
@@ -1898,6 +2001,19 @@ let currentPage = 'dashboard';
 let chartRevExp = null, chartAsset = null;
 
 function navigate(page) {
+  // ── Cek akses paket sebelum navigasi ──
+  const PLAN_GATED_PAGES = {
+    'jurnal-penutup': 'jurnal-penutup',
+    'jurnal-pembalik': 'jurnal-pembalik',
+    'komparasi': 'komparasi',
+    'lra': 'lra',
+    'lsal': 'lsal',
+  };
+  if (__licenseVerified && PLAN_GATED_PAGES[page] && !canAccess(PLAN_GATED_PAGES[page])) {
+    showUpgradeModal(PLAN_GATED_PAGES[page]);
+    return;
+  }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const pageEl = document.getElementById('page-' + page);
@@ -2035,6 +2151,19 @@ function filterTrxDate() {
 // COMPANIES
 // ══════════════════════════════════════════
 function renderCompanies() {
+  // Tampilkan badge sisa slot perusahaan
+  const limitBadge = document.getElementById('co-limit-badge');
+  if (limitBadge && __planConfig) {
+    const max = __planConfig.max_companies || 1;
+    const used = DB.companies.length;
+    const remaining = Math.max(0, max - used);
+    if (max < 999) {
+      limitBadge.textContent = `${used}/${max} perusahaan`;
+      limitBadge.style.color = remaining === 0 ? '#ef4444' : 'var(--text3)';
+    } else {
+      limitBadge.textContent = `${used} perusahaan`;
+    }
+  }
   const c = document.getElementById('company-cards');
   if (!DB.companies.length) {
     c.innerHTML = `<div class="empty-state"><div class="empty-icon">🏢</div><p>Belum ada perusahaan. Klik "Tambah Perusahaan" untuk memulai.</p></div>`;
@@ -2061,6 +2190,12 @@ function renderCompanies() {
 }
 
 function openCompanyModal() {
+  const maxCo = (__planConfig && __planConfig.max_companies) || 1;
+  if (__licenseVerified && DB.companies.length >= maxCo) {
+    toast(`Paket ${__planConfig.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
+    showUpgradeModal('companies');
+    return;
+  }
   document.getElementById('company-edit-id').value = '';
   document.getElementById('co-name').value = '';
   document.getElementById('co-standard').value = 'SAK EMKM';
@@ -2074,6 +2209,16 @@ function saveCompany() {
   const name = document.getElementById('co-name').value.trim();
   if (!name) { toast('Nama perusahaan wajib diisi','error'); return; }
   const id = document.getElementById('company-edit-id').value;
+  // ── Cek batas perusahaan sesuai paket ──
+  if (!id) {
+    const maxCo = (__planConfig && __planConfig.max_companies) || 1;
+    if (DB.companies.length >= maxCo) {
+      closeModal('modal-company');
+      toast(`Paket ${__planConfig.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
+      showUpgradeModal('companies');
+      return;
+    }
+  }
   const obj = {
     id: id ? parseInt(id) : genId(),
     name, standard: document.getElementById('co-standard').value,
@@ -4072,6 +4217,13 @@ function deletePerlengkapan(id) {
 
 // Toggle tampilan field tarif untuk metode saldo menurun
 function toggleTarifSaldoMenurun() {
+  // Cek akses paket untuk metode saldo menurun
+  const metodeEl = document.getElementById('aset-metode-penyusutan');
+  if (metodeEl && metodeEl.value === 'saldo-menurun' && !canAccess('aset_saldo_menurun')) {
+    metodeEl.value = 'garis-lurus';
+    showUpgradeModal('aset_saldo_menurun');
+    return;
+  }
   const metode = document.getElementById('aset-metode-penyusutan').value;
   const grup = document.getElementById('tarif-sm-group');
   if (grup) grup.style.display = (metode==='saldo-menurun') ? 'flex' : 'none';
@@ -6076,6 +6228,11 @@ document.addEventListener('click', e => {
 // PRINT — buka jendela cetak khusus
 // ══════════════════════════════════════════
 function printReport(type) {
+  // Laporan dasar selalu boleh dicetak, hanya "semua" yang dikunci
+  if (type === 'semua' && !canAccess('print_full')) {
+    showUpgradeModal('print_full');
+    return;
+  }
   document.querySelectorAll('[id$="-dropdown"]').forEach(d => d.style.display = 'none');
   if (!co()) { toast('Pilih perusahaan terlebih dahulu','error'); return; }
   const co_data = getCompany();
@@ -6552,6 +6709,10 @@ function printPage() { printReport(currentPage); }
 // EXPORT EXCEL — menggunakan SheetJS
 // ══════════════════════════════════════════
 function exportExcel(type) {
+  if (!canAccess('export')) {
+    showUpgradeModal('export');
+    return;
+  }
   document.querySelectorAll('[id$="-dropdown"]').forEach(d => d.style.display = 'none');
   if (!co()) { toast('Pilih perusahaan terlebih dahulu','error'); return; }
   if (typeof XLSX === 'undefined') { toast('Library Excel belum siap. Coba lagi sebentar.','error'); return; }
@@ -7471,6 +7632,258 @@ document.querySelector('[onclick="openModal(\'modal-transaction\')"]')?.setAttri
 const LIC_KEY = 'akpro_lic_v3';
 const LIC_SERVER = 'https://server-akuntansi-aiie.vercel.app';
 
+// ══════════════════════════════════════════
+// PLAN / PAKET SYSTEM
+// ══════════════════════════════════════════
+const PLAN_KEY = '__zq_plan_cfg__';
+
+// Konfigurasi default sebelum server menjawab (semua dikunci)
+let __planConfig = {
+  plan: 'trial',
+  plan_label: 'Trial',
+  expiry_date: null,
+  is_expired: false,
+  max_companies: 1,
+  export_enabled: false,
+  print_full: false,         // false = hanya laporan dasar
+  jurnal_penutup_enabled: false,
+  jurnal_pembalik_enabled: false,
+  aset_saldo_menurun: false, // metode declining balance
+  komparasi_enabled: false,
+  lra_lsal_enabled: false,
+  locked_modules: ['komparasi','lra','lsal'],
+  max_seats: 1
+};
+
+// Label paket untuk tampilan UI
+const PLAN_LABELS = {
+  trial:      { label: 'Trial',      color: '#f59e0b', bg: 'rgba(245,158,11,.12)'  },
+  starter:    { label: 'Starter',    color: '#3b82f6', bg: 'rgba(59,130,246,.12)'  },
+  pro:        { label: 'Pro',        color: '#8b5cf6', bg: 'rgba(139,92,246,.12)'  },
+  enterprise: { label: 'Enterprise', color: '#10b981', bg: 'rgba(16,185,129,.12)'  },
+};
+
+// Definisi pembatasan per paket — digunakan server DAN lokal sebagai fallback
+const PLAN_DEFAULTS = {
+  trial: {
+    plan: 'trial', plan_label: 'Trial',
+    max_companies: 1, export_enabled: false, print_full: false,
+    jurnal_penutup_enabled: false, jurnal_pembalik_enabled: false,
+    aset_saldo_menurun: false, komparasi_enabled: false, lra_lsal_enabled: false,
+    locked_modules: ['komparasi','lra','lsal'], max_seats: 1
+  },
+  starter: {
+    plan: 'starter', plan_label: 'Starter',
+    max_companies: 3, export_enabled: true, print_full: true,
+    jurnal_penutup_enabled: true, jurnal_pembalik_enabled: true,
+    aset_saldo_menurun: false, komparasi_enabled: false, lra_lsal_enabled: false,
+    locked_modules: ['komparasi','lra','lsal'], max_seats: 1
+  },
+  pro: {
+    plan: 'pro', plan_label: 'Pro',
+    max_companies: 10, export_enabled: true, print_full: true,
+    jurnal_penutup_enabled: true, jurnal_pembalik_enabled: true,
+    aset_saldo_menurun: true, komparasi_enabled: true, lra_lsal_enabled: true,
+    locked_modules: [], max_seats: 1
+  },
+  enterprise: {
+    plan: 'enterprise', plan_label: 'Enterprise',
+    max_companies: 999, export_enabled: true, print_full: true,
+    jurnal_penutup_enabled: true, jurnal_pembalik_enabled: true,
+    aset_saldo_menurun: true, komparasi_enabled: true, lra_lsal_enabled: true,
+    locked_modules: [], max_seats: 99
+  }
+};
+
+// Ambil planConfig dari server (dipanggil setelah lisensi valid)
+async function fetchPlanConfig(licKey) {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 8000);
+    const resp = await fetch(LIC_SERVER + '/api/plan-config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: licKey, hwid: getHWID(), app: 'zequi-v4' }),
+      signal: ctrl.signal
+    });
+    clearTimeout(t);
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data && data.plan) {
+        __planConfig = { ...PLAN_DEFAULTS[data.plan] || PLAN_DEFAULTS.trial, ...data };
+        // Cek expired
+        if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
+          __planConfig.is_expired = true;
+        }
+        // Cache lokal (untuk mode offline singkat)
+        localStorage.setItem(PLAN_KEY, JSON.stringify({ ...__planConfig, _cached_at: Date.now() }));
+        return true;
+      }
+    }
+  } catch(e) {
+    // Offline — coba dari cache lokal
+    const cached = localStorage.getItem(PLAN_KEY);
+    if (cached) {
+      try {
+        const c = JSON.parse(cached);
+        // Cache valid max 3 hari
+        if (Date.now() - (c._cached_at || 0) < 3 * 24 * 3600 * 1000) {
+          __planConfig = c;
+          return true;
+        }
+      } catch(_) {}
+    }
+  }
+  return false;
+}
+
+// Cek apakah fitur tertentu boleh diakses
+function canAccess(feature) {
+  if (!__planConfig) return false;
+  if (__planConfig.is_expired) return false;
+  if (__planConfig.locked_modules && __planConfig.locked_modules.includes(feature)) return false;
+  const map = {
+    export:           __planConfig.export_enabled,
+    print_full:       __planConfig.print_full,
+    'jurnal-penutup': __planConfig.jurnal_penutup_enabled,
+    'jurnal-pembalik':__planConfig.jurnal_pembalik_enabled,
+    aset_saldo_menurun: __planConfig.aset_saldo_menurun,
+    komparasi:        __planConfig.komparasi_enabled,
+    lra:              __planConfig.lra_lsal_enabled,
+    lsal:             __planConfig.lra_lsal_enabled,
+  };
+  if (feature in map) return !!map[feature];
+  return true; // fitur lain tidak dibatasi
+}
+
+// Tampilkan modal upgrade
+function showUpgradeModal(feature) {
+  const labels = {
+    export:           'Export Excel & Multi-Sheet',
+    print_full:       'Print Laporan Lengkap',
+    'jurnal-penutup': 'Jurnal Penutup',
+    'jurnal-pembalik':'Jurnal Pembalik',
+    aset_saldo_menurun:'Metode Saldo Menurun (Aset Tetap)',
+    komparasi:        'Komparasi Multi-Tahun',
+    lra:              'Laporan Realisasi Anggaran (LRA)',
+    lsal:             'Laporan Saldo Anggaran Lebih (LSAL)',
+    companies:        'Tambah Perusahaan (melebihi batas paket)',
+  };
+  const featureLabel = labels[feature] || feature;
+  const planNeeded = ['export','print_full','jurnal-penutup','jurnal-pembalik'].includes(feature) ? 'Starter' :
+                     ['aset_saldo_menurun'].includes(feature) ? 'Pro' :
+                     ['komparasi','lra','lsal'].includes(feature) ? 'Pro' : 'Pro';
+  document.getElementById('upgrade-modal-feature').textContent = featureLabel;
+  document.getElementById('upgrade-modal-plan').textContent = planNeeded;
+  document.getElementById('upgrade-modal-current').textContent = __planConfig.plan_label || __planConfig.plan;
+  openModal('modal-upgrade');
+}
+
+// Terapkan semua pembatasan visual berdasarkan planConfig
+function applyPlanRestrictions() {
+  const cfg = __planConfig;
+  if (!cfg) return;
+
+  // ── 1. Badge paket di info bar
+  const planInfo = PLAN_LABELS[cfg.plan] || PLAN_LABELS.trial;
+  const planBadge = document.getElementById('plan-badge');
+  if (planBadge) {
+    planBadge.textContent = planInfo.label;
+    planBadge.style.color = planInfo.color;
+    planBadge.style.background = planInfo.bg;
+  }
+
+  // ── 2. Expired banner
+  if (cfg.is_expired) {
+    const expBanner = document.getElementById('expired-banner');
+    if (expBanner) expBanner.style.display = 'flex';
+  }
+
+  // ── 3. Sembunyikan/kunci item navigasi
+  const lockedNavPages = cfg.locked_modules || [];
+  lockedNavPages.forEach(mod => {
+    // Sembunyikan nav item untuk modul yang dikunci plan (bukan SAP)
+    if (!['lra','lsal'].includes(mod)) {
+      const navEl = document.querySelector(`.nav-item[onclick="navigate('${mod}')"]`);
+      if (navEl) {
+        navEl.innerHTML = navEl.innerHTML + ' <span class="plan-lock">🔒</span>';
+        navEl.classList.add('nav-locked');
+        navEl._lockedFeature = mod;
+      }
+    }
+  });
+
+  // ── 4. Jurnal Penutup & Pembalik — kunci nav jika tidak diizinkan
+  if (!cfg.jurnal_penutup_enabled) {
+    const el = document.querySelector(`.nav-item[onclick="navigate('jurnal-penutup')"]`);
+    if (el && !el.classList.contains('nav-locked')) {
+      el.innerHTML = el.innerHTML + ' <span class="plan-lock">🔒</span>';
+      el.classList.add('nav-locked');
+      el._lockedFeature = 'jurnal-penutup';
+    }
+  }
+  if (!cfg.jurnal_pembalik_enabled) {
+    const el = document.querySelector(`.nav-item[onclick="navigate('jurnal-pembalik')"]`);
+    if (el && !el.classList.contains('nav-locked')) {
+      el.innerHTML = el.innerHTML + ' <span class="plan-lock">🔒</span>';
+      el.classList.add('nav-locked');
+      el._lockedFeature = 'jurnal-pembalik';
+    }
+  }
+
+  // ── 5. Export: nonaktifkan semua item dropdown export jika tidak diizinkan
+  if (!cfg.export_enabled) {
+    const exportBtn = document.querySelector('#excel-dropdown-wrap .hdr-btn');
+    if (exportBtn) {
+      exportBtn.title = 'Export tersedia di paket Starter ke atas';
+      exportBtn.onclick = () => showUpgradeModal('export');
+    }
+    // Dashboard export button
+    document.querySelectorAll('[onclick*="exportExcel"]').forEach(btn => {
+      btn.dataset.originalOnclick = btn.getAttribute('onclick');
+      btn.setAttribute('onclick', "showUpgradeModal('export')");
+      btn.title = 'Upgrade ke Starter untuk Export Excel';
+    });
+    document.querySelectorAll('.dropdown-item[onclick*="exportExcel"]').forEach(item => {
+      item.style.opacity = '0.4';
+      item.style.cursor = 'not-allowed';
+      item.dataset.originalOnclick = item.getAttribute('onclick');
+      item.setAttribute('onclick', "showUpgradeModal('export')");
+    });
+  }
+
+  // ── 6. Print: batasi jika tidak diizinkan
+  if (!cfg.print_full) {
+    const printBtn = document.querySelector('#print-dropdown-wrap .hdr-btn');
+    if (printBtn) {
+      printBtn.title = 'Print lengkap tersedia di paket Starter ke atas';
+    }
+    // Hanya blokir "Cetak Semua"
+    const cetakSemua = document.querySelector('.dropdown-item[onclick*="printReport(\'semua\')"]');
+    if (cetakSemua) {
+      cetakSemua.style.opacity = '0.4';
+      cetakSemua.setAttribute('onclick', "showUpgradeModal('print_full')");
+    }
+  }
+
+  // ── 7. Limit perusahaan (diterapkan juga di saveCompany())
+  // Sudah di-handle di saveCompany()
+
+  // ── 8. Tambahkan info paket di header
+  const hdrRight = document.getElementById('header-right');
+  if (hdrRight) {
+    const planSpan = document.createElement('span');
+    planSpan.id = 'plan-badge';
+    planSpan.style.cssText = `font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;cursor:pointer;margin-right:4px;`;
+    planSpan.textContent = planInfo.label;
+    planSpan.style.color = planInfo.color;
+    planSpan.style.background = planInfo.bg;
+    planSpan.title = `Paket aktif: ${planInfo.label}`;
+    planSpan.onclick = () => showUpgradeModal('komparasi'); // buka modal info paket
+    hdrRight.insertBefore(planSpan, hdrRight.firstChild);
+  }
+}
+
 // ── Enkripsi sederhana untuk token lokal ──
 function licEncode(str) {
   return btoa(encodeURIComponent(str)).split('').reverse().join('');
@@ -7634,18 +8047,43 @@ async function licActivate() {
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ── Buka aplikasi setelah lisensi valid ──
-function licUnlock(lic) {
+async function licUnlock(lic) {
   document.getElementById('license-overlay').classList.add('hidden');
   licShowInfoBar(lic);
+
+  // Ambil konfigurasi paket dari server
+  const planOk = await fetchPlanConfig(lic.key);
+  if (!planOk) {
+    toast('\u26a0\ufe0f Konfigurasi paket tidak bisa dimuat \u2014 menggunakan mode Trial offline.', 'info', 5000);
+  }
+
   // Jalankan app normal
-  initDB();
+  await initDB();
   updateHeader();
   navigate('dashboard');
+
+  // Terapkan pembatasan paket (setelah DOM siap)
+  setTimeout(applyPlanRestrictions, 300);
+
   if (!DB.companies.length) {
-    setTimeout(()=>{ toast('Selamat datang! Mulai dengan menambahkan perusahaan.','info',5000); navigate('companies'); },500);
+    setTimeout(()=>{ toast('Selamat datang! Mulai dengan menambahkan perusahaan.','info',5000); navigate('companies'); },600);
   }
 }
+
 
 // ── INIT: cek lisensi saat startup ──
 (async function licInit() {
