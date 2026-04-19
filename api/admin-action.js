@@ -1,5 +1,7 @@
+// ============================================================
+// AkuntansiPro — Admin Action Endpoint
 // File: api/admin-action.js
-// Endpoint khusus untuk admin panel yang sudah login via cookie
+// ============================================================
 
 import {
   getLicense, saveLicense, updateLicenseStatus,
@@ -64,31 +66,44 @@ export default async function handler(req, res) {
         const licenses = await listAllLicenses();
         return res.json({ success: true, licenses });
       }
+
       case 'generate': {
-        const { name, type = 'lifetime', note = '', count = 1 } = data || {};
+        // max_devices: 1 = single, 2-20 = tim
+        const { name, type = 'lifetime', note = '', count = 1, max_devices = 1 } = data || {};
         const generated = [];
         for (let i = 0; i < Math.min(count, 20); i++) {
           const newKey = generateKey();
-          await saveLicense({ key: newKey, name: name || 'Tidak diisi', type, note, expires: getExpiry(type) });
+          await saveLicense({
+            key: newKey,
+            name: name || 'Tidak diisi',
+            type,
+            note,
+            expires: getExpiry(type),
+            max_devices: Math.min(Math.max(parseInt(max_devices) || 1, 1), 20)
+          });
           generated.push(newKey);
         }
         return res.json({ success: true, keys: generated });
       }
+
       case 'updateStatus': {
         if (!key) return res.status(400).json({ error: 'key required' });
         await updateLicenseStatus(key, data.status);
         return res.json({ success: true });
       }
+
       case 'resetHWID': {
         if (!key) return res.status(400).json({ error: 'key required' });
         await resetLicenseHWID(key);
         return res.json({ success: true });
       }
+
       case 'delete': {
         if (!key) return res.status(400).json({ error: 'key required' });
         await deleteLicense(key);
         return res.json({ success: true });
       }
+
       default:
         return res.status(400).json({ error: 'Unknown action' });
     }
