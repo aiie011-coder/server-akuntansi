@@ -16,8 +16,6 @@
   --font:'Plus Jakarta Sans',sans-serif;--mono:'JetBrains Mono',monospace;
 }
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;}
-
-/* SIDEBAR */
 #sidebar{width:220px;min-width:220px;background:var(--sidebar);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;}
 .sb-logo{padding:20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;}
 .sb-logo .ico{width:36px;height:36px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;}
@@ -29,38 +27,27 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
 .sb-item.active{background:rgba(37,99,235,.15);color:#fff;border-left-color:#3b82f6;}
 .sb-item .ico2{width:18px;text-align:center;font-size:15px;}
 .sb-footer{padding:16px;border-top:1px solid rgba(255,255,255,.07);font-size:11px;color:#475569;text-align:center;}
-
-/* MAIN */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 #topbar{background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.04);}
 #topbar h1{font-size:16px;font-weight:700;}
 #topbar .topbar-right{display:flex;align-items:center;gap:10px;}
 .server-url{font-size:11px;font-family:var(--mono);color:var(--text3);background:var(--bg);padding:4px 10px;border-radius:6px;border:1px solid var(--border);}
-
 #content{flex:1;overflow-y:auto;padding:24px;}
-
-/* CARDS */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:16px;}
 .card-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
 .card-title{font-size:14px;font-weight:700;}
 .card-body{padding:20px;}
-
-/* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius2);padding:16px;display:flex;align-items:center;gap:14px;}
 .stat-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
 .stat-val{font-size:22px;font-weight:800;}
 .stat-lbl{font-size:12px;color:var(--text2);}
-
-/* TABLE */
 .table-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:13px;}
 thead th{padding:10px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);border-bottom:2px solid var(--border);white-space:nowrap;}
 tbody td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
 tbody tr:last-child td{border-bottom:none;}
 tbody tr:hover{background:#f8fafc;}
-
-/* BADGES */
 .badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;}
 .badge-trial{background:rgba(245,158,11,.12);color:#d97706;}
 .badge-starter{background:rgba(59,130,246,.12);color:#2563eb;}
@@ -69,8 +56,7 @@ tbody tr:hover{background:#f8fafc;}
 .badge-active{background:rgba(16,185,129,.1);color:#10b981;}
 .badge-suspended{background:rgba(239,68,68,.1);color:#ef4444;}
 .badge-expired{background:rgba(245,158,11,.1);color:#f59e0b;}
-
-/* BUTTONS */
+.badge-team{background:rgba(6,182,212,.12);color:#0891b2;}
 .btn{padding:8px 16px;border-radius:var(--radius2);border:1.5px solid transparent;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px;}
 .btn-primary{background:var(--primary);border-color:var(--primary);color:#fff;}
 .btn-primary:hover{background:#1d4ed8;}
@@ -79,8 +65,6 @@ tbody tr:hover{background:#f8fafc;}
 .btn-danger{background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.3);color:#ef4444;}
 .btn-danger:hover{background:rgba(239,68,68,.15);}
 .btn-sm{padding:5px 10px;font-size:12px;}
-
-/* FORM */
 .form-group{margin-bottom:14px;}
 .form-group label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;letter-spacing:.3px;}
 .form-control{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--radius2);font-family:var(--font);font-size:13px;color:var(--text);background:var(--card);transition:.15s;outline:none;}
@@ -88,8 +72,6 @@ tbody tr:hover{background:#f8fafc;}
 select.form-control{cursor:pointer;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .form-hint{font-size:11px;color:var(--text3);margin-top:4px;}
-
-/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;align-items:center;justify-content:center;}
 .modal-overlay.show{display:flex;}
 .modal{background:var(--card);border-radius:var(--radius);width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.2);}
@@ -99,8 +81,6 @@ select.form-control{cursor:pointer;}
 .modal-close:hover{background:var(--bg);color:var(--text);}
 .modal-body{padding:20px;}
 .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;}
-
-/* SWITCH TOGGLE */
 .toggle-wrap{display:flex;align-items:center;gap:8px;}
 .toggle{position:relative;width:40px;height:22px;flex-shrink:0;}
 .toggle input{opacity:0;width:0;height:0;}
@@ -108,47 +88,33 @@ select.form-control{cursor:pointer;}
 .toggle-slider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
 .toggle input:checked + .toggle-slider{background:var(--success);}
 .toggle input:checked + .toggle-slider:before{transform:translateX(18px);}
-
-/* LOCKED MODULES CHECKBOXES */
 .module-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .module-check{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius2);cursor:pointer;font-size:12px;transition:.15s;}
 .module-check:hover{border-color:var(--danger);background:rgba(239,68,68,.04);}
 .module-check input[type=checkbox]{accent-color:var(--danger);}
-
-/* SEARCH */
 .search-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
 .search-input{flex:1;padding:9px 14px 9px 38px;border:1.5px solid var(--border);border-radius:var(--radius2);font-size:13px;font-family:var(--font);outline:none;background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") 12px center no-repeat;}
 .search-input:focus{border-color:var(--primary-light);}
-
-/* PLAN SELECT */
-select.plan-select option[value=trial]{color:#d97706;}
-select.plan-select option[value=starter]{color:#2563eb;}
-select.plan-select option[value=pro]{color:#7c3aed;}
-select.plan-select option[value=enterprise]{color:#059669;}
-
-/* SECTION TABS */
 .panel{display:none;}
 .panel.active{display:block;}
-
-/* TOAST */
 #toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
 .toast-item{padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;color:#fff;animation:toastIn .3s ease;box-shadow:0 4px 16px rgba(0,0,0,.15);}
 .toast-item.success{background:var(--success);}
 .toast-item.error{background:var(--danger);}
 .toast-item.info{background:var(--primary);}
 @keyframes toastIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
-
-/* LOADING */
 .loading-row td{text-align:center;color:var(--text3);padding:32px;font-size:13px;}
 .empty-row td{text-align:center;color:var(--text3);padding:40px;font-size:13px;}
-
-/* PLAN LIMIT BAR */
 .plan-info-row{display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);border:1px solid rgba(37,99,235,.12);font-size:12px;color:var(--text2);margin-bottom:16px;}
+.devices-box{background:rgba(6,182,212,.06);border:1.5px solid rgba(6,182,212,.2);border-radius:var(--radius2);padding:12px 16px;margin-top:8px;}
+.devices-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+.device-opt{padding:8px;border:1.5px solid var(--border);border-radius:var(--radius2);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:.15s;}
+.device-opt:hover{border-color:var(--accent);color:var(--accent);}
+.device-opt.selected{border-color:var(--accent);background:rgba(6,182,212,.1);color:#0891b2;}
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <nav id="sidebar">
   <div class="sb-logo">
     <div class="ico">📊</div>
@@ -162,7 +128,6 @@ select.plan-select option[value=enterprise]{color:#059669;}
   <div class="sb-footer">server-akuntansi-aiie.vercel.app</div>
 </nav>
 
-<!-- MAIN -->
 <div id="main">
   <div id="topbar">
     <h1 id="topbar-title">👥 Manajemen User & Paket</h1>
@@ -174,9 +139,8 @@ select.plan-select option[value=enterprise]{color:#059669;}
 
   <div id="content">
 
-    <!-- ═══ PANEL: USERS ═══ -->
+    <!-- PANEL: USERS -->
     <div class="panel active" id="panel-users">
-
       <div class="stats" id="stats-row">
         <div class="stat-card">
           <div class="stat-ico" style="background:rgba(37,99,235,.1);">👥</div>
@@ -222,6 +186,7 @@ select.plan-select option[value=enterprise]{color:#059669;}
                 <th>Pelanggan</th>
                 <th>Kode Lisensi</th>
                 <th>Paket</th>
+                <th>Perangkat</th>
                 <th>Status</th>
                 <th>Expired</th>
                 <th>Terakhir Aktif</th>
@@ -229,19 +194,17 @@ select.plan-select option[value=enterprise]{color:#059669;}
               </tr>
             </thead>
             <tbody id="users-tbody">
-              <tr class="loading-row"><td colspan="7">⏳ Memuat data...</td></tr>
+              <tr class="loading-row"><td colspan="8">⏳ Memuat data...</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ═══ PANEL: LICENSES ═══ -->
+    <!-- PANEL: LICENSES -->
     <div class="panel" id="panel-licenses">
       <div class="card">
-        <div class="card-header">
-          <div class="card-title">🔑 Kelola Lisensi</div>
-        </div>
+        <div class="card-header"><div class="card-title">🔑 Kelola Lisensi</div></div>
         <div class="card-body">
           <div class="plan-info-row">
             ℹ️ Generate kode lisensi baru di sini, lalu kirim ke pelanggan. Format: XXXXX-XXXXX-XXXXX-XXXXX
@@ -256,7 +219,7 @@ select.plan-select option[value=enterprise]{color:#059669;}
       </div>
     </div>
 
-    <!-- ═══ PANEL: STATS ═══ -->
+    <!-- PANEL: STATS -->
     <div class="panel" id="panel-stats">
       <div class="card">
         <div class="card-header"><div class="card-title">📊 Distribusi Paket</div></div>
@@ -266,10 +229,10 @@ select.plan-select option[value=enterprise]{color:#059669;}
       </div>
     </div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
+  </div>
+</div>
 
-<!-- ═══ MODAL: EDIT USER PLAN ═══ -->
+<!-- MODAL: EDIT USER PLAN -->
 <div class="modal-overlay" id="modal-edit-plan">
   <div class="modal">
     <div class="modal-header">
@@ -281,7 +244,6 @@ select.plan-select option[value=enterprise]{color:#059669;}
       <div style="padding:10px 14px;background:rgba(37,99,235,.06);border-radius:var(--radius2);margin-bottom:16px;font-size:12px;color:var(--text2);">
         📝 Perubahan paket langsung berlaku saat pengguna membuka ZeQui berikutnya.
       </div>
-
       <div class="form-grid">
         <div class="form-group">
           <label>Nama Pelanggan</label>
@@ -292,22 +254,35 @@ select.plan-select option[value=enterprise]{color:#059669;}
           <input class="form-control" id="edit-customer-email" type="email" placeholder="email@contoh.com">
         </div>
       </div>
-
-      <div class="form-group">
-        <label>Paket</label>
-        <select class="form-control plan-select" id="edit-plan" onchange="onPlanChange()">
-          <option value="trial">Trial — 14 hari, 1 perusahaan</option>
-          <option value="starter">Starter — 3 perusahaan, export & print</option>
-          <option value="pro">Pro — 10 perusahaan, semua fitur</option>
-          <option value="enterprise">Enterprise — unlimited</option>
-        </select>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Paket</label>
+          <select class="form-control plan-select" id="edit-plan" onchange="onPlanChange()">
+            <option value="trial">Trial — 14 hari, 1 perusahaan</option>
+            <option value="starter">Starter — 3 perusahaan</option>
+            <option value="pro">Pro — 10 perusahaan, semua fitur</option>
+            <option value="enterprise">Enterprise — unlimited</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Jumlah Perangkat (Tim)</label>
+          <select class="form-control" id="edit-max-devices">
+            <option value="1">1 Perangkat — Single</option>
+            <option value="2">2 Perangkat</option>
+            <option value="3">3 Perangkat</option>
+            <option value="5">5 Perangkat — Tim Kecil</option>
+            <option value="10">10 Perangkat — Tim</option>
+            <option value="20">20 Perangkat — Tim Besar</option>
+            <option value="99">Unlimited</option>
+          </select>
+          <div class="form-hint">Berapa perangkat yang boleh login dengan lisensi ini</div>
+        </div>
       </div>
-
       <div class="form-grid">
         <div class="form-group">
           <label>Tanggal Kedaluwarsa</label>
           <input class="form-control" id="edit-expiry" type="date">
-          <div class="form-hint">Kosongkan untuk tidak ada batas waktu</div>
+          <div class="form-hint">Kosongkan untuk lifetime</div>
         </div>
         <div class="form-group">
           <label>Maks. Perusahaan (override)</label>
@@ -315,52 +290,29 @@ select.plan-select option[value=enterprise]{color:#059669;}
           <div class="form-hint">Isi jika ingin override dari default paket</div>
         </div>
       </div>
-
       <div style="margin-bottom:14px;">
         <label style="font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:8px;letter-spacing:.3px;">FITUR TAMBAHAN</label>
         <div style="display:flex;flex-wrap:wrap;gap:12px;">
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="edit-export"><span class="toggle-slider"></span></label>
-            <span style="font-size:13px;">Export Excel</span>
-          </div>
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="edit-print"><span class="toggle-slider"></span></label>
-            <span style="font-size:13px;">Print Lengkap</span>
-          </div>
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="edit-jurnal-penutup"><span class="toggle-slider"></span></label>
-            <span style="font-size:13px;">Jurnal Penutup</span>
-          </div>
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="edit-saldo-menurun"><span class="toggle-slider"></span></label>
-            <span style="font-size:13px;">Saldo Menurun (Aset)</span>
-          </div>
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="edit-komparasi"><span class="toggle-slider"></span></label>
-            <span style="font-size:13px;">Komparasi Multi-Tahun</span>
-          </div>
-          <div class="toggle-wrap">
-            <label class="toggle"><input type="checkbox" id="edit-lra-lsal"><span class="toggle-slider"></span></label>
-            <span style="font-size:13px;">LRA / LSAL (SAP)</span>
-          </div>
+          <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="edit-export"><span class="toggle-slider"></span></label><span style="font-size:13px;">Export Excel</span></div>
+          <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="edit-print"><span class="toggle-slider"></span></label><span style="font-size:13px;">Print Lengkap</span></div>
+          <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="edit-jurnal-penutup"><span class="toggle-slider"></span></label><span style="font-size:13px;">Jurnal Penutup</span></div>
+          <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="edit-saldo-menurun"><span class="toggle-slider"></span></label><span style="font-size:13px;">Saldo Menurun</span></div>
+          <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="edit-komparasi"><span class="toggle-slider"></span></label><span style="font-size:13px;">Komparasi Multi-Tahun</span></div>
+          <div class="toggle-wrap"><label class="toggle"><input type="checkbox" id="edit-lra-lsal"><span class="toggle-slider"></span></label><span style="font-size:13px;">LRA / LSAL</span></div>
         </div>
       </div>
-
       <div class="form-group">
-        <label>Modul yang Dikunci (tambahan)</label>
+        <label>Modul yang Dikunci</label>
         <div class="module-grid">
-          <label class="module-check"><input type="checkbox" data-module="komparasi"> 🔒 Komparasi Multi-Tahun</label>
-          <label class="module-check"><input type="checkbox" data-module="lra"> 🔒 LRA (SAP)</label>
-          <label class="module-check"><input type="checkbox" data-module="lsal"> 🔒 LSAL (SAP)</label>
+          <label class="module-check"><input type="checkbox" data-module="komparasi"> 🔒 Komparasi</label>
+          <label class="module-check"><input type="checkbox" data-module="lra"> 🔒 LRA</label>
+          <label class="module-check"><input type="checkbox" data-module="lsal"> 🔒 LSAL</label>
           <label class="module-check"><input type="checkbox" data-module="jurnal-penutup"> 🔒 Jurnal Penutup</label>
           <label class="module-check"><input type="checkbox" data-module="jurnal-pembalik"> 🔒 Jurnal Pembalik</label>
           <label class="module-check"><input type="checkbox" data-module="aset-tetap"> 🔒 Aset Tetap</label>
         </div>
-        <div class="form-hint">Centang modul yang ingin dikunci untuk pengguna ini</div>
       </div>
-
       <hr style="border:none;border-top:1px solid var(--border);margin:16px 0;">
-
       <div class="form-group">
         <label>Status Lisensi</label>
         <div class="toggle-wrap">
@@ -372,7 +324,6 @@ select.plan-select option[value=enterprise]{color:#059669;}
         <label>Alasan Suspend</label>
         <input class="form-control" id="edit-revoke-reason" placeholder="Contoh: Pembayaran belum diterima">
       </div>
-
       <div class="form-group">
         <label>Catatan Admin</label>
         <input class="form-control" id="edit-notes" placeholder="Catatan internal (tidak dilihat user)">
@@ -386,9 +337,9 @@ select.plan-select option[value=enterprise]{color:#059669;}
   </div>
 </div>
 
-<!-- ═══ MODAL: TAMBAH LISENSI ═══ -->
+<!-- MODAL: TAMBAH LISENSI -->
 <div class="modal-overlay" id="modal-add-license">
-  <div class="modal" style="max-width:460px;">
+  <div class="modal" style="max-width:480px;">
     <div class="modal-header">
       <div class="modal-title">➕ Tambah Lisensi Baru</div>
       <button class="modal-close" onclick="closeModal('modal-add-license')">✕</button>
@@ -404,13 +355,64 @@ select.plan-select option[value=enterprise]{color:#059669;}
       </div>
       <div class="form-group">
         <label>Paket *</label>
-        <select class="form-control plan-select" id="add-plan">
-          <option value="trial">Trial</option>
-          <option value="starter">Starter</option>
-          <option value="pro" selected>Pro</option>
-          <option value="enterprise">Enterprise</option>
+        <select class="form-control plan-select" id="add-plan" onchange="onAddPlanChange()">
+          <option value="trial">Trial — gratis 14 hari</option>
+          <option value="starter">Starter — 3 perusahaan</option>
+          <option value="pro" selected>Pro — 10 perusahaan, semua fitur</option>
+          <option value="enterprise">Enterprise — unlimited</option>
         </select>
       </div>
+
+      <!-- PILIHAN JUMLAH PERANGKAT -->
+      <div class="form-group">
+        <label>Jumlah Perangkat (Tim) *</label>
+        <div class="devices-box">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">
+            Pilih berapa perangkat yang bisa login dengan 1 lisensi ini:
+          </div>
+          <div class="devices-options">
+            <div class="device-opt selected" onclick="selectDevices(1, this)">
+              <div style="font-size:18px;">👤</div>
+              <div>1 Orang</div>
+              <div style="font-size:10px;color:var(--text3);">Single User</div>
+            </div>
+            <div class="device-opt" onclick="selectDevices(3, this)">
+              <div style="font-size:18px;">👥</div>
+              <div>3 Orang</div>
+              <div style="font-size:10px;color:var(--text3);">Tim Kecil</div>
+            </div>
+            <div class="device-opt" onclick="selectDevices(5, this)">
+              <div style="font-size:18px;">👨‍👩‍👧‍👦</div>
+              <div>5 Orang</div>
+              <div style="font-size:10px;color:var(--text3);">Tim</div>
+            </div>
+            <div class="device-opt" onclick="selectDevices(10, this)">
+              <div style="font-size:18px;">🏢</div>
+              <div>10 Orang</div>
+              <div style="font-size:10px;color:var(--text3);">Tim Besar</div>
+            </div>
+            <div class="device-opt" onclick="selectDevices(20, this)">
+              <div style="font-size:18px;">🏭</div>
+              <div>20 Orang</div>
+              <div style="font-size:10px;color:var(--text3);">Kantor</div>
+            </div>
+            <div class="device-opt" onclick="selectDevices(99, this)">
+              <div style="font-size:18px;">♾️</div>
+              <div>Unlimited</div>
+              <div style="font-size:10px;color:var(--text3);">Enterprise</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;display:flex;align-items:center;gap:8px;">
+            <span style="font-size:12px;color:var(--text2);">Atau isi manual:</span>
+            <input type="number" id="add-max-devices-custom" min="1" max="999"
+              style="width:80px;padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font);"
+              placeholder="..." onchange="onCustomDevices(this.value)">
+            <span style="font-size:12px;color:var(--text3);">perangkat</span>
+          </div>
+        </div>
+        <input type="hidden" id="add-max-devices" value="1">
+      </div>
+
       <div class="form-group">
         <label>Tanggal Kedaluwarsa</label>
         <input class="form-control" id="add-expiry" type="date">
@@ -418,7 +420,7 @@ select.plan-select option[value=enterprise]{color:#059669;}
       </div>
       <div class="form-group">
         <label>Catatan</label>
-        <input class="form-control" id="add-notes" placeholder="Opsional">
+        <input class="form-control" id="add-notes" placeholder="Opsional — misal: order #123">
       </div>
     </div>
     <div class="modal-footer">
@@ -428,7 +430,7 @@ select.plan-select option[value=enterprise]{color:#059669;}
   </div>
 </div>
 
-<!-- ADMIN KEY OVERLAY -->
+<!-- ADMIN LOGIN OVERLAY -->
 <div id="admin-login" style="position:fixed;inset:0;background:rgba(15,33,64,.98);z-index:9999;display:flex;align-items:center;justify-content:center;">
   <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:40px;width:100%;max-width:380px;text-align:center;">
     <div style="font-size:48px;margin-bottom:12px;">🔐</div>
@@ -454,13 +456,10 @@ function adminLogin() {
   const key = document.getElementById('admin-key-input').value.trim();
   if (!key) { document.getElementById('admin-login-msg').textContent = 'Masukkan kunci admin'; return; }
   ADMIN_KEY = key;
-  // Simpan sementara di sessionStorage
   sessionStorage.setItem('zq_admin_key', key);
   document.getElementById('admin-login').style.display = 'none';
   init();
 }
-
-// Restore session
 const savedKey = sessionStorage.getItem('zq_admin_key');
 if (savedKey) { ADMIN_KEY = savedKey; document.getElementById('admin-login').style.display = 'none'; }
 
@@ -484,7 +483,7 @@ async function updateServerStatus() {
 
 // ─── Load Users ───
 async function loadUsers() {
-  document.getElementById('users-tbody').innerHTML = '<tr class="loading-row"><td colspan="7">⏳ Memuat data...</td></tr>';
+  document.getElementById('users-tbody').innerHTML = '<tr class="loading-row"><td colspan="8">⏳ Memuat data...</td></tr>';
   try {
     const r = await fetch(`${SERVER}/api/admin/list-users?admin_key=${encodeURIComponent(ADMIN_KEY)}`);
     if (r.status === 401) { toast('Kunci admin salah', 'error'); document.getElementById('admin-login').style.display='flex'; return; }
@@ -494,28 +493,34 @@ async function loadUsers() {
     updateStats(allUsers);
     updateStatsPanel(allUsers);
   } catch(e) {
-    document.getElementById('users-tbody').innerHTML = '<tr class="empty-row"><td colspan="7">❌ Gagal memuat data. Periksa koneksi server.</td></tr>';
+    document.getElementById('users-tbody').innerHTML = '<tr class="empty-row"><td colspan="8">❌ Gagal memuat data.</td></tr>';
     toast('Gagal terhubung ke server', 'error');
   }
 }
 
 function renderUsers(users) {
   const tbody = document.getElementById('users-tbody');
-  if (!users.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="7">Tidak ada data</td></tr>'; return; }
+  if (!users.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">Tidak ada data</td></tr>'; return; }
   const today = new Date();
   tbody.innerHTML = users.map(u => {
     const expDate = u.expiry_date ? new Date(u.expiry_date) : null;
-    const isExpired = expDate && expDate < today;
+    const isExpired  = expDate && expDate < today;
     const soonExpire = expDate && !isExpired && (expDate - today) < 30*24*3600*1000;
     const status = !u.is_active ? '<span class="badge badge-suspended">⛔ Suspend</span>' :
                    isExpired    ? '<span class="badge badge-expired">⏰ Expired</span>' :
-                   '<span class="badge badge-active">✅ Aktif</span>';
+                                  '<span class="badge badge-active">✅ Aktif</span>';
     const planBadge = {
       trial:      '<span class="badge badge-trial">Trial</span>',
       starter:    '<span class="badge badge-starter">Starter</span>',
       pro:        '<span class="badge badge-pro">⭐ Pro</span>',
       enterprise: '<span class="badge badge-enterprise">🏆 Enterprise</span>',
     }[u.plan] || `<span class="badge">${u.plan}</span>`;
+    const maxDev = u.max_devices || 1;
+    const devBadge = maxDev >= 99
+      ? '<span class="badge badge-team">♾️ Unlimited</span>'
+      : maxDev > 1
+        ? `<span class="badge badge-team">👥 ${maxDev} orang</span>`
+        : '<span style="font-size:12px;color:var(--text3);">👤 1 orang</span>';
     const expStr = expDate ? expDate.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}) : '♾️ Lifetime';
     const expStyle = isExpired ? 'color:#ef4444;font-weight:700;' : soonExpire ? 'color:#f59e0b;font-weight:700;' : '';
     const lastSeen = u.last_seen ? new Date(u.last_seen).toLocaleDateString('id-ID',{day:'2-digit',month:'short'}) : '—';
@@ -526,12 +531,11 @@ function renderUsers(users) {
       </td>
       <td><span style="font-family:var(--mono);font-size:11px;background:var(--bg);padding:2px 8px;border-radius:4px;">${u.full_key || u.key}</span></td>
       <td>${planBadge}</td>
+      <td>${devBadge}</td>
       <td>${status}</td>
       <td style="${expStyle}">${expStr}</td>
       <td style="font-size:12px;color:var(--text3);">${lastSeen}</td>
-      <td>
-        <button class="btn btn-secondary btn-sm" onclick='editUser(${JSON.stringify(u)})'>✏️ Edit</button>
-      </td>
+      <td><button class="btn btn-secondary btn-sm" onclick='editUser(${JSON.stringify(u)})'>✏️ Edit</button></td>
     </tr>`;
   }).join('');
 }
@@ -552,10 +556,10 @@ function updateStats(users) {
   const active   = users.filter(u => u.is_active && (!u.expiry_date || new Date(u.expiry_date) >= today)).length;
   const expiring = users.filter(u => u.is_active && u.expiry_date && (new Date(u.expiry_date)-today) < 30*24*3600*1000 && new Date(u.expiry_date) >= today).length;
   const expired  = users.filter(u => u.expiry_date && new Date(u.expiry_date) < today).length;
-  document.getElementById('stat-total').textContent   = users.length;
-  document.getElementById('stat-active').textContent  = active;
-  document.getElementById('stat-expiring').textContent= expiring;
-  document.getElementById('stat-expired').textContent = expired;
+  document.getElementById('stat-total').textContent    = users.length;
+  document.getElementById('stat-active').textContent   = active;
+  document.getElementById('stat-expiring').textContent = expiring;
+  document.getElementById('stat-expired').textContent  = expired;
 }
 
 function updateStatsPanel(users) {
@@ -577,12 +581,12 @@ function updateStatsPanel(users) {
   }).join('');
 }
 
-// ─── PLAN DEFAULTS ───
+// ─── Plan Defaults ───
 const PLAN_DEFAULTS = {
-  trial:      { max_companies:1, export_enabled:false, print_full:false, jurnal_penutup_enabled:false, aset_saldo_menurun:false, komparasi_enabled:false, lra_lsal_enabled:false, locked_modules:['komparasi','lra','lsal'] },
-  starter:    { max_companies:3, export_enabled:true,  print_full:true,  jurnal_penutup_enabled:true,  aset_saldo_menurun:false, komparasi_enabled:false, lra_lsal_enabled:false, locked_modules:['komparasi','lra','lsal'] },
-  pro:        { max_companies:10,export_enabled:true,  print_full:true,  jurnal_penutup_enabled:true,  aset_saldo_menurun:true,  komparasi_enabled:true,  lra_lsal_enabled:true,  locked_modules:[] },
-  enterprise: { max_companies:9999,export_enabled:true,print_full:true,  jurnal_penutup_enabled:true,  aset_saldo_menurun:true,  komparasi_enabled:true,  lra_lsal_enabled:true,  locked_modules:[] },
+  trial:      { max_companies:1,    export_enabled:false, print_full:false, jurnal_penutup_enabled:false, aset_saldo_menurun:false, komparasi_enabled:false, lra_lsal_enabled:false, locked_modules:['komparasi','lra','lsal'], max_devices:1 },
+  starter:    { max_companies:3,    export_enabled:true,  print_full:true,  jurnal_penutup_enabled:true,  aset_saldo_menurun:false, komparasi_enabled:false, lra_lsal_enabled:false, locked_modules:['komparasi','lra','lsal'], max_devices:1 },
+  pro:        { max_companies:10,   export_enabled:true,  print_full:true,  jurnal_penutup_enabled:true,  aset_saldo_menurun:true,  komparasi_enabled:true,  lra_lsal_enabled:true,  locked_modules:[], max_devices:1 },
+  enterprise: { max_companies:9999, export_enabled:true,  print_full:true,  jurnal_penutup_enabled:true,  aset_saldo_menurun:true,  komparasi_enabled:true,  lra_lsal_enabled:true,  locked_modules:[], max_devices:99 },
 };
 
 function onPlanChange() {
@@ -596,10 +600,50 @@ function onPlanChange() {
   document.getElementById('edit-komparasi').checked      = def.komparasi_enabled;
   document.getElementById('edit-lra-lsal').checked       = def.lra_lsal_enabled;
   document.getElementById('edit-max-companies').value    = '';
-  // update locked modules checkboxes
+  document.getElementById('edit-max-devices').value      = def.max_devices;
   document.querySelectorAll('[data-module]').forEach(cb => {
     cb.checked = def.locked_modules.includes(cb.dataset.module);
   });
+}
+
+// ─── Devices selector (modal tambah) ───
+function selectDevices(val, el) {
+  document.querySelectorAll('.device-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('add-max-devices').value = val;
+  document.getElementById('add-max-devices-custom').value = '';
+}
+
+function onCustomDevices(val) {
+  const n = parseInt(val);
+  if (!n || n < 1) return;
+  document.querySelectorAll('.device-opt').forEach(o => o.classList.remove('selected'));
+  document.getElementById('add-max-devices').value = n;
+}
+
+function onAddPlanChange() {
+  const plan = document.getElementById('add-plan').value;
+  const def  = PLAN_DEFAULTS[plan];
+  if (!def) return;
+  // Set default devices sesuai paket
+  const defDev = def.max_devices || 1;
+  selectDevicesByValue(defDev);
+}
+
+function selectDevicesByValue(val) {
+  document.querySelectorAll('.device-opt').forEach(o => o.classList.remove('selected'));
+  // cari tombol yang nilainya cocok
+  let found = false;
+  document.querySelectorAll('.device-opt').forEach(o => {
+    if (parseInt(o.getAttribute('onclick').match(/\d+/)?.[0]) === val) {
+      o.classList.add('selected');
+      found = true;
+    }
+  });
+  if (!found) {
+    document.getElementById('add-max-devices-custom').value = val;
+  }
+  document.getElementById('add-max-devices').value = val;
 }
 
 // ─── Edit User ───
@@ -610,6 +654,7 @@ function editUser(u) {
   document.getElementById('edit-plan').value             = u.plan || 'trial';
   document.getElementById('edit-expiry').value           = u.expiry_date || '';
   document.getElementById('edit-max-companies').value    = u.max_companies || '';
+  document.getElementById('edit-max-devices').value      = u.max_devices || 1;
   document.getElementById('edit-export').checked         = u.export_enabled ?? PLAN_DEFAULTS[u.plan]?.export_enabled ?? false;
   document.getElementById('edit-print').checked          = u.print_full     ?? PLAN_DEFAULTS[u.plan]?.print_full     ?? false;
   document.getElementById('edit-jurnal-penutup').checked = u.jurnal_penutup_enabled ?? PLAN_DEFAULTS[u.plan]?.jurnal_penutup_enabled ?? false;
@@ -619,15 +664,13 @@ function editUser(u) {
   document.getElementById('edit-is-active').checked      = u.is_active ?? true;
   document.getElementById('edit-revoke-reason').value    = u.revoke_reason || '';
   document.getElementById('edit-notes').value            = u.notes || '';
-  // locked modules
   const locked = u.locked_modules || PLAN_DEFAULTS[u.plan]?.locked_modules || [];
   document.querySelectorAll('[data-module]').forEach(cb => { cb.checked = locked.includes(cb.dataset.module); });
-  // toggle revoke group
   document.getElementById('revoke-reason-group').style.display = u.is_active ? 'none' : 'block';
-  document.getElementById('edit-is-active').addEventListener('change', function() {
+  document.getElementById('edit-is-active').onchange = function() {
     document.getElementById('revoke-reason-group').style.display = this.checked ? 'none' : 'block';
     document.getElementById('edit-status-label').textContent = this.checked ? 'Aktif' : 'Suspend';
-  }, { once: false });
+  };
   openModal('modal-edit-plan');
 }
 
@@ -640,6 +683,7 @@ async function savePlan() {
     plan:             document.getElementById('edit-plan').value,
     expiry_date:      document.getElementById('edit-expiry').value || null,
     max_companies:    parseInt(document.getElementById('edit-max-companies').value) || null,
+    max_devices:      parseInt(document.getElementById('edit-max-devices').value) || 1,
     export_enabled:   document.getElementById('edit-export').checked,
     print_full:       document.getElementById('edit-print').checked,
     jurnal_penutup_enabled: document.getElementById('edit-jurnal-penutup').checked,
@@ -665,9 +709,7 @@ async function savePlan() {
     } else {
       toast('❌ ' + (data.error || 'Gagal update'), 'error');
     }
-  } catch(e) {
-    toast('❌ Gagal terhubung ke server', 'error');
-  }
+  } catch(e) { toast('❌ Gagal terhubung ke server', 'error'); }
 }
 
 async function resetHWID() {
@@ -676,7 +718,7 @@ async function resetHWID() {
   try {
     const r = await fetch(`${SERVER}/api/admin/set-plan`, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ admin_key: ADMIN_KEY, license_key: key, hwid: null, reset_hwid: true })
+      body: JSON.stringify({ admin_key: ADMIN_KEY, license_key: key, reset_hwid: true })
     });
     const data = await r.json();
     if (data.success) { toast('✅ HWID berhasil direset', 'success'); }
@@ -685,21 +727,35 @@ async function resetHWID() {
 }
 
 // ─── Add License ───
-function openAddLicenseModal() { openModal('modal-add-license'); }
+function openAddLicenseModal() {
+  // Reset form
+  document.getElementById('add-name').value = '';
+  document.getElementById('add-email').value = '';
+  document.getElementById('add-plan').value = 'pro';
+  document.getElementById('add-expiry').value = '';
+  document.getElementById('add-notes').value = '';
+  document.getElementById('add-max-devices-custom').value = '';
+  document.querySelectorAll('.device-opt').forEach(o => o.classList.remove('selected'));
+  document.querySelector('.device-opt').classList.add('selected');
+  document.getElementById('add-max-devices').value = 1;
+  openModal('modal-add-license');
+}
 
 async function addLicense() {
   const name = document.getElementById('add-name').value.trim();
   if (!name) { toast('Nama pelanggan wajib diisi', 'error'); return; }
+  const maxDevices = parseInt(document.getElementById('add-max-devices').value) || 1;
   const key = generateKey();
   const body = {
-    admin_key: ADMIN_KEY,
+    admin_key:      ADMIN_KEY,
     key,
     customer_name:  name,
     customer_email: document.getElementById('add-email').value,
     plan:           document.getElementById('add-plan').value,
     expiry_date:    document.getElementById('add-expiry').value || null,
     notes:          document.getElementById('add-notes').value,
-    is_active: true,
+    max_devices:    maxDevices,
+    is_active:      true,
   };
   try {
     const r = await fetch(`${SERVER}/api/admin/create-license`, {
@@ -707,9 +763,9 @@ async function addLicense() {
     });
     const data = await r.json();
     if (data.success || data.key) {
-      toast(`✅ Lisensi dibuat: ${key}`, 'success', 5000);
+      const devText = maxDevices >= 99 ? 'unlimited' : `${maxDevices} perangkat`;
+      toast(`✅ Lisensi dibuat! (${devText})`, 'success', 5000);
       closeModal('modal-add-license');
-      // Tampilkan key di panel lisensi
       document.getElementById('generated-key-val').textContent = key;
       document.getElementById('generated-key').style.display = 'block';
       showPanel('licenses');
@@ -747,12 +803,10 @@ function showPanel(name) {
   document.getElementById('topbar-title').textContent = titles[name] || '';
 }
 
-// ─── Modal helpers ───
-function openModal(id) { document.getElementById(id)?.classList.add('show'); }
+function openModal(id)  { document.getElementById(id)?.classList.add('show'); }
 function closeModal(id) { document.getElementById(id)?.classList.remove('show'); }
 document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('show'); });
 
-// ─── Toast ───
 function toast(msg, type='info', dur=3000) {
   const c = document.getElementById('toast-container');
   const t = document.createElement('div');
@@ -762,7 +816,6 @@ function toast(msg, type='info', dur=3000) {
   setTimeout(() => t.remove(), dur);
 }
 
-// Auto-init jika sudah ada key
 if (savedKey) init();
 </script>
 </body>
