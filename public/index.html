@@ -445,7 +445,10 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <!-- ═══ LICENSE OVERLAY ═══ -->
 <div id="license-overlay">
   <div class="lic-box">
-    <div class="lic-logo">📊</div>
+    <div class="lic-logo" style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+      <img id="lic-logo-img" src="" alt="Logo" style="width:64px;height:64px;object-fit:contain;border-radius:12px;display:none;">
+      <div id="lic-logo-default" style="font-size:52px;line-height:1;">📊</div>
+    </div>
     <div class="lic-title">ZeQui</div>
     <div class="lic-sub">Zenith Quality Accounting System</div>
     <div class="lic-badge">🔐 Lisensi Diperlukan</div>
@@ -480,7 +483,10 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <!-- SIDEBAR -->
 <nav id="sidebar">
   <div id="sidebar-logo">
-    <div class="logo-icon">📊</div>
+    <div class="logo-icon" id="app-logo-wrap" style="background:transparent;padding:0;overflow:hidden;">
+      <img id="app-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;">
+      <div id="app-logo-default" style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📊</div>
+    </div>
     <div>
       <span>ZeQui</span>
       <small>Zenith Quality Accounting System</small>
@@ -7631,6 +7637,40 @@ document.querySelector('[onclick="openModal(\'modal-transaction\')"]')?.setAttri
 
 const LIC_KEY = 'akpro_lic_v3';
 const LIC_SERVER = 'https://server-akuntansi-aiie.vercel.app';
+
+// ── Load logo dari server ──
+async function loadAppLogo() {
+  function applyLogoUrl(url) {
+    if (!url) return;
+    // Logo sidebar (setelah aktivasi)
+    const sideImg = document.getElementById('app-logo-img');
+    const sideDef = document.getElementById('app-logo-default');
+    if (sideImg) { sideImg.src = url; sideImg.style.display = 'block'; }
+    if (sideDef) sideDef.style.display = 'none';
+    // Logo halaman input lisensi
+    const licImg = document.getElementById('lic-logo-img');
+    const licDef = document.getElementById('lic-logo-default');
+    if (licImg) { licImg.src = url; licImg.style.display = 'block'; }
+    if (licDef) licDef.style.display = 'none';
+  }
+  try {
+    const r = await fetch(LIC_SERVER + '/api/settings', { signal: AbortSignal.timeout(5000) });
+    if (r.ok) {
+      const data = await r.json();
+      if (data.logo_url) {
+        applyLogoUrl(data.logo_url);
+        try { localStorage.setItem('zq_logo_url', data.logo_url); } catch(_) {}
+      }
+    }
+  } catch(e) {
+    // Offline — coba dari cache
+    try {
+      const cached = localStorage.getItem('zq_logo_url');
+      if (cached) applyLogoUrl(cached);
+    } catch(_) {}
+  }
+}
+loadAppLogo();
 
 // ══════════════════════════════════════════
 // PLAN / PAKET SYSTEM
