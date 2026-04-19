@@ -4,10 +4,12 @@
     "api/*.js": { "maxDuration": 10 },
     "api/admin/*.js": { "maxDuration": 10 }
   },
-  "rewrites": [
-    { "source": "/", "destination": "/public/index.html" },
-    { "source": "/app", "destination": "/public/index.html" },
-    { "source": "/admin", "destination": "/public/admin.html" }
+  "routes": [
+    { "src": "/admin", "dest": "/public/admin.html" },
+    { "src": "/admin.html", "dest": "/public/admin.html" },
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/", "dest": "/public/index.html" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ],
   "headers": [
     {
