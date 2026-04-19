@@ -7,7 +7,7 @@
   "rewrites": [
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/app", "destination": "/public/index.html" },
-    { "source": "/admin", "destination": "/admin.html" }
+    { "source": "/admin", "destination": "/public/admin.html" }
   ],
   "headers": [
     {
