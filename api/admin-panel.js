@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function apiCall(action, data={}, key=null) {
-  const r = await fetch('/api/admin-action', {
+  const r = await fetch('/api/admin-router', {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({action, data, key})
