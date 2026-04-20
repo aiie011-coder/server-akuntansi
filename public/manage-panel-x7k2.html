@@ -518,6 +518,33 @@ select.form-control{cursor:pointer;}
   </div>
 </div>
 
+<!-- MODAL: HAPUS USER -->
+<div class="modal-overlay" id="modal-delete-user">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <div class="modal-title" style="color:#ef4444;">🗑️ Hapus User</div>
+      <button class="modal-close" onclick="closeModal('modal-delete-user')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center;padding:12px 0 20px;">
+        <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Yakin ingin menghapus user ini?</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+          Nama: <strong id="delete-user-name"></strong><br>
+          Kode: <span id="delete-user-key" style="font-family:var(--mono);font-size:12px;background:var(--bg);padding:2px 8px;border-radius:4px;"></span>
+        </div>
+        <div style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:12px 16px;font-size:12px;color:#ef4444;text-align:left;">
+          ❗ Tindakan ini <strong>tidak dapat dibatalkan</strong>. Semua data lisensi user ini akan dihapus permanen dari server.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-delete-user')">Batal</button>
+      <button class="btn btn-danger" onclick="deleteUser()">🗑️ Ya, Hapus Permanen</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADMIN LOGIN OVERLAY -->
 <div id="admin-login" style="position:fixed;inset:0;background:rgba(15,33,64,.98);z-index:9999;display:flex;align-items:center;justify-content:center;">
   <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:40px;width:100%;max-width:380px;text-align:center;">
@@ -739,7 +766,10 @@ function renderUsers(users) {
       <td>${status}</td>
       <td style="${expStyle}">${expStr}</td>
       <td style="font-size:12px;color:var(--text3);">${lastSeen}</td>
-      <td><button class="btn btn-secondary btn-sm" onclick='editUser(${JSON.stringify(u)})'>✏️ Edit</button></td>
+      <td style="display:flex;gap:6px;align-items:center;">
+        <button class="btn btn-secondary btn-sm" onclick='editUser(${JSON.stringify(u)})'>✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick='confirmDeleteUser("${u.full_key || u.key}", "${(u.customer_name||'').replace(/"/g,"&quot;")}")'>🗑️ Hapus</button>
+      </td>
     </tr>`;
   }).join('');
 }
@@ -928,6 +958,36 @@ async function resetHWID() {
     if (data.success) { toast('✅ HWID berhasil direset', 'success'); }
     else               { toast('❌ ' + (data.error || 'Gagal'), 'error'); }
   } catch(e) { toast('❌ Gagal terhubung', 'error'); }
+}
+
+// ─── Delete User ───
+function confirmDeleteUser(key, name) {
+  document.getElementById('delete-user-name').textContent = name || '(tanpa nama)';
+  document.getElementById('delete-user-key').textContent = key;
+  document.getElementById('modal-delete-user').dataset.key = key;
+  openModal('modal-delete-user');
+}
+
+async function deleteUser() {
+  const key = document.getElementById('modal-delete-user').dataset.key;
+  if (!key) return;
+  try {
+    const r = await fetch(`${SERVER}/api/admin/delete-license`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ admin_key: ADMIN_KEY, license_key: key })
+    });
+    const data = await r.json();
+    if (data.success) {
+      toast('✅ User berhasil dihapus!', 'success');
+      closeModal('modal-delete-user');
+      loadUsers();
+    } else {
+      toast('❌ ' + (data.error || 'Gagal menghapus user'), 'error');
+    }
+  } catch(e) {
+    toast('❌ Gagal terhubung ke server', 'error');
+  }
 }
 
 // ─── Add License ───
