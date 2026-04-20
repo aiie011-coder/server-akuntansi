@@ -638,7 +638,7 @@ async function uploadLogo() {
     const reader = new FileReader();
     reader.onload = async (e) => {
       const base64 = e.target.result;
-      const r = await fetch(`${SERVER}/api/admin/upload-logo`, {
+      const r = await fetch(`${SERVER}/api/admin-router?action=upload-logo`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -671,7 +671,7 @@ async function uploadLogo() {
 async function deleteLogo() {
   if (!confirm('Hapus logo dan kembali ke default (📊)?')) return;
   try {
-    const r = await fetch(`${SERVER}/api/admin/upload-logo`, {
+    const r = await fetch(`${SERVER}/api/admin-router?action=upload-logo`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ admin_key: ADMIN_KEY, image_base64: '', file_name: '', delete_logo: true }),
@@ -716,7 +716,7 @@ async function updateServerStatus() {
 async function loadUsers() {
   document.getElementById('users-tbody').innerHTML = '<tr class="loading-row"><td colspan="8">⏳ Memuat data...</td></tr>';
   try {
-    const r = await fetch(`${SERVER}/api/admin/list-users?admin_key=${encodeURIComponent(ADMIN_KEY)}`);
+    const r = await fetch(`${SERVER}/api/admin-router?action=list-users&admin_key=${encodeURIComponent(ADMIN_KEY)}`);
     if (r.status === 401) { toast('Kunci admin salah', 'error'); document.getElementById('admin-login').style.display='flex'; return; }
     const data = await r.json();
     allUsers = data.licenses || [];
@@ -932,7 +932,7 @@ async function savePlan() {
     notes:            document.getElementById('edit-notes').value,
   };
   try {
-    const r = await fetch(`${SERVER}/api/admin/set-plan`, {
+    const r = await fetch(`${SERVER}/api/admin-router?action=set-plan`, {
       method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
     });
     const data = await r.json();
@@ -950,7 +950,7 @@ async function resetHWID() {
   const key = document.getElementById('edit-license-key').value;
   if (!confirm(`Reset HWID untuk lisensi ${key}?\nUser akan bisa aktivasi di perangkat baru.`)) return;
   try {
-    const r = await fetch(`${SERVER}/api/admin/set-plan`, {
+    const r = await fetch(`${SERVER}/api/admin-router?action=set-plan`, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ admin_key: ADMIN_KEY, license_key: key, reset_hwid: true })
     });
@@ -972,7 +972,7 @@ async function deleteUser() {
   const key = document.getElementById('modal-delete-user').dataset.key;
   if (!key) return;
   try {
-    const r = await fetch(`${SERVER}/api/admin/delete-license`, {
+    const r = await fetch(`${SERVER}/api/admin-router?action=delete-license`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ admin_key: ADMIN_KEY, license_key: key })
@@ -1022,7 +1022,7 @@ async function addLicense() {
     is_active:      true,
   };
   try {
-    const r = await fetch(`${SERVER}/api/admin/create-license`, {
+    const r = await fetch(`${SERVER}/api/admin-router?action=create-license`, {
       method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
     });
     const data = await r.json();
