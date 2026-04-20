@@ -2,39 +2,149 @@
 // File: api/admin-router.js
 // Menggabungkan semua endpoint admin jadi 1 serverless function
 //
-// Routing berdasarkan query ?action=...
+// Routing berdasarkan query ?action=... ATAU body { action }
+//
+// Kompatibel dengan 2 format pemanggilan:
+//
+// FORMAT 1 — admin-panel.js (fetch lama):
+//   POST /api/admin-router  { action, data, key }
+//   Auth: ADMIN_SECRET via cookie akpro_session OR body.admin_key
+//
+// FORMAT 2 — direct admin call:
 //   GET  /api/admin-router?action=list-users&admin_key=xxx
-//   POST /api/admin-router?action=create-license
-//   POST /api/admin-router?action=set-plan
-//   POST /api/admin-router?action=delete-license
-//   POST /api/admin-router?action=upload-logo
+//   POST /api/admin-router?action=create-license  { admin_key, ... }
+//   POST /api/admin-router?action=set-plan        { admin_key, ... }
+//   POST /api/admin-router?action=delete-license  { admin_key, ... }
+//   POST /api/admin-router?action=upload-logo     { admin_key, ... }
 // ============================================================
 
-const { getLicenseByKey, updateLicense, getAllLicenses, query } = require('../lib/db');
+const { getLicenseByKey, updateLicense, getAllLicenses, query,
+        getLicense, saveLicense, updateLicenseStatus,
+        resetLicenseHWID, listAllLicenses, deleteLicense } = require('../lib/db');
 
-const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY;
+const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || process.env.ADMIN_SECRET || '';
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 const VALID_PLANS = ['trial', 'starter', 'pro', 'enterprise'];
 
+// ─── Helper: generate license key ────────────────────────────
+function generateKey() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let key = '';
+  for (let s = 0; s < 4; s++) {
+    if (s > 0) key += '-';
+    for (let i = 0; i < 5; i++) key += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return key;
+}
+
+function getExpiry(type) {
+  if (type === 'lifetime') return null;
+  const d = new Date();
+  if (type === '1year')  d.setFullYear(d.getFullYear() + 1);
+  if (type === '6month') d.setMonth(d.getMonth() + 6);
+  if (type === 'trial')  d.setDate(d.getDate() + 30);
+  return d.toISOString().split('T')[0];
+}
+
+// ─── Helper: validasi auth ────────────────────────────────────
+function isAuthorized(req, body) {
+  // 1. Bearer token (Authorization header)
+  const auth = req.headers['authorization'];
+  if (auth === `Bearer ${ADMIN_SECRET}`) return true;
+
+  // 2. Cookie session (dari admin-panel.js)
+  const cookie = req.headers.cookie || '';
+  const sessionMatch = cookie.match(/akpro_session=([^;]+)/);
+  const expectedToken = Buffer.from(ADMIN_SECRET).toString('base64');
+  if (sessionMatch && sessionMatch[1] === expectedToken) return true;
+
+  // 3. admin_key di body atau query
+  const admin_key = body?.admin_key || req.query?.admin_key;
+  if (admin_key && admin_key === ADMIN_SECRET) return true;
+
+  return false;
+}
+
+// ─── Main handler ─────────────────────────────────────────────
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const action = req.query.action || req.body?.action;
+  const body   = req.body || {};
+  const action = req.query.action || body.action;
 
-  // ─── LIST USERS ─────────────────────────────────────────────
-  if (action === 'list-users') {
-    if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  // Auth check
+  if (!isAuthorized(req, body)) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 
-    const admin_key = req.query.admin_key;
-    if (!admin_key || admin_key !== ADMIN_SECRET)
-      return res.status(401).json({ error: 'Unauthorized' });
+  try {
 
-    try {
+    // ══════════════════════════════════════════════════════════
+    // FORMAT 1 — Kompatibel dengan admin-panel.js
+    // Body: { action, data, key }
+    // ══════════════════════════════════════════════════════════
+
+    // LIST
+    if (action === 'list') {
+      const licenses = await listAllLicenses();
+      return res.json({ success: true, licenses });
+    }
+
+    // GENERATE
+    if (action === 'generate') {
+      const { name, type = 'lifetime', note = '', count = 1, max_devices = 1 } = body.data || {};
+      const generated = [];
+      for (let i = 0; i < Math.min(count, 20); i++) {
+        const newKey = generateKey();
+        await saveLicense({
+          key:         newKey,
+          name:        name || 'Tidak diisi',
+          type,
+          note,
+          expires:     getExpiry(type),
+          max_devices: Math.min(Math.max(parseInt(max_devices) || 1, 1), 20),
+        });
+        generated.push(newKey);
+      }
+      return res.json({ success: true, keys: generated });
+    }
+
+    // UPDATE STATUS
+    if (action === 'updateStatus') {
+      const key = body.key;
+      if (!key) return res.status(400).json({ error: 'key required' });
+      await updateLicenseStatus(key, body.data?.status);
+      return res.json({ success: true });
+    }
+
+    // RESET HWID (format 1)
+    if (action === 'resetHWID') {
+      const key = body.key;
+      if (!key) return res.status(400).json({ error: 'key required' });
+      await resetLicenseHWID(key);
+      return res.json({ success: true });
+    }
+
+    // DELETE (format 1)
+    if (action === 'delete') {
+      const key = body.key;
+      if (!key) return res.status(400).json({ error: 'key required' });
+      await deleteLicense(key);
+      return res.json({ success: true });
+    }
+
+    // ══════════════════════════════════════════════════════════
+    // FORMAT 2 — Direct admin call (query ?action=...)
+    // ══════════════════════════════════════════════════════════
+
+    // LIST USERS
+    if (action === 'list-users') {
+      if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
       const licenses = await getAllLicenses();
       const safe = licenses.map(l => ({
         key:            l.key.substring(0, 5) + '-***-***-' + l.key.slice(-5),
@@ -52,28 +162,16 @@ module.exports = async function handler(req, res) {
         notes:          l.notes,
       }));
       return res.status(200).json({ licenses: safe, total: safe.length });
-    } catch (err) {
-      return res.status(500).json({ error: err.message });
     }
-  }
 
-  // ─── Semua action POST berikut ───────────────────────────────
-  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const body = req.body || {};
-  const { admin_key } = body;
+    // CREATE LICENSE
+    if (action === 'create-license') {
+      const { key, customer_name, customer_email, plan, expiry_date, notes, max_devices } = body;
+      if (!key || !customer_name)
+        return res.status(400).json({ error: 'key dan customer_name wajib diisi' });
 
-  if (!admin_key || admin_key !== ADMIN_SECRET)
-    return res.status(401).json({ error: 'Unauthorized' });
-
-  // ─── CREATE LICENSE ──────────────────────────────────────────
-  if (action === 'create-license') {
-    const { key, customer_name, customer_email, plan, expiry_date, notes, max_devices } = body;
-
-    if (!key || !customer_name)
-      return res.status(400).json({ error: 'key dan customer_name wajib diisi' });
-
-    try {
       const row = {
         key,
         customer_name,
@@ -87,94 +185,77 @@ module.exports = async function handler(req, res) {
       };
       await query('POST', 'licenses', row);
       return res.status(200).json({ success: true, key, message: `Lisensi ${key} berhasil dibuat` });
-    } catch (err) {
-      console.error('[create-license] Error:', err);
-      return res.status(500).json({ error: 'Server error', message: err.message });
     }
-  }
 
-  // ─── SET PLAN ────────────────────────────────────────────────
-  if (action === 'set-plan') {
-    const {
-      license_key, plan, expiry_date, max_companies, max_devices,
-      export_enabled, print_full, locked_modules, is_active,
-      revoke_reason, notes, customer_name, customer_email,
-      jurnal_penutup_enabled, aset_saldo_menurun, komparasi_enabled,
-      lra_lsal_enabled, reset_hwid,
-    } = body;
+    // SET PLAN
+    if (action === 'set-plan') {
+      const {
+        license_key, plan, expiry_date, max_companies, max_devices,
+        export_enabled, print_full, locked_modules, is_active,
+        revoke_reason, notes, customer_name, customer_email,
+        jurnal_penutup_enabled, aset_saldo_menurun, komparasi_enabled,
+        lra_lsal_enabled, reset_hwid,
+      } = body;
 
-    if (!license_key)
-      return res.status(400).json({ error: 'license_key wajib diisi' });
-    if (plan && !VALID_PLANS.includes(plan))
-      return res.status(400).json({ error: `Plan tidak valid. Pilihan: ${VALID_PLANS.join(', ')}` });
+      if (!license_key)
+        return res.status(400).json({ error: 'license_key wajib diisi' });
+      if (plan && !VALID_PLANS.includes(plan))
+        return res.status(400).json({ error: `Plan tidak valid. Pilihan: ${VALID_PLANS.join(', ')}` });
 
-    try {
       const license = await getLicenseByKey(license_key);
       if (!license) return res.status(404).json({ error: 'Lisensi tidak ditemukan' });
 
       const updates = { updated_at: new Date().toISOString() };
-      if (plan                    !== undefined) updates.plan                    = plan;
-      if (expiry_date             !== undefined) updates.expiry_date             = expiry_date;
-      if (max_companies           !== undefined) updates.max_companies           = max_companies;
-      if (max_devices             !== undefined) updates.max_devices             = max_devices;
-      if (export_enabled          !== undefined) updates.export_enabled          = export_enabled;
-      if (print_full              !== undefined) updates.print_full              = print_full;
-      if (locked_modules          !== undefined) updates.locked_modules          = locked_modules;
-      if (is_active               !== undefined) updates.is_active               = is_active;
-      if (revoke_reason           !== undefined) updates.revoke_reason           = revoke_reason;
-      if (notes                   !== undefined) updates.notes                   = notes;
-      if (customer_name           !== undefined) updates.customer_name           = customer_name;
-      if (customer_email          !== undefined) updates.customer_email          = customer_email;
-      if (jurnal_penutup_enabled  !== undefined) updates.jurnal_penutup_enabled  = jurnal_penutup_enabled;
-      if (aset_saldo_menurun      !== undefined) updates.aset_saldo_menurun      = aset_saldo_menurun;
-      if (komparasi_enabled       !== undefined) updates.komparasi_enabled       = komparasi_enabled;
-      if (lra_lsal_enabled        !== undefined) updates.lra_lsal_enabled        = lra_lsal_enabled;
-      if (reset_hwid)                            updates.hwid                    = null;
+      if (plan                   !== undefined) updates.plan                   = plan;
+      if (expiry_date            !== undefined) updates.expiry_date            = expiry_date;
+      if (max_companies          !== undefined) updates.max_companies          = max_companies;
+      if (max_devices            !== undefined) updates.max_devices            = max_devices;
+      if (export_enabled         !== undefined) updates.export_enabled         = export_enabled;
+      if (print_full             !== undefined) updates.print_full             = print_full;
+      if (locked_modules         !== undefined) updates.locked_modules         = locked_modules;
+      if (is_active              !== undefined) updates.is_active              = is_active;
+      if (revoke_reason          !== undefined) updates.revoke_reason          = revoke_reason;
+      if (notes                  !== undefined) updates.notes                  = notes;
+      if (customer_name          !== undefined) updates.customer_name          = customer_name;
+      if (customer_email         !== undefined) updates.customer_email         = customer_email;
+      if (jurnal_penutup_enabled !== undefined) updates.jurnal_penutup_enabled = jurnal_penutup_enabled;
+      if (aset_saldo_menurun     !== undefined) updates.aset_saldo_menurun     = aset_saldo_menurun;
+      if (komparasi_enabled      !== undefined) updates.komparasi_enabled      = komparasi_enabled;
+      if (lra_lsal_enabled       !== undefined) updates.lra_lsal_enabled       = lra_lsal_enabled;
+      if (reset_hwid)                           updates.hwid                   = null;
 
       await updateLicense(license_key, updates);
       return res.status(200).json({ success: true, message: `Lisensi ${license_key} berhasil diupdate`, updated: updates });
-    } catch (err) {
-      console.error('[set-plan] Error:', err);
-      return res.status(500).json({ error: 'Server error', message: err.message });
     }
-  }
 
-  // ─── DELETE LICENSE ──────────────────────────────────────────
-  if (action === 'delete-license') {
-    const { license_key } = body;
+    // DELETE LICENSE (format 2)
+    if (action === 'delete-license') {
+      const { license_key } = body;
+      if (!license_key)
+        return res.status(400).json({ error: 'license_key wajib diisi' });
 
-    if (!license_key)
-      return res.status(400).json({ error: 'license_key wajib diisi' });
-
-    try {
       const license = await getLicenseByKey(license_key);
       if (!license) return res.status(404).json({ error: 'Lisensi tidak ditemukan' });
 
       await query('DELETE', 'licenses', { key: license_key });
       return res.status(200).json({ success: true, message: `Lisensi ${license_key} berhasil dihapus` });
-    } catch (err) {
-      console.error('[delete-license] Error:', err);
-      return res.status(500).json({ error: 'Server error', message: err.message });
     }
-  }
 
-  // ─── UPLOAD LOGO ─────────────────────────────────────────────
-  if (action === 'upload-logo') {
-    const { image_base64, file_name, mime_type } = body;
+    // UPLOAD LOGO
+    if (action === 'upload-logo') {
+      const { image_base64, file_name, mime_type } = body;
+      if (!image_base64 || !file_name)
+        return res.status(400).json({ error: 'image_base64 dan file_name wajib diisi' });
 
-    if (!image_base64 || !file_name)
-      return res.status(400).json({ error: 'image_base64 dan file_name wajib diisi' });
-
-    try {
-      const base64Data   = image_base64.replace(/^data:image\/\w+;base64,/, '');
-      const buffer       = Buffer.from(base64Data, 'base64');
-      const contentType  = mime_type || 'image/png';
+      const base64Data     = image_base64.replace(/^data:image\/\w+;base64,/, '');
+      const buffer         = Buffer.from(base64Data, 'base64');
+      const contentType    = mime_type || 'image/png';
       const uploadFileName = `logo/zequi-logo.${contentType.split('/')[1] || 'png'}`;
 
       const uploadRes = await fetch(
         `${SUPABASE_URL}/storage/v1/object/assets/${uploadFileName}`,
         {
-          method: 'POST',
+          method:  'POST',
           headers: {
             'apikey':        SUPABASE_KEY,
             'Authorization': `Bearer ${SUPABASE_KEY}`,
@@ -193,7 +274,7 @@ module.exports = async function handler(req, res) {
       const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/assets/${uploadFileName}`;
 
       await fetch(`${SUPABASE_URL}/rest/v1/settings`, {
-        method: 'POST',
+        method:  'POST',
         headers: {
           'apikey':        SUPABASE_KEY,
           'Authorization': `Bearer ${SUPABASE_KEY}`,
@@ -208,12 +289,13 @@ module.exports = async function handler(req, res) {
       });
 
       return res.status(200).json({ success: true, logo_url: publicUrl, message: 'Logo berhasil diupload' });
-    } catch (err) {
-      console.error('[upload-logo] Error:', err);
-      return res.status(500).json({ error: 'Server error', message: err.message });
     }
-  }
 
-  // ─── Action tidak dikenali ───────────────────────────────────
-  return res.status(400).json({ error: `Action tidak dikenali: ${action}` });
+    // ─── Action tidak dikenali ──────────────────────────────────
+    return res.status(400).json({ error: `Action tidak dikenali: ${action}` });
+
+  } catch (err) {
+    console.error('[admin-router] Error:', err);
+    return res.status(500).json({ error: 'Server error', message: err.message });
+  }
 };
