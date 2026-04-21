@@ -220,10 +220,6 @@ module.exports = async function handler(req, res) {
       if (notes                  !== undefined) updates.notes                  = notes;
       if (customer_name          !== undefined) updates.customer_name          = customer_name;
       if (customer_email         !== undefined) updates.customer_email         = customer_email;
-      if (jurnal_penutup_enabled !== undefined) updates.jurnal_penutup_enabled = jurnal_penutup_enabled;
-      if (aset_saldo_menurun     !== undefined) updates.aset_saldo_menurun     = aset_saldo_menurun;
-      if (komparasi_enabled      !== undefined) updates.komparasi_enabled      = komparasi_enabled;
-      if (lra_lsal_enabled       !== undefined) updates.lra_lsal_enabled       = lra_lsal_enabled;
       if (reset_hwid)                           updates.hwid                   = null;
 
       await updateLicense(license_key, updates);
