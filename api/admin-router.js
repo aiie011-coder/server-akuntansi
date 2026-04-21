@@ -220,6 +220,7 @@ module.exports = async function handler(req, res) {
       if (notes                  !== undefined) updates.notes                  = notes;
       if (customer_name          !== undefined) updates.customer_name          = customer_name;
       if (customer_email         !== undefined) updates.customer_email         = customer_email;
+
       if (reset_hwid)                           updates.hwid                   = null;
 
       await updateLicense(license_key, updates);
