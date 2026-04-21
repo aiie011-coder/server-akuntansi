@@ -189,8 +189,10 @@ module.exports = async function handler(req, res) {
 
     // SET PLAN
     if (action === 'set-plan') {
+      // Support both: { license_key } and { key } from frontend
+      const license_key = body.license_key || body.key;
       const {
-        license_key, plan, expiry_date, max_companies, max_devices,
+        plan, expiry_date, max_companies, max_devices,
         export_enabled, print_full, locked_modules, is_active,
         revoke_reason, notes, customer_name, customer_email,
         jurnal_penutup_enabled, aset_saldo_menurun, komparasi_enabled,
@@ -237,7 +239,7 @@ module.exports = async function handler(req, res) {
       const license = await getLicenseByKey(license_key);
       if (!license) return res.status(404).json({ error: 'Lisensi tidak ditemukan' });
 
-      await deleteLicense(license_key);
+      await query('DELETE', 'licenses', { key: license_key });
       return res.status(200).json({ success: true, message: `Lisensi ${license_key} berhasil dihapus` });
     }
 
