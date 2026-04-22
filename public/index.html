@@ -2906,15 +2906,59 @@ function applyTrxTemplate(type) {
 // Dipanggil setelah saveTransaction berhasil
 // ══════════════════════════════════════════
 // ── BALIK INTEGRASI saat transaksi diedit ──
-// Hapus semua data di modul pendukung yang berasal dari transaksi ini
+// Hapus record baru + balikkan delta yang ditambahkan ke record yang sudah ada.
 function reverseIntegration(trxId) {
-  // Hapus hutang & piutang yang dibuat otomatis dari transaksi ini
+  // 1. Hapus record yang dibuat baru dari transaksi ini
   DB.hutang    = DB.hutang.filter(h => h.ref_transaction_id !== trxId);
   DB.piutang   = DB.piutang.filter(p => p.ref_transaction_id !== trxId);
-  // Untuk persediaan, aset tetap, perlengkapan: hapus yang ref-nya cocok
   DB.persediaan   = DB.persediaan.filter(p => p.ref_transaction_id !== trxId);
   DB.aset_tetap   = DB.aset_tetap.filter(a => a.ref_transaction_id !== trxId);
   DB.perlengkapan = DB.perlengkapan.filter(p => p.ref_transaction_id !== trxId);
+
+  // 2. Balikkan delta yang ditambahkan ke record existing (tidak punya ref_transaction_id)
+  if (!DB.integration_deltas) DB.integration_deltas = [];
+  DB.integration_deltas.filter(d => d.trx_id === trxId).forEach(delta => {
+    if (delta.module === 'piutang') {
+      const idx = DB.piutang.findIndex(p => p.id === delta.record_id);
+      if (idx >= 0) {
+        DB.piutang[idx].jumlah -= delta.amount;
+        DB.piutang[idx].sisa   -= delta.amount;
+        if (DB.piutang[idx].sisa <= 0.01) DB.piutang[idx].status = 'Lunas';
+        else DB.piutang[idx].status = 'Sebagian';
+      }
+    } else if (delta.module === 'hutang') {
+      const idx = DB.hutang.findIndex(h => h.id === delta.record_id);
+      if (idx >= 0) {
+        DB.hutang[idx].jumlah -= delta.amount;
+        DB.hutang[idx].sisa   -= delta.amount;
+        if (DB.hutang[idx].sisa <= 0.01) DB.hutang[idx].status = 'Lunas';
+        else DB.hutang[idx].status = 'Sebagian';
+      }
+    } else if (delta.module === 'persediaan') {
+      const idx = DB.persediaan.findIndex(p => p.id === delta.record_id);
+      if (idx >= 0) {
+        DB.persediaan[idx].total_nilai = Math.max(0, (DB.persediaan[idx].total_nilai||0) - delta.amount);
+        DB.persediaan[idx].harga_satuan = DB.persediaan[idx].jumlah > 0 ?
+          DB.persediaan[idx].total_nilai / DB.persediaan[idx].jumlah : 0;
+      }
+    } else if (delta.module === 'aset_tetap') {
+      const idx = DB.aset_tetap.findIndex(a => a.id === delta.record_id);
+      if (idx >= 0) {
+        DB.aset_tetap[idx].harga_perolehan -= delta.amount;
+        DB.aset_tetap[idx].tambahan_aset = (DB.aset_tetap[idx].tambahan_aset||0) - delta.amount;
+        const hargaEf = DB.aset_tetap[idx].harga_perolehan + (DB.aset_tetap[idx].tambahan_aset||0) - (DB.aset_tetap[idx].pengurangan_aset||0);
+        DB.aset_tetap[idx].nilai_buku = hargaEf - (DB.aset_tetap[idx].akumulasi_penyusutan||0);
+        DB.aset_tetap[idx].beban_penyusutan = hargaEf / (DB.aset_tetap[idx].masa_manfaat||4);
+      }
+    } else if (delta.module === 'perlengkapan') {
+      const idx = DB.perlengkapan.findIndex(p => p.id === delta.record_id);
+      if (idx >= 0) {
+        DB.perlengkapan[idx].total_nilai = Math.max(0, (DB.perlengkapan[idx].total_nilai||0) - delta.amount);
+      }
+    }
+  });
+  // Bersihkan delta log untuk transaksi ini
+  DB.integration_deltas = DB.integration_deltas.filter(d => d.trx_id !== trxId);
 }
 
 function integrateTransaction(trxId, jeId, date, desc, details) {
@@ -2943,11 +2987,13 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
           ref_transaction_id: trxId, ref_journal_id: jeId
         });
       } else {
-        // Tambah ke sisa piutang yang ada
+        // Tambah ke sisa piutang yang ada — catat delta agar bisa di-reverse
         const idx = DB.piutang.findIndex(p => p.id === existing.id);
         DB.piutang[idx].jumlah += d.debit;
         DB.piutang[idx].sisa += d.debit;
         if (DB.piutang[idx].sisa > 0) DB.piutang[idx].status = 'Belum Lunas';
+        if (!DB.integration_deltas) DB.integration_deltas = [];
+        DB.integration_deltas.push({ trx_id: trxId, module: 'piutang', record_id: existing.id, amount: d.debit });
       }
     }
 
@@ -2985,6 +3031,8 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
         DB.hutang[idx].jumlah += d.kredit;
         DB.hutang[idx].sisa += d.kredit;
         if (DB.hutang[idx].sisa > 0) DB.hutang[idx].status = 'Belum Lunas';
+        if (!DB.integration_deltas) DB.integration_deltas = [];
+        DB.integration_deltas.push({ trx_id: trxId, module: 'hutang', record_id: existing.id, amount: d.kredit });
       }
     }
 
@@ -3019,6 +3067,8 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
         const idx = DB.persediaan.findIndex(p => p.id === existing.id);
         DB.persediaan[idx].total_nilai = (DB.persediaan[idx].total_nilai || 0) + d.debit;
         DB.persediaan[idx].harga_satuan = DB.persediaan[idx].total_nilai / (DB.persediaan[idx].jumlah || 1);
+        if (!DB.integration_deltas) DB.integration_deltas = [];
+        DB.integration_deltas.push({ trx_id: trxId, module: 'persediaan', record_id: existing.id, amount: d.debit });
       }
     }
 
@@ -3064,6 +3114,8 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
         const hargaEf = DB.aset_tetap[idx].harga_perolehan + (DB.aset_tetap[idx].tambahan_aset||0) - (DB.aset_tetap[idx].pengurangan_aset||0);
         DB.aset_tetap[idx].nilai_buku = hargaEf - (DB.aset_tetap[idx].akumulasi_penyusutan || 0);
         DB.aset_tetap[idx].beban_penyusutan = hargaEf / (DB.aset_tetap[idx].masa_manfaat || 4);
+        if (!DB.integration_deltas) DB.integration_deltas = [];
+        DB.integration_deltas.push({ trx_id: trxId, module: 'aset_tetap', record_id: existing.id, amount: d.debit });
       }
     }
 
@@ -3080,6 +3132,8 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
       } else {
         const idx = DB.perlengkapan.findIndex(p => p.id === existing.id);
         DB.perlengkapan[idx].nilai += d.debit;
+        if (!DB.integration_deltas) DB.integration_deltas = [];
+        DB.integration_deltas.push({ trx_id: trxId, module: 'perlengkapan', record_id: existing.id, amount: d.debit });
       }
     }
   });
@@ -3247,7 +3301,8 @@ function getBukuBesarData(accId, includeAdj) {
   }
   combined.sort((a,b)=>a.date.localeCompare(b.date));
 
-  let saldo=0;
+  // Mulai dari saldo_awal agar saldo berjalan konsisten dengan Neraca Saldo
+  let saldo = acc.saldo_awal || 0;
   combined.forEach(r=>{
     if (acc.normal_balance==='Debit') saldo += r.debit - r.kredit;
     else saldo += r.kredit - r.debit;
@@ -6279,8 +6334,8 @@ function printReport(type) {
       const bal = getAccountBalance(a.id, withAdj);
       if (!bal) return;
       const isD = a.normal_balance==='Debit';
-      const d = isD ? Math.max(0,bal) : 0;
-      const k = !isD ? Math.max(0,bal) : 0;
+      const d = isD ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
+      const k = !isD ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
       totD+=d; totK+=k;
       rows += `<tr><td>${a.code}</td><td>${a.name}</td><td class="num">${d?fmtC(d):''}</td><td class="num">${k?fmtC(k):''}</td></tr>`;
     });
@@ -6777,8 +6832,8 @@ function exportExcel(type) {
       const bal = getAccountBalance(a.id);
       if (!bal) return;
       const isD = a.normal_balance==='Debit';
-      const d = isD?Math.max(0,bal):0;
-      const k = !isD?Math.max(0,bal):0;
+      const d = isD ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
+      const k = !isD ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
       totD+=d; totK+=k;
       rows.push([a.code, a.name, d||'', k||'']);
     });
@@ -9072,7 +9127,7 @@ function renderLSAL() {
   const salAwal        = lsalEntry.sal_awal || 0;
   const penggunaanSal  = lsalEntry.penggunaan_sal || 0;
   const koreksi        = lsalEntry.koreksi || 0;
-  const salAkhir       = salAwal + penggunaanSal + silpaTahunIni - koreksi;
+  const salAkhir       = salAwal - penggunaanSal + silpaTahunIni - koreksi;
 
   el.innerHTML = `
     <div style="text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--border);">
