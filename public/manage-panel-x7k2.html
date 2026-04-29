@@ -971,23 +971,70 @@ function confirmDeleteUser(key, name) {
 async function deleteUser() {
   const key = document.getElementById('modal-delete-user').dataset.key;
   if (!key) return;
+
+  const deleteBtn = document.querySelector('#modal-delete-user .btn-danger');
+  if (deleteBtn) { deleteBtn.disabled = true; deleteBtn.textContent = '⏳ Menghapus...'; }
+
+  // Coba endpoint delete-license
+  let deleted = false;
+  let lastError = '';
+  let lastStatus = 0;
+
   try {
     const r = await fetch(`${SERVER}/api/admin-router?action=delete-license`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ admin_key: ADMIN_KEY, license_key: key })
     });
-    const data = await r.json();
-    if (data.success) {
-      toast('✅ User berhasil dihapus!', 'success');
-      closeModal('modal-delete-user');
-      loadUsers();
+    lastStatus = r.status;
+    // Coba parse JSON meski status error
+    let data = {};
+    try { data = await r.json(); } catch(_) {}
+
+    if (r.ok && data.success) {
+      deleted = true;
     } else {
-      toast('❌ ' + (data.error || 'Gagal menghapus user'), 'error');
+      lastError = data.error || `Server error ${r.status}`;
     }
   } catch(e) {
-    toast('❌ Gagal terhubung ke server', 'error');
+    lastError = 'Tidak bisa terhubung ke server';
   }
+
+  // Jika delete-license gagal (server error/endpoint tidak ada),
+  // coba fallback: suspend dulu via set-plan agar lisensi nonaktif
+  if (!deleted) {
+    toast(`⚠️ Hapus permanen gagal (${lastError}). Mencoba menonaktifkan lisensi...`, 'info', 4000);
+    try {
+      const r2 = await fetch(`${SERVER}/api/admin-router?action=set-plan`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          admin_key: ADMIN_KEY,
+          license_key: key,
+          is_active: false,
+          revoke_reason: 'Dihapus oleh admin (delete-license endpoint error)'
+        })
+      });
+      const d2 = await r2.json();
+      if (d2.success) {
+        toast('⚠️ Lisensi tidak terhapus permanen, tapi berhasil di-SUSPEND. Hubungi developer untuk hapus permanen.', 'info', 7000);
+        closeModal('modal-delete-user');
+        loadUsers();
+        if (deleteBtn) { deleteBtn.disabled = false; deleteBtn.textContent = '🗑️ Ya, Hapus Permanen'; }
+        return;
+      }
+    } catch(e2) { /* fallback juga gagal */ }
+
+    // Kedua cara gagal — tampilkan detail error
+    toast(`❌ Gagal hapus: ${lastError}${lastStatus ? ' (HTTP ' + lastStatus + ')' : ''}. Cek koneksi & kunci admin.`, 'error', 6000);
+    if (deleteBtn) { deleteBtn.disabled = false; deleteBtn.textContent = '🗑️ Ya, Hapus Permanen'; }
+    return;
+  }
+
+  toast('✅ User berhasil dihapus!', 'success');
+  closeModal('modal-delete-user');
+  loadUsers();
+  if (deleteBtn) { deleteBtn.disabled = false; deleteBtn.textContent = '🗑️ Ya, Hapus Permanen'; }
 }
 
 // ─── Add License ───
