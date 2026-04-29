@@ -958,7 +958,7 @@ function renderCompanies() {
   // Tampilkan badge sisa slot perusahaan
   const limitBadge = document.getElementById('co-limit-badge');
   if (limitBadge && __planConfig) {
-    const max = __planConfig.max_companies || 1;
+    const max = (__planConfig && __planConfig.max_companies) || (PLAN_DEFAULTS[__planConfig?.plan]?.max_companies) || 1;
     const used = DB.companies.length;
     const remaining = Math.max(0, max - used);
     if (max < 999) {
@@ -981,7 +981,7 @@ function renderCompanies() {
 }
 
 function openCompanyModal() {
-  const maxCo = (__planConfig && __planConfig.max_companies) || 1;
+  const maxCo = (__planConfig && __planConfig.max_companies) || (PLAN_DEFAULTS[__planConfig?.plan]?.max_companies) || 1;
   if (__licenseVerified && DB.companies.length >= maxCo) {
     toast(`Paket ${__planConfig.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
     showUpgradeModal('companies');
@@ -1003,7 +1003,7 @@ function saveCompany() {
   const id = document.getElementById('company-edit-id').value;
   // ── Cek batas perusahaan sesuai paket ──
   if (!id) {
-    const maxCo = (__planConfig && __planConfig.max_companies) || 1;
+    const maxCo = (__planConfig && __planConfig.max_companies) || (PLAN_DEFAULTS[__planConfig?.plan]?.max_companies) || 1;
     if (DB.companies.length >= maxCo) {
       closeModal('modal-company');
       toast(`Paket ${__planConfig.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
@@ -6731,13 +6731,16 @@ async function fetchPlanConfig(licKey) {
     if (resp.ok) {
       const data = await resp.json();
       if (data && data.plan) {
-        __planConfig = { ...PLAN_DEFAULTS[data.plan] || PLAN_DEFAULTS.trial, ...data };
+        const planDefaults = PLAN_DEFAULTS[data.plan] || PLAN_DEFAULTS.trial;
+        // Merge: nilai null/undefined dari server tidak menimpa default plan
+        const merged = { ...planDefaults };
+        Object.keys(data).forEach(k => {
+          if (data[k] !== null && data[k] !== undefined) merged[k] = data[k];
+        });
         // Normalisasi nama field: server pakai max_devices, app pakai max_seats
-        if (data.max_devices !== undefined) {
-          __planConfig.max_seats = data.max_devices;
-        } else if (data.max_seats !== undefined) {
-          __planConfig.max_devices = data.max_seats;
-        }
+        if (data.max_devices != null) merged.max_seats = data.max_devices;
+        if (data.max_seats   != null) merged.max_devices = data.max_seats;
+        __planConfig = merged;
         // Cek expired
         if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
           __planConfig.is_expired = true;
