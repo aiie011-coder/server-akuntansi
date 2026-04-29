@@ -236,7 +236,7 @@ module.exports = async function handler(req, res) {
       const license = await getLicenseByKey(license_key);
       if (!license) return res.status(404).json({ error: 'Lisensi tidak ditemukan' });
 
-      await query('DELETE', 'licenses', { key: license_key });
+      await deleteLicense(license_key);
       return res.status(200).json({ success: true, message: `Lisensi ${license_key} berhasil dihapus` });
     }
 
