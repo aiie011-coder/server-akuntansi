@@ -6709,10 +6709,10 @@ const PLAN_DEFAULTS = {
   },
   enterprise: {
     plan: 'enterprise', plan_label: 'Enterprise',
-    max_companies: 999, export_enabled: true, print_full: true,
+    max_companies: 9999, export_enabled: true, print_full: true,
     jurnal_penutup_enabled: true,
     aset_saldo_menurun: true, komparasi_enabled: true, lra_lsal_enabled: true,
-    locked_modules: [], max_seats: 99
+    locked_modules: [], max_seats: 99, max_devices: 99
   }
 };
 
@@ -6732,6 +6732,12 @@ async function fetchPlanConfig(licKey) {
       const data = await resp.json();
       if (data && data.plan) {
         __planConfig = { ...PLAN_DEFAULTS[data.plan] || PLAN_DEFAULTS.trial, ...data };
+        // Normalisasi nama field: server pakai max_devices, app pakai max_seats
+        if (data.max_devices !== undefined) {
+          __planConfig.max_seats = data.max_devices;
+        } else if (data.max_seats !== undefined) {
+          __planConfig.max_devices = data.max_seats;
+        }
         // Cek expired
         if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
           __planConfig.is_expired = true;
