@@ -462,7 +462,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
     <button class="lic-btn" id="lic-btn" onclick="licActivate()">🔓 Aktivasi Sekarang</button>
     <div class="lic-footer">
       Belum punya lisensi? Hubungi penjual untuk mendapatkan kode aktivasi.<br>
-      <span style="font-family:monospace;">v4.0 — © 2025 ZeQui</span>
+      <span style="font-family:monospace;">v1.0 — © 2026 ZeQui</span>
     </div>
   </div>
 </div>
@@ -521,7 +521,6 @@ textarea.form-control { resize:vertical; min-height:80px; }
     <div class="nav-item" onclick="navigate('lra')" id="nav-lra" style="display:none;"><span class="nav-icon">📋</span> Realisasi Anggaran (LRA)</div>
     <div class="nav-item" onclick="navigate('lsal')" id="nav-lsal" style="display:none;"><span class="nav-icon">💰</span> Saldo Anggaran Lebih (LSAL)</div>
     <div class="nav-item" onclick="navigate('jurnal-penutup')"><span class="nav-icon">🔒</span> Jurnal Penutup</div>
-    <div class="nav-item" onclick="navigate('jurnal-pembalik')"><span class="nav-icon">↩️</span> Jurnal Pembalik</div>
 
     <div class="nav-group-label">Sistem</div>
     <div class="nav-item" onclick="navigate('komparasi')"><span class="nav-icon">📊</span> Komparasi Multi-Tahun</div>
@@ -723,6 +722,10 @@ textarea.form-control { resize:vertical; min-height:80px; }
     <div id="page-neraca-saldo" class="page">
       <div class="page-header">
         <div><div class="page-title">Neraca Saldo</div><div class="page-subtitle">Saldo akhir semua akun</div></div>
+      </div>
+      <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:12px;color:#92400e;">
+        ℹ️ <strong>Sebelum Penyesuaian</strong> — Neraca Saldo ini belum mencakup jurnal penyesuaian.
+        Lihat tab <strong>NS Setelah Penyesuaian</strong> untuk saldo yang sudah memperhitungkan penyesuaian akhir periode.
       </div>
       <div class="card">
         <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="ns-tbody"></tbody><tfoot id="ns-tfoot"></tfoot></table></div>
@@ -1091,54 +1094,18 @@ textarea.form-control { resize:vertical; min-height:80px; }
           <div class="page-title">Jurnal Penutup</div>
           <div id="jp-status-badge" style="margin-top:6px;"></div>
         </div>
-        <div class="page-actions"><button class="btn btn-primary" onclick="buatJurnalPenutup()">⚙️ Buat Jurnal Penutup</button></div>
-      </div>
-      <div class="card"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jp-tbody"><tr><td>2026-04-05</td><td>Menutup akun pendapatan</td><td style="color:var(--text2);">Pendapatan Penjualan</td><td class="td-mono">Rp 81.000.000</td><td></td></tr><tr><td></td><td></td><td style="padding-left:20px;color:var(--text2);">Ikhtisar Laba Rugi</td><td></td><td class="td-mono">Rp 81.000.000</td></tr><tr><td>2026-04-05</td><td>Menutup akun beban</td><td style="padding-left:20px;color:var(--text2);">Ikhtisar Laba Rugi</td><td class="td-mono">Rp 50.000.000</td><td></td></tr><tr><td>2026-04-05</td><td>Menutup akun beban</td><td style="padding-left:20px;color:var(--text2);">Ikhtisar Laba Rugi</td><td class="td-mono">Rp 10.000.000</td><td></td></tr><tr><td>2026-04-05</td><td>Menutup akun beban</td><td style="padding-left:20px;color:var(--text2);">Ikhtisar Laba Rugi</td><td class="td-mono">Rp 5.000.000</td><td></td></tr><tr><td>2026-04-05</td><td>Menutup akun beban</td><td style="padding-left:20px;color:var(--text2);">Ikhtisar Laba Rugi</td><td class="td-mono">Rp 1.500.000</td><td></td></tr><tr><td>2026-04-05</td><td>Menutup akun beban</td><td style="padding-left:20px;color:var(--text2);">Ikhtisar Laba Rugi</td><td class="td-mono">Rp 1.000.000</td><td></td></tr><tr><td>2026-04-05</td><td>Menutup akun beban</td><td style="padding-left:20px;color:var(--text2);">Ikhtisar Laba Rugi</td><td class="td-mono">Rp 1.200.000</td><td></td></tr><tr><td>2026-04-05</td><td>Menutup akun beban</td><td style="padding-left:20px;color:var(--text2);">Ikhtisar Laba Rugi</td><td class="td-mono">Rp 0</td><td></td></tr><tr><td></td><td></td><td>Ikhtisar Laba Rugi</td><td></td><td class="td-mono">Rp 68.700.000</td></tr><tr style="background:rgba(16,185,129,.05)"><td>2026-04-05</td><td>Menutup ikhtisar ke modal</td><td>Ikhtisar Laba Rugi</td><td class="td-mono" style="color:var(--accent2);">Rp 12.300.000</td><td></td></tr><tr style="background:rgba(16,185,129,.05)"><td></td><td></td><td style="padding-left:20px;">Modal</td><td></td><td class="td-mono" style="color:var(--accent2);">Rp 12.300.000</td></tr></tbody></table></div></div>
-    </div>
-
-    <!-- ═══ JURNAL PEMBALIK ═══ -->
-    <div id="page-jurnal-pembalik" class="page">
-      <div class="page-header">
-        <div>
-          <div class="page-title">Jurnal Pembalik</div>
-          <div id="jpb-status-badge" style="margin-top:6px;"></div>
+        <div class="page-actions">
+          <button class="btn btn-secondary" onclick="buatJurnalPenutup()">⚙️ Preview Jurnal Penutup</button>
+          <button class="btn btn-primary" id="btn-posting-jp" onclick="postingJurnalPenutup()" style="display:none;">💾 Posting ke Jurnal Umum</button>
         </div>
-        <div class="page-actions"><button class="btn btn-primary" onclick="buatJurnalPembalik()">⚙️ Buat Jurnal Pembalik</button></div>
       </div>
-      <div class="card"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jpb-tbody">
-      <tr>
-        <td>2027-01-01</td><td>[Pembalik] Penyusutan peralatan Q1 2024</td>
-        <td>Akumulasi Penyusutan Peralatan</td>
-        <td class="td-mono">Rp 1.000.000</td><td></td>
-      </tr>
-      <tr>
-        <td></td><td></td>
-        <td style="padding-left:20px;color:var(--text2);">Beban Penyusutan Peralatan</td>
-        <td></td><td class="td-mono">Rp 1.000.000</td>
-      </tr>
-    
-      <tr>
-        <td>2027-01-01</td><td>[Pembalik] Perlengkapan yang terpakai Q1 2024</td>
-        <td>Perlengkapan Toko</td>
-        <td class="td-mono">Rp 1.500.000</td><td></td>
-      </tr>
-      <tr>
-        <td></td><td></td>
-        <td style="padding-left:20px;color:var(--text2);">Beban Perlengkapan</td>
-        <td></td><td class="td-mono">Rp 1.500.000</td>
-      </tr>
-    
-      <tr>
-        <td>2027-01-01</td><td>[Pembalik] Akrual gaji yang belum dibayar</td>
-        <td>Hutang Gaji</td>
-        <td class="td-mono">Rp 2.000.000</td><td></td>
-      </tr>
-      <tr>
-        <td></td><td></td>
-        <td style="padding-left:20px;color:var(--text2);">Beban Gaji Karyawan</td>
-        <td></td><td class="td-mono">Rp 2.000.000</td>
-      </tr>
-    </tbody></table></div></div>
+      <div style="margin-bottom:12px;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);">
+        ℹ️ <strong>Jurnal Penutup</strong> menutup akun nominal (Pendapatan &amp; Beban) ke Ikhtisar L/R, lalu Ikhtisar L/R ke Modal.
+        Klik <strong>Preview</strong> untuk melihat drafnya, lalu klik <strong>Posting ke Jurnal Umum</strong> untuk menyimpan ke buku besar. Setelah posting, saldo akun nominal menjadi nol.
+      </div>
+      <div class="card"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jp-tbody">
+        <tr><td colspan="5"><div class="empty-state"><div class="empty-icon">🔒</div><p>Klik <strong>Buat / Refresh Jurnal Penutup</strong> untuk menghitung jurnal penutup dari data transaksi aktif.</p></div></td></tr>
+      </tbody></table></div></div>
     </div>
 
     <!-- ═══ SETTINGS ═══ -->
@@ -1269,8 +1236,41 @@ textarea.form-control { resize:vertical; min-height:80px; }
             <p>Laba Rugi / LO → Perubahan Ekuitas → Neraca/Posisi Keuangan</p>
             <p>Arus Kas → Kas di Neraca | SAP: LRA → LSAL</p>
             <hr style="margin:8px 0;border-color:var(--border)">
-            <p><strong>ZeQui</strong> v4.0 — Zenith Quality Accounting System</p>
+            <p><strong>ZeQui</strong> v1.0 — Zenith Quality Accounting System</p>
             <p>SAK UMUM · SAK EP · SAK EMKM · SAP · SAK SYARIAH</p>
+          </div>
+        </div>
+
+        <!-- Audit Trail Card -->
+        <div class="card" style="grid-column:1/-1;">
+          <div class="card-header" style="justify-content:space-between;">
+            <div class="card-title">🔒 Periode Lock</div>
+            <button class="btn btn-secondary btn-sm" onclick="renderPeriodeLock()">🔄 Refresh</button>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div style="padding:10px 16px;font-size:12px;color:var(--text3);border-bottom:1px solid var(--border);">
+              Kunci periode bulanan agar jurnal tidak bisa diedit/dihapus. Berguna setelah tutup buku.
+            </div>
+            <div id="periode-lock-content">
+              <div style="text-align:center;padding:24px;color:var(--text3);">Klik 🔄 untuk memuat daftar periode.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Trail Card -->
+        <div class="card" style="grid-column:1/-1;">
+          <div class="card-header" style="justify-content:space-between;">
+            <div class="card-title">📋 Audit Trail</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input id="audit-search" type="text" placeholder="Cari modul/aksi/detail..." class="form-control" style="width:220px;font-size:12px;" oninput="renderAuditTrail()">
+              <button class="btn btn-secondary btn-sm" onclick="renderAuditTrail()">🔄</button>
+              <button class="btn btn-danger btn-sm" onclick="if(confirm('Hapus semua log audit perusahaan ini?')){DB.audit_log=DB.audit_log.filter(l=>l.company_id!==co());autoSave();renderAuditTrail();}">🗑️ Hapus Log</button>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <div id="audit-trail-content" style="max-height:400px;overflow-y:auto;font-size:12px;">
+              <div style="text-align:center;padding:32px;color:var(--text3);">Klik 🔄 untuk memuat log audit</div>
+            </div>
           </div>
         </div>
 
@@ -1343,6 +1343,29 @@ textarea.form-control { resize:vertical; min-height:80px; }
           <select class="form-control" id="coa-normal">
             <option value="Debit">Debit</option><option value="Kredit">Kredit</option>
           </select>
+        </div>
+        <div class="form-group">
+          <label>Klasifikasi Neraca
+            <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Aset &amp; Kewajiban)</span>
+          </label>
+          <select class="form-control" id="coa-kategori-neraca">
+            <option value="">— Auto (dari nama akun) —</option>
+            <option value="lancar">✅ Lancar / Jangka Pendek</option>
+            <option value="tidak_lancar">🏗️ Tidak Lancar / Jangka Panjang</option>
+          </select>
+          <small style="font-size:10px;color:var(--text3);">Wajib diisi jika nama akun non-standar</small>
+        </div>
+        <div class="form-group">
+          <label>Kategori Arus Kas
+            <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Aset/Kewajiban/Ekuitas)</span>
+          </label>
+          <select class="form-control" id="coa-kategori-arus-kas">
+            <option value="">— Auto (dari nama akun) —</option>
+            <option value="operasi">💼 Operasi</option>
+            <option value="investasi">📈 Investasi</option>
+            <option value="pendanaan">🏦 Pendanaan</option>
+          </select>
+          <small style="font-size:10px;color:var(--text3);">Paksa klasifikasi jika nama akun tidak dikenali otomatis</small>
         </div>
       </div>
 
@@ -1451,6 +1474,12 @@ textarea.form-control { resize:vertical; min-height:80px; }
       <div class="form-grid" style="margin-bottom:16px;">
         <div class="form-group"><label>Tanggal *</label><input class="form-control" type="date" id="trx-date" required=""></div>
         <div class="form-group" style="grid-column:1/-1"><label>Keterangan *</label><input class="form-control" id="trx-desc" required="" placeholder="Deskripsi transaksi"></div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Nama Pihak Ketiga
+            <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Kreditur / Debitur / Pelanggan — opsional, untuk integrasi Hutang &amp; Piutang)</span>
+          </label>
+          <input class="form-control" id="trx-counterparty" placeholder="Contoh: PT Maju Sejahtera, Toko Berkah, dll" style="font-size:12px;">
+        </div>
       </div>
       <!-- Integration notice -->
       <div id="trx-integration-notice" style="display: block; margin-bottom: 12px; padding: 10px 14px; background: rgba(16, 185, 129, 0.08); border-radius: 8px; border-left: 4px solid var(--accent2); font-size: 12px; color: rgb(6, 95, 70);">✅ Terintegrasi: Perlengkapan bertambah, Kas berkurang. Otomatis update modul Perlengkapan.</div>
@@ -1639,6 +1668,11 @@ textarea.form-control { resize:vertical; min-height:80px; }
           <input class="form-control" type="number" id="aset-tarif-sm" min="1" max="100" placeholder="mis. 25 berarti 25%/tahun" step="0.01">
           <div style="font-size:11px;color:var(--text3);margin-top:4px;">Beban = Tarif × Nilai Buku Awal Periode. Nilai buku tidak turun di bawah 0.</div>
         </div>
+        <div class="form-group">
+          <label>Nilai Residu / Sisa (Rp) <span style="font-size:11px;color:var(--text3);">— untuk Garis Lurus</span></label>
+          <input class="form-control" type="number" id="aset-residu" min="0" value="0" placeholder="0">
+          <div style="font-size:11px;color:var(--text3);margin-top:4px;">Nilai estimasi aset di akhir masa manfaat. Beban GL = (Harga − Residu) ÷ Masa Manfaat.</div>
+        </div>
         <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="aset-ket" placeholder="Opsional"></div>
       </div>
       <!-- Depreciation Schedule Preview -->
@@ -1801,8 +1835,10 @@ let DB = {
   persediaan: [],
   perlengkapan: [],
   aset_tetap: [],
+  penyusutan_log: [],
+  audit_log: [],
+  locked_periods: {},
   jurnal_penutup: {},
-  jurnal_pembalik: {},
   current_company_id: null,
   _id_counter: 1
 };
@@ -1926,10 +1962,37 @@ function _updateSaveIndicator(state) {
 // ── Migration guard: pastikan semua field DB terbaru selalu ada ──
 function migrateDB() {
   if (!DB.jurnal_penutup)  DB.jurnal_penutup  = {};
-  if (!DB.jurnal_pembalik) DB.jurnal_pembalik = {};
+  // Migrasi: hapus jurnal_pembalik jika masih ada dari data lama (fitur dihapus v2+)
+  if (DB.jurnal_pembalik)  delete DB.jurnal_pembalik;
   if (!DB.lsal_data)       DB.lsal_data       = {};
   if (!DB.lsal_saldo_awal) DB.lsal_saldo_awal = {};
-  if (!Array.isArray(DB.lra_data)) DB.lra_data = [];
+  if (!Array.isArray(DB.lra_data))       DB.lra_data       = [];
+  if (!Array.isArray(DB.penyusutan_log)) DB.penyusutan_log = [];
+  // Saran 1: Audit trail
+  if (!Array.isArray(DB.audit_log))      DB.audit_log      = [];
+  // Saran 2: Periode lock
+  if (!DB.locked_periods)                DB.locked_periods  = {};
+}
+
+// ── AUDIT TRAIL: catat setiap operasi penting ──
+function auditLog(action, module, recordId, detail = {}) {
+  if (!Array.isArray(DB.audit_log)) DB.audit_log = [];
+  const entry = {
+    id: genId(),
+    company_id: co(),
+    timestamp: new Date().toISOString(),
+    action,        // 'CREATE' | 'UPDATE' | 'DELETE'
+    module,        // 'transaksi' | 'penyesuaian' | 'hutang' | 'piutang' | 'aset' | 'coa'
+    record_id: recordId,
+    detail         // snapshot ringkas { before, after, desc }
+  };
+  DB.audit_log.push(entry);
+  // Batasi 500 entry per perusahaan agar DB tidak membengkak
+  const logs = DB.audit_log.filter(l => l.company_id === co());
+  if (logs.length > 500) {
+    const oldest = logs.slice(0, logs.length - 500).map(l => l.id);
+    DB.audit_log = DB.audit_log.filter(l => !oldest.includes(l.id));
+  }
 }
 
 // ── initDB: async, prioritas IDB → EMBEDDED_DATA → localStorage lama ──
@@ -2010,7 +2073,6 @@ function navigate(page) {
   // ── Cek akses paket sebelum navigasi ──
   const PLAN_GATED_PAGES = {
     'jurnal-penutup': 'jurnal-penutup',
-    'jurnal-pembalik': 'jurnal-pembalik',
     'komparasi': 'komparasi',
     'lra': 'lra',
     'lsal': 'lsal',
@@ -2058,7 +2120,6 @@ function renderPage(page) {
     'lra': renderLRA,
     'lsal': renderLSAL,
     'jurnal-penutup': renderJurnalPenutup,
-    'jurnal-pembalik': renderJurnalPembalik,
     'komparasi': renderKomparasiPage,
     companies: renderCompanies,
   };
@@ -2273,12 +2334,10 @@ function deleteCompany(id) {
   if (DB.lsal_data && DB.lsal_data[id])           delete DB.lsal_data[id];
   if (DB.lsal_saldo_awal && DB.lsal_saldo_awal[id]) delete DB.lsal_saldo_awal[id];
 
-  // Hapus jurnal penutup & pembalik (key format: {id}_{period_end})
-  ['jurnal_penutup','jurnal_pembalik'].forEach(k => {
-    if (DB[k]) {
-      Object.keys(DB[k]).filter(key => key.startsWith(`${id}_`)).forEach(key => delete DB[k][key]);
-    }
-  });
+  // Hapus jurnal penutup (key format: {id}_{period_end})
+  if (DB.jurnal_penutup) {
+    Object.keys(DB.jurnal_penutup).filter(key => key.startsWith(`${id}_`)).forEach(key => delete DB.jurnal_penutup[key]);
+  }
 
   DB.companies = DB.companies.filter(c => c.id != id);
   if (DB.current_company_id == id) { DB.current_company_id = null; updateHeader(); }
@@ -2292,6 +2351,7 @@ function selectCompany(id) {
   closeModal('modal-switcher');
   navigate('dashboard');
   toast('Perusahaan aktif: ' + DB.companies.find(c=>c.id==id)?.name, 'success');
+  setTimeout(cekReminderPenyusutan, 1200);
 }
 
 function openCompanySwitcher() {
@@ -2339,6 +2399,67 @@ async function renderSettings() {
   if (lastEl) {
     lastEl.textContent = new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
   }
+
+  // Render audit trail otomatis saat settings dibuka
+  renderAuditTrail();
+  renderPeriodeLock();
+}
+
+function renderAuditTrail() {
+  const el = document.getElementById('audit-trail-content');
+  if (!el) return;
+  const q = (document.getElementById('audit-search')?.value || '').toLowerCase();
+  const logs = (DB.audit_log || [])
+    .filter(l => l.company_id === co())
+    .filter(l => !q || JSON.stringify(l).toLowerCase().includes(q))
+    .sort((a,b) => b.timestamp.localeCompare(a.timestamp))
+    .slice(0, 200); // tampilkan 200 terbaru
+
+  if (!logs.length) {
+    el.innerHTML = `<div style="text-align:center;padding:32px;color:var(--text3);">Belum ada log audit${q?' yang cocok dengan pencarian':' untuk perusahaan ini'}.</div>`;
+    return;
+  }
+
+  const actionColor = { CREATE:'#10b981', UPDATE:'#f59e0b', DELETE:'#ef4444' };
+  const moduleIcon  = { transaksi:'💸', penyesuaian:'🔧', coa:'📂', hutang:'🔴', piutang:'🟢', aset:'🏗️' };
+
+  el.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="background:var(--bg2);position:sticky;top:0;z-index:1;">
+          <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border);">Waktu</th>
+          <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border);">Aksi</th>
+          <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border);">Modul</th>
+          <th style="padding:8px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--text2);border-bottom:1px solid var(--border);">Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${logs.map(l => {
+          const dt = new Date(l.timestamp);
+          const tgl = dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'2-digit'});
+          const jam = dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+          const color = actionColor[l.action] || '#6b7280';
+          const icon  = moduleIcon[l.module]  || '📝';
+          const detail = Object.entries(l.detail||{})
+            .filter(([k,v]) => v !== undefined && v !== null && v !== '')
+            .map(([k,v]) => `<span style="color:var(--text3)">${k}:</span> ${String(v).substring(0,50)}`)
+            .join(' &nbsp;|&nbsp; ');
+          return `
+            <tr style="border-bottom:1px solid var(--border);transition:background .1s;" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">
+              <td style="padding:7px 12px;white-space:nowrap;color:var(--text3);">${tgl}<br><strong style="color:var(--text2)">${jam}</strong></td>
+              <td style="padding:7px 12px;">
+                <span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:${color}22;color:${color};">${l.action}</span>
+              </td>
+              <td style="padding:7px 12px;white-space:nowrap;">${icon} ${l.module}</td>
+              <td style="padding:7px 12px;font-size:11px;color:var(--text2);">${detail || '—'}</td>
+            </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    <div style="padding:8px 12px;font-size:11px;color:var(--text3);border-top:1px solid var(--border);">
+      Menampilkan ${logs.length} dari ${(DB.audit_log||[]).filter(l=>l.company_id===co()).length} total log &nbsp;·&nbsp; Batas tampilan: 200 terbaru
+    </div>
+  `;
 }
 
 // ══════════════════════════════════════════
@@ -2554,6 +2675,12 @@ function resetCOAForm() {
   document.getElementById('coa-edit-id').value = '';
   document.getElementById('coa-name').value = '';
   document.getElementById('coa-saldo-awal').value = '0';
+  if (document.getElementById('coa-kategori-neraca')) {
+    document.getElementById('coa-kategori-neraca').value = '';
+  }
+  if (document.getElementById('coa-kategori-arus-kas')) {
+    document.getElementById('coa-kategori-arus-kas').value = '';
+  }
   populateCOATypeSelect();
   autoSuggestCOACode();
 }
@@ -2600,10 +2727,12 @@ function saveCOA() {
     normal_balance: document.getElementById('coa-normal').value,
     saldo_awal: parseFloat(document.getElementById('coa-saldo-awal').value) || 0,
     header_id: document.getElementById('coa-header').value || null,
-    subheader_id: document.getElementById('coa-subheader').value || null
+    subheader_id: document.getElementById('coa-subheader').value || null,
+    kategori_neraca: document.getElementById('coa-kategori-neraca')?.value || '',
+    kategori_arus_kas: document.getElementById('coa-kategori-arus-kas')?.value || ''
   };
-  if (id) { const i=DB.accounts.findIndex(a=>a.id==id); DB.accounts[i]=obj; }
-  else DB.accounts.push(obj);
+  if (id) { const i=DB.accounts.findIndex(a=>a.id==id); DB.accounts[i]=obj; auditLog('UPDATE','coa',obj.id,{code:obj.code,name:obj.name,type:obj.type}); }
+  else { DB.accounts.push(obj); auditLog('CREATE','coa',obj.id,{code:obj.code,name:obj.name,type:obj.type}); }
   autoSave(); closeModal('modal-coa'); renderCOA(); toast('✅ Akun disimpan','success');
 }
 
@@ -2615,6 +2744,12 @@ function editCOA(id) {
   document.getElementById('coa-normal').value = a.normal_balance;
   document.getElementById('coa-name').value = a.name;
   document.getElementById('coa-saldo-awal').value = a.saldo_awal || 0;
+  if (document.getElementById('coa-kategori-neraca')) {
+    document.getElementById('coa-kategori-neraca').value = a.kategori_neraca || '';
+  }
+  if (document.getElementById('coa-kategori-arus-kas')) {
+    document.getElementById('coa-kategori-arus-kas').value = a.kategori_arus_kas || '';
+  }
   // Reconstruct prefix + number
   const prefix = getCOAPrefix(a.type);
   document.getElementById('coa-code-prefix').textContent = prefix;
@@ -2752,7 +2887,9 @@ function deleteCOA(id) {
     toast('❌ Akun tidak bisa dihapus — sudah digunakan di jurnal penyesuaian.', 'error', 5000);
     return;
   }
+  const acc = DB.accounts.find(a => a.id == id);
   DB.accounts = DB.accounts.filter(a => a.id != id);
+  auditLog('DELETE', 'coa', id, { code: acc?.code, name: acc?.name });
   autoSave(); renderCOA(); toast('Akun berhasil dihapus', 'success');
 }
 
@@ -2764,6 +2901,7 @@ function openTransactionModal() {
   document.getElementById('trx-edit-id').value = '';
   document.getElementById('trx-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('trx-desc').value = '';
+  if (document.getElementById('trx-counterparty')) document.getElementById('trx-counterparty').value = '';
   // Init journal detail rows
   document.getElementById('jd-tbody').innerHTML = '';
   addJournalRow(); addJournalRow();
@@ -2896,6 +3034,24 @@ function applyTrxTemplate(type) {
   tpl.rows.forEach(r => addJournalRow(r.acc, r.label, r.d, r.k));
   updateJournalBalance();
 
+  // Beri placeholder hint sesuai tipe template
+  const cpField = document.getElementById('trx-counterparty');
+  if (cpField) {
+    cpField.value = '';
+    const cpHints = {
+      'beli-persediaan-kredit': 'Nama pemasok / kreditur',
+      'beli-aset-kredit': 'Nama pemasok / kreditur',
+      'bayar-hutang': 'Nama kreditur yang dibayar',
+      'jual-kredit': 'Nama pelanggan / debitur',
+      'terima-piutang': 'Nama pelanggan yang membayar',
+    };
+    cpField.placeholder = cpHints[type] || 'Nama pihak ketiga (opsional)';
+    if (cpHints[type]) {
+      cpField.style.borderColor = 'var(--primary)';
+      setTimeout(() => { cpField.style.borderColor = ''; }, 3000);
+    }
+  }
+
   const notice = document.getElementById('trx-integration-notice');
   notice.style.display = 'block';
   notice.innerHTML = tpl.notice;
@@ -2937,9 +3093,26 @@ function reverseIntegration(trxId) {
     } else if (delta.module === 'persediaan') {
       const idx = DB.persediaan.findIndex(p => p.id === delta.record_id);
       if (idx >= 0) {
-        DB.persediaan[idx].total_nilai = Math.max(0, (DB.persediaan[idx].total_nilai||0) - delta.amount);
-        DB.persediaan[idx].harga_satuan = DB.persediaan[idx].jumlah > 0 ?
-          DB.persediaan[idx].total_nilai / DB.persediaan[idx].jumlah : 0;
+        if (delta.direction === 'kredit') {
+          // Reversal penjualan/pengeluaran: kembalikan nilai + qty ke batch asal
+          DB.persediaan[idx].total_nilai = (DB.persediaan[idx].total_nilai || 0) + delta.amount;
+          DB.persediaan[idx].jumlah      = (DB.persediaan[idx].jumlah || 0) + (delta.qty || 0);
+          // harga_satuan batch tidak berubah (FIFO)
+        } else {
+          // Reversal pembelian/penambahan: kurangi nilai + qty proporsional
+          const hargaSat    = DB.persediaan[idx].harga_satuan || 0;
+          const nilaiSebelum = DB.persediaan[idx].total_nilai || 0;
+          DB.persediaan[idx].total_nilai = Math.max(0, nilaiSebelum - delta.amount);
+          if (hargaSat > 0) {
+            DB.persediaan[idx].jumlah = Math.max(0,
+              (DB.persediaan[idx].jumlah || 0) - (delta.amount / hargaSat));
+          } else if (nilaiSebelum > 0) {
+            DB.persediaan[idx].jumlah = Math.max(0,
+              (DB.persediaan[idx].jumlah || 0) * (DB.persediaan[idx].total_nilai / nilaiSebelum));
+          }
+          DB.persediaan[idx].harga_satuan = DB.persediaan[idx].jumlah > 0
+            ? DB.persediaan[idx].total_nilai / DB.persediaan[idx].jumlah : 0;
+        }
       }
     } else if (delta.module === 'aset_tetap') {
       const idx = DB.aset_tetap.findIndex(a => a.id === delta.record_id);
@@ -2961,12 +3134,34 @@ function reverseIntegration(trxId) {
   DB.integration_deltas = DB.integration_deltas.filter(d => d.trx_id !== trxId);
 }
 
-function integrateTransaction(trxId, jeId, date, desc, details) {
+function integrateTransaction(trxId, jeId, date, desc, details, counterparty='') {
+  // Guard: lewati jurnal yang dibuat oleh sistem internal (bukan input user langsung)
+  // 'bayar_modal'   → processBayar sudah update saldo hutang/piutang secara langsung
+  // 'jurnal_penutup'→ postingJurnalPenutup tidak boleh men-trigger integrasi sub-ledger
+  // 'auto_module'   → auto-jurnal dari saveHutang/savePiutang/savePersediaan/saveAset/
+  //                   savePerlengkapan/processJualPersediaan — sub-ledger sudah diupdate
+  //                   langsung oleh fungsi tersebut; jika diedit via Jurnal Umum maka
+  //                   integrateTransaction akan salah double-count
+  const trxRecord = DB.transactions.find(t => t.id === trxId);
+  const skipSources = ['bayar_modal', 'jurnal_penutup', 'auto_module'];
+  if (skipSources.includes(trxRecord?._source)) return;
+
   const accs = coFilter(DB.accounts);
   const getAcc = (id) => accs.find(a => a.id == id);
 
   // Helper: cek apakah akun termasuk kategori tertentu
   const isType = (acc, keywords) => keywords.some(kw => acc.name.toLowerCase().includes(kw));
+
+  // ── Item 5: Resolusi nama pihak ketiga ──
+  // Prioritas: 1) counterparty eksplisit, 2) regex deskripsi (fallback), 3) substring deskripsi
+  const resolveNama = (regexPatterns) => {
+    if (counterparty) return counterparty;
+    for (const pat of regexPatterns) {
+      const m = desc.match(pat);
+      if (m) return m[1].trim().substring(0, 60);
+    }
+    return desc.substring(0, 40);
+  };
 
   details.forEach(d => {
     const acc = getAcc(d.account_id);
@@ -2974,10 +3169,11 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
 
     // ── PIUTANG: jika debit ke akun Piutang → tambah piutang baru ──
     if (d.debit > 0 && acc.type === 'Aset' && isType(acc, ['piutang usaha','piutang dagang'])) {
-      // Cari nama debitur dari deskripsi (ambil setelah "kepada" atau "dari")
-      const match = desc.match(/kepada\s+(.+?)(?:\s+atas|\s+untuk|$)/i) ||
-                    desc.match(/debitur\s+(.+?)(?:\s+|$)/i);
-      const nama = match ? match[1].trim() : desc.substring(0, 40);
+      const nama = resolveNama([
+        /kepada\s+(.+?)(?:\s+atas|\s+untuk|$)/i,
+        /debitur\s+(.+?)(?:\s+|$)/i,
+        /dari\s+(.+?)(?:\s+atas|\s+untuk|$)/i
+      ]);
       const existing = coFilter(DB.piutang).find(p => p.nama_debitur === nama && p.status !== 'Lunas');
       if (!existing) {
         DB.piutang.push({
@@ -2999,25 +3195,30 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
 
     // ── PIUTANG: jika kredit ke akun Piutang → kurangi sisa (penerimaan) ──
     if (d.kredit > 0 && acc.type === 'Aset' && isType(acc, ['piutang usaha','piutang dagang'])) {
-      // Kurangi piutang yang belum lunas
+      // Jika counterparty diisi, kurangi khusus piutang dari debitur itu
+      const targetNama = counterparty || null;
       let sisa = d.kredit;
-      coFilter(DB.piutang).filter(p => p.status !== 'Lunas').sort((a,b) => a.tanggal.localeCompare(b.tanggal)).forEach(p => {
-        if (sisa <= 0) return;
-        const idx = DB.piutang.findIndex(x => x.id === p.id);
-        const bayar = Math.min(sisa, DB.piutang[idx].sisa);
-        DB.piutang[idx].sisa -= bayar;
-        sisa -= bayar;
-        if (DB.piutang[idx].sisa <= 0.01) DB.piutang[idx].status = 'Lunas';
-        else DB.piutang[idx].status = 'Sebagian';
-      });
+      coFilter(DB.piutang)
+        .filter(p => p.status !== 'Lunas' && (!targetNama || p.nama_debitur === targetNama))
+        .sort((a,b) => a.tanggal.localeCompare(b.tanggal))
+        .forEach(p => {
+          if (sisa <= 0) return;
+          const idx = DB.piutang.findIndex(x => x.id === p.id);
+          const bayar = Math.min(sisa, DB.piutang[idx].sisa);
+          DB.piutang[idx].sisa -= bayar;
+          sisa -= bayar;
+          if (DB.piutang[idx].sisa <= 0.01) DB.piutang[idx].status = 'Lunas';
+          else DB.piutang[idx].status = 'Sebagian';
+        });
     }
 
     // ── HUTANG: jika kredit ke akun Hutang → tambah hutang ──
     if (d.kredit > 0 && acc.type === 'Kewajiban' && isType(acc, ['hutang usaha','hutang dagang'])) {
-      const match = desc.match(/dari\s+(.+?)(?:\s+atas|\s+untuk|$)/i) ||
-                    desc.match(/kepada\s+(.+?)(?:\s+|$)/i) ||
-                    desc.match(/pemasok\s+(.+?)(?:\s+|$)/i);
-      const nama = match ? match[1].trim() : desc.substring(0, 40);
+      const nama = resolveNama([
+        /dari\s+(.+?)(?:\s+atas|\s+untuk|$)/i,
+        /kepada\s+(.+?)(?:\s+|$)/i,
+        /pemasok\s+(.+?)(?:\s+|$)/i
+      ]);
       const existing = coFilter(DB.hutang).find(h => h.nama_kreditur === nama && h.status !== 'Lunas');
       if (!existing) {
         DB.hutang.push({
@@ -3038,26 +3239,31 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
 
     // ── HUTANG: jika debit ke akun Hutang → bayar hutang ──
     if (d.debit > 0 && acc.type === 'Kewajiban' && isType(acc, ['hutang usaha','hutang dagang'])) {
+      const targetNama = counterparty || null;
       let sisa = d.debit;
-      coFilter(DB.hutang).filter(h => h.status !== 'Lunas').sort((a,b) => a.tanggal.localeCompare(b.tanggal)).forEach(h => {
-        if (sisa <= 0) return;
-        const idx = DB.hutang.findIndex(x => x.id === h.id);
-        const bayar = Math.min(sisa, DB.hutang[idx].sisa);
-        DB.hutang[idx].sisa -= bayar;
-        sisa -= bayar;
-        if (DB.hutang[idx].sisa <= 0.01) DB.hutang[idx].status = 'Lunas';
-        else DB.hutang[idx].status = 'Sebagian';
-      });
+      coFilter(DB.hutang)
+        .filter(h => h.status !== 'Lunas' && (!targetNama || h.nama_kreditur === targetNama))
+        .sort((a,b) => a.tanggal.localeCompare(b.tanggal))
+        .forEach(h => {
+          if (sisa <= 0) return;
+          const idx = DB.hutang.findIndex(x => x.id === h.id);
+          const bayar = Math.min(sisa, DB.hutang[idx].sisa);
+          DB.hutang[idx].sisa -= bayar;
+          sisa -= bayar;
+          if (DB.hutang[idx].sisa <= 0.01) DB.hutang[idx].status = 'Lunas';
+          else DB.hutang[idx].status = 'Sebagian';
+        });
     }
 
     // ── PERSEDIAAN: jika debit → tambah stok ──
     if (d.debit > 0 && acc.type === 'Aset' && isType(acc, ['persediaan barang','persediaan'])) {
-      // Cari item persediaan yang relevan, atau buat baru
-      const match = desc.match(/persediaan\s+(.+?)(?:\s+dari|\s+kepada|$)/i);
-      const namaBarang = match ? match[1].trim() : 'Persediaan Umum';
+      // Prioritas nama barang: 1) counterparty (nama pemasok sbg identifikasi),
+      // 2) nama akun persediaan itu sendiri (lebih andal dari regex deskripsi)
+      const namaBarang = counterparty
+        ? `Persediaan dari ${counterparty}`
+        : acc.name;
       const existing = coFilter(DB.persediaan).find(p => p.nama_barang === namaBarang);
       if (!existing) {
-        // Estimasi: asumsi harga satuan dari nilai
         DB.persediaan.push({
           id: genId(), company_id: co(), nama_barang: namaBarang,
           jumlah: 1, harga_satuan: d.debit, total_nilai: d.debit,
@@ -3068,25 +3274,50 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
         DB.persediaan[idx].total_nilai = (DB.persediaan[idx].total_nilai || 0) + d.debit;
         DB.persediaan[idx].harga_satuan = DB.persediaan[idx].total_nilai / (DB.persediaan[idx].jumlah || 1);
         if (!DB.integration_deltas) DB.integration_deltas = [];
-        DB.integration_deltas.push({ trx_id: trxId, module: 'persediaan', record_id: existing.id, amount: d.debit });
+        DB.integration_deltas.push({ trx_id: trxId, module: 'persediaan', direction: 'debit', record_id: existing.id, amount: d.debit });
       }
     }
 
-    // ── PERSEDIAAN: jika kredit (HPP/keluar) → kurangi stok ──
+    // ── PERSEDIAAN: jika kredit (HPP/keluar) → kurangi stok nilai + qty ──
     if (d.kredit > 0 && acc.type === 'Aset' && isType(acc, ['persediaan barang','persediaan'])) {
       const pers = coFilter(DB.persediaan);
       if (pers.length > 0) {
-        // Kurangi dari total nilai persediaan (FIFO sederhana)
-        let sisa = d.kredit;
+        // FIFO: kurangi batch terlama lebih dulu (sort by id asc = urutan masuk)
+        // Untuk tiap batch: kurangi nilai terlebih dulu, lalu hitung qty keluar
+        // secara proporsional: qty_keluar = nilai_diambil / harga_satuan_batch
+        let sisaNilai = d.kredit;
         pers.sort((a,b) => (a.id - b.id)).forEach(p => {
-          if (sisa <= 0) return;
+          if (sisaNilai <= 0) return;
           const idx = DB.persediaan.findIndex(x => x.id === p.id);
-          const kurang = Math.min(sisa, DB.persediaan[idx].total_nilai || 0);
-          DB.persediaan[idx].total_nilai = (DB.persediaan[idx].total_nilai || 0) - kurang;
-          if (DB.persediaan[idx].total_nilai < 0) DB.persediaan[idx].total_nilai = 0;
-          DB.persediaan[idx].harga_satuan = DB.persediaan[idx].jumlah > 0 ?
-            DB.persediaan[idx].total_nilai / DB.persediaan[idx].jumlah : 0;
-          sisa -= kurang;
+          const batchNilai = DB.persediaan[idx].total_nilai || 0;
+          if (batchNilai <= 0) return;
+
+          const nilaiDiambil = Math.min(sisaNilai, batchNilai);
+          const hargaSatuan  = DB.persediaan[idx].harga_satuan || 0;
+
+          // Kurangi qty proporsional: qty_keluar = nilai_diambil / harga_satuan
+          // Jika harga_satuan 0 (data lama), hitung proporsional dari total_nilai
+          let qtyKeluar = 0;
+          if (hargaSatuan > 0) {
+            qtyKeluar = nilaiDiambil / hargaSatuan;
+          } else if (batchNilai > 0) {
+            // Fallback: proporsi nilai
+            qtyKeluar = (nilaiDiambil / batchNilai) * (DB.persediaan[idx].jumlah || 0);
+          }
+
+          DB.persediaan[idx].total_nilai = Math.max(0, batchNilai - nilaiDiambil);
+          DB.persediaan[idx].jumlah      = Math.max(0, (DB.persediaan[idx].jumlah || 0) - qtyKeluar);
+          // Pertahankan harga_satuan batch — tidak berubah karena ini FIFO
+          // Log delta agar reverseIntegration dapat mengembalikan stok saat edit/hapus
+          if (!DB.integration_deltas) DB.integration_deltas = [];
+          DB.integration_deltas.push({
+            trx_id: trxId, module: 'persediaan', direction: 'kredit',
+            record_id: DB.persediaan[idx].id,
+            amount: nilaiDiambil,
+            qty: qtyKeluar,
+            harga_satuan: DB.persediaan[idx].harga_satuan
+          });
+          sisaNilai -= nilaiDiambil;
         });
       }
     }
@@ -3139,11 +3370,88 @@ function integrateTransaction(trxId, jeId, date, desc, details) {
   });
 }
 
+// ── SARAN 2: PERIODE LOCK ──
+// Kunci periode agar jurnal lama tidak bisa diedit/dihapus
+function isPeriodeLocked(date) {
+  if (!date || !DB.locked_periods) return false;
+  const bulan = date.substring(0, 7); // YYYY-MM
+  return !!DB.locked_periods[`${co()}_${bulan}`];
+}
+
+function cekPeriodeLock(date) {
+  if (isPeriodeLocked(date)) {
+    const bulan = date.substring(0, 7);
+    toast(`🔒 Periode ${bulan} sudah dikunci. Buka kunci di Pengaturan → Periode Lock untuk mengedit.`, 'error', 6000);
+    return true; // terblokir
+  }
+  return false;
+}
+
+function togglePeriodeLock(bulan) {
+  if (!DB.locked_periods) DB.locked_periods = {};
+  const key = `${co()}_${bulan}`;
+  if (DB.locked_periods[key]) {
+    if (!confirm(`Buka kunci periode ${bulan}? Jurnal pada bulan ini bisa diedit kembali.`)) return;
+    delete DB.locked_periods[key];
+    toast(`🔓 Periode ${bulan} dibuka`, 'success');
+  } else {
+    if (!confirm(`Kunci periode ${bulan}? Seluruh jurnal pada bulan ini tidak bisa diedit atau dihapus.`)) return;
+    DB.locked_periods[key] = new Date().toISOString();
+    toast(`🔒 Periode ${bulan} dikunci`, 'success');
+  }
+  autoSave();
+  renderPeriodeLock();
+}
+
+function renderPeriodeLock() {
+  const el = document.getElementById('periode-lock-content');
+  if (!el) return;
+  // Kumpulkan semua bulan yang ada transaksi
+  const bulanSet = new Set();
+  coFilter(DB.transactions).forEach(t => { if(t.date) bulanSet.add(t.date.substring(0,7)); });
+  coFilter(DB.penyesuaian).forEach(p => { if(p.date) bulanSet.add(p.date.substring(0,7)); });
+  const bulans = Array.from(bulanSet).sort().reverse();
+
+  if (!bulans.length) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text3);">Belum ada transaksi untuk dikunci.</div>';
+    return;
+  }
+  el.innerHTML = bulans.map(b => {
+    const locked = isPeriodeLocked(`${b}-01`);
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);">
+        <div>
+          <span style="font-weight:700;">${b}</span>
+          ${locked ? `<span style="margin-left:8px;font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(239,68,68,.1);color:#ef4444;font-weight:700;">🔒 TERKUNCI</span>` : `<span style="margin-left:8px;font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(16,185,129,.1);color:#10b981;font-weight:700;">🔓 Terbuka</span>`}
+        </div>
+        <button class="btn btn-sm ${locked?'btn-secondary':'btn-danger'}" style="font-size:11px;" onclick="togglePeriodeLock('${b}')">
+          ${locked ? '🔓 Buka Kunci' : '🔒 Kunci Periode'}
+        </button>
+      </div>`;
+  }).join('');
+}
+
 function saveTransaction() {
   if (!co()) return;
   const date = document.getElementById('trx-date').value;
   const desc = document.getElementById('trx-desc').value.trim();
   if (!date||!desc) { toast('Tanggal dan keterangan wajib diisi','error'); return; }
+
+  // ── Item 3: Validasi tanggal di luar periode akuntansi ──
+  const co_data = getCompany();
+  if (co_data?.period_start && co_data?.period_end) {
+    if (date < co_data.period_start || date > co_data.period_end) {
+      const konfirm = confirm(
+        `⚠️ Peringatan: Tanggal transaksi (${date}) berada di luar periode akuntansi\n` +
+        `Periode aktif: ${co_data.period_start} s/d ${co_data.period_end}\n\n` +
+        `Lanjutkan tetap menyimpan?`
+      );
+      if (!konfirm) return;
+    }
+  }
+
+  // ── Saran 2: Cek periode lock ──
+  if (cekPeriodeLock(date)) return;
 
   const rows = document.querySelectorAll('#jd-tbody tr');
   let details = [];
@@ -3159,19 +3467,22 @@ function saveTransaction() {
   if (!details.length) { toast('Minimal satu baris detail','error'); return; }
   if (Math.abs(totD-totK) > 0.01) { toast('Jurnal tidak balance! Debit ≠ Kredit','error'); return; }
 
+  // Item 5: Ambil nama pihak ketiga eksplisit dari field
+  const counterparty = (document.getElementById('trx-counterparty')?.value || '').trim();
+
   const editId = document.getElementById('trx-edit-id').value;
   let trxId;
 
   if (editId) {
     trxId = parseInt(editId);
     const ti = DB.transactions.findIndex(t=>t.id==trxId);
-    DB.transactions[ti] = {id:trxId, company_id:co(), date, description:desc};
+    DB.transactions[ti] = {id:trxId, company_id:co(), date, description:desc, counterparty};
     const oldJE = DB.journal_entries.filter(je=>je.transaction_id==trxId);
     oldJE.forEach(je=>{ DB.journal_details = DB.journal_details.filter(jd=>jd.journal_id!=je.id); });
     DB.journal_entries = DB.journal_entries.filter(je=>je.transaction_id!=trxId);
   } else {
     trxId = genId();
-    DB.transactions.push({id:trxId, company_id:co(), date, description:desc});
+    DB.transactions.push({id:trxId, company_id:co(), date, description:desc, counterparty});
   }
 
   const jeId = genId();
@@ -3183,7 +3494,18 @@ function saveTransaction() {
   // ── INTEGRASI OTOMATIS ──
   // Saat edit: balik integrasi lama dulu, lalu jalankan ulang dengan data baru
   if (editId) reverseIntegration(parseInt(editId));
-  integrateTransaction(trxId, jeId, date, desc, details);
+  // Kirim counterparty ke integrateTransaction agar tidak bergantung regex deskripsi
+  integrateTransaction(trxId, jeId, date, desc, details, counterparty);
+
+  // ── VALIDASI ISOLASI SAP (Bug #3) ──
+  const accsForCheck = coFilter(DB.accounts);
+  cekIsolasiSAP(details, accsForCheck);
+
+  // ── AUDIT TRAIL ──
+  auditLog(editId ? 'UPDATE' : 'CREATE', 'transaksi', trxId, {
+    desc, date, counterparty,
+    debit: details.reduce((s,d)=>s+d.debit,0)
+  });
 
   autoSave(); closeModal('modal-transaction'); renderTransactions();
   // Refresh semua render yang terpengaruh
@@ -3207,11 +3529,14 @@ function renderTransactions() {
     const je = DB.journal_entries.find(e=>e.transaction_id==t.id);
     const jds = je ? DB.journal_details.filter(d=>d.journal_id==je.id) : [];
     const totD = jds.reduce((s,d)=>s+d.debit,0);
+    const cpTag = t.counterparty
+      ? `<span style="display:inline-block;margin-left:6px;font-size:10px;padding:1px 6px;border-radius:20px;background:rgba(37,99,235,.1);color:var(--primary);font-weight:500;">👤 ${t.counterparty}</span>`
+      : '';
     return `
       <tr data-date="${t.date}">
         <td>${t.date}</td>
         <td class="td-mono" style="color:var(--text2);">JU-${String(t.id).padStart(4,'0')}</td>
-        <td style="font-weight:600;">${t.description}</td>
+        <td style="font-weight:600;">${t.description}${cpTag}</td>
         <td class="td-mono">${fmtC(totD)}</td>
         <td>
           <button class="btn btn-secondary btn-sm" onclick="editTransaction(${t.id})">✏️</button>
@@ -3229,6 +3554,9 @@ function editTransaction(id) {
   document.getElementById('trx-edit-id').value = id;
   document.getElementById('trx-date').value = t.date;
   document.getElementById('trx-desc').value = t.description;
+  if (document.getElementById('trx-counterparty')) {
+    document.getElementById('trx-counterparty').value = t.counterparty || '';
+  }
   document.getElementById('jd-tbody').innerHTML = '';
   jds.forEach(jd=>addJournalRow(jd.account_id,'',jd.debit,jd.kredit));
   if (!jds.length) { addJournalRow(); addJournalRow(); }
@@ -3238,6 +3566,9 @@ function editTransaction(id) {
 
 function deleteTransaction(id) {
   if (!confirm('Hapus transaksi dan jurnalnya?')) return;
+  const t = DB.transactions.find(x=>x.id==id);
+  if (cekPeriodeLock(t?.date)) return; // Saran 2: blokir hapus jika periode terkunci
+  auditLog('DELETE', 'transaksi', id, { desc: t?.description, date: t?.date });
   DB.transactions = DB.transactions.filter(t=>t.id!=id);
   const je = DB.journal_entries.filter(e=>e.transaction_id==id);
   je.forEach(e=>{ DB.journal_details = DB.journal_details.filter(d=>d.journal_id!=e.id); });
@@ -3516,7 +3847,7 @@ function exportBukuBesarExcel() {
       [`Perusahaan: ${co_data?.name||'—'} | Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}`],
       [],
       ['Tanggal','Ref','Keterangan','Debit','Kredit','Saldo'],
-      ...combined.map(r=>[r.date, r.ref, r.desc, r.debit||'', r.kredit||'', r.saldo]),
+      ...combined.map(r=>[r.date, r.ref, r.desc, r.debit||0, r.kredit||0, r.saldo||0]),
       [],
       ['SALDO AKHIR','','', combined.reduce((s,r)=>s+r.debit,0), combined.reduce((s,r)=>s+r.kredit,0), saldo]
     ];
@@ -3556,13 +3887,24 @@ function renderNeracaSaldo() {
   const rows = accs.map(a=>{
     const bal = getAccountBalance(a.id);
     if (bal==0) return '';
-    // Jika saldo negatif (abnormal balance), tampilkan di kolom lawan
+    // FIX BUG KRITIS #2: Saldo abnormal TETAP ditampilkan di kolom normal akunnya
+    // (bukan dipindah ke kolom lawan). Ini sesuai prinsip akuntansi — saldo negatif
+    // pada Kas misalnya = error, bukan kredit. Tampilkan merah di kolom asalnya.
     const isDebit = a.normal_balance=='Debit';
-    const d = isDebit ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
-    const k = !isDebit ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
+    // Saldo positif = normal, saldo negatif = abnormal (tetap di kolom asal)
     const abnormal = bal < 0;
-    totD+=d; totK+=k;
-    return `<tr${abnormal?' style="color:var(--danger);"':''}><td class="td-mono">${a.code}</td><td style="font-weight:600;">${a.name}${abnormal?' ⚠️':''}</td><td class="td-mono">${d?fmtC(d):''}</td><td class="td-mono" style="color:var(--text2);">${k?fmtC(k):''}</td></tr>`;
+    const d = isDebit  ? Math.abs(bal) : 0;
+    const k = !isDebit ? Math.abs(bal) : 0;
+    // Untuk total balance check: saldo abnormal menyebabkan NS tidak balance (benar)
+    totD += isDebit  ? (bal > 0 ? bal : 0) : (bal < 0 ? Math.abs(bal) : 0);
+    totK += !isDebit ? (bal > 0 ? bal : 0) : (bal < 0 ? Math.abs(bal) : 0);
+    const cellStyle = abnormal ? 'color:var(--danger);font-weight:700;' : '';
+    return `<tr${abnormal?' style="background:rgba(239,68,68,.04);"':''}>
+      <td class="td-mono">${a.code}</td>
+      <td style="font-weight:600;">${a.name}${abnormal?` <span title="Saldo abnormal: akun ${isDebit?'Debit':'Kredit'} ini punya saldo negatif. Periksa jurnal." style="cursor:help;color:var(--danger);">⚠️</span>`:''}</td>
+      <td class="td-mono" style="${isDebit?cellStyle:''}">${isDebit?fmtC(Math.abs(bal)):''}</td>
+      <td class="td-mono" style="${!isDebit?cellStyle:''}">${!isDebit?fmtC(Math.abs(bal)):''}</td>
+    </tr>`;
   }).join('');
   const isNSBalance = Math.abs(totD - totK) < 1;
   const balanceBar = `
@@ -3639,6 +3981,16 @@ function savePenyesuaian() {
   const amount = parseFloat(document.getElementById('pen-amount').value) || 0;
   const editId = document.getElementById('pen-edit-id').value;
   if (!date||!desc||!dAcc||!kAcc||!amount) { toast('Semua field wajib diisi','error'); return; }
+  if (amount < 0) { toast('❌ Jumlah penyesuaian tidak boleh negatif','error'); return; }
+  // Validasi tanggal di luar periode
+  const co_pen = getCompany();
+  if (co_pen?.period_start && co_pen?.period_end) {
+    if (date < co_pen.period_start || date > co_pen.period_end) {
+      if (!confirm(`⚠️ Tanggal (${date}) di luar periode ${co_pen.period_start} s/d ${co_pen.period_end}. Lanjutkan?`)) return;
+    }
+  }
+  // Saran 2: Cek periode lock
+  if (cekPeriodeLock(date)) return;
   if (editId) {
     // Mode edit — update record yang ada
     const idx = DB.penyesuaian.findIndex(p => p.id == parseInt(editId));
@@ -3646,10 +3998,13 @@ function savePenyesuaian() {
       DB.penyesuaian[idx] = { ...DB.penyesuaian[idx], date, description: desc,
         debit_acc: parseInt(dAcc), kredit_acc: parseInt(kAcc), amount };
     }
+    auditLog('UPDATE', 'penyesuaian', parseInt(editId), { desc, date, amount });
     toast('✅ Penyesuaian diperbarui', 'success');
   } else {
-    DB.penyesuaian.push({id:genId(),company_id:co(),date,description:desc,
+    const newId = genId();
+    DB.penyesuaian.push({id:newId,company_id:co(),date,description:desc,
       debit_acc:parseInt(dAcc),kredit_acc:parseInt(kAcc),amount});
+    auditLog('CREATE', 'penyesuaian', newId, { desc, date, amount });
     toast('Penyesuaian disimpan','success');
   }
   // Reset form ke mode tambah
@@ -3661,6 +4016,9 @@ function savePenyesuaian() {
 
 function deletePenyesuaian(id) {
   if (!confirm('Hapus penyesuaian ini?')) return;
+  const p = DB.penyesuaian.find(x=>x.id==id);
+  if (cekPeriodeLock(p?.date)) return; // Saran 2
+  auditLog('DELETE', 'penyesuaian', id, { desc: p?.description, amount: p?.amount });
   DB.penyesuaian = DB.penyesuaian.filter(p=>p.id!=id);
   autoSave(); renderPenyesuaian(); toast('Dihapus','success');
 }
@@ -3674,12 +4032,18 @@ function renderNSPA() {
   const rows = accs.map(a=>{
     const bal = getAccountBalance(a.id, true);
     if (bal==0) return '';
+    // FIX BUG KRITIS #2 (NSPA): Saldo abnormal tetap di kolom normal akunnya
     const isDebit = a.normal_balance=='Debit';
-    const d = isDebit ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
-    const k = !isDebit ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
     const abnormal = bal < 0;
-    totD+=d; totK+=k;
-    return `<tr${abnormal?' style="color:var(--danger);"':''}><td class="td-mono">${a.code}</td><td style="font-weight:600;">${a.name}${abnormal?' ⚠️':''}</td><td class="td-mono">${d?fmtC(d):''}</td><td class="td-mono" style="color:var(--text2);">${k?fmtC(k):''}</td></tr>`;
+    totD += isDebit  ? (bal > 0 ? bal : 0) : (bal < 0 ? Math.abs(bal) : 0);
+    totK += !isDebit ? (bal > 0 ? bal : 0) : (bal < 0 ? Math.abs(bal) : 0);
+    const cellStyle = abnormal ? 'color:var(--danger);font-weight:700;' : '';
+    return `<tr${abnormal?' style="background:rgba(239,68,68,.04);"':''}>
+      <td class="td-mono">${a.code}</td>
+      <td style="font-weight:600;">${a.name}${abnormal?` <span title="Saldo abnormal — periksa jurnal" style="cursor:help;color:var(--danger);">⚠️</span>`:''}</td>
+      <td class="td-mono" style="${isDebit?cellStyle:''}">${isDebit?fmtC(Math.abs(bal)):''}</td>
+      <td class="td-mono" style="${!isDebit?cellStyle:''}">${!isDebit?fmtC(Math.abs(bal)):''}</td>
+    </tr>`;
   }).join('');
   document.getElementById('nspa-tbody').innerHTML = rows || '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text3);">Tidak ada data</td></tr>';
   const isBalance = Math.abs(totD - totK) < 1;
@@ -3749,8 +4113,15 @@ function saveHutang() {
   const nama=document.getElementById('hutang-nama').value.trim();
   const jumlah=parseFloat(document.getElementById('hutang-jumlah').value)||0;
   if (!nama||!jumlah) { toast('Nama dan jumlah wajib','error'); return; }
+  if (jumlah < 0) { toast('❌ Jumlah hutang tidak boleh negatif','error'); return; }
   const tanggal=document.getElementById('hutang-tanggal').value||new Date().toISOString().split('T')[0];
-  const id=document.getElementById('hutang-edit-id').value;
+  // Validasi tanggal di luar periode aktif (warning, bukan hard-block)
+  const co_hut = getCompany();
+  if (!id && co_hut?.period_start && co_hut?.period_end) {
+    if (tanggal < co_hut.period_start || tanggal > co_hut.period_end) {
+      if (!confirm(`⚠️ Tanggal (${tanggal}) di luar periode aktif ${co_hut.period_start} s/d ${co_hut.period_end}.\nLanjutkan?`)) return;
+    }
+  }
   const obj={id:id?parseInt(id):genId(),company_id:co(),nama_kreditur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('hutang-jatuh').value,sisa:id?(DB.hutang.find(h=>h.id==parseInt(id))?.sisa||jumlah):jumlah,status:id?(DB.hutang.find(h=>h.id==parseInt(id))?.status||'Belum Lunas'):'Belum Lunas'};
   if (id) { const i=DB.hutang.findIndex(h=>h.id==parseInt(id)); if(i>=0)DB.hutang[i]=obj; }
   else {
@@ -3762,8 +4133,8 @@ function saveHutang() {
     if (hutAcc&&persAcc) {
       const desc=`Pembelian kredit dari ${nama}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
+      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:persAcc.id,debit:jumlah,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:jumlah});
       toast(`✅ Hutang + jurnal otomatis: ${persAcc.name} (D) / ${hutAcc.name} (K)`,'success',4000);
@@ -3821,8 +4192,15 @@ function savePiutang() {
   const nama=document.getElementById('piutang-nama').value.trim();
   const jumlah=parseFloat(document.getElementById('piutang-jumlah').value)||0;
   if (!nama||!jumlah) { toast('Nama dan jumlah wajib','error'); return; }
+  if (jumlah < 0) { toast('❌ Jumlah piutang tidak boleh negatif','error'); return; }
   const tanggal=document.getElementById('piutang-tanggal').value||new Date().toISOString().split('T')[0];
-  const id=document.getElementById('piutang-edit-id').value;
+  // Validasi tanggal di luar periode aktif (warning, bukan hard-block)
+  const co_piu = getCompany();
+  if (!id && co_piu?.period_start && co_piu?.period_end) {
+    if (tanggal < co_piu.period_start || tanggal > co_piu.period_end) {
+      if (!confirm(`⚠️ Tanggal (${tanggal}) di luar periode aktif ${co_piu.period_start} s/d ${co_piu.period_end}.\nLanjutkan?`)) return;
+    }
+  }
   const obj={id:id?parseInt(id):genId(),company_id:co(),nama_debitur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('piutang-jatuh').value,sisa:id?(DB.piutang.find(p=>p.id==parseInt(id))?.sisa||jumlah):jumlah,status:id?(DB.piutang.find(p=>p.id==parseInt(id))?.status||'Belum Lunas'):'Belum Lunas'};
   if (id) { const i=DB.piutang.findIndex(p=>p.id==parseInt(id)); if(i>=0)DB.piutang[i]=obj; }
   else {
@@ -3834,8 +4212,8 @@ function savePiutang() {
     if (piuAcc&&pendAcc) {
       const desc=`Penjualan kredit kepada ${nama}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
+      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:piuAcc.id,debit:jumlah,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:pendAcc.id,debit:0,kredit:jumlah});
       toast(`✅ Piutang + jurnal otomatis: ${piuAcc.name} (D) / ${pendAcc.name} (K)`,'success',4000);
@@ -3911,8 +4289,10 @@ function processBayar() {
     if (hutAcc&&kasAcc) {
       const desc=`Pembayaran hutang kepada ${rec.nama_kreditur}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc});
+      // _source='bayar_modal' → integrateTransaction akan SKIP modul hutang/piutang
+      // untuk mencegah double-counting (saldo sudah dikurangi di baris atas via arr[i].sisa)
+      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc,_source:'bayar_modal'});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,_source:'bayar_modal'});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:bayar,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:bayar});
       toast(`✅ Hutang dibayar Rp ${bayar.toLocaleString('id-ID')} + jurnal: ${hutAcc.name}(D)/${kasAcc.name}(K)`,'success',4000);
@@ -3925,8 +4305,9 @@ function processBayar() {
     if (piuAcc&&kasAcc) {
       const desc=`Penerimaan piutang dari ${rec.nama_debitur}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc});
+      // _source='bayar_modal' → integrateTransaction akan SKIP modul hutang/piutang
+      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc,_source:'bayar_modal'});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,_source:'bayar_modal'});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:bayar,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:piuAcc.id,debit:0,kredit:bayar});
       toast(`✅ Piutang diterima Rp ${bayar.toLocaleString('id-ID')} + jurnal: ${kasAcc.name}(D)/${piuAcc.name}(K)`,'success',4000);
@@ -4025,8 +4406,8 @@ function savePersediaan() {
       if (metode==='tunai' && persAcc && kasAcc) {
         const desc=ket||`Pembelian persediaan tunai: ${nama}`;
         const tid=genId(),jeid=genId();
-        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
-        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
+        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
+        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:persAcc.id,debit:nilai,kredit:0});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:nilai});
         DB.persediaan[DB.persediaan.length-1].ref_journal_id=jeid;
@@ -4034,8 +4415,8 @@ function savePersediaan() {
       } else if (metode==='kredit' && persAcc && hutAcc) {
         const desc=ket||`Pembelian persediaan kredit: ${nama}`;
         const tid=genId(),jeid=genId();
-        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
-        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
+        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
+        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:persAcc.id,debit:nilai,kredit:0});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:nilai});
         // Otomatis catat di Hutang juga
@@ -4120,8 +4501,8 @@ function processJualPersediaan() {
   if ((metode==='tunai'?kasAcc:piuAcc) && pendAcc) {
     const desc=`Penjualan persediaan kepada ${pembeli}: ${p.nama_barang} (${qty} unit)`;
     const tid=genId(),jeid=genId();
-    DB.transactions.push({id:tid,company_id:co(),date:today,description:desc});
-    DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc});
+    DB.transactions.push({id:tid,company_id:co(),date:today,description:desc,_source:'auto_module'});
+    DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,_source:'auto_module'});
     const debitAcc=metode==='tunai'?kasAcc:piuAcc;
     DB.journal_details.push({id:genId(),journal_id:jeid,account_id:debitAcc.id,debit:penjualan,kredit:0});
     DB.journal_details.push({id:genId(),journal_id:jeid,account_id:pendAcc.id,debit:0,kredit:penjualan});
@@ -4134,8 +4515,8 @@ function processJualPersediaan() {
   if (hppAcc && persAcc) {
     const descHpp=`HPP penjualan ${p.nama_barang} (${qty} unit)`;
     const tid2=genId(),jeid2=genId();
-    DB.transactions.push({id:tid2,company_id:co(),date:today,description:descHpp});
-    DB.journal_entries.push({id:jeid2,company_id:co(),transaction_id:tid2,date:today,description:descHpp});
+    DB.transactions.push({id:tid2,company_id:co(),date:today,description:descHpp,_source:'auto_module'});
+    DB.journal_entries.push({id:jeid2,company_id:co(),transaction_id:tid2,date:today,description:descHpp,_source:'auto_module'});
     DB.journal_details.push({id:genId(),journal_id:jeid2,account_id:hppAcc.id,debit:hpp,kredit:0});
     DB.journal_details.push({id:genId(),journal_id:jeid2,account_id:persAcc.id,debit:0,kredit:hpp});
   }
@@ -4214,8 +4595,8 @@ function savePerlengkapan() {
       if (metode==='tunai' && perlAcc && kasAcc) {
         const desc=ket||`Pembelian perlengkapan tunai: ${nama}`;
         const tid=genId(),jeid=genId();
-        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
-        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
+        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
+        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:perlAcc.id,debit:nilai,kredit:0});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:nilai});
         DB.perlengkapan[DB.perlengkapan.length-1].ref_journal_id=jeid;
@@ -4223,8 +4604,8 @@ function savePerlengkapan() {
       } else if (metode==='kredit' && perlAcc && hutAcc) {
         const desc=ket||`Pembelian perlengkapan kredit: ${nama}`;
         const tid=genId(),jeid=genId();
-        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
-        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
+        DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
+        DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:perlAcc.id,debit:nilai,kredit:0});
         DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:nilai});
         DB.hutang.push({id:genId(),company_id:co(),nama_kreditur:nama,jumlah:nilai,tanggal,jatuh_tempo:'',sisa:nilai,status:'Belum Lunas',ref_journal_id:jeid});
@@ -4294,7 +4675,10 @@ function toggleTarifSaldoMenurun() {
 }
 
 // Hitung jadwal penyusutan lengkap untuk satu aset (semua tahun)
-function hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, akumAwal=0) {
+// nilaiResidu: nilai estimasi sisa di akhir masa manfaat (hanya untuk Garis Lurus)
+function hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, akumAwal, nilaiResidu) {
+  akumAwal   = akumAwal   || 0;
+  nilaiResidu = nilaiResidu || 0;
   const rows = [];
   let nilaiBuku = hargaEfektif - akumAwal;
   let akum = akumAwal;
@@ -4314,12 +4698,13 @@ function hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, a
       if (nilaiBuku < 1) break;
     }
   } else {
-    // Garis lurus: beban tetap per tahun, masa manfaat = masa
-    const bebanPerTahun = hargaEfektif / (masa||1);
+    // Garis lurus: beban = (Harga − Nilai Residu) / Masa Manfaat
+    const dasarSusut    = Math.max(0, hargaEfektif - nilaiResidu);
+    const bebanPerTahun = dasarSusut / (masa||1);
     for (let thn=1; thn<=masa; thn++) {
       const nilaiAwal = nilaiBuku;
       akum += bebanPerTahun;
-      nilaiBuku = Math.max(0, hargaEfektif - akum);
+      nilaiBuku = Math.max(nilaiResidu, hargaEfektif - akum);
       rows.push({ thn, nilaiAwal, beban: bebanPerTahun, akum, nilaiBuku });
     }
   }
@@ -4338,8 +4723,8 @@ function previewJadwalPenyusutan() {
 
   if (!hargaEfektif) { toast('Masukkan harga perolehan terlebih dahulu','error'); return; }
   if (metodePenyusutan==='saldo-menurun' && !tarifSM) { toast('Masukkan tarif penyusutan (%)','error'); return; }
-
-  const rows = hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, 0);
+  const nilaiResidu = parseFloat(document.getElementById('aset-residu')?.value)||0;
+  const rows = hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, 0, nilaiResidu);
   const tbody = document.getElementById('aset-susut-tbody');
   tbody.innerHTML = rows.map((r,i) => `
     <tr style="background:${i%2===0?'var(--card)':'var(--bg)'};">
@@ -4360,7 +4745,7 @@ function lihatJadwalAset(id) {
   if (!a) return;
   const hargaEfektif = (a.harga_perolehan||0)+(a.tambahan_aset||0)-(a.pengurangan_aset||0);
   const metodePenyusutan = a.metode_penyusutan||'garis-lurus';
-  const rows = hitungJadwalPenyusutan(hargaEfektif, a.masa_manfaat||1, metodePenyusutan, a.tarif_sm||0, 0);
+  const rows = hitungJadwalPenyusutan(hargaEfektif, a.masa_manfaat||1, metodePenyusutan, a.tarif_sm||0, 0, a.nilai_residu||0);
 
   const metodeLbl = metodePenyusutan==='saldo-menurun'
     ? `Saldo Menurun — Tarif: <strong>${a.tarif_sm||0}%</strong>/tahun`
@@ -4472,6 +4857,7 @@ function openAsetModal() {
   document.getElementById('aset-metode').value='tunai';
   document.getElementById('aset-metode-penyusutan').value='garis-lurus';
   document.getElementById('aset-tarif-sm').value='';
+  document.getElementById('aset-residu').value='0';
   document.getElementById('tarif-sm-group').style.display='none';
   document.getElementById('aset-ket').value='';
   document.getElementById('aset-susut-preview').style.display='none';
@@ -4484,13 +4870,16 @@ function saveAset() {
   const nama=document.getElementById('aset-nama').value.trim();
   const harga=parseFloat(document.getElementById('aset-harga').value)||0;
   if (!nama||!harga) { toast('Nama dan harga wajib','error'); return; }
+  if (harga < 0) { toast('❌ Harga perolehan tidak boleh negatif','error'); return; }
   const masa=parseInt(document.getElementById('aset-masa').value)||1;
+  if (masa < 1) { toast('❌ Masa manfaat minimal 1 tahun','error'); return; }
   const tambah=parseFloat(document.getElementById('aset-tambah').value)||0;
   const kurang=parseFloat(document.getElementById('aset-kurang').value)||0;
   const tanggal=document.getElementById('aset-tanggal').value||new Date().toISOString().split('T')[0];
   const metode=document.getElementById('aset-metode').value;
   const metodePenyusutan=document.getElementById('aset-metode-penyusutan').value;
   const tarifSM=parseFloat(document.getElementById('aset-tarif-sm').value)||0;
+  const nilaiResidu=parseFloat(document.getElementById('aset-residu').value)||0;
   const ket=document.getElementById('aset-ket').value.trim();
   const hargaEfektif=harga+tambah-kurang;
   const id=document.getElementById('aset-edit-id').value;
@@ -4503,8 +4892,8 @@ function saveAset() {
     if (!tarifSM||tarifSM<=0||tarifSM>100) { toast('Tarif penyusutan saldo menurun wajib diisi (1–100%)','error'); return; }
     beban = nilaiBookAwal * (tarifSM/100);
   } else {
-    // Garis lurus (default)
-    beban = hargaEfektif / masa;
+    // Garis lurus: (Harga Efektif − Nilai Residu) ÷ Masa Manfaat
+    beban = Math.max(0, hargaEfektif - nilaiResidu) / masa;
   }
 
   const obj={
@@ -4515,7 +4904,8 @@ function saveAset() {
     nilai_buku:Math.max(0, hargaEfektif-existingAkum),
     tanggal, metode, keterangan:ket,
     metode_penyusutan: metodePenyusutan,
-    tarif_sm: metodePenyusutan==='saldo-menurun'?tarifSM:null
+    tarif_sm: metodePenyusutan==='saldo-menurun'?tarifSM:null,
+    nilai_residu: metodePenyusutan==='garis-lurus'?nilaiResidu:0
   };
   if (id) {
     const i=DB.aset_tetap.findIndex(x=>x.id==parseInt(id)); DB.aset_tetap[i]=obj;
@@ -4536,8 +4926,8 @@ function saveAset() {
     if (metode==='tunai' && asetAcc && kasAcc) {
       const desc=ket||`Pembelian aset tetap tunai: ${nama}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
+      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:asetAcc.id,debit:harga,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:harga});
       DB.aset_tetap[DB.aset_tetap.length-1].ref_journal_id=jeid;
@@ -4545,8 +4935,8 @@ function saveAset() {
     } else if (metode==='kredit' && asetAcc && hutAcc) {
       const desc=ket||`Pembelian aset tetap kredit: ${nama}`;
       const tid=genId(),jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc});
+      DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
+      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:asetAcc.id,debit:harga,kredit:0});
       DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:harga});
       DB.hutang.push({id:genId(),company_id:co(),nama_kreditur:nama,jumlah:harga,tanggal,jatuh_tempo:'',sisa:harga,status:'Belum Lunas',ref_journal_id:jeid});
@@ -4572,6 +4962,7 @@ function editAset(id) {
   document.getElementById('aset-metode').value=a.metode||'tunai';
   document.getElementById('aset-metode-penyusutan').value=a.metode_penyusutan||'garis-lurus';
   document.getElementById('aset-tarif-sm').value=a.tarif_sm||'';
+  document.getElementById('aset-residu').value=a.nilai_residu||0;
   document.getElementById('tarif-sm-group').style.display=(a.metode_penyusutan==='saldo-menurun')?'flex':'none';
   document.getElementById('aset-ket').value=a.keterangan||'';
   document.getElementById('aset-susut-preview').style.display='none';
@@ -4594,8 +4985,63 @@ function deleteAset(id) {
       DB.journal_entries=DB.journal_entries.filter(e=>e.id!==je.id);
     }
   }
+  // Hapus log penyusutan yang terkait aset ini
+  if (DB.penyusutan_log) {
+    DB.penyusutan_log = DB.penyusutan_log.filter(log => log.aset_id !== id);
+  }
   DB.aset_tetap=DB.aset_tetap.filter(x=>x.id!=id);
   autoSave(); renderAsetTetap(); toast('Aset & jurnal terkait dihapus','success');
+}
+
+// ── Saran 4: Cek reminder penyusutan — tampilkan peringatan jika bulan ini belum dihitung ──
+function cekReminderPenyusutan() {
+  if (!co()) return;
+  const asets = coFilter(DB.aset_tetap);
+  if (!asets.length) return;
+
+  const periodeIni = new Date().toISOString().substring(0, 7); // YYYY-MM
+  const sudahDihitung = (DB.penyusutan_log || []).some(
+    log => log.company_id === co() && log.periode === periodeIni
+  );
+
+  if (!sudahDihitung) {
+    // Belum ada log penyusutan bulan ini → tampilkan reminder
+    setTimeout(() => {
+      if (document.getElementById('penyusutan-reminder')) return;
+      const el = document.createElement('div');
+      el.id = 'penyusutan-reminder';
+      el.style.cssText = `
+        position:fixed;bottom:80px;right:20px;z-index:9999;
+        background:var(--card);border:1px solid #f59e0b;border-radius:12px;
+        padding:14px 18px;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,.15);
+        animation:slideInRight .3s ease;
+      `;
+      el.innerHTML = `
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="font-size:24px;line-height:1;">⏰</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Reminder Penyusutan</div>
+            <div style="font-size:12px;color:var(--text2);line-height:1.4;">
+              Penyusutan aset tetap bulan <strong>${periodeIni}</strong> belum dihitung.
+              <strong>${asets.length} aset</strong> perlu diproses.
+            </div>
+            <div style="display:flex;gap:8px;margin-top:10px;">
+              <button class="btn btn-primary btn-sm" style="font-size:11px;" onclick="navigate('aset-tetap');document.getElementById('penyusutan-reminder')?.remove();">
+                🏗️ Ke Aset Tetap
+              </button>
+              <button class="btn btn-secondary btn-sm" style="font-size:11px;" onclick="document.getElementById('penyusutan-reminder')?.remove();">
+                Nanti
+              </button>
+            </div>
+          </div>
+          <button onclick="document.getElementById('penyusutan-reminder')?.remove();" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:0;line-height:1;">✕</button>
+        </div>
+      `;
+      document.body.appendChild(el);
+      // Auto-dismiss setelah 30 detik
+      setTimeout(() => el.remove(), 30000);
+    }, 500);
+  }
 }
 
 function hitung_penyusutan_all() {
@@ -4605,13 +5051,19 @@ function hitung_penyusutan_all() {
   const periodeLabel = today.substring(0,7); // format: YYYY-MM
   const bebanAcc=coFilter(DB.accounts).find(acc=>acc.name.includes('Penyusutan')&&acc.type=='Beban');
   const akumAcc=coFilter(DB.accounts).find(acc=>acc.name.includes('Akumulasi'));
+
+  // ── PERBAIKAN BUG #2 ──
+  // Pastikan array tracking tersedia
+  if (!DB.penyusutan_log) DB.penyusutan_log = [];
+
   let skipped=0, added=0;
   as.forEach(a=>{
-    // Cek apakah penyusutan periode ini sudah pernah dihitung untuk aset ini
-    const sudahAda = coFilter(DB.penyesuaian).some(p=>
-      p.description===('Penyusutan '+a.nama_aset+' ('+periodeLabel+')')
+    // Cek duplikasi berdasarkan aset_id + periode (bukan string deskripsi)
+    const sudahAda = DB.penyusutan_log.some(
+      log => log.company_id == co() && log.aset_id === a.id && log.periode === periodeLabel
     );
     if (sudahAda) { skipped++; return; }
+
     const i=DB.aset_tetap.findIndex(x=>x.id==a.id);
     const harga=a.harga_perolehan+(a.tambahan_aset||0)-(a.pengurangan_aset||0);
     const nilaiBookSaatIni = Math.max(0, harga - (a.akumulasi_penyusutan||0));
@@ -4628,8 +5080,9 @@ function hitung_penyusutan_all() {
       }
       beban = nilaiBookSaatIni * tarif;
     } else {
-      // Garis lurus
-      beban = harga/(a.masa_manfaat||1);
+      // Garis lurus: (Harga Efektif − Nilai Residu) ÷ Masa Manfaat
+      const nilaiResidu = a.nilai_residu || 0;
+      beban = Math.max(0, harga - nilaiResidu) / (a.masa_manfaat||1);
     }
 
     // Pastikan nilai buku tidak negatif
@@ -4639,10 +5092,28 @@ function hitung_penyusutan_all() {
     DB.aset_tetap[i].akumulasi_penyusutan=(a.akumulasi_penyusutan||0)+beban;
     DB.aset_tetap[i].beban_penyusutan=beban;
     DB.aset_tetap[i].nilai_buku=Math.max(0, harga-DB.aset_tetap[i].akumulasi_penyusutan);
+
+    // Catat ke penyesuaian jika akun tersedia
     if (bebanAcc && akumAcc) {
-      // Label deskripsi menyertakan periode agar bisa dicek double-counting
       const metodeLbl = metodePenyusutan==='saldo-menurun'?` [SM ${a.tarif_sm||0}%]`:'';
-      DB.penyesuaian.push({id:genId(),company_id:co(),date:today,description:'Penyusutan '+a.nama_aset+' ('+periodeLabel+')',debit_acc:bebanAcc.id,kredit_acc:akumAcc.id,amount:beban});
+      const penyId = genId();
+      DB.penyesuaian.push({
+        id: penyId,
+        company_id: co(),
+        date: today,
+        description: 'Penyusutan '+a.nama_aset+' ('+periodeLabel+')',
+        debit_acc: bebanAcc.id,
+        kredit_acc: akumAcc.id,
+        amount: beban
+      });
+      // Simpan log ID-based untuk cegah double-counting
+      DB.penyusutan_log.push({
+        company_id: co(),
+        aset_id: a.id,
+        periode: periodeLabel,
+        penyesuaian_id: penyId,
+        tanggal: today
+      });
       added++;
     }
   });
@@ -4695,12 +5166,35 @@ const SAP_LAPORAN_MAP = {
 function getAccsByType(type, withAdj=true) {
   const types = Array.isArray(type) ? type : [type];
   // Resolusi alias: jika minta 'Pendapatan', untuk SAP juga sertakan 'Pendapatan-LO'
+  // PERBAIKAN BUG #3: JANGAN sertakan 'Pendapatan-LRA', 'Belanja', 'Pembiayaan' dalam LO
+  // Akun-akun LRA (basis kas) harus TERISOLASI dari LO (basis akrual)
   const resolved = new Set(types);
   if (types.includes('Pendapatan')) resolved.add('Pendapatan-LO');
-  if (types.includes('Beban'))      resolved.add('Beban'); // sudah ada
+  // Pastikan tipe LRA tidak bocor ke LO
+  // 'Pendapatan-LRA', 'Belanja', 'Pembiayaan' hanya diambil jika diminta eksplisit
   return coFilter(DB.accounts)
     .filter(a => resolved.has(a.type))
     .map(a => ({ ...a, balance: getAccountBalance(a.id, withAdj) }));
+}
+
+// Validasi: tampilkan peringatan jika akun SAP LRA digunakan di jurnal utama
+// bersama akun LO dalam satu jurnal entry (potensi pencampuran basis)
+function cekIsolasiSAP(details, accs) {
+  const co_data = getCompany();
+  if (!co_data || co_data.standard !== 'SAP') return; // Hanya relevan untuk SAP
+  const tipoLRA = new Set(['Pendapatan-LRA', 'Belanja', 'Pembiayaan']);
+  const tipoLO  = new Set(['Pendapatan-LO', 'Beban']);
+  const adaLRA = details.some(d => {
+    const acc = accs.find(a => a.id == d.account_id);
+    return acc && tipoLRA.has(acc.type);
+  });
+  const adaLO = details.some(d => {
+    const acc = accs.find(a => a.id == d.account_id);
+    return acc && tipoLO.has(acc.type);
+  });
+  if (adaLRA && adaLO) {
+    toast('⚠️ Peringatan SAP: Jurnal ini mencampur akun LRA (basis kas) dengan akun LO (basis akrual) dalam satu entri. Ini dapat merusak laporan. Pisahkan jurnal LRA dan LO.', 'error', 8000);
+  }
 }
 
 // ── LABA BERSIH ──
@@ -4730,6 +5224,21 @@ function calcEkuitasAkhir() {
     .reduce((s,a) => s + a.balance, 0);
   const laba = calcLabaBersih();
   return modalTotal - priveTotal + laba;
+}
+
+// ── KAS AWAL PERIODE ──
+// Saldo awal (opening balance) akun kas/bank — digunakan di Laporan Arus Kas
+// agar Kas Akhir Arus Kas = kasAwal + mutasi = saldo buku besar
+function calcKasAwal() {
+  return coFilter(DB.accounts)
+    .filter(a => a.type === 'Aset'
+      && a.normal_balance === 'Debit'
+      && (a.name.toLowerCase().includes('kas')
+        || a.name.toLowerCase().includes('bank')
+        || a.name.toLowerCase().includes('rkud')
+        || a.name.toLowerCase().includes('rekening kas')
+      ))
+    .reduce((s,a) => s + (a.saldo_awal || 0), 0);
 }
 
 // ── KAS & SETARA KAS AKHIR ──
@@ -4828,37 +5337,35 @@ function calcTotalAsetBersih(withAdj=true) {
 
 // ── ARUS KAS (Metode Langsung dari Journal Details) ──
 // Telusuri tiap entri jurnal yang melibatkan akun kas.
-// Klasifikasi: Operasi / Investasi / Pendanaan
+// FIX BUG KRITIS #3: Klasifikasi kini menggunakan field kategori_arus_kas di CoA
+// (diset manual user), baru fallback ke keyword nama akun jika belum diset.
 // Net Kas = debit(kas) − kredit(kas) dalam satu jurnal entry
 // Verifikasi: kasOperasi + kasInvestasi + kasPendanaan = saldo kas di Neraca
+function _getKategoriArusKas(acc) {
+  if (!acc) return 'operasi';
+  // Prioritas 1: field eksplisit dari CoA
+  if (acc.kategori_arus_kas === 'investasi') return 'investasi';
+  if (acc.kategori_arus_kas === 'pendanaan') return 'pendanaan';
+  if (acc.kategori_arus_kas === 'operasi')   return 'operasi';
+  // Prioritas 2: heuristik nama akun (backward compatibility)
+  const n = acc.name.toLowerCase();
+  if (acc.type==='Aset' && acc.normal_balance==='Debit'
+      && !n.includes('kas') && !n.includes('bank')
+      && !n.includes('piutang') && !n.includes('persediaan')
+      && !n.includes('perlengkapan') && !n.includes('biaya dibayar')
+      && !n.includes('pajak dibayar')) return 'investasi';
+  if (acc.type==='Ekuitas') return 'pendanaan';
+  if (acc.type==='Kewajiban' && (n.includes('pinjaman') || n.includes('hutang bank')
+      || n.includes('hutang jangka') || n.includes('obligasi'))) return 'pendanaan';
+  return 'operasi';
+}
+
 function calcArusKas() {
-  const kasIds = coFilter(DB.accounts)
+  const allAccs = coFilter(DB.accounts);
+  const kasIds = allAccs
     .filter(a => a.type==='Aset' && a.normal_balance==='Debit'
       && (a.name.toLowerCase().includes('kas') || a.name.toLowerCase().includes('bank')
         || a.name.toLowerCase().includes('rkud') || a.name.toLowerCase().includes('rekening kas')))
-    .map(a => a.id);
-
-  // Akun yang mengklasifikasikan sebagai INVESTASI (lawan transaksi kas = aset tidak lancar)
-  const investasiIds = coFilter(DB.accounts)
-    .filter(a => a.type==='Aset' && a.normal_balance==='Debit'
-      && !a.name.toLowerCase().includes('kas')
-      && !a.name.toLowerCase().includes('bank')
-      && !a.name.toLowerCase().includes('piutang')
-      && !a.name.toLowerCase().includes('persediaan')
-      && !a.name.toLowerCase().includes('perlengkapan')
-      && !a.name.toLowerCase().includes('biaya dibayar')
-      && !a.name.toLowerCase().includes('pajak dibayar'))
-    .map(a => a.id);
-
-  // Akun yang mengklasifikasikan sebagai PENDANAAN (lawan = ekuitas modal / pinjaman bank)
-  const pendanaanIds = coFilter(DB.accounts)
-    .filter(a => (a.type==='Ekuitas') ||  // SAP: 'Ekuitas Dana' juga type='Ekuitas'
-      (a.type==='Kewajiban' && (
-        a.name.toLowerCase().includes('pinjaman') ||
-        a.name.toLowerCase().includes('hutang bank') ||
-        a.name.toLowerCase().includes('hutang jangka') ||
-        a.name.toLowerCase().includes('obligasi')
-      )))
     .map(a => a.id);
 
   const JEids = coFilter(DB.journal_entries).map(je => je.id);
@@ -4869,17 +5376,16 @@ function calcArusKas() {
     const kasLines = details.filter(d => kasIds.includes(d.account_id));
     if (!kasLines.length) return;
 
-    // Net perubahan kas: Debit kas = masuk (+), Kredit kas = keluar (−)
     const netKas = kasLines.reduce((s,d) => s + d.debit - d.kredit, 0);
     if (netKas === 0) return;
 
-    // Tentukan kategori berdasarkan akun lawan (prioritas: Investasi > Pendanaan > Operasi)
-    const counterIds = details
+    const counterAccs = details
       .filter(d => !kasIds.includes(d.account_id))
-      .map(d => d.account_id);
+      .map(d => allAccs.find(a => a.id === d.account_id))
+      .filter(Boolean);
 
-    const adaInvestasi  = counterIds.some(id => investasiIds.includes(id));
-    const adaPendanaan  = counterIds.some(id => pendanaanIds.includes(id));
+    const adaInvestasi  = counterAccs.some(a => _getKategoriArusKas(a) === 'investasi');
+    const adaPendanaan  = counterAccs.some(a => _getKategoriArusKas(a) === 'pendanaan');
 
     if (adaInvestasi)       kasInvestasi  += netKas;
     else if (adaPendanaan)  kasPendanaan  += netKas;
@@ -4889,6 +5395,7 @@ function calcArusKas() {
   return { kasOperasi, kasInvestasi, kasPendanaan,
     kasAkhir: kasOperasi + kasInvestasi + kasPendanaan };
 }
+
 
 // ── RENDER LABA RUGI ──
 function renderLabaRugi() {
@@ -4908,11 +5415,46 @@ function renderLabaRugi() {
   const isSAP = lkNames.hasSAP;
   // Untuk SAP: Laporan Operasional (LO) — Pendapatan-LO dan Beban LO
   // getAccsByType('Pendapatan') otomatis mencakup 'Pendapatan-LO' via SAP alias
+  // BUG #3 FIX: cek pencampuran basis LRA+LO di jurnal
+  let peringatanLRA = '';
+  if (isSAP) {
+    const tipoLRA = ['Pendapatan-LRA', 'Belanja', 'Pembiayaan'];
+    const lraIds = coFilter(DB.accounts).filter(a => tipoLRA.includes(a.type)).map(a => a.id);
+    const adaPencampuran = coFilter(DB.journal_entries).some(je => {
+      const ids = DB.journal_details.filter(d => d.journal_id === je.id).map(d => d.account_id);
+      const adaLRA = ids.some(id => lraIds.includes(id));
+      const adaLO  = ids.some(id => {
+        const acc = DB.accounts.find(a => a.id === id);
+        return acc && (acc.type === 'Pendapatan-LO' || acc.type === 'Beban');
+      });
+      return adaLRA && adaLO;
+    });
+    if (adaPencampuran) {
+      peringatanLRA = `<div style="margin-bottom:12px;padding:10px 16px;background:rgba(239,68,68,.1);border-radius:var(--radius2);border-left:4px solid var(--danger);font-size:12px;color:#991b1b;">
+        ⚠️ <strong>Peringatan SAP:</strong> Ditemukan jurnal yang mencampur akun LRA (basis kas) dengan akun LO (basis akrual). Laporan Operasional (LO) ini mungkin tidak akurat. Periksa Jurnal Umum dan pisahkan pencatatan LRA dari LO.
+      </div>`;
+    }
+  }
   const revenues = getAccsByType('Pendapatan').filter(a=>a.balance!==0);
   const expenses = getAccsByType('Beban').filter(a=>a.balance!==0);
   const totRev = revenues.reduce((s,a)=>s+a.balance,0);
   const totExp = expenses.reduce((s,a)=>s+a.balance,0);
   const laba = totRev - totExp;
+
+  // ── Item 4: Pisahkan HPP dari Beban Operasional (untuk non-SAP) ──
+  // Akun HPP dikenali dari nama: mengandung 'hpp', 'harga pokok', 'cost of goods'
+  const isHPP = a => {
+    const n = a.name.toLowerCase();
+    return n.includes('harga pokok') || n.includes('hpp') ||
+           n.includes('cost of good') || n.includes('biaya produksi') ||
+           n.includes('beban pokok');
+  };
+  const expHPP  = expenses.filter(a =>  isHPP(a));
+  const expOps  = expenses.filter(a => !isHPP(a));
+  const totHPP  = expHPP.reduce((s,a)=>s+a.balance,0);
+  const totOps  = expOps.reduce((s,a)=>s+a.balance,0);
+  const labaKotor = totRev - totHPP;
+  const hasHPP = expHPP.length > 0 && !isSAP;
 
   // Label dinamis sesuai standar
   const labelPendapatan  = isSAP ? 'PENDAPATAN NEGARA/DAERAH'      : 'PENDAPATAN';
@@ -4928,9 +5470,40 @@ function renderLabaRugi() {
        </div>`
     : `<div style="margin-top:16px;padding:12px 16px;background:${laba>=0?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${laba>=0?'var(--accent2)':'var(--danger)'};">
         <div style="font-size:12px;color:var(--text2);">➡️ ${laba>=0?'Laba':'Rugi'} Bersih <strong>${fmtC(Math.abs(laba))}</strong> ini akan mengalir ke <strong>${lkNames.ekuitas}</strong> sebagai penambah modal.</div>
+       </div>
+       <div style="margin-top:10px;padding:10px 14px;background:rgba(245,158,11,.08);border-radius:var(--radius2);border-left:3px solid #d97706;font-size:11px;color:#92400e;">
+         ⚠️ <strong>Perhatian Pajak:</strong> Laba bersih di atas belum memperhitungkan Pajak Penghasilan (PPh Badan/UMKM). Catat beban PPh dan hutang PPh secara manual melalui Jurnal Penyesuaian jika diperlukan. Konsultasikan dengan konsultan pajak untuk perhitungan tarif yang berlaku.
        </div>`;
 
+  // ── Susun HTML body laporan ──
+  // Jika ada HPP → tampilkan Laba Kotor dulu, baru Beban Operasional
+  const bebanSection = hasHPP ? `
+    <div class="report-section">
+      <div class="report-section-title">HARGA POKOK PENJUALAN / PRODUKSI</div>
+      ${expHPP.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')}
+      <div class="report-row subtotal"><span><strong>Total HPP</strong></span><span class="report-amount"><strong>${fmtC(totHPP)}</strong></span></div>
+    </div>
+    <div class="report-row subtotal" style="margin:4px 0 12px;padding:10px 0;border-top:2px solid var(--border);border-bottom:2px solid var(--border);">
+      <span style="font-weight:800;">LABA KOTOR</span>
+      <span class="report-amount" style="font-weight:800;color:${labaKotor>=0?'var(--accent2)':'var(--danger)'};">${labaKotor<0?'(':''}${fmtC(Math.abs(labaKotor))}${labaKotor<0?')':''}</span>
+    </div>
+    <div class="report-section">
+      <div class="report-section-title">BEBAN OPERASIONAL</div>
+      ${expOps.length
+        ? expOps.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')
+        : '<div class="report-row indent" style="color:var(--text3)"><span>—</span></div>'}
+      <div class="report-row subtotal"><span><strong>Total Beban Operasional</strong></span><span class="report-amount"><strong>${fmtC(totOps)}</strong></span></div>
+    </div>
+  ` : `
+    <div class="report-section">
+      <div class="report-section-title">${labelBeban}</div>
+      ${expenses.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3)"><span>Tidak ada akun beban</span></div>'}
+      <div class="report-row subtotal"><span><strong>${labelTotBeban}</strong></span><span class="report-amount"><strong>${fmtC(totExp)}</strong></span></div>
+    </div>
+  `;
+
   document.getElementById('laba-rugi-content').innerHTML = `
+    ${peringatanLRA}
     <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);">
       <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div>
       <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${lkNames.labaRugi.toUpperCase()}</div>
@@ -4941,15 +5514,12 @@ function renderLabaRugi() {
       ${revenues.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3)"><span>Tidak ada akun pendapatan</span></div>'}
       <div class="report-row subtotal"><span><strong>${labelTotPendapatan}</strong></span><span class="report-amount"><strong>${fmtC(totRev)}</strong></span></div>
     </div>
-    <div class="report-section">
-      <div class="report-section-title">${labelBeban}</div>
-      ${expenses.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3)"><span>Tidak ada akun beban</span></div>'}
-      <div class="report-row subtotal"><span><strong>${labelTotBeban}</strong></span><span class="report-amount"><strong>${fmtC(totExp)}</strong></span></div>
-    </div>
+    ${bebanSection}
     <div class="report-row total" style="margin-top:16px;padding:14px 0;">
       <span style="font-size:15px;font-weight:800;">${labelHasil}</span>
       <span class="report-amount" style="font-size:16px;font-weight:800;color:${laba>=0?'var(--accent2)':'var(--danger)'};">${fmtC(Math.abs(laba))}</span>
     </div>
+    ${hasHPP ? `<div style="margin-top:8px;font-size:11px;color:var(--text3);text-align:right;">Gross Profit Margin: ${totRev>0?((labaKotor/totRev)*100).toFixed(1):'—'}%</div>` : ''}
     ${noteSAP}
   `;
 }
@@ -5066,13 +5636,19 @@ function renderNeraca() {
   const asetNormal    = semuaAset.filter(a => a.normal_balance === 'Debit');   // aset biasa
   const contraAset    = semuaAset.filter(a => a.normal_balance === 'Kredit');  // akumulasi penyusutan dll
 
-  // Klasifikasi Aset Lancar vs Tidak Lancar (hanya dari aset normal/debit)
+  // Klasifikasi Aset Lancar vs Tidak Lancar
+  // Prioritas: field kategori_neraca di akun → fallback keyword nama
   const isLancar = a => {
+    if (a.kategori_neraca === 'lancar') return true;
+    if (a.kategori_neraca === 'tidak_lancar') return false;
+    // Fallback keyword — hanya jika field belum diisi
     const n = a.name.toLowerCase();
     return n.includes('kas') || n.includes('bank') || n.includes('piutang') ||
            n.includes('persediaan') || n.includes('perlengkapan') ||
            n.includes('biaya dibayar dimuka') || n.includes('pajak dibayar') ||
-           n.includes('sewa dibayar') || n.includes('asuransi dibayar');
+           n.includes('sewa dibayar') || n.includes('asuransi dibayar') ||
+           n.includes('uang muka') || n.includes('investasi jangka pendek') ||
+           n.includes('efek') || n.includes('deposito');
   };
 
   const asetLancar         = asetNormal.filter(a =>  isLancar(a) && a.balance !== 0);
@@ -5088,11 +5664,17 @@ function renderNeraca() {
   // ── KEWAJIBAN ──
   const kewAcss = getAccsByType('Kewajiban').filter(a => a.balance !== 0);
   const isKewLancar = a => {
+    if (a.kategori_neraca === 'lancar') return true;
+    if (a.kategori_neraca === 'tidak_lancar') return false;
+    // Fallback keyword
     const n = a.name.toLowerCase();
     return n.includes('hutang usaha') || n.includes('hutang dagang') ||
            n.includes('hutang gaji')  || n.includes('hutang pajak')  ||
            n.includes('pendapatan diterima dimuka') ||
-           n.includes('hutang jangka pendek') || n.includes('beban yang masih harus');
+           n.includes('hutang jangka pendek') || n.includes('beban yang masih harus') ||
+           n.includes('utang usaha') || n.includes('utang dagang') ||
+           n.includes('utang gaji') || n.includes('utang pajak') ||
+           n.includes('kewajiban lancar');
   };
   const kewLancar       = kewAcss.filter(a =>  isKewLancar(a));
   const kewTidakLancar  = kewAcss.filter(a => !isKewLancar(a));
@@ -5261,9 +5843,12 @@ function calcArusKasTidakLangsung() {
     a.type === 'Beban' && a.name.toLowerCase().includes('penyusutan'));
   const totalPenyusutan = penyusutanAcc.reduce((s,a) => s + getAccountBalance(a.id, true), 0);
 
-  // 2. Perubahan modal kerja: selisih saldo akun aset lancar & kewajiban lancar
-  //    Naik aset lancar (selain kas) = penggunaan kas (negatif)
-  //    Turun kewajiban lancar        = penggunaan kas (negatif)
+  // 2. Perubahan modal kerja: DELTA = saldo akhir − saldo awal periode
+  //    Saldo awal periode = saldo_awal yang diinput di CoA (opening balance)
+  //    Jika saldo_awal belum diisi user, delta = saldo akhir (asumsi periode pertama)
+  //
+  //    Naik aset lancar (selain kas) = penggunaan kas → negatif thd kas
+  //    Naik kewajiban lancar         = sumber kas    → positif thd kas
   const kasIds = coFilter(DB.accounts)
     .filter(a => a.type==='Aset' && a.normal_balance==='Debit'
       && (a.name.toLowerCase().includes('kas') || a.name.toLowerCase().includes('bank')
@@ -5284,13 +5869,20 @@ function calcArusKasTidakLangsung() {
     !a.name.toLowerCase().includes('obligasi') &&
     !a.name.toLowerCase().includes('pinjaman bank'));
 
-  const perubahanAsetLancar = asetLancarAcss.map(a => ({
-    name: a.name, nilai: -getAccountBalance(a.id, true) // naik = negatif thd kas
-  })).filter(x => x.nilai !== 0);
+  // Hitung delta: saldo akhir (termasuk penyesuaian) dikurangi saldo awal periode (opening balance CoA)
+  const perubahanAsetLancar = asetLancarAcss.map(a => {
+    const saldoAkhir = getAccountBalance(a.id, true);
+    const saldoAwal  = a.saldo_awal || 0;
+    const delta      = saldoAkhir - saldoAwal;
+    return { name: a.name, nilai: -delta }; // naik aset lancar = negatif thd kas
+  }).filter(x => x.nilai !== 0);
 
-  const perubahanKewLancar = kewLancarAcss.map(a => ({
-    name: a.name, nilai: getAccountBalance(a.id, true) // naik = positif thd kas
-  })).filter(x => x.nilai !== 0);
+  const perubahanKewLancar = kewLancarAcss.map(a => {
+    const saldoAkhir = getAccountBalance(a.id, true);
+    const saldoAwal  = a.saldo_awal || 0;
+    const delta      = saldoAkhir - saldoAwal;
+    return { name: a.name, nilai: delta }; // naik kewajiban = positif thd kas
+  }).filter(x => x.nilai !== 0);
 
   const totalPerubahanMK =
     perubahanAsetLancar.reduce((s,x) => s + x.nilai, 0) +
@@ -5327,7 +5919,8 @@ function renderArusKas() {
       totalPerubahanMK, kasOperasi, kasInvestasi, kasPendanaan
     } = calcArusKasTidakLangsung();
 
-    const kasAkhir = kasOperasi + kasInvestasi + kasPendanaan;
+    const kasAwalPeriode = calcKasAwal();
+    const kasAkhir = kasAwalPeriode + kasOperasi + kasInvestasi + kasPendanaan;
     const selisih  = Math.abs(kasAkhir - kasAkhirNeraca);
     const balance  = selisih < 1;
     const fmtK = (v) => `${v<0?'(':''}${fmtC(Math.abs(v))}${v<0?')':''}`;
@@ -5390,7 +5983,11 @@ function renderArusKas() {
           <span class="report-amount" style="color:${clr(kasPendanaan)};"><strong>${fmtK(kasPendanaan)}</strong></span>
         </div>
 
-        <div class="report-row total" style="margin-top:16px;padding:14px 0;">
+        <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);">
+          <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span>
+          <span class="report-amount">${fmtC(kasAwalPeriode)}</span>
+        </div>
+        <div class="report-row total" style="margin-top:4px;padding:14px 0;">
           <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span>
           <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhir)}</span>
         </div>
@@ -5411,7 +6008,8 @@ function renderArusKas() {
 
   // ── Metode Langsung (default) ──
   const { kasOperasi, kasInvestasi, kasPendanaan } = calcArusKas();
-  const kasAkhirArusKas = kasOperasi + kasInvestasi + kasPendanaan;
+  const _kasAwal2 = calcKasAwal();
+  const kasAkhirArusKas = _kasAwal2 + kasOperasi + kasInvestasi + kasPendanaan;
   const selisihKas = Math.abs(kasAkhirArusKas - kasAkhirNeraca);
   const kasBalance = selisihKas < 1;
 
@@ -5434,7 +6032,11 @@ function renderArusKas() {
       ${buildArusKasDetail('pendanaan')}
       <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Pendanaan</strong></span><span class="report-amount" style="color:${kasPendanaan>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasPendanaan<0?'(':''}${fmtC(Math.abs(kasPendanaan))}${kasPendanaan<0?')':''}</strong></span></div>
 
-      <div class="report-row total" style="margin-top:16px;padding:14px 0;">
+      <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);">
+        <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span>
+        <span class="report-amount">${fmtC(_kasAwal2)}</span>
+      </div>
+      <div class="report-row total" style="margin-top:4px;padding:14px 0;">
         <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span>
         <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhirArusKas)}</span>
       </div>
@@ -5456,32 +6058,14 @@ function renderArusKas() {
 
 // Helper: bangun detail per transaksi untuk tiap kategori arus kas
 // Klasifikasi IDENTIK dengan calcArusKas() untuk konsistensi
+// Helper: bangun detail per transaksi untuk tiap kategori arus kas
+// FIX BUG KRITIS #3: menggunakan _getKategoriArusKas() yang menghormati field CoA
 function buildArusKasDetail(kategori) {
-  const kasIds = coFilter(DB.accounts)
+  const allAccs = coFilter(DB.accounts);
+  const kasIds = allAccs
     .filter(a => a.type==='Aset' && a.normal_balance==='Debit'
       && (a.name.toLowerCase().includes('kas') || a.name.toLowerCase().includes('bank')
         || a.name.toLowerCase().includes('rkud') || a.name.toLowerCase().includes('rekening kas')))
-    .map(a => a.id);
-
-  const investasiIds = coFilter(DB.accounts)
-    .filter(a => a.type==='Aset' && a.normal_balance==='Debit'
-      && !a.name.toLowerCase().includes('kas')
-      && !a.name.toLowerCase().includes('bank')
-      && !a.name.toLowerCase().includes('piutang')
-      && !a.name.toLowerCase().includes('persediaan')
-      && !a.name.toLowerCase().includes('perlengkapan')
-      && !a.name.toLowerCase().includes('biaya dibayar')
-      && !a.name.toLowerCase().includes('pajak dibayar'))
-    .map(a => a.id);
-
-  const pendanaanIds = coFilter(DB.accounts)
-    .filter(a => (a.type==='Ekuitas') ||  // SAP: 'Ekuitas Dana' juga type='Ekuitas'
-      (a.type==='Kewajiban' && (
-        a.name.toLowerCase().includes('pinjaman') ||
-        a.name.toLowerCase().includes('hutang bank') ||
-        a.name.toLowerCase().includes('hutang jangka') ||
-        a.name.toLowerCase().includes('obligasi')
-      )))
     .map(a => a.id);
 
   const JEids = coFilter(DB.journal_entries)
@@ -5497,11 +6081,12 @@ function buildArusKasDetail(kategori) {
     const netKas = kasLines.reduce((s,d) => s + d.debit - d.kredit, 0);
     if (netKas === 0) return;
 
-    const counterIds = details
+    const counterAccs = details
       .filter(d => !kasIds.includes(d.account_id))
-      .map(d => d.account_id);
-    const adaInvestasi = counterIds.some(id => investasiIds.includes(id));
-    const adaPendanaan = counterIds.some(id => pendanaanIds.includes(id));
+      .map(d => allAccs.find(a => a.id === d.account_id))
+      .filter(Boolean);
+    const adaInvestasi = counterAccs.some(a => _getKategoriArusKas(a) === 'investasi');
+    const adaPendanaan = counterAccs.some(a => _getKategoriArusKas(a) === 'pendanaan');
 
     let kat = 'operasi';
     if (adaInvestasi)      kat = 'investasi';
@@ -5520,7 +6105,305 @@ function buildArusKasDetail(kategori) {
 
 // ══════════════════════════════════════════
 // JURNAL PENUTUP
+// Menutup semua akun nominal (Pendapatan & Beban) ke Ikhtisar L/R,
+// lalu menutup Ikhtisar L/R ke akun Modal/Ekuitas.
+// Juga menutup Prive ke Modal.
 // ══════════════════════════════════════════
+function buatJurnalPenutup() {
+  if (!co()) { toast('Pilih perusahaan terlebih dahulu', 'error'); return; }
+  const co_data = getCompany();
+  const tanggal = co_data?.period_end || new Date().toISOString().split('T')[0];
+
+  // Kumpulkan akun pendapatan & beban beserta saldo
+  const pendAcss  = getAccsByType('Pendapatan').filter(a => a.balance !== 0);
+  const bebanAcss = getAccsByType('Beban').filter(a => a.balance !== 0);
+  const ekAcss    = getAccsByType('Ekuitas');
+  // Akun modal utama (normal Kredit, bukan Prive/Dividen)
+  const modalAcc  = ekAcss.find(a => a.normal_balance === 'Kredit' &&
+    (a.name.toLowerCase().includes('modal') || a.name.toLowerCase().includes('laba ditahan') ||
+     a.name.toLowerCase().includes('retained') || a.name.toLowerCase().includes('ekuitas')));
+  // Akun Prive/Dividen (normal Debit)
+  const priveAcss = ekAcss.filter(a => a.normal_balance === 'Debit' && a.balance !== 0);
+
+  if (!pendAcss.length && !bebanAcss.length) {
+    toast('Tidak ada akun Pendapatan/Beban dengan saldo yang perlu ditutup.', 'info'); return;
+  }
+  if (!modalAcc) {
+    toast('❌ Akun Modal/Ekuitas tidak ditemukan di CoA. Tambahkan akun bertipe Ekuitas (saldo normal Kredit) terlebih dahulu.', 'error', 6000); return;
+  }
+
+  const totalPend  = pendAcss.reduce((s,a)  => s + a.balance, 0);
+  const totalBeban = bebanAcss.reduce((s,a) => s + a.balance, 0);
+  const labaBersih = totalPend - totalBeban;
+  const totalPrive = priveAcss.reduce((s,a) => s + a.balance, 0);
+
+  // Bangun baris tabel jurnal penutup
+  let rows = '';
+  const fmtR = v => `Rp ${v.toLocaleString('id-ID')}`;
+
+  // ── Langkah 1: Tutup semua akun Pendapatan → Ikhtisar L/R ──
+  if (pendAcss.length) {
+    rows += `<tr style="background:rgba(16,185,129,.04);">
+      <td>${tanggal}</td>
+      <td style="font-weight:700;color:var(--accent2);">Menutup akun pendapatan ke Ikhtisar L/R</td>
+      <td colspan="3"></td>
+    </tr>`;
+    pendAcss.forEach(a => {
+      rows += `<tr>
+        <td></td><td></td>
+        <td style="padding-left:12px;color:var(--accent2);">${a.code} — ${a.name}</td>
+        <td class="td-mono" style="color:var(--accent2);">${fmtR(a.balance)}</td>
+        <td></td>
+      </tr>`;
+    });
+    rows += `<tr>
+      <td></td><td></td>
+      <td style="padding-left:24px;color:var(--text2);font-style:italic;">Ikhtisar Laba Rugi</td>
+      <td></td>
+      <td class="td-mono" style="color:var(--accent2);">${fmtR(totalPend)}</td>
+    </tr>`;
+  }
+
+  // ── Langkah 2: Tutup semua akun Beban → Ikhtisar L/R ──
+  if (bebanAcss.length) {
+    rows += `<tr style="background:rgba(239,68,68,.04);">
+      <td>${tanggal}</td>
+      <td style="font-weight:700;color:var(--danger);">Menutup akun beban ke Ikhtisar L/R</td>
+      <td colspan="3"></td>
+    </tr>`;
+    rows += `<tr>
+      <td></td><td></td>
+      <td style="padding-left:12px;color:var(--text2);font-style:italic;">Ikhtisar Laba Rugi</td>
+      <td class="td-mono" style="color:var(--danger);">${fmtR(totalBeban)}</td>
+      <td></td>
+    </tr>`;
+    bebanAcss.forEach(a => {
+      rows += `<tr>
+        <td></td><td></td>
+        <td style="padding-left:24px;color:var(--danger);">${a.code} — ${a.name}</td>
+        <td></td>
+        <td class="td-mono" style="color:var(--danger);">${fmtR(a.balance)}</td>
+      </tr>`;
+    });
+  }
+
+  // ── Langkah 3: Tutup Ikhtisar L/R → Modal ──
+  const ikhLabel = labaBersih >= 0 ? 'Menutup Ikhtisar L/R (Laba) ke Modal' : 'Menutup Ikhtisar L/R (Rugi) ke Modal';
+  const ikhColor = labaBersih >= 0 ? 'var(--accent2)' : 'var(--danger)';
+  rows += `<tr style="background:rgba(37,99,235,.06);">
+    <td>${tanggal}</td>
+    <td style="font-weight:700;color:var(--primary-light);">${ikhLabel}</td>
+    <td colspan="3"></td>
+  </tr>`;
+  if (labaBersih >= 0) {
+    rows += `<tr>
+      <td></td><td></td>
+      <td style="padding-left:12px;font-style:italic;color:var(--text2);">Ikhtisar Laba Rugi</td>
+      <td class="td-mono" style="color:${ikhColor};">${fmtR(labaBersih)}</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td><td></td>
+      <td style="padding-left:24px;">${modalAcc.code} — ${modalAcc.name}</td>
+      <td></td>
+      <td class="td-mono" style="color:${ikhColor};">${fmtR(labaBersih)}</td>
+    </tr>`;
+  } else {
+    rows += `<tr>
+      <td></td><td></td>
+      <td style="padding-left:12px;">${modalAcc.code} — ${modalAcc.name}</td>
+      <td class="td-mono" style="color:${ikhColor};">${fmtR(Math.abs(labaBersih))}</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td><td></td>
+      <td style="padding-left:24px;font-style:italic;color:var(--text2);">Ikhtisar Laba Rugi</td>
+      <td></td>
+      <td class="td-mono" style="color:${ikhColor};">${fmtR(Math.abs(labaBersih))}</td>
+    </tr>`;
+  }
+
+  // ── Langkah 4: Tutup Prive → Modal ──
+  if (priveAcss.length) {
+    rows += `<tr style="background:rgba(245,158,11,.05);">
+      <td>${tanggal}</td>
+      <td style="font-weight:700;color:var(--warning);">Menutup akun Prive ke Modal</td>
+      <td colspan="3"></td>
+    </tr>`;
+    rows += `<tr>
+      <td></td><td></td>
+      <td style="padding-left:12px;">${modalAcc.code} — ${modalAcc.name}</td>
+      <td class="td-mono" style="color:var(--warning);">${fmtR(totalPrive)}</td>
+      <td></td>
+    </tr>`;
+    priveAcss.forEach(a => {
+      rows += `<tr>
+        <td></td><td></td>
+        <td style="padding-left:24px;color:var(--warning);">${a.code} — ${a.name}</td>
+        <td></td>
+        <td class="td-mono" style="color:var(--warning);">${fmtR(a.balance)}</td>
+      </tr>`;
+    });
+  }
+
+  // ── Ringkasan Ekuitas Akhir ──
+  const ekuitasAkhir = calcEkuitasAkhir();
+  rows += `<tr style="background:rgba(16,185,129,.08);border-top:3px double var(--text);">
+    <td colspan="4" style="padding:12px 14px;font-size:13px;font-weight:800;color:var(--accent2);">
+      ✅ Setelah penutupan: Ekuitas Akhir = ${fmtR(ekuitasAkhir)}
+      <span style="font-weight:400;font-size:11px;color:var(--text3);margin-left:8px;">
+        (Laba Bersih: ${labaBersih >= 0 ? '+' : ''}${fmtR(labaBersih)}${priveAcss.length ? ' | Prive: (' + fmtR(totalPrive) + ')' : ''})
+      </span>
+    </td>
+    <td></td>
+  </tr>`;
+
+  // Render ke halaman
+  const tbody = document.getElementById('jp-tbody');
+  if (tbody) tbody.innerHTML = rows;
+
+  // Status badge
+  const badge = document.getElementById('jp-status-badge');
+  if (badge) {
+    badge.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#065f46;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">
+      ✅ Jurnal penutup dihitung — ${new Date().toLocaleDateString('id-ID')} | Laba Bersih: ${labaBersih >= 0 ? '' : '('}${fmtR(Math.abs(labaBersih))}${labaBersih < 0 ? ')' : ''}
+    </span>`;
+  }
+
+  // Tampilkan tombol "Posting ke Jurnal Umum" setelah preview siap
+  const btnPosting = document.getElementById('btn-posting-jp');
+  if (btnPosting) btnPosting.style.display = 'inline-flex';
+
+  toast(`✅ Jurnal penutup berhasil dibuat! Laba Bersih: ${fmtR(labaBersih)}`, 'success', 5000);
+}
+
+// ══════════════════════════════════════════
+// POSTING JURNAL PENUTUP
+// Menyimpan jurnal penutup ke DB.journal_entries & DB.journal_details
+// agar saldo akun nominal (Pendapatan & Beban) benar-benar nol di buku besar.
+// Guard: cek apakah jurnal penutup untuk periode ini sudah pernah diposting.
+// ══════════════════════════════════════════
+function postingJurnalPenutup() {
+  if (!co()) { toast('Pilih perusahaan terlebih dahulu', 'error'); return; }
+
+  const co_data  = getCompany();
+  const tanggal  = co_data?.period_end || new Date().toISOString().split('T')[0];
+  const MARKER   = `[PENUTUP] ${tanggal}`;
+
+  // Guard: cegah double-posting pada periode yang sama
+  const sudahPosting = coFilter(DB.journal_entries).some(je => je.description && je.description.startsWith(MARKER));
+  if (sudahPosting) {
+    if (!confirm(`⚠️ Jurnal penutup untuk periode ${tanggal} sudah pernah diposting.\n\nPosting ulang akan membuat entri duplikat dan merusak saldo. Lanjutkan hanya jika Anda yakin ingin membatalkan yang lama lebih dulu.\n\nLanjutkan?`)) return;
+  }
+
+  // Kumpulkan akun & saldo (sama persis dengan buatJurnalPenutup)
+  const pendAcss  = getAccsByType('Pendapatan').filter(a => a.balance !== 0);
+  const bebanAcss = getAccsByType('Beban').filter(a => a.balance !== 0);
+  const ekAcss    = getAccsByType('Ekuitas');
+  const modalAcc  = ekAcss.find(a => a.normal_balance === 'Kredit' &&
+    (a.name.toLowerCase().includes('modal') || a.name.toLowerCase().includes('laba ditahan') ||
+     a.name.toLowerCase().includes('retained') || a.name.toLowerCase().includes('ekuitas')));
+  const priveAcss = ekAcss.filter(a => a.normal_balance === 'Debit' && a.balance !== 0);
+
+  if (!pendAcss.length && !bebanAcss.length) {
+    toast('Tidak ada akun Pendapatan/Beban dengan saldo yang perlu ditutup.', 'info'); return;
+  }
+  if (!modalAcc) {
+    toast('❌ Akun Modal/Ekuitas (saldo normal Kredit) tidak ditemukan di CoA.', 'error', 6000); return;
+  }
+
+  const totalPend  = pendAcss.reduce((s,a)  => s + a.balance, 0);
+  const totalBeban = bebanAcss.reduce((s,a) => s + a.balance, 0);
+  const labaBersih = totalPend - totalBeban;
+  const totalPrive = priveAcss.reduce((s,a) => s + a.balance, 0);
+
+  // ── Helper: buat satu journal entry + detail ──
+  const buatEntry = (desc, details) => {
+    const tid  = genId(), jeid = genId();
+    DB.transactions.push({
+      id: tid, company_id: co(), date: tanggal,
+      description: `${MARKER} — ${desc}`,
+      _source: 'jurnal_penutup'
+    });
+    DB.journal_entries.push({
+      id: jeid, company_id: co(), transaction_id: tid,
+      date: tanggal,
+      description: `${MARKER} — ${desc}`,
+      _source: 'jurnal_penutup'
+    });
+    details.forEach(d => {
+      DB.journal_details.push({
+        id: genId(), journal_id: jeid,
+        account_id: d.acc_id,
+        debit:  d.debit  || 0,
+        kredit: d.kredit || 0
+      });
+    });
+  };
+
+  // ── Langkah 1: Tutup Pendapatan (D) → Ikhtisar L/R (K) ──
+  if (pendAcss.length) {
+    const details = pendAcss.map(a => ({ acc_id: a.id, debit: a.balance, kredit: 0 }));
+    // Ikhtisar L/R: akun sementara — cari akun "Ikhtisar L/R" di CoA atau gunakan Modal sebagai proxy
+    const ikhtisarAcc = coFilter(DB.accounts).find(a =>
+      a.name.toLowerCase().includes('ikhtisar') || a.name.toLowerCase().includes('income summary'));
+    const kreditAcc = ikhtisarAcc || modalAcc;
+    details.push({ acc_id: kreditAcc.id, debit: 0, kredit: totalPend });
+    buatEntry('Menutup akun Pendapatan ke Ikhtisar L/R', details);
+  }
+
+  // ── Langkah 2: Tutup Beban (K) ← Ikhtisar L/R (D) ──
+  if (bebanAcss.length) {
+    const ikhtisarAcc = coFilter(DB.accounts).find(a =>
+      a.name.toLowerCase().includes('ikhtisar') || a.name.toLowerCase().includes('income summary'));
+    const debitAcc = ikhtisarAcc || modalAcc;
+    const details = [{ acc_id: debitAcc.id, debit: totalBeban, kredit: 0 }];
+    bebanAcss.forEach(a => details.push({ acc_id: a.id, debit: 0, kredit: a.balance }));
+    buatEntry('Menutup akun Beban ke Ikhtisar L/R', details);
+  }
+
+  // ── Langkah 3: Tutup Ikhtisar L/R → Modal ──
+  const ikhtisarAcc = coFilter(DB.accounts).find(a =>
+    a.name.toLowerCase().includes('ikhtisar') || a.name.toLowerCase().includes('income summary'));
+  if (ikhtisarAcc) {
+    // Jika ada akun Ikhtisar L/R eksplisit, tutup ke Modal
+    if (labaBersih >= 0) {
+      buatEntry('Menutup Ikhtisar L/R (Laba) ke Modal', [
+        { acc_id: ikhtisarAcc.id, debit: labaBersih, kredit: 0 },
+        { acc_id: modalAcc.id,    debit: 0, kredit: labaBersih }
+      ]);
+    } else {
+      buatEntry('Menutup Ikhtisar L/R (Rugi) ke Modal', [
+        { acc_id: modalAcc.id,    debit: Math.abs(labaBersih), kredit: 0 },
+        { acc_id: ikhtisarAcc.id, debit: 0, kredit: Math.abs(labaBersih) }
+      ]);
+    }
+  }
+  // (Jika tidak ada akun Ikhtisar L/R, Langkah 1 & 2 sudah langsung ke Modal)
+
+  // ── Langkah 4: Tutup Prive → Modal ──
+  if (priveAcss.length) {
+    const details = [{ acc_id: modalAcc.id, debit: totalPrive, kredit: 0 }];
+    priveAcss.forEach(a => details.push({ acc_id: a.id, debit: 0, kredit: a.balance }));
+    buatEntry('Menutup akun Prive/Dividen ke Modal', details);
+  }
+
+  autoSave();
+
+  // Update badge & sembunyikan tombol posting agar tidak diposting dua kali
+  const badge = document.getElementById('jp-status-badge');
+  if (badge) {
+    badge.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;
+      background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#065f46;
+      padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">
+      ✅ POSTED — ${new Date().toLocaleDateString('id-ID')} | Akun nominal sudah nol
+    </span>`;
+  }
+  const btnPosting = document.getElementById('btn-posting-jp');
+  if (btnPosting) btnPosting.style.display = 'none';
+
+  toast(`✅ Jurnal penutup berhasil diposting! ${pendAcss.length + bebanAcss.length} akun nominal ditutup ke Modal.`, 'success', 6000);
+}
 
 // ══════════════════════════════════════════
 // KOMPARASI MULTI-TAHUN
@@ -5592,16 +6475,11 @@ function deltaStr(curr, prev) {
 
 
 function getArusKasForCompany(coId) {
-  // SAP: 'RKUD', 'Kas di Bendahara' juga termasuk kas
-  const kasIds = DB.accounts.filter(a => a.company_id==coId && a.type==='Aset' && a.normal_balance==='Debit'
+  // FIX BUG KRITIS #3: gunakan _getKategoriArusKas yang menghormati field CoA
+  const allAccsCo = DB.accounts.filter(a => a.company_id==coId);
+  const kasIds = allAccsCo.filter(a => a.type==='Aset' && a.normal_balance==='Debit'
     && (a.name.toLowerCase().includes('kas') || a.name.toLowerCase().includes('bank')
         || a.name.toLowerCase().includes('rkud') || a.name.toLowerCase().includes('rekening kas'))).map(a=>a.id);
-  const investasiIds = DB.accounts.filter(a => a.company_id==coId && a.type==='Aset' && a.normal_balance==='Debit'
-    && !a.name.toLowerCase().includes('kas') && !a.name.toLowerCase().includes('bank')
-    && !a.name.toLowerCase().includes('piutang') && !a.name.toLowerCase().includes('persediaan')
-    && !a.name.toLowerCase().includes('perlengkapan')).map(a=>a.id);
-  const pendanaanIds = DB.accounts.filter(a => a.company_id==coId && (a.type==='Ekuitas'
-    || (a.type==='Kewajiban' && (a.name.toLowerCase().includes('pinjaman')||a.name.toLowerCase().includes('hutang bank')||a.name.toLowerCase().includes('hutang jangka')||a.name.toLowerCase().includes('obligasi'))))).map(a=>a.id);
   const JEids = DB.journal_entries.filter(je=>je.company_id==coId).map(je=>je.id);
   let kasOperasi=0, kasInvestasi=0, kasPendanaan=0;
   JEids.forEach(jeId=>{
@@ -5610,9 +6488,12 @@ function getArusKasForCompany(coId) {
     if (!kasLines.length) return;
     const netKas = kasLines.reduce((s,d)=>s+d.debit-d.kredit,0);
     if (!netKas) return;
-    const counterIds = details.filter(d=>!kasIds.includes(d.account_id)).map(d=>d.account_id);
-    if (counterIds.some(id=>investasiIds.includes(id))) kasInvestasi+=netKas;
-    else if (counterIds.some(id=>pendanaanIds.includes(id))) kasPendanaan+=netKas;
+    const counterAccs = details.filter(d=>!kasIds.includes(d.account_id))
+      .map(d=>allAccsCo.find(a=>a.id===d.account_id)).filter(Boolean);
+    const adaInvestasi = counterAccs.some(a=>_getKategoriArusKas(a)==='investasi');
+    const adaPendanaan = counterAccs.some(a=>_getKategoriArusKas(a)==='pendanaan');
+    if (adaInvestasi) kasInvestasi+=netKas;
+    else if (adaPendanaan) kasPendanaan+=netKas;
     else kasOperasi+=netKas;
   });
   return { kasOperasi, kasInvestasi, kasPendanaan, kasAkhir: kasOperasi+kasInvestasi+kasPendanaan };
@@ -5897,74 +6778,23 @@ function renderKomparasiPage() {
   renderKomparasi();
 }
 
-function buatJurnalPenutup() {
-  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
-
-  // ── IDEMPOTENCY: cek apakah jurnal penutup untuk periode ini sudah dibuat ──
-  if (!DB.jurnal_penutup) DB.jurnal_penutup = {};
-  const coId = co();
-  const coData = getCompany();
-  const periodeKey = `${coId}_${coData?.period_end || 'noperiod'}`;
-
-  if (DB.jurnal_penutup[periodeKey]) {
-    if (!confirm('⚠️ Jurnal penutup untuk periode ini sudah dibuat.\n\nBuat ulang akan MENIMPA jurnal penutup sebelumnya.\n\nLanjutkan?')) return;
-  }
-
-  const revenues = getAccsByType('Pendapatan');
-  const expenses = getAccsByType('Beban');
-  const totRev = revenues.reduce((s,a)=>s+a.balance,0);
-  const totExp = expenses.reduce((s,a)=>s+a.balance,0);
-  const laba = totRev - totExp;
-  const today = new Date().toISOString().split('T')[0];
-  const labaAcc = coFilter(DB.accounts).find(a=>a.name.includes('Laba'))||{name:'Ikhtisar Laba Rugi'};
-
-  // ── Simpan ke DB ──
-  const entries = [];
-  revenues.forEach(a=>{
-    entries.push({jenis:'pendapatan', akun:a.name, debit:a.balance, kredit:0, keterangan:'Menutup akun pendapatan', tanggal:today});
-  });
-  entries.push({jenis:'pendapatan_total', akun:'Ikhtisar Laba Rugi', debit:0, kredit:totRev, keterangan:'', tanggal:today});
-  expenses.forEach(a=>{
-    entries.push({jenis:'beban', akun:'Ikhtisar Laba Rugi', debit:a.balance, kredit:0, keterangan:'Menutup akun beban', tanggal:today});
-  });
-  entries.push({jenis:'beban_total', akun:labaAcc.name, debit:0, kredit:totExp, keterangan:'', tanggal:today});
-  if (laba>0) {
-    entries.push({jenis:'laba_dr', akun:'Ikhtisar Laba Rugi', debit:laba, kredit:0, keterangan:'Menutup ikhtisar ke modal', tanggal:today});
-    entries.push({jenis:'laba_kr', akun:'Modal', debit:0, kredit:laba, keterangan:'', tanggal:today});
-  }
-
-  DB.jurnal_penutup[periodeKey] = { tanggal: today, entries, laba, totRev, totExp };
-  autoSave();
-
-  renderJurnalPenutupFromDB();
-  toast('✅ Jurnal penutup dibuat & disimpan','success');
-}
-
+// renderJurnalPenutup: refresh tampilan dari DB.journal_entries bertanda _source='jurnal_penutup'
 function renderJurnalPenutupFromDB() {
-  if (!DB.jurnal_penutup) DB.jurnal_penutup = {};
-  const coId = co();
-  const coData = getCompany();
-  const periodeKey = `${coId}_${coData?.period_end || 'noperiod'}`;
-  const saved = DB.jurnal_penutup[periodeKey];
+  const tanggal = getCompany()?.period_end || '';
+  const MARKER  = `[PENUTUP] ${tanggal}`;
+  const posted  = coFilter(DB.journal_entries).some(je => je.description?.startsWith(MARKER));
   const badgeEl = document.getElementById('jp-status-badge');
 
-  if (!saved) {
-    if (badgeEl) badgeEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.25);">⭕ Belum dibuat untuk periode ini</span>`;
-    document.getElementById('jp-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text3);">Belum ada jurnal penutup. Klik "Buat Jurnal Penutup".</td></tr>';
+  if (!posted) {
+    if (badgeEl) badgeEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.25);">⭕ Belum diposting untuk periode ini</span>`;
+    const btn = document.getElementById('btn-posting-jp');
+    // Jangan sembunyikan tombol — user mungkin baru selesai preview
     return;
   }
 
-  if (badgeEl) badgeEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(16,185,129,.1);color:var(--accent2);border:1px solid rgba(16,185,129,.25);">✅ Sudah dibuat — ${saved.tanggal} · Laba ${saved.laba>=0?'':'Rugi '}: ${fmtC(Math.abs(saved.laba))}</span>`;
-
-  const rows = saved.entries.map(e => {
-    const isLaba = e.jenis === 'laba_dr' || e.jenis === 'laba_kr';
-    const style = isLaba ? ' style="background:rgba(16,185,129,.05)"' : '';
-    const akun = (e.jenis === 'pendapatan_total' || e.jenis === 'beban' || e.jenis === 'laba_kr')
-      ? `<td style="padding-left:20px;color:var(--text2);">${e.akun}</td>`
-      : `<td style="color:var(--text2);">${e.akun}</td>`;
-    return `<tr${style}><td>${e.keterangan?e.tanggal:''}</td><td>${e.keterangan||''}</td>${akun}<td class="td-mono">${e.debit?fmtC(e.debit):''}</td><td class="td-mono">${e.kredit?fmtC(e.kredit):''}</td></tr>`;
-  }).join('');
-  document.getElementById('jp-tbody').innerHTML = rows || '<tr><td colspan="5" style="text-align:center;padding:20px;">Tidak ada data</td></tr>';
+  if (badgeEl) badgeEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(16,185,129,.1);color:var(--accent2);border:1px solid rgba(16,185,129,.25);">✅ POSTED — ${tanggal}</span>`;
+  const btn = document.getElementById('btn-posting-jp');
+  if (btn) btn.style.display = 'none';
 }
 
 function renderJurnalPenutup() { renderJurnalPenutupFromDB(); }
@@ -5972,79 +6802,6 @@ function renderJurnalPenutup() { renderJurnalPenutupFromDB(); }
 // ══════════════════════════════════════════
 // JURNAL PEMBALIK
 // ══════════════════════════════════════════
-function buatJurnalPembalik() {
-  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
-  const pens = coFilter(DB.penyesuaian);
-  if (!pens.length) { toast('Tidak ada jurnal penyesuaian untuk dibalik','error'); return; }
-
-  // ── IDEMPOTENCY ──
-  if (!DB.jurnal_pembalik) DB.jurnal_pembalik = {};
-  const coId = co();
-  const coData = getCompany();
-  const periodeKey = `${coId}_${coData?.period_end || 'noperiod'}`;
-
-  if (DB.jurnal_pembalik[periodeKey]) {
-    if (!confirm('⚠️ Jurnal pembalik untuk periode ini sudah dibuat.\n\nBuat ulang akan MENIMPA jurnal pembalik sebelumnya.\n\nLanjutkan?')) return;
-  }
-
-  const nextYear = new Date(); nextYear.setFullYear(nextYear.getFullYear()+1); nextYear.setMonth(0); nextYear.setDate(1);
-  const nextDate = nextYear.toISOString().split('T')[0];
-
-  // ── Simpan ke DB ──
-  const entries = [];
-  pens.forEach(p=>{
-    const da = DB.accounts.find(a=>a.id==p.debit_acc);
-    const ka = DB.accounts.find(a=>a.id==p.kredit_acc);
-    entries.push({
-      tanggal: nextDate,
-      keterangan: `[Pembalik] ${p.description}`,
-      debit_akun: ka?.name||'—',
-      kredit_akun: da?.name||'—',
-      jumlah: p.amount
-    });
-  });
-
-  DB.jurnal_pembalik[periodeKey] = { tanggal: nextDate, entries };
-  autoSave();
-
-  renderJurnalPembalikFromDB();
-  toast('✅ Jurnal pembalik dibuat & disimpan','success');
-}
-
-function renderJurnalPembalikFromDB() {
-  if (!DB.jurnal_pembalik) DB.jurnal_pembalik = {};
-  const coId = co();
-  const coData = getCompany();
-  const periodeKey = `${coId}_${coData?.period_end || 'noperiod'}`;
-  const saved = DB.jurnal_pembalik[periodeKey];
-  const badgeEl = document.getElementById('jpb-status-badge');
-
-  if (!saved) {
-    if (badgeEl) badgeEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.25);">⭕ Belum dibuat untuk periode ini</span>`;
-    document.getElementById('jpb-tbody').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text3);">Belum ada jurnal pembalik. Klik "Buat Jurnal Pembalik".</td></tr>';
-    return;
-  }
-
-  const entryCount = saved.entries?.length || 0;
-  if (badgeEl) badgeEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(16,185,129,.1);color:var(--accent2);border:1px solid rgba(16,185,129,.25);">✅ Sudah dibuat — efektif ${saved.tanggal} · ${entryCount} entri pembalik</span>`;
-
-  const rows = (saved.entries || []).map(e => `
-    <tr>
-      <td>${e.tanggal}</td><td>${e.keterangan}</td>
-      <td>${e.debit_akun}</td>
-      <td class="td-mono">${fmtC(e.jumlah)}</td><td></td>
-    </tr>
-    <tr>
-      <td></td><td></td>
-      <td style="padding-left:20px;color:var(--text2);">${e.kredit_akun}</td>
-      <td></td><td class="td-mono">${fmtC(e.jumlah)}</td>
-    </tr>
-  `).join('');
-  document.getElementById('jpb-tbody').innerHTML = rows || '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text3);">Tidak ada data</td></tr>';
-}
-
-function renderJurnalPembalik() { renderJurnalPembalikFromDB(); }
-
 // ══════════════════════════════════════════
 // DASHBOARD
 // ══════════════════════════════════════════
@@ -6222,12 +6979,14 @@ function importJSON(input) {
       return;
     }
     // 5. Pastikan field opsional ada (hindari crash)
-    const optionalArrays = ['penyesuaian', 'hutang', 'piutang', 'persediaan', 'perlengkapan', 'aset_tetap', 'lra_data'];
+    const optionalArrays = ['penyesuaian', 'hutang', 'piutang', 'persediaan', 'perlengkapan', 'aset_tetap', 'lra_data', 'penyusutan_log', 'audit_log'];
     optionalArrays.forEach(f => { if (!Array.isArray(data[f])) data[f] = []; });
+    if (!data.locked_periods) data.locked_periods = {};
     if (typeof data.lsal_data !== 'object' || Array.isArray(data.lsal_data)) data.lsal_data = {};
     if (typeof data.lsal_saldo_awal !== 'object' || Array.isArray(data.lsal_saldo_awal)) data.lsal_saldo_awal = {};
     if (typeof data.jurnal_penutup !== 'object' || Array.isArray(data.jurnal_penutup)) data.jurnal_penutup = {};
-    if (typeof data.jurnal_pembalik !== 'object' || Array.isArray(data.jurnal_pembalik)) data.jurnal_pembalik = {};
+    // Migrasi data lama: hapus jurnal_pembalik jika ada (fitur dihapus)
+    if (data.jurnal_pembalik) delete data.jurnal_pembalik;
     if (!data._id_counter || typeof data._id_counter !== 'number') data._id_counter = 1000;
 
     if (!confirm(`Import akan mengganti semua data yang ada.\n\nFile berisi: ${data.companies.length} perusahaan, ${data.accounts.length} akun, ${data.transactions.length} transaksi.\n\nLanjutkan?`)) {
@@ -6247,7 +7006,7 @@ function importJSON(input) {
 async function clearAllData() {
   if (!confirm('HAPUS SEMUA DATA? Tindakan ini tidak bisa dibatalkan!')) return;
   if (!confirm('Yakin? Semua perusahaan dan transaksi akan hilang!')) return;
-  DB = {companies:[],accounts:[],transactions:[],journal_entries:[],journal_details:[],penyesuaian:[],hutang:[],piutang:[],persediaan:[],perlengkapan:[],aset_tetap:[],lra_data:[],lsal_saldo_awal:{},lsal_data:{},jurnal_penutup:{},jurnal_pembalik:{},current_company_id:null,_id_counter:1};
+  DB = {companies:[],accounts:[],transactions:[],journal_entries:[],journal_details:[],penyesuaian:[],hutang:[],piutang:[],persediaan:[],perlengkapan:[],aset_tetap:[],penyusutan_log:[],audit_log:[],locked_periods:{},lra_data:[],lsal_saldo_awal:{},lsal_data:{},jurnal_penutup:{},current_company_id:null,_id_counter:1};
   try { await clearIDB(); } catch(_) {}
   localStorage.removeItem(DB_KEY); // bersihkan juga localStorage lama
   updateHeader(); navigate('companies');
@@ -6448,7 +7207,8 @@ function printReport(type) {
       const { labaBersih, totalPenyusutan, perubahanAsetLancar, perubahanKewLancar,
               totalPerubahanMK, kasOperasi: ko, kasInvestasi: ki, kasPendanaan: kp
             } = calcArusKasTidakLangsung();
-      const kasAkhirAK = ko + ki + kp;
+      const _kasAwal3 = calcKasAwal();
+      const kasAkhirAK = _kasAwal3 + ko + ki + kp;
       const kasNeraca  = calcKasAkhir();
 
       const rowsAL = perubahanAsetLancar.map(x =>
@@ -6506,7 +7266,8 @@ function printReport(type) {
     } else {
       // Metode Langsung
       const { kasOperasi: ko, kasInvestasi: ki, kasPendanaan: kp } = calcArusKas();
-      const kasAkhirAK = ko + ki + kp;
+      const _kasAwal4 = calcKasAwal();
+      const kasAkhirAK = _kasAwal4 + ko + ki + kp;
       const kasNeraca  = calcKasAkhir();
       const buildRows = (kategori) => {
         const kasIds = coFilter(DB.accounts).filter(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&(a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank'))).map(a=>a.id);
@@ -6623,10 +7384,10 @@ function printReport(type) {
     const silpa   = (totRP-totRB)+(totRPen-totRKel);
     const lsalD   = DB.lsal_data?.[co()] || {};
     const salAwal = lsalD.sal_awal||0, penggunaan=lsalD.penggunaan_sal||0, koreksi=lsalD.koreksi||0;
-    const salAkhir= salAwal+penggunaan+silpa-koreksi;
+    const salAkhir= salAwal-penggunaan+silpa-koreksi;
     body = `<table><thead><tr><th>Uraian</th><th style="text-align:right">Jumlah (Rp)</th></tr></thead><tbody>
       <tr><td>Saldo Anggaran Lebih (SAL) Awal Periode <em style="font-size:10px;color:#64748b">(SiLPA kumulatif tahun-tahun lalu)</em></td><td class="num">${fmtC(salAwal)}</td></tr>
-      <tr><td style="padding-left:20px">(+) Penggunaan SAL sebagai Penerimaan Pembiayaan</td><td class="num">${fmtC(penggunaan)}</td></tr>
+      <tr><td style="padding-left:20px">(\u2212) Penggunaan SAL sebagai Penerimaan Pembiayaan</td><td class="num">(${fmtC(penggunaan)})</td></tr>
       <tr><td style="padding-left:20px">(+) SiLPA/(SiKPA) Tahun Berjalan (dari LRA)</td><td class="num" style="color:${silpa>=0?'#15803d':'#dc2626'}">${silpa<0?'(':'' }${fmtC(Math.abs(silpa))}${silpa<0?')':''}</td></tr>
       ${koreksi?`<tr><td style="padding-left:20px">(\u2212) Koreksi Kesalahan SAL</td><td class="num">(${fmtC(koreksi)})</td></tr>`:''}
       <tr class="total-row"><td><strong>SALDO ANGGARAN LEBIH (SAL) AKHIR PERIODE</strong></td><td class="num" style="color:${salAkhir>=0?'#15803d':'#dc2626'}"><strong>${salAkhir<0?'(':'' }${fmtC(Math.abs(salAkhir))}${salAkhir<0?')':''}</strong></td></tr>
@@ -6815,8 +7576,8 @@ function exportExcel(type) {
           first?'JU-'+String(je.id).padStart(4,'0'):'',
           first?je.description:'',
           acc?`${acc.code} - ${acc.name}`:'—',
-          jd.debit||'',
-          jd.kredit||''
+          jd.debit  || 0,
+          jd.kredit || 0
         ]);
         first=false;
       });
@@ -6835,7 +7596,7 @@ function exportExcel(type) {
       const d = isD ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
       const k = !isD ? (bal>0 ? bal : 0) : (bal<0 ? Math.abs(bal) : 0);
       totD+=d; totK+=k;
-      rows.push([a.code, a.name, d||'', k||'']);
+      rows.push([a.code, a.name, d||0, k||0]);
     });
     rows.push(['','TOTAL', totD, totK]);
     addSheet('Neraca Saldo', rows);
@@ -6945,14 +7706,14 @@ function exportExcel(type) {
     const totRPen = lraData.filter(d=>d.kategori==='penerimaan_pembiayaan').reduce((s,d)=>s+d.realisasi,0);
     const totRKel = lraData.filter(d=>d.kategori==='pengeluaran_pembiayaan').reduce((s,d)=>s+d.realisasi,0);
     const silpa   = (totRP-totRB)+(totRPen-totRKel);
-    const salAkhir= salAwal+penggunaan+silpa-koreksi;
+    const salAkhir= salAwal-penggunaan+silpa-koreksi;
     const rows = [
       ['LSAL — Saldo Anggaran Lebih (PP 71/2010)',''],
       ['Catatan: SAL = akumulasi SiLPA lintas tahun, bukan hanya tahun berjalan',''],
       [''],
       ['Uraian','Jumlah (Rp)'],
       ['SAL Awal Periode (SiLPA kumulatif tahun-tahun lalu)', salAwal],
-      ['(+) Penggunaan SAL sebagai Penerimaan Pembiayaan', penggunaan],
+      ['(-) Penggunaan SAL sebagai Penerimaan Pembiayaan', -penggunaan],
       ['(+) SiLPA/(SiKPA) Tahun Berjalan (dari LRA)', silpa],
     ];
     if (koreksi) rows.push(['(-) Koreksi Kesalahan SAL', -koreksi]);
@@ -7740,10 +8501,9 @@ let __planConfig = {
   is_expired: false,
   max_companies: 1,
   export_enabled: false,
-  print_full: false,         // false = hanya laporan dasar
+  print_full: false,
   jurnal_penutup_enabled: false,
-  jurnal_pembalik_enabled: false,
-  aset_saldo_menurun: false, // metode declining balance
+  aset_saldo_menurun: false,
   komparasi_enabled: false,
   lra_lsal_enabled: false,
   locked_modules: ['komparasi','lra','lsal'],
@@ -7758,33 +8518,32 @@ const PLAN_LABELS = {
   enterprise: { label: 'Enterprise', color: '#10b981', bg: 'rgba(16,185,129,.12)'  },
 };
 
-// Definisi pembatasan per paket — digunakan server DAN lokal sebagai fallback
 const PLAN_DEFAULTS = {
   trial: {
     plan: 'trial', plan_label: 'Trial',
     max_companies: 1, export_enabled: false, print_full: false,
-    jurnal_penutup_enabled: false, jurnal_pembalik_enabled: false,
+    jurnal_penutup_enabled: false,
     aset_saldo_menurun: false, komparasi_enabled: false, lra_lsal_enabled: false,
     locked_modules: ['komparasi','lra','lsal'], max_seats: 1
   },
   starter: {
     plan: 'starter', plan_label: 'Starter',
     max_companies: 3, export_enabled: true, print_full: true,
-    jurnal_penutup_enabled: true, jurnal_pembalik_enabled: true,
+    jurnal_penutup_enabled: true,
     aset_saldo_menurun: false, komparasi_enabled: false, lra_lsal_enabled: false,
     locked_modules: ['komparasi','lra','lsal'], max_seats: 1
   },
   pro: {
     plan: 'pro', plan_label: 'Pro',
     max_companies: 10, export_enabled: true, print_full: true,
-    jurnal_penutup_enabled: true, jurnal_pembalik_enabled: true,
+    jurnal_penutup_enabled: true,
     aset_saldo_menurun: true, komparasi_enabled: true, lra_lsal_enabled: true,
     locked_modules: [], max_seats: 1
   },
   enterprise: {
     plan: 'enterprise', plan_label: 'Enterprise',
     max_companies: 999, export_enabled: true, print_full: true,
-    jurnal_penutup_enabled: true, jurnal_pembalik_enabled: true,
+    jurnal_penutup_enabled: true,
     aset_saldo_menurun: true, komparasi_enabled: true, lra_lsal_enabled: true,
     locked_modules: [], max_seats: 99
   }
@@ -7798,7 +8557,7 @@ async function fetchPlanConfig(licKey) {
     const resp = await fetch(LIC_SERVER + '/api/plan-config', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key: licKey, hwid: getHWID(), app: 'zequi-v4' }),
+      body: JSON.stringify({ key: licKey, hwid: getHWID(), app: 'zequi-v1' }),
       signal: ctrl.signal
     });
     clearTimeout(t);
@@ -7841,7 +8600,6 @@ function canAccess(feature) {
     export:           __planConfig.export_enabled,
     print_full:       __planConfig.print_full,
     'jurnal-penutup': __planConfig.jurnal_penutup_enabled,
-    'jurnal-pembalik':__planConfig.jurnal_pembalik_enabled,
     aset_saldo_menurun: __planConfig.aset_saldo_menurun,
     komparasi:        __planConfig.komparasi_enabled,
     lra:              __planConfig.lra_lsal_enabled,
@@ -7857,7 +8615,6 @@ function showUpgradeModal(feature) {
     export:           'Export Excel & Multi-Sheet',
     print_full:       'Print Laporan Lengkap',
     'jurnal-penutup': 'Jurnal Penutup',
-    'jurnal-pembalik':'Jurnal Pembalik',
     aset_saldo_menurun:'Metode Saldo Menurun (Aset Tetap)',
     komparasi:        'Komparasi Multi-Tahun',
     lra:              'Laporan Realisasi Anggaran (LRA)',
@@ -7865,7 +8622,7 @@ function showUpgradeModal(feature) {
     companies:        'Tambah Perusahaan (melebihi batas paket)',
   };
   const featureLabel = labels[feature] || feature;
-  const planNeeded = ['export','print_full','jurnal-penutup','jurnal-pembalik'].includes(feature) ? 'Starter' :
+  const planNeeded = ['export','print_full','jurnal-penutup'].includes(feature) ? 'Starter' :
                      ['aset_saldo_menurun'].includes(feature) ? 'Pro' :
                      ['komparasi','lra','lsal'].includes(feature) ? 'Pro' : 'Pro';
   document.getElementById('upgrade-modal-feature').textContent = featureLabel;
@@ -7908,21 +8665,13 @@ function applyPlanRestrictions() {
     }
   });
 
-  // ── 4. Jurnal Penutup & Pembalik — kunci nav jika tidak diizinkan
+  // ── 4. Jurnal Penutup — kunci nav jika tidak diizinkan
   if (!cfg.jurnal_penutup_enabled) {
     const el = document.querySelector(`.nav-item[onclick="navigate('jurnal-penutup')"]`);
     if (el && !el.classList.contains('nav-locked')) {
       el.innerHTML = el.innerHTML + ' <span class="plan-lock">🔒</span>';
       el.classList.add('nav-locked');
       el._lockedFeature = 'jurnal-penutup';
-    }
-  }
-  if (!cfg.jurnal_pembalik_enabled) {
-    const el = document.querySelector(`.nav-item[onclick="navigate('jurnal-pembalik')"]`);
-    if (el && !el.classList.contains('nav-locked')) {
-      el.innerHTML = el.innerHTML + ' <span class="plan-lock">🔒</span>';
-      el.classList.add('nav-locked');
-      el._lockedFeature = 'jurnal-pembalik';
     }
   }
 
@@ -8099,7 +8848,7 @@ async function licActivate() {
     var resp = await fetch(LIC_SERVER + '/api/activate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key: key, hwid: getHWID(), app: 'zequi-v4' }),
+      body: JSON.stringify({ key: key, hwid: getHWID(), app: 'zequi-v1' }),
       signal: controller.signal
     });
     clearTimeout(fetchTimeout);
@@ -8177,6 +8926,9 @@ async function licUnlock(lic) {
   if (!DB.companies.length) {
     setTimeout(()=>{ toast('Selamat datang! Mulai dengan menambahkan perusahaan.','info',5000); navigate('companies'); },600);
   }
+
+  // ── Saran 4: Reminder penyusutan otomatis ──
+  setTimeout(cekReminderPenyusutan, 1500);
 }
 
 
@@ -8202,7 +8954,7 @@ async function licUnlock(lic) {
     const resp = await fetch(LIC_SERVER + '/api/activate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key: lic.key, hwid: getHWID(), app: 'zequi-v4' }),
+      body: JSON.stringify({ key: lic.key, hwid: getHWID(), app: 'zequi-v1' }),
       signal: ctrl2.signal
     });
     clearTimeout(t2);
@@ -9154,11 +9906,11 @@ function renderLSAL() {
       <!-- Penggunaan SAL -->
       <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Penambah / (Pengurang):</div>
 
-      <div class="report-row indent" style="color:var(--primary-light);">
-        <span>(+) Penggunaan SAL sebagai Penerimaan Pembiayaan
-          <small style="display:block;color:var(--text3);font-weight:400;">(SAL yang dianggarkan & direalisasi sebagai penerimaan pembiayaan tahun ini)</small>
+      <div class="report-row indent" style="color:var(--danger);">
+        <span>(−) Penggunaan SAL sebagai Penerimaan Pembiayaan
+          <small style="display:block;color:var(--text3);font-weight:400;">(SAL yang dianggarkan &amp; direalisasi sebagai penerimaan pembiayaan tahun ini — mengurangi SAL)</small>
         </span>
-        <span class="report-amount" style="color:var(--primary-light);">${fmtC(penggunaanSal)}</span>
+        <span class="report-amount" style="color:var(--danger);">(${fmtC(penggunaanSal)})</span>
       </div>
 
       <!-- SiLPA Tahun Berjalan dari LRA -->
@@ -9224,8 +9976,8 @@ function renderLSAL() {
 
       <div style="margin-top:10px;padding:12px 16px;background:rgba(37,99,235,.07);border-radius:var(--radius2);border-left:4px solid var(--primary-lighter);font-size:11px;color:var(--text2);line-height:1.9;">
         <strong>📌 Rumus LSAL (PP 71/2010):</strong><br>
-        <span style="font-family:var(--mono);">SAL Akhir = SAL Awal + Penggunaan SAL + SiLPA/(SiKPA) − Koreksi</span><br>
-        <span style="font-family:var(--mono);">SAL Akhir = ${fmtC(salAwal)} + ${fmtC(penggunaanSal)} + ${silpaTahunIni<0?'(':''}${fmtC(Math.abs(silpaTahunIni))}${silpaTahunIni<0?')':''} − ${fmtC(koreksi)} = <strong>${salAkhir<0?'(':''}${fmtC(Math.abs(salAkhir))}${salAkhir<0?')':''}</strong></span>
+        <span style="font-family:var(--mono);">SAL Akhir = SAL Awal − Penggunaan SAL + SiLPA/(SiKPA) − Koreksi</span><br>
+        <span style="font-family:var(--mono);">SAL Akhir = ${fmtC(salAwal)} − ${fmtC(penggunaanSal)} + ${silpaTahunIni<0?'(':''}${fmtC(Math.abs(silpaTahunIni))}${silpaTahunIni<0?')':''} − ${fmtC(koreksi)} = <strong>${salAkhir<0?'(':''}${fmtC(Math.abs(salAkhir))}${salAkhir<0?')':''}</strong></span>
       </div>
     </div>
   `;
