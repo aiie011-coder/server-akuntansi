@@ -558,7 +558,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
 </div> <!-- Bayar Modal -->
 <div class="modal-overlay" id="modal-bayar"> <div class="modal" style="max-width:400px;"> <div class="modal-header"><div class="modal-title" id="bayar-title">Bayar Hutang</div><button class="modal-close" onclick="closeModal('modal-bayar')"></button></div> <div class="modal-body"> <input type="hidden" id="bayar-type" value="hutang"> <input type="hidden" id="bayar-id" value=""> <div id="bayar-info"></div> <div class="form-group"> <label>Jumlah Pembayaran (Rp) *</label> <input class="form-control" type="number" id="bayar-amount" min="0" placeholder="Masukkan jumlah..." required> <small style="font-size:11px;color:var(--text3);">Tidak boleh melebihi sisa tagihan</small> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-bayar')">Batal</button> <button class="btn btn-success" onclick="processBayar()">Bayar</button> </div> </div>
 </div> <!-- Modal Jual Persediaan -->
-<div class="modal-overlay" id="modal-jual-persediaan"> <div class="modal" style="max-width:420px;"> <div class="modal-header"><div class="modal-title">Jual Persediaan</div><button class="modal-close" onclick="closeModal('modal-jual-persediaan')"></button></div> <div class="modal-body"> <input type="hidden" id="jual-pers-id"> <div class="form-group" style="margin-bottom:12px;"><label>Jumlah Dijual *</label><input class="form-control" type="number" id="jual-pers-qty" min="1" placeholder="1"></div> <div class="form-group" style="margin-bottom:12px;"><label>Harga Jual per Unit (Rp) *</label><input class="form-control" type="number" id="jual-pers-harga" min="0"></div> <div class="form-group" style="margin-bottom:12px;"><label>Metode Penjualan</label> <select class="form-control" id="jual-pers-metode"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Piutang Usaha)</option> </select> </div> <div class="form-group"><label>Nama Pembeli</label><input class="form-control" id="jual-pers-pembeli" placeholder="Opsional"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-jual-persediaan')">Batal</button> <button class="btn btn-success" onclick="processJualPersediaan()">Jual & Catat Jurnal</button> </div> </div>
+<div class="modal-overlay" id="modal-jual-persediaan"> <div class="modal" style="max-width:480px;"> <div class="modal-header"><div class="modal-title">🛒 Jual Persediaan</div><button class="modal-close" onclick="closeModal('modal-jual-persediaan')"></button></div> <div class="modal-body"> <input type="hidden" id="jual-pers-id"> <!-- Info Barang --> <div id="jual-pers-info" style="padding:10px 14px;background:rgba(37,99,235,.07);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.7;"></div> <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;"> <div class="form-group"><label>Jumlah Dijual *</label><input class="form-control" type="number" id="jual-pers-qty" min="1" placeholder="1" oninput="updateJualPreview()"></div> <div class="form-group"><label>Harga Jual per Unit (Rp) *</label><input class="form-control" type="number" id="jual-pers-harga" min="0" oninput="updateJualPreview()"></div> <div class="form-group"><label>Tanggal Penjualan</label><input class="form-control" type="date" id="jual-pers-tanggal"></div> <div class="form-group"><label>Metode Penjualan</label> <select class="form-control" id="jual-pers-metode" onchange="updateJualPreview()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Piutang Usaha)</option> </select> </div> </div> <div class="form-group" style="margin-top:4px;"><label>Nama Pembeli</label><input class="form-control" id="jual-pers-pembeli" placeholder="Opsional"></div> <!-- HPP Preview Box --> <div id="jual-hpp-preview" style="margin-top:14px;padding:12px 14px;background:rgba(16,185,129,.07);border-radius:8px;border:1px solid rgba(16,185,129,.25);font-size:12px;display:none;"> <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--accent2);margin-bottom:8px;">📊 Simulasi Jurnal Otomatis</div> <div id="jual-hpp-jurnal" style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);"></div> <div id="jual-hpp-warning" style="margin-top:8px;font-size:11px;color:var(--warning);display:none;"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-jual-persediaan')">Batal</button> <button class="btn btn-success" onclick="processJualPersediaan()">✅ Jual & Catat Jurnal</button> </div> </div>
 </div> <!-- ═══ UPGRADE MODAL ═══ -->
 <div class="modal-overlay" id="modal-upgrade"> <div class="modal" style="max-width:520px;"> <div class="modal-header"> <div class="modal-title">Upgrade Paket</div> <button class="modal-close" onclick="closeModal('modal-upgrade')"></button> </div> <div class="upgrade-modal-body"> <div class="upgrade-icon"></div> <div class="upgrade-title">Fitur Ini Memerlukan Upgrade</div> <div class="upgrade-desc"> <strong id="upgrade-modal-feature">Fitur Premium</strong>tidak tersedia di paket Anda saat ini.<br>Upgrade ke paket <strong id="upgrade-modal-plan">Pro</strong>untuk mengakses fitur ini dan banyak fitur lainnya.
       </div> <div class="current-plan-badge">Paket aktif Anda: <span id="upgrade-modal-current">Trial</span></div> <div class="upgrade-plans"> <div class="upgrade-plan-card"> <div class="plan-name" style="color:#3b82f6;">Starter</div> <div class="plan-price">Untuk UMKM &amp; pemula</div> <div class="plan-features"> 3 perusahaan<br>Export Excel<br>Print lengkap<br>Jurnal Penutup<br>Jurnal Pembalik
@@ -2959,7 +2959,59 @@ function openJualPersediaan(id) {
   document.getElementById('jual-pers-harga').value=p.harga_satuan||0;
   document.getElementById('jual-pers-metode').value='tunai';
   document.getElementById('jual-pers-pembeli').value='';
+  document.getElementById('jual-pers-tanggal').value=new Date().toISOString().split('T')[0];
+  // Tampilkan info barang
+  const infoEl=document.getElementById('jual-pers-info');
+  if(infoEl) infoEl.innerHTML=`<strong>${p.nama_barang}</strong> &nbsp;|&nbsp; Stok tersedia: <strong>${p.jumlah} unit</strong> &nbsp;|&nbsp; HPP/unit: <strong>${fmtC(p.harga_satuan)}</strong>`;
   openModal('modal-jual-persediaan');
+  updateJualPreview();
+}
+
+function updateJualPreview() {
+  const id=parseInt(document.getElementById('jual-pers-id').value);
+  const p=DB.persediaan.find(x=>x.id==id);
+  if(!p) return;
+  const qty=parseFloat(document.getElementById('jual-pers-qty').value)||0;
+  const hargaJual=parseFloat(document.getElementById('jual-pers-harga').value)||0;
+  const previewBox=document.getElementById('jual-hpp-preview');
+  const jurnalEl=document.getElementById('jual-hpp-jurnal');
+  const warnEl=document.getElementById('jual-hpp-warning');
+  if(!previewBox||!jurnalEl) return;
+  if(!qty||!hargaJual){previewBox.style.display='none';return;}
+  const hpp=p.harga_satuan*qty;
+  const penjualan=hargaJual*qty;
+  const laba=penjualan-hpp;
+  const accs=coFilter(DB.accounts);
+  const kasAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
+  const piuAcc=accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('piutang'));
+  const pendAcc=accs.find(a=>a.type==='Pendapatan');
+  const hppAcc=accs.find(a=>a.type==='Beban'&&(a.name.toLowerCase().includes('hpp')||a.name.toLowerCase().includes('harga pokok')||a.name.toLowerCase().includes('cost of goods')));
+  const persAcc=accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('persediaan'));
+  const metode=document.getElementById('jual-pers-metode').value;
+  const debitAcc=metode==='tunai'?kasAcc:piuAcc;
+  let html='';
+  // Jurnal 1: Penjualan
+  const j1ok=debitAcc&&pendAcc;
+  html+=`<div style="margin-bottom:6px;"><strong style="color:var(--text);font-size:11px;">Jurnal 1 — Penjualan</strong></div>`;
+  html+=`<div style="display:flex;justify-content:space-between;${j1ok?'':'opacity:.5'}"><span>${j1ok?(debitAcc.name):'[Akun Kas/Piutang]'} (D)</span><span style="color:var(--primary-light);">${fmtC(penjualan)}</span></div>`;
+  html+=`<div style="display:flex;justify-content:space-between;margin-bottom:8px;${j1ok?'':'opacity:.5'}"><span style="padding-left:16px;">${j1ok?(pendAcc.name):'[Akun Pendapatan]'} (K)</span><span style="color:var(--accent2);">${fmtC(penjualan)}</span></div>`;
+  // Jurnal 2: HPP
+  const j2ok=hppAcc&&persAcc;
+  html+=`<div style="margin-bottom:6px;"><strong style="color:var(--text);font-size:11px;">Jurnal 2 — HPP (Harga Pokok Penjualan)</strong></div>`;
+  html+=`<div style="display:flex;justify-content:space-between;${j2ok?'':'opacity:.5'}"><span>${j2ok?(hppAcc.name):'[Akun HPP]'} (D)</span><span style="color:var(--danger);">${fmtC(hpp)}</span></div>`;
+  html+=`<div style="display:flex;justify-content:space-between;margin-bottom:8px;${j2ok?'':'opacity:.5'}"><span style="padding-left:16px;">${j2ok?(persAcc.name):'[Akun Persediaan]'} (K)</span><span style="color:var(--accent2);">${fmtC(hpp)}</span></div>`;
+  html+=`<div style="border-top:1px dashed var(--border);padding-top:6px;display:flex;justify-content:space-between;font-weight:700;"><span>Laba Kotor Estimasi</span><span style="color:${laba>=0?'var(--accent2)':'var(--danger)'};">${laba<0?'(':''}${fmtC(Math.abs(laba))}${laba<0?')':''}</span></div>`;
+  jurnalEl.innerHTML=html;
+  // Warning jika akun tidak ditemukan
+  let warnings=[];
+  if(!j1ok) warnings.push(`⚠ Akun ${metode==='tunai'?'Kas/Bank':'Piutang'} atau Pendapatan tidak ditemukan — jurnal penjualan tidak otomatis.`);
+  if(!j2ok) {
+    if(!hppAcc) warnings.push(`⚠ Akun HPP tidak ditemukan. Buat akun dengan nama mengandung "HPP" atau "Harga Pokok" di Buku Besar agar jurnal HPP otomatis.`);
+    if(!persAcc) warnings.push(`⚠ Akun Persediaan tidak ditemukan di Buku Besar.`);
+  }
+  if(warnings.length){warnEl.style.display='block';warnEl.innerHTML=warnings.join('<br>');}
+  else{warnEl.style.display='none';}
+  previewBox.style.display='block';
 }
 
 function processJualPersediaan() {
@@ -2968,6 +3020,7 @@ function processJualPersediaan() {
   const hargaJual=parseFloat(document.getElementById('jual-pers-harga').value)||0;
   const metode=document.getElementById('jual-pers-metode').value;
   const pembeli=document.getElementById('jual-pers-pembeli').value.trim()||'Pelanggan';
+  const tanggal=document.getElementById('jual-pers-tanggal').value||new Date().toISOString().split('T')[0];
   if (!qty||!hargaJual) { toast('Jumlah dan harga jual wajib','error'); return; }
   const idx=DB.persediaan.findIndex(x=>x.id==id);
   if (idx<0) return;
@@ -2975,41 +3028,60 @@ function processJualPersediaan() {
   if (qty>p.jumlah) { toast(`Stok tidak cukup (tersedia: ${p.jumlah})`, 'error'); return; }
   const hpp=p.harga_satuan*qty;
   const penjualan=hargaJual*qty;
-  const today=new Date().toISOString().split('T')[0];
   const accs=coFilter(DB.accounts);
   const kasAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
   const piuAcc=accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('piutang'));
   const pendAcc=accs.find(a=>a.type==='Pendapatan');
-  const hppAcc=accs.find(a=>a.type==='Beban'&&a.name.toLowerCase().includes('hpp'));
+  // HPP: coba berbagai nama umum
+  const hppAcc=accs.find(a=>a.type==='Beban'&&(
+    a.name.toLowerCase().includes('hpp')||
+    a.name.toLowerCase().includes('harga pokok')||
+    a.name.toLowerCase().includes('cost of goods')||
+    a.name.toLowerCase().includes('beban pokok')
+  ));
   const persAcc=accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('persediaan'));
+  let jurnalDibuat=[];
   // Jurnal 1: Penjualan
-  if ((metode==='tunai'?kasAcc:piuAcc) && pendAcc) {
-    const desc=`Penjualan persediaan kepada ${pembeli}: ${p.nama_barang} (${qty} unit)`;
+  const debitAcc=metode==='tunai'?kasAcc:piuAcc;
+  if (debitAcc && pendAcc) {
+    const desc=`Penjualan ${p.nama_barang} (${qty} unit) kpd ${pembeli}`;
     const tid=genId(),jeid=genId();
-    DB.transactions.push({id:tid,company_id:co(),date:today,description:desc,_source:'auto_module'});
-    DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,_source:'auto_module'});
-    const debitAcc=metode==='tunai'?kasAcc:piuAcc;
+    DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:'auto_module'});
+    DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:'auto_module'});
     DB.journal_details.push({id:genId(),journal_id:jeid,account_id:debitAcc.id,debit:penjualan,kredit:0});
     DB.journal_details.push({id:genId(),journal_id:jeid,account_id:pendAcc.id,debit:0,kredit:penjualan});
-    // Jika kredit, catat piutang
     if (metode==='kredit' && piuAcc) {
-      DB.piutang.push({id:genId(),company_id:co(),nama_debitur:pembeli,jumlah:penjualan,tanggal:today,jatuh_tempo:'',sisa:penjualan,status:'Belum Lunas',ref_journal_id:jeid});
+      DB.piutang.push({id:genId(),company_id:co(),nama_debitur:pembeli,jumlah:penjualan,tanggal,jatuh_tempo:'',sisa:penjualan,status:'Belum Lunas',ref_journal_id:jeid});
     }
+    jurnalDibuat.push(`Penjualan: ${debitAcc.name}(D)/${pendAcc.name}(K) = ${fmtC(penjualan)}`);
+  } else {
+    jurnalDibuat.push(`⚠ Jurnal penjualan tidak otomatis (akun tidak lengkap)`);
   }
-  // Jurnal 2: HPP
+  // Jurnal 2: HPP — otomatis dari harga_satuan persediaan
   if (hppAcc && persAcc) {
-    const descHpp=`HPP penjualan ${p.nama_barang} (${qty} unit)`;
+    const descHpp=`HPP: ${p.nama_barang} (${qty} unit × ${fmtC(p.harga_satuan)})`;
     const tid2=genId(),jeid2=genId();
-    DB.transactions.push({id:tid2,company_id:co(),date:today,description:descHpp,_source:'auto_module'});
-    DB.journal_entries.push({id:jeid2,company_id:co(),transaction_id:tid2,date:today,description:descHpp,_source:'auto_module'});
+    DB.transactions.push({id:tid2,company_id:co(),date:tanggal,description:descHpp,_source:'auto_module'});
+    DB.journal_entries.push({id:jeid2,company_id:co(),transaction_id:tid2,date:tanggal,description:descHpp,_source:'auto_module'});
     DB.journal_details.push({id:genId(),journal_id:jeid2,account_id:hppAcc.id,debit:hpp,kredit:0});
     DB.journal_details.push({id:genId(),journal_id:jeid2,account_id:persAcc.id,debit:0,kredit:hpp});
+    jurnalDibuat.push(`HPP: ${hppAcc.name}(D)/${persAcc.name}(K) = ${fmtC(hpp)}`);
+  } else {
+    const missing=[];
+    if(!hppAcc) missing.push('akun HPP (tambah akun "Harga Pokok Penjualan" tipe Beban)');
+    if(!persAcc) missing.push('akun Persediaan');
+    jurnalDibuat.push(`⚠ Jurnal HPP tidak otomatis — ${missing.join(', ')} tidak ditemukan`);
   }
-  // Update stok
+  // Update stok & nilai
   DB.persediaan[idx].jumlah=p.jumlah-qty;
   DB.persediaan[idx].total_nilai=DB.persediaan[idx].jumlah*p.harga_satuan;
   autoSave(); closeModal('modal-jual-persediaan'); renderPersediaan();
-  toast(`✅ Penjualan dicatat: ${fmtC(penjualan)} | HPP: ${fmtC(hpp)} | Stok sisa: ${DB.persediaan[idx].jumlah}`,'success',5000);
+  const hppOk=hppAcc&&persAcc;
+  const labaKotor=penjualan-hpp;
+  toast(
+    `✅ Terjual ${qty} unit | Pendapatan: ${fmtC(penjualan)} | HPP: ${fmtC(hpp)} | Laba Kotor: ${fmtC(labaKotor)} | Stok sisa: ${DB.persediaan[idx].jumlah}${hppOk?'':' | ⚠ Jurnal HPP manual'}`,
+    hppOk?'success':'warning',6000
+  );
 }
 
 // ══════════════════════════════════════════
