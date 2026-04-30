@@ -452,16 +452,24 @@ textarea.form-control { resize:vertical; min-height:80px; }
 </div> <!-- LICENSE INFO BAR (shown when activated) -->
 <div id="lic-info-bar" style="display:none;"> <span>Lisensi Aktif &nbsp;|&nbsp; <span id="lic-info-plan" style="font-weight:700;">Trial</span></span> <span id="lic-info-key" style="color:rgba(148,163,184,.4);">-</span> <span id="lic-info-exp"></span>
 </div> <!-- SIDEBAR -->
-<nav id="sidebar"> <div id="sidebar-logo"> <div class="logo-icon" id="app-logo-wrap" style="background:transparent;padding:0;overflow:hidden;"> <img id="app-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;"> <div id="app-logo-default" style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📊</div> </div> <div> <span>ZeQui</span> <small>Zenith Quality Accounting System</small> </div> </div> <div id="sidebar-nav"> <div class="nav-group-label">Utama</div> <div class="nav-item" onclick="navigate('dashboard')">Dashboard</div> <div class="nav-item" onclick="navigate('companies')">Perusahaan</div> <div class="nav-item" onclick="navigate('coa')">Akun (CoA)</div> <div class="nav-group-label">Transaksi</div> <div class="nav-item" onclick="navigate('transactions')">Transaksi</div> <div class="nav-item" onclick="navigate('jurnal')">Jurnal Umum</div> <div class="nav-item" onclick="navigate('buku-besar')">Buku Besar</div> <div class="nav-item" onclick="navigate('neraca-saldo')">Neraca Saldo</div> <div class="nav-item" onclick="navigate('penyesuaian')">Jurnal Penyesuaian</div> <div class="nav-item" onclick="navigate('ns-penyesuaian')">NS Penyesuaian</div> <div class="nav-group-label">Aset &amp; Kewajiban</div> <div class="nav-item" onclick="navigate('hutang')">Hutang (AP)</div> <div class="nav-item" onclick="navigate('piutang')">Piutang (AR)</div> <div class="nav-item" onclick="navigate('persediaan')">Persediaan</div> <div class="nav-item" onclick="navigate('perlengkapan')">Perlengkapan</div> <div class="nav-item" onclick="navigate('aset-tetap')">Aset Tetap</div> <div class="nav-group-label">Laporan</div> <div class="nav-item" onclick="navigate('laba-rugi')" id="nav-laba-rugi"><span id="nav-label-laba-rugi">Laba Rugi</span></div> <div class="nav-item active" onclick="navigate('neraca')" id="nav-neraca"><span id="nav-label-neraca">Posisi Keuangan</span></div> <div class="nav-item" onclick="navigate('perubahan-ekuitas')" id="nav-ekuitas"><span id="nav-label-ekuitas">Perubahan Ekuitas</span></div> <div class="nav-item" onclick="navigate('arus-kas')" id="nav-arus-kas"><span id="nav-label-arus-kas">Arus Kas</span></div> <div class="nav-item" onclick="navigate('lra')" id="nav-lra" style="display:none;">Realisasi Anggaran (LRA)</div> <div class="nav-item" onclick="navigate('lsal')" id="nav-lsal" style="display:none;">Saldo Anggaran Lebih (LSAL)</div> <div class="nav-item" onclick="navigate('shu')" id="nav-shu" style="display:none;">Laporan SHU</div> <div class="nav-item" onclick="navigate('jurnal-penutup')">Jurnal Penutup</div> <div class="nav-group-label">Sistem</div> <div class="nav-item" onclick="navigate('komparasi')">Komparasi Multi-Tahun</div> <div class="nav-item" onclick="navigate('settings')">Pengaturan</div> </div> <div id="sidebar-footer"> <button class="save-btn-main" onclick="saveToFile()">Backup File</button> </div>
+<nav id="sidebar"> <div id="sidebar-logo"> <div class="logo-icon" id="app-logo-wrap" style="background:transparent;padding:0;overflow:hidden;"> <img id="app-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;"> <div id="app-logo-default" style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📊</div> </div> <div> <span>ZeQui</span> <small>Zenith Quality Accounting System</small> </div> </div> <div id="sidebar-nav"> <div class="nav-group-label">Utama</div> <div class="nav-item" onclick="navigate('dashboard')">Dashboard</div> <div class="nav-item" onclick="navigate('companies')">Perusahaan</div> <div class="nav-item" onclick="navigate('coa')">Akun (CoA)</div> <div class="nav-group-label">Transaksi</div> <div class="nav-item" onclick="navigate('transactions')">Transaksi</div> <div class="nav-item" onclick="navigate('jurnal')">Jurnal Umum</div> <div class="nav-item" onclick="navigate('buku-besar')">Buku Besar</div> <div class="nav-item" onclick="navigate('neraca-saldo')">Neraca Saldo</div> <div class="nav-item" onclick="navigate('penyesuaian')">Jurnal Penyesuaian</div> <div class="nav-item" onclick="navigate('ns-penyesuaian')">NS Penyesuaian</div> <div class="nav-group-label">Aset &amp; Kewajiban</div> <div class="nav-item" onclick="navigate('hutang')">Hutang (AP)</div> <div class="nav-item" onclick="navigate('piutang')">Piutang (AR)</div> <div class="nav-item" onclick="navigate('persediaan')">Persediaan</div> <div class="nav-item" onclick="navigate('perlengkapan')">Perlengkapan</div> <div class="nav-item" onclick="navigate('aset-tetap')">Aset Tetap</div> <div class="nav-group-label">Laporan</div> <div class="nav-item" onclick="navigate('laba-rugi')" id="nav-laba-rugi"><span id="nav-label-laba-rugi">Laba Rugi</span></div> <div class="nav-item active" onclick="navigate('neraca')" id="nav-neraca"><span id="nav-label-neraca">Posisi Keuangan</span></div> <div class="nav-item" onclick="navigate('perubahan-ekuitas')" id="nav-ekuitas"><span id="nav-label-ekuitas">Perubahan Ekuitas</span></div> <div class="nav-item" onclick="navigate('arus-kas')" id="nav-arus-kas"><span id="nav-label-arus-kas">Arus Kas</span></div> <div class="nav-item" onclick="navigate('lra')" id="nav-lra" style="display:none;">Realisasi Anggaran (LRA)</div> <div class="nav-item" onclick="navigate('lsal')" id="nav-lsal" style="display:none;">Saldo Anggaran Lebih (LSAL)</div> <div class="nav-item" onclick="navigate('shu')" id="nav-shu" style="display:none;">Laporan SHU</div> <div class="nav-item" onclick="navigate('lpd')" id="nav-lpd" style="display:none;">Perubahan Dana</div> <div class="nav-item" onclick="navigate('pak')" id="nav-pak" style="display:none;">Aset Kelolaan</div> <div class="nav-item" onclick="navigate('jurnal-penutup')">Jurnal Penutup</div> <div class="nav-group-label">Sistem</div> <div class="nav-item" onclick="navigate('komparasi')">Komparasi Multi-Tahun</div> <div class="nav-item" onclick="navigate('settings')">Pengaturan</div> </div> <div id="sidebar-footer"> <button class="save-btn-main" onclick="saveToFile()">Backup File</button> </div>
 </nav> <!-- MAIN -->
-<div id="main"> <!-- HEADER --> <div id="header"> <div id="header-left"> <div id="company-switcher" onclick="openCompanySwitcher()"> <div> <div class="co-name" id="hdr-company-name">— Pilih Perusahaan —</div> <div class="co-period" id="hdr-company-period">2025-01-01 s/d 2025-12-31</div> </div> <span style="margin-left:auto; color:var(--text3);">▾</span> </div> </div> <div id="header-right"> <!-- Excel Dropdown --> <div style="position:relative;" id="excel-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('excel-dropdown')">Excel ▾</button> <div id="excel-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Export ke Excel</div> <div class="dropdown-item" onclick="exportExcel('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="exportExcel('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="exportExcel('laba-rugi')"><span id="excel-label-laba-rugi">Laba Rugi</span></div> <div class="dropdown-item" onclick="exportExcel('neraca')"><span id="excel-label-neraca">Posisi Keuangan</span></div> <div class="dropdown-item" id="excel-item-lra" style="display:none;" onclick="exportExcel('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="excel-item-lsal" style="display:none;" onclick="exportExcel('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="excel-item-shu" style="display:none;" onclick="exportExcel('shu')">Lap. SHU (Koperasi)</div> <div class="dropdown-item" onclick="exportExcel('hutang')">Hutang (AP)</div> <div class="dropdown-item" onclick="exportExcel('piutang')">Piutang (AR)</div> <div class="dropdown-item" onclick="exportExcel('persediaan')">Persediaan</div> <div class="dropdown-item" onclick="exportExcel('aset-tetap')">Aset Tetap</div> <div class="dropdown-item" onclick="exportExcel('buku-besar')">Buku Besar (Semua)</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="exportExcel('semua')" style="font-weight:700;color:var(--primary-light);">Export Semua (Multi-Sheet)</div> </div> </div> </div> <!-- Print Dropdown --> <div style="position:relative;" id="print-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('print-dropdown')">Print ▾</button> <div id="print-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Cetak Laporan</div> <div class="dropdown-item" onclick="printReport('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="printReport('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="printReport('ns-penyesuaian')">NS Setelah Penyesuaian</div> <div class="dropdown-item" onclick="printReport('laba-rugi')"><span id="print-label-laba-rugi">Laporan Laba Rugi</span></div> <div class="dropdown-item" onclick="printReport('neraca')"><span id="print-label-neraca">Laporan Posisi Keuangan</span></div> <div class="dropdown-item" onclick="printReport('perubahan-ekuitas')"><span id="print-label-ekuitas">Perubahan Ekuitas</span></div> <div class="dropdown-item" onclick="printReport('arus-kas')"><span id="print-label-arus-kas">Arus Kas</span></div> <div class="dropdown-item" id="print-item-lra" style="display:none;" onclick="printReport('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="print-item-lsal" style="display:none;" onclick="printReport('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="print-item-shu" style="display:none;" onclick="printReport('shu')"><span id="print-label-shu">Lap. SHU (Koperasi)</span></div> <div class="dropdown-item" onclick="printReport('jurnal-penutup')">Jurnal Penutup</div> <div class="dropdown-item" onclick="printBukuBesar()">Buku Besar</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="printReport('semua')" style="font-weight:700;color:var(--primary-light);">Cetak Semua Laporan</div> </div> </div> </div> <span id="save-indicator" style="font-size:11px;font-weight:600;color:#10b981;opacity:0;transition:opacity .5s;margin-right:4px;"></span> <button class="hdr-btn primary" onclick="saveToFile()">Backup File</button> </div> </div> <!-- CONTENT --> <div id="content"> <!-- ═══ DASHBOARD ═══ --> <div id="page-dashboard" class="page"> <div class="page-header"> <div><div class="page-title">Dashboard</div><div class="page-subtitle" id="dash-subtitle">Pilih perusahaan untuk memulai</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('dashboard')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua</button> </div> </div> <div class="stats-grid" id="dash-stats"> </div> <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;"> <div class="card"> <div class="card-header"><div class="card-title">Pendapatan vs Beban</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartRevenueExpense" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> <div class="card"> <div class="card-header"><div class="card-title">Distribusi Aset</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartAsset" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> </div> <div class="card"> <div class="card-header"><div class="card-title">Transaksi Terbaru</div></div> <div class="card-body" style="padding:0"><div class="table-wrap"><table id="dash-recent-table"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="dash-recent-tbody"></tbody></table></div></div> </div> </div> <!-- ═══ COMPANIES ═══ --> <div id="page-companies" class="page"> <div class="page-header"> <div><div class="page-title">Perusahaan</div><div class="page-subtitle">Kelola data perusahaan Anda</div></div> <div class="page-actions"> <span id="co-limit-badge" style="font-size:12px;color:var(--text3);margin-right:8px;"></span> <button class="btn btn-primary" onclick="openCompanyModal()">Tambah Perusahaan</button> </div> </div> <div id="company-cards" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div> </div> <!-- ═══ COA ═══ --> <div id="page-coa" class="page"> <div class="page-header"> <div><div class="page-title">Chart of Accounts</div><div class="page-subtitle">Daftar akun keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary btn-sm" onclick="loadDefaultCOA()">Muat CoA Default</button> <button class="btn btn-primary" onclick="resetCOAForm(); openModal('modal-coa')">Tambah Akun</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari akun..." oninput="filterTable('coa-tbody',this.value,[0,1,2])"></div> <select class="form-control" style="width:auto;padding:7px 12px;font-size:12px;" onchange="filterCoaType(this.value)"> <option value="">Semua Tipe</option> <option>Aset</option><option>Kewajiban</option><option>Ekuitas</option> <option>Pendapatan</option><option>Beban</option> </select> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('coa-tbody',0)">Kode ↕</th><th onclick="sortTable('coa-tbody',1)">Nama Akun ↕</th><th>Tipe</th><th>Saldo Normal</th><th>Header / Sub Header</th><th>Aksi</th></tr></thead><tbody id="coa-tbody"></tbody></table></div> </div> </div> <!-- ═══ TRANSACTIONS ═══ --> <div id="page-transactions" class="page"> <div class="page-header"> <div><div class="page-title">Transaksi</div><div class="page-subtitle">Input transaksi — jurnal dibuat otomatis</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openTransactionModal()">Transaksi Baru</button></div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari transaksi..." oninput="filterTable('trx-tbody',this.value,[1,2])"></div> <div style="display:flex;gap:8px;align-items:center;"> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-from"> <span style="font-size:12px;color:var(--text2);">s/d</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-to"> <button class="btn btn-secondary btn-sm" onclick="filterTrxDate()">Filter</button> </div> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('trx-tbody',0)">Tanggal ↕</th><th>No. Jurnal</th><th onclick="sortTable('trx-tbody',2)">Keterangan ↕</th><th>Total Debit</th><th>Aksi</th></tr></thead><tbody id="trx-tbody"> </tbody></table></div> <div style="padding:12px 16px;display:flex;justify-content:flex-end;"><div id="trx-pagination" class="pagination"></div></div> </div> </div> <!-- ═══ JURNAL UMUM ═══ --> <div id="page-jurnal" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Umum</div><div class="page-subtitle">Detail debit-kredit setiap transaksi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('jurnal')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('jurnal')">Export</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari jurnal..." oninput="filterTable('jurnal-tbody',this.value,[0,2,3])"></div> </div> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Jurnal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jurnal-tbody"> </tbody></table></div> </div> </div> <!-- ═══ BUKU BESAR ═══ --> <div id="page-buku-besar" class="page"> <div class="page-header"> <div><div class="page-title">Buku Besar</div><div class="page-subtitle">Akumulasi per akun</div></div> </div> <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;"> <select class="form-control" style="max-width:300px;" id="bb-account-select" onchange="renderBukuBesar()"><option value="">— Pilih Akun —</option></select> <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;"> <input type="checkbox" id="bb-include-adj" checked onchange="renderBukuBesar()">Sertakan penyesuaian
+<div id="main"> <!-- HEADER --> <div id="header"> <div id="header-left"> <div id="company-switcher" onclick="openCompanySwitcher()"> <div> <div class="co-name" id="hdr-company-name">— Pilih Perusahaan —</div> <div class="co-period" id="hdr-company-period">2025-01-01 s/d 2025-12-31</div> </div> <span style="margin-left:auto; color:var(--text3);">▾</span> </div> </div> <div id="header-right"> <!-- Excel Dropdown --> <div style="position:relative;" id="excel-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('excel-dropdown')">Excel ▾</button> <div id="excel-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Export ke Excel</div> <div class="dropdown-item" onclick="exportExcel('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="exportExcel('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="exportExcel('laba-rugi')"><span id="excel-label-laba-rugi">Laba Rugi</span></div> <div class="dropdown-item" onclick="exportExcel('neraca')"><span id="excel-label-neraca">Posisi Keuangan</span></div> <div class="dropdown-item" id="excel-item-lra" style="display:none;" onclick="exportExcel('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="excel-item-lsal" style="display:none;" onclick="exportExcel('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="excel-item-shu" style="display:none;" onclick="exportExcel('shu')">Lap. SHU (Koperasi)</div> <div class="dropdown-item" id="excel-item-lpd" style="display:none;" onclick="exportExcel('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="excel-item-pak" style="display:none;" onclick="exportExcel('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="exportExcel('hutang')">Hutang (AP)</div> <div class="dropdown-item" onclick="exportExcel('piutang')">Piutang (AR)</div> <div class="dropdown-item" onclick="exportExcel('persediaan')">Persediaan</div> <div class="dropdown-item" onclick="exportExcel('aset-tetap')">Aset Tetap</div> <div class="dropdown-item" onclick="exportExcel('buku-besar')">Buku Besar (Semua)</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="exportExcel('semua')" style="font-weight:700;color:var(--primary-light);">Export Semua (Multi-Sheet)</div> </div> </div> </div> <!-- Print Dropdown --> <div style="position:relative;" id="print-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('print-dropdown')">Print ▾</button> <div id="print-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Cetak Laporan</div> <div class="dropdown-item" onclick="printReport('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="printReport('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="printReport('ns-penyesuaian')">NS Setelah Penyesuaian</div> <div class="dropdown-item" onclick="printReport('laba-rugi')"><span id="print-label-laba-rugi">Laporan Laba Rugi</span></div> <div class="dropdown-item" onclick="printReport('neraca')"><span id="print-label-neraca">Laporan Posisi Keuangan</span></div> <div class="dropdown-item" onclick="printReport('perubahan-ekuitas')"><span id="print-label-ekuitas">Perubahan Ekuitas</span></div> <div class="dropdown-item" onclick="printReport('arus-kas')"><span id="print-label-arus-kas">Arus Kas</span></div> <div class="dropdown-item" id="print-item-lra" style="display:none;" onclick="printReport('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="print-item-lsal" style="display:none;" onclick="printReport('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="print-item-shu" style="display:none;" onclick="printReport('shu')"><span id="print-label-shu">Lap. SHU (Koperasi)</span></div> <div class="dropdown-item" id="print-item-lpd" style="display:none;" onclick="printReport('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="print-item-pak" style="display:none;" onclick="printReport('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="printReport('jurnal-penutup')">Jurnal Penutup</div> <div class="dropdown-item" onclick="printBukuBesar()">Buku Besar</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="printReport('semua')" style="font-weight:700;color:var(--primary-light);">Cetak Semua Laporan</div> </div> </div> </div> <span id="save-indicator" style="font-size:11px;font-weight:600;color:#10b981;opacity:0;transition:opacity .5s;margin-right:4px;"></span> <button class="hdr-btn primary" onclick="saveToFile()">Backup File</button> </div> </div> <!-- CONTENT --> <div id="content"> <!-- ═══ DASHBOARD ═══ --> <div id="page-dashboard" class="page"> <div class="page-header"> <div><div class="page-title">Dashboard</div><div class="page-subtitle" id="dash-subtitle">Pilih perusahaan untuk memulai</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('dashboard')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua</button> </div> </div> <div class="stats-grid" id="dash-stats"> </div> <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;"> <div class="card"> <div class="card-header"><div class="card-title">Pendapatan vs Beban</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartRevenueExpense" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> <div class="card"> <div class="card-header"><div class="card-title">Distribusi Aset</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartAsset" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> </div> <div class="card"> <div class="card-header"><div class="card-title">Transaksi Terbaru</div></div> <div class="card-body" style="padding:0"><div class="table-wrap"><table id="dash-recent-table"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="dash-recent-tbody"></tbody></table></div></div> </div> </div> <!-- ═══ COMPANIES ═══ --> <div id="page-companies" class="page"> <div class="page-header"> <div><div class="page-title">Perusahaan</div><div class="page-subtitle">Kelola data perusahaan Anda</div></div> <div class="page-actions"> <span id="co-limit-badge" style="font-size:12px;color:var(--text3);margin-right:8px;"></span> <button class="btn btn-primary" onclick="openCompanyModal()">Tambah Perusahaan</button> </div> </div> <div id="company-cards" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div> </div> <!-- ═══ COA ═══ --> <div id="page-coa" class="page"> <div class="page-header"> <div><div class="page-title">Chart of Accounts</div><div class="page-subtitle">Daftar akun keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary btn-sm" onclick="loadDefaultCOA()">Muat CoA Default</button> <button class="btn btn-primary" onclick="resetCOAForm(); openModal('modal-coa')">Tambah Akun</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari akun..." oninput="filterTable('coa-tbody',this.value,[0,1,2])"></div> <select class="form-control" style="width:auto;padding:7px 12px;font-size:12px;" onchange="filterCoaType(this.value)"> <option value="">Semua Tipe</option> <option>Aset</option><option>Kewajiban</option><option>Ekuitas</option> <option>Pendapatan</option><option>Beban</option> </select> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('coa-tbody',0)">Kode ↕</th><th onclick="sortTable('coa-tbody',1)">Nama Akun ↕</th><th>Tipe</th><th>Saldo Normal</th><th>Header / Sub Header</th><th>Aksi</th></tr></thead><tbody id="coa-tbody"></tbody></table></div> </div> </div> <!-- ═══ TRANSACTIONS ═══ --> <div id="page-transactions" class="page"> <div class="page-header"> <div><div class="page-title">Transaksi</div><div class="page-subtitle">Input transaksi — jurnal dibuat otomatis</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openTransactionModal()">Transaksi Baru</button></div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari transaksi..." oninput="filterTable('trx-tbody',this.value,[1,2])"></div> <div style="display:flex;gap:8px;align-items:center;"> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-from"> <span style="font-size:12px;color:var(--text2);">s/d</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-to"> <button class="btn btn-secondary btn-sm" onclick="filterTrxDate()">Filter</button> </div> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('trx-tbody',0)">Tanggal ↕</th><th>No. Jurnal</th><th onclick="sortTable('trx-tbody',2)">Keterangan ↕</th><th>Total Debit</th><th>Aksi</th></tr></thead><tbody id="trx-tbody"> </tbody></table></div> <div style="padding:12px 16px;display:flex;justify-content:flex-end;"><div id="trx-pagination" class="pagination"></div></div> </div> </div> <!-- ═══ JURNAL UMUM ═══ --> <div id="page-jurnal" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Umum</div><div class="page-subtitle">Detail debit-kredit setiap transaksi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('jurnal')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('jurnal')">Export</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari jurnal..." oninput="filterTable('jurnal-tbody',this.value,[0,2,3])"></div> </div> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Jurnal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jurnal-tbody"> </tbody></table></div> </div> </div> <!-- ═══ BUKU BESAR ═══ --> <div id="page-buku-besar" class="page"> <div class="page-header"> <div><div class="page-title">Buku Besar</div><div class="page-subtitle">Akumulasi per akun</div></div> </div> <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;"> <select class="form-control" style="max-width:300px;" id="bb-account-select" onchange="renderBukuBesar()"><option value="">— Pilih Akun —</option></select> <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;"> <input type="checkbox" id="bb-include-adj" checked onchange="renderBukuBesar()">Sertakan penyesuaian
         </label> <button class="btn btn-secondary btn-sm" onclick="renderBukuBesarSemua()">Tampilkan Semua Akun</button> <button class="btn btn-secondary btn-sm" onclick="printBukuBesar()">Cetak</button> <button class="btn btn-secondary btn-sm" onclick="exportBukuBesarExcel()">Export Excel</button> </div> <div id="bb-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih akun dari dropdown di atas atau klik "Tampilkan Semua Akun"</p></div> </div> </div> <!-- ═══ NERACA SALDO ═══ --> <div id="page-neraca-saldo" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo</div><div class="page-subtitle">Saldo akhir semua akun</div></div> </div> <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:12px;color:#92400e;"> ℹ <strong>Sebelum Penyesuaian</strong> — Neraca Saldo ini belum mencakup jurnal penyesuaian.
         Lihat tab <strong>NS Setelah Penyesuaian</strong>untuk saldo yang sudah memperhitungkan penyesuaian akhir periode.
       </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="ns-tbody"></tbody><tfoot id="ns-tfoot"></tfoot></table></div> </div> </div> <!-- ═══ JURNAL PENYESUAIAN ═══ --> <div id="page-penyesuaian" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Penyesuaian</div><div class="page-subtitle">Penyesuaian akhir periode</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openModal('modal-penyesuaian')">Tambah Penyesuaian</button></div> </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun Debit</th><th>Akun Kredit</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="penyesuaian-tbody"></tbody></table></div> </div> </div> <!-- ═══ NS SETELAH PENYESUAIAN ═══ --> <div id="page-ns-penyesuaian" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo Setelah Penyesuaian</div></div> </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="nspa-tbody"></tbody><tfoot id="nspa-tfoot"></tfoot></table></div> </div> </div> <!-- ═══ HUTANG ═══ --> <div id="page-hutang" class="page"> <div class="page-header"> <div><div class="page-title">Hutang (Accounts Payable)</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('hutang')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('hutang')">Export</button> <button class="btn btn-primary" onclick="openModal('modal-hutang')">Tambah Hutang</button> </div> </div> <div class="stats-grid" id="hutang-stats"> </div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('hutang','daftar',this)">Daftar Hutang</button> <button class="bp-tab" onclick="switchBpTab('hutang','kartu',this)">Kartu per Kreditur</button> <button class="bp-tab" onclick="switchBpTab('hutang','aging',this)">Aging Analysis</button> <button class="bp-tab" onclick="switchBpTab('hutang','mutasi',this)">Riwayat Mutasi</button> </div> <div class="bp-pane active" id="bp-hutang-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari kreditur..." oninput="filterTable('hutang-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Kreditur</th><th>Jumlah</th><th>Tanggal</th><th>Jatuh Tempo</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="hutang-tbody"> </tbody></table></div> </div> </div><!-- /bp-hutang-daftar --> <div class="bp-pane" id="bp-hutang-kartu"> <div class="kartu-grid" id="hutang-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data hutang</p></div> </div> </div> <div class="bp-pane" id="bp-hutang-aging"> <div class="card"> <div class="card-header"><div class="card-title">Aging Analysis Hutang</div></div> <div class="card-body" id="hutang-aging-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-hutang-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Mutasi Hutang</div></div> <div class="card-body" id="hutang-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- ═══ PIUTANG ═══ --> <div id="page-piutang" class="page"> <div class="page-header"> <div><div class="page-title">Piutang (Accounts Receivable)</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('piutang')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('piutang')">Export</button> <button class="btn btn-primary" onclick="openModal('modal-piutang')">Tambah Piutang</button> </div> </div> <div class="stats-grid" id="piutang-stats"> </div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('piutang','daftar',this)">Daftar Piutang</button> <button class="bp-tab" onclick="switchBpTab('piutang','kartu',this)">Kartu per Debitur</button> <button class="bp-tab" onclick="switchBpTab('piutang','aging',this)">Aging Analysis</button> <button class="bp-tab" onclick="switchBpTab('piutang','mutasi',this)">Riwayat Mutasi</button> </div> <div class="bp-pane active" id="bp-piutang-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari debitur..." oninput="filterTable('piutang-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Debitur</th><th>Jumlah</th><th>Tanggal</th><th>Jatuh Tempo</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="piutang-tbody"> </tbody></table></div> </div> </div><!-- /bp-piutang-daftar --> <div class="bp-pane" id="bp-piutang-kartu"> <div class="kartu-grid" id="piutang-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data piutang</p></div> </div> </div> <div class="bp-pane" id="bp-piutang-aging"> <div class="card"> <div class="card-header"><div class="card-title">Aging Analysis Piutang</div></div> <div class="card-body" id="piutang-aging-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-piutang-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Penerimaan Piutang</div></div> <div class="card-body" id="piutang-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- ═══ PERSEDIAAN ═══ --> <div id="page-persediaan" class="page"> <div class="page-header"> <div><div class="page-title">Persediaan</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('persediaan')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('persediaan')">Export</button> <button class="btn btn-primary" onclick="openPersediaanModal()">Tambah Barang</button> </div> </div> <div class="stats-grid" id="persediaan-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('persediaan','daftar',this)">Daftar Barang</button> <button class="bp-tab" onclick="switchBpTab('persediaan','kartu',this)">Kartu Stok</button> <button class="bp-tab" onclick="switchBpTab('persediaan','mutasi',this)">Mutasi Persediaan</button> <button class="bp-tab" onclick="switchBpTab('persediaan','ringkasan',this)">Ringkasan Nilai</button> </div> <div class="bp-pane active" id="bp-persediaan-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari barang..." oninput="filterTable('persediaan-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Barang</th><th>Stok</th><th>Harga Satuan</th><th>Total Nilai</th><th>Tanggal</th><th>Metode</th><th>Aksi</th></tr></thead><tbody id="persediaan-tbody"></tbody></table></div> </div> </div><!-- /bp-persediaan-daftar --> <div class="bp-pane" id="bp-persediaan-kartu"> <div class="kartu-grid" id="persediaan-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data persediaan</p></div> </div> </div> <div class="bp-pane" id="bp-persediaan-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Mutasi Persediaan</div></div> <div class="card-body" id="persediaan-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-persediaan-ringkasan"> <div class="card"> <div class="card-header"><div class="card-title">Ringkasan Nilai Persediaan</div></div> <div class="card-body" id="persediaan-ringkasan-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- ═══ PERLENGKAPAN ═══ --> <div id="page-perlengkapan" class="page"> <div class="page-header"> <div><div class="page-title">Perlengkapan</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('perlengkapan')">Print</button> <button class="btn btn-primary" onclick="openPerlengkapanModal()">Tambah Item</button> </div> </div> <div class="stats-grid" id="perlengkapan-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('perlengkapan','daftar',this)">Daftar Item</button> <button class="bp-tab" onclick="switchBpTab('perlengkapan','kartu',this)">Kartu Item</button> <button class="bp-tab" onclick="switchBpTab('perlengkapan','pemakaian',this)">Riwayat Pemakaian</button> </div> <div class="bp-pane active" id="bp-perlengkapan-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari item..." oninput="filterTable('perlengkapan-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Item</th><th>Jumlah</th><th>Nilai</th><th>Tanggal</th><th>Metode</th><th>Aksi</th></tr></thead><tbody id="perlengkapan-tbody"></tbody></table></div> </div> </div> <div class="bp-pane" id="bp-perlengkapan-kartu"> <div class="kartu-grid" id="perlengkapan-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data perlengkapan</p></div> </div> </div> <div class="bp-pane" id="bp-perlengkapan-pemakaian"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Pemakaian Perlengkapan</div></div> <div class="card-body" id="perlengkapan-pemakaian-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data pemakaian</p></div> </div> </div> </div> </div> <!-- ═══ ASET TETAP ═══ --> <div id="page-aset-tetap" class="page"> <div class="page-header"> <div><div class="page-title">Aset Tetap</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum · Garis Lurus & Saldo Menurun</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('aset-tetap')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('aset-tetap')">Export</button> <button class="btn btn-secondary" onclick="hitung_penyusutan_all()">Hitung Penyusutan</button> <button class="btn btn-primary" onclick="openAsetModal()">Tambah Aset</button> </div> </div> <!-- Info banner metode penyusutan --> <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;"> <div style="flex:1;min-width:220px;padding:12px 16px;background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(6,182,212,.08));border:1px solid rgba(37,99,235,.2);border-radius:var(--radius2);display:flex;align-items:center;gap:10px;"> <div style="font-size:22px;"></div> <div> <div style="font-size:12px;font-weight:700;color:var(--primary-light);">GARIS LURUS (Straight-Line)</div> <div style="font-size:11px;color:var(--text2);margin-top:2px;">Beban = Harga Perolehan ÷ Masa Manfaat (tetap setiap tahun)</div> </div> </div> <div style="flex:1;min-width:220px;padding:12px 16px;background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.08));border:1px solid rgba(245,158,11,.3);border-radius:var(--radius2);display:flex;align-items:center;gap:10px;"> <div style="font-size:22px;"></div> <div> <div style="font-size:12px;font-weight:700;color:#92400e;">SALDO MENURUN (Declining Balance)</div> <div style="font-size:11px;color:var(--text2);margin-top:2px;">Beban = Tarif (%) × Nilai Buku Awal Periode (menurun setiap tahun)</div> </div> </div> </div> <div class="stats-grid" id="aset-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('aset','daftar',this)">Daftar Aset</button> <button class="bp-tab" onclick="switchBpTab('aset','kartu',this)">Kartu Aset</button> <button class="bp-tab" onclick="switchBpTab('aset','penyusutan',this)">Jadwal Penyusutan</button> <button class="bp-tab" onclick="switchBpTab('aset','rekapitulasi',this)">Rekapitulasi</button> </div> <div class="bp-pane active" id="bp-aset-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari aset..." oninput="filterTable('aset-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Aset</th><th>Harga Perolehan</th><th>Tahun</th><th>Masa (thn)</th><th>Akum. Penyusutan</th><th>Nilai Buku</th><th>Beban Susut/thn</th><th>Tarif SM (%)</th><th>Tanggal</th><th>Metode Susut</th><th>Aksi</th></tr></thead><tbody id="aset-tbody"></tbody></table></div> </div> </div> <div class="bp-pane" id="bp-aset-kartu"> <div class="kartu-grid" id="aset-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data aset tetap</p></div> </div> </div> <div class="bp-pane" id="bp-aset-penyusutan"> <div id="aset-penyusutan-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data aset</p></div> </div> </div> <div class="bp-pane" id="bp-aset-rekapitulasi"> <div class="card"> <div class="card-header"><div class="card-title">Rekapitulasi Aset Tetap</div></div> <div class="card-body" id="aset-rekap-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- ═══ LABA RUGI ═══ --> <div id="page-laba-rugi" class="page"> <div class="page-header"> <div><div class="page-title" id="title-laba-rugi">Laporan Laba Rugi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('laba-rugi')">Excel</button> <button class="btn btn-secondary" onclick="printReport('laba-rugi')">Print</button> </div> </div> <div class="card"><div class="card-body" id="laba-rugi-content"> </div></div> </div> <!-- ═══ NERACA ═══ --> <div id="page-neraca" class="page"> <div class="page-header"> <div><div class="page-title" id="title-neraca">Laporan Posisi Keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('neraca')">Excel</button> <button class="btn btn-secondary" onclick="printReport('neraca')">Print</button> </div> </div> <div class="card"><div class="card-body" id="neraca-content"> </div></div> </div> <!-- ═══ PERUBAHAN EKUITAS ═══ --> <div id="page-perubahan-ekuitas" class="page"> <div class="page-header"> <div><div class="page-title" id="title-ekuitas">Laporan Perubahan Ekuitas</div></div> </div> <div class="card"><div class="card-body" id="ekuitas-content"> </div></div> </div> <!-- ═══ ARUS KAS ═══ --> <div id="page-arus-kas" class="page"> <div class="page-header"> <div> <div class="page-title" id="title-arus-kas">Laporan Arus Kas</div> <div class="page-subtitle">Pilih metode penyajian</div> </div> <div class="page-actions"> <div style="display:flex;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius2);overflow:hidden;"> <button id="btn-metode-langsung" onclick="setMetodeArusKas('langsung')"
               style="padding:7px 16px;border:none;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;background:var(--primary-light);color:#fff;">Langsung
             </button> <button id="btn-metode-tidak-langsung" onclick="setMetodeArusKas('tidak-langsung')"
               style="padding:7px 16px;border:none;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:var(--text2);">Tidak Langsung
-            </button> </div> <button class="btn btn-secondary" onclick="printReport('arus-kas')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('arus-kas')">Excel</button> </div> </div> <div class="card"><div class="card-body" id="arus-kas-content"> </div></div> </div> <!-- ═══ LRA (SAP) ═══ --> <div id="page-lra" class="page"> <div class="page-header"> <div><div class="page-title">Laporan Realisasi Anggaran (LRA)</div><div class="page-subtitle">Khusus Standar Akuntansi Pemerintahan (SAP)</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('lra')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('lra')">Excel</button> <button class="btn btn-primary" onclick="openLRAModal()">Input Anggaran</button> </div> </div> <div class="card"><div class="card-body" id="lra-content"> <div class="empty-state"><div class="empty-icon"></div><p>Klik <strong>Input Anggaran</strong>untuk memasukkan data anggaran dan realisasi.</p></div> </div></div> </div> <!-- ═══ LSAL (SAP) ═══ --> <div id="page-lsal" class="page"> <div class="page-header"> <div><div class="page-title">Laporan Saldo Anggaran Lebih (LSAL)</div><div class="page-subtitle">Khusus Standar Akuntansi Pemerintahan (SAP)</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('lsal')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('lsal')">Excel</button> </div> </div> <div class="card"><div class="card-body" id="lsal-content"> <div class="empty-state"><div class="empty-icon"></div><p>LSAL dihitung otomatis dari data LRA. Masukkan data LRA terlebih dahulu.</p></div> </div></div> </div> <!-- ═══ SHU KOPERASI ═══ --> <div id="page-shu" class="page"> <div class="page-header"> <div><div class="page-title">Laporan Sisa Hasil Usaha (SHU)</div><div class="page-subtitle">Khusus Koperasi — PSAK 27 / SAK ETAP</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('shu')">Excel</button> <button class="btn btn-secondary" onclick="printReport('shu')">Print</button> </div> </div> <div class="card"><div class="card-body" id="shu-content"> <div class="empty-state"><div class="empty-icon">🤝</div><p>Laporan SHU dihitung otomatis dari data transaksi. Input transaksi pendapatan &amp; beban terlebih dahulu.</p></div> </div></div> </div> <!-- ═══ JURNAL PENUTUP ═══ --> <div id="page-jurnal-penutup" class="page"> <div class="page-header"> <div> <div class="page-title">Jurnal Penutup</div> <div id="jp-status-badge" style="margin-top:6px;"></div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="buatJurnalPenutup()">Preview Jurnal Penutup</button> <button class="btn btn-primary" id="btn-posting-jp" onclick="postingJurnalPenutup()" style="display:none;">Posting ke Jurnal Umum</button> </div> </div> <div style="margin-bottom:12px;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);"> ℹ <strong>Jurnal Penutup</strong>menutup akun nominal (Pendapatan &amp; Beban) ke Ikhtisar L/R, lalu Ikhtisar L/R ke Modal.
+            </button> </div> <button class="btn btn-secondary" onclick="printReport('arus-kas')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('arus-kas')">Excel</button> </div> </div> <div class="card"><div class="card-body" id="arus-kas-content"> </div></div> </div> <!-- ═══ LRA (SAP) ═══ --> <div id="page-lra" class="page"> <div class="page-header"> <div><div class="page-title">Laporan Realisasi Anggaran (LRA)</div><div class="page-subtitle">Khusus Standar Akuntansi Pemerintahan (SAP)</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('lra')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('lra')">Excel</button> <button class="btn btn-primary" onclick="openLRAModal()">Input Anggaran</button> </div> </div> <div class="card"><div class="card-body" id="lra-content"> <div class="empty-state"><div class="empty-icon"></div><p>Klik <strong>Input Anggaran</strong>untuk memasukkan data anggaran dan realisasi.</p></div> </div></div> </div> <!-- ═══ LSAL (SAP) ═══ --> <div id="page-lsal" class="page"> <div class="page-header"> <div><div class="page-title">Laporan Saldo Anggaran Lebih (LSAL)</div><div class="page-subtitle">Khusus Standar Akuntansi Pemerintahan (SAP)</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('lsal')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('lsal')">Excel</button> </div> </div> <div class="card"><div class="card-body" id="lsal-content"> <div class="empty-state"><div class="empty-icon"></div><p>LSAL dihitung otomatis dari data LRA. Masukkan data LRA terlebih dahulu.</p></div> </div></div> </div> <!-- ═══ SHU KOPERASI ═══ --> <div id="page-shu" class="page"> <div class="page-header"> <div><div class="page-title">Laporan Sisa Hasil Usaha (SHU)</div><div class="page-subtitle">Khusus Koperasi — PSAK 27 / SAK ETAP</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('shu')">Excel</button> <button class="btn btn-secondary" onclick="printReport('shu')">Print</button> </div> </div> <div class="card"><div class="card-body" id="shu-content"> <div class="empty-state"><div class="empty-icon">🤝</div><p>Laporan SHU dihitung otomatis dari data transaksi. Input transaksi pendapatan &amp; beban terlebih dahulu.</p></div> </div></div> </div>
+
+ <!-- ═══ LPD — BAZNAS (PSAK 109) ═══ -->
+ <div id="page-lpd" class="page"> <div class="page-header"> <div><div class="page-title" id="title-lpd">Laporan Perubahan Dana</div><div class="page-subtitle">PSAK 109 — Zakat, Infak/Sedekah, Amil, Nonhalal</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('lpd')">Excel</button> <button class="btn btn-secondary" onclick="printReport('lpd')">Print</button> </div> </div> <div class="card"><div class="card-body" id="lpd-content"> <div class="empty-state"><div class="empty-icon">🕌</div><p>Laporan Perubahan Dana dihitung otomatis. Input transaksi dengan kategori dana zakat, infak, dan amil terlebih dahulu.</p></div> </div></div> </div>
+
+ <!-- ═══ PAK — BAZNAS Aset Kelolaan (PSAK 109) ═══ -->
+ <div id="page-pak" class="page"> <div class="page-header"> <div><div class="page-title">Laporan Perubahan Aset Kelolaan</div><div class="page-subtitle">PSAK 109 — Aset yang dikelola atas nama Muzaki</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('pak')">Excel</button> <button class="btn btn-secondary" onclick="printReport('pak')">Print</button> </div> </div> <div class="card"><div class="card-body" id="pak-content"> <div class="empty-state"><div class="empty-icon">🕌</div><p>Laporan Perubahan Aset Kelolaan dihitung otomatis dari data aset tetap &amp; transaksi zakat produktif.</p></div> </div></div> </div>
+
+ <!-- ═══ JURNAL PENUTUP ═══ --> <div id="page-jurnal-penutup" class="page"> <div class="page-header"> <div> <div class="page-title">Jurnal Penutup</div> <div id="jp-status-badge" style="margin-top:6px;"></div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="buatJurnalPenutup()">Preview Jurnal Penutup</button> <button class="btn btn-primary" id="btn-posting-jp" onclick="postingJurnalPenutup()" style="display:none;">Posting ke Jurnal Umum</button> </div> </div> <div style="margin-bottom:12px;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);"> ℹ <strong>Jurnal Penutup</strong>menutup akun nominal (Pendapatan &amp; Beban) ke Ikhtisar L/R, lalu Ikhtisar L/R ke Modal.
         Klik <strong>Preview</strong>untuk melihat drafnya, lalu klik <strong>Posting ke Jurnal Umum</strong>untuk menyimpan ke buku besar. Setelah posting, saldo akun nominal menjadi nol.
       </div> <div class="card"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jp-tbody"> <tr><td colspan="5"><div class="empty-state"><div class="empty-icon"></div><p>Klik <strong>Buat / Refresh Jurnal Penutup</strong>untuk menghitung jurnal penutup dari data transaksi aktif.</p></div></td></tr> </tbody></table></div></div> </div> <!-- ═══ SETTINGS ═══ --> <!-- ═══ KOMPARASI MULTI-TAHUN ═══ --> <div id="page-komparasi" class="page"> <div class="page-header"> <div> <div class="page-title">Komparasi Multi-Tahun</div> <div class="page-subtitle">Bandingkan laporan keuangan antar periode/tahun</div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('komparasi')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('komparasi')">Excel</button> </div> </div> <!-- Pemilihan periode --> <div class="card" style="margin-bottom:20px;"> <div class="card-header"> <div class="card-title">Pilih Periode untuk Dibandingkan</div> </div> <div class="card-body"> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px;"> <div class="form-group"> <label>Periode 1 (Wajib)</label> <select class="form-control" id="komp-p1" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 2 (Wajib)</label> <select class="form-control" id="komp-p2" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 3 (Opsional)</label> <select class="form-control" id="komp-p3" onchange="renderKomparasi()"> <option value="">— Tidak dipilih —</option> </select> </div> <div class="form-group"> <label>Tampilkan</label> <select class="form-control" id="komp-jenis" onchange="renderKomparasi()"> <option value="laba-rugi">Laba Rugi</option> <option value="neraca">Neraca</option> <option value="perubahan-ekuitas">Perubahan Ekuitas</option> <option value="arus-kas">Arus Kas</option> <option value="ringkasan">Ringkasan KPI</option> </select> </div> </div> <div style="font-size:12px;color:var(--text2);">Setiap "Perusahaan" di ZeQui dapat mewakili satu tahun buku. Tambahkan perusahaan baru untuk setiap tahun fiskal.</div> </div> </div> <div id="komparasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih minimal dua periode di atas untuk melihat perbandingan.</p></div> </div> </div> <div id="page-settings" class="page"> <div class="page-header"><div><div class="page-title">Pengaturan</div></div></div> <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;"> <!-- Storage Monitor Card — full width --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Status Penyimpanan IndexedDB</div> <button class="btn btn-secondary btn-sm" onclick="renderSettings()">Refresh</button> </div> <div class="card-body"> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px;"> <div style="padding:12px 16px;background:rgba(16,185,129,.08);border-radius:8px;border:1px solid rgba(16,185,129,.2);text-align:center;"> <div style="font-size:11px;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Status</div> <div id="settings-idb-status" style="font-size:16px;font-weight:800;color:#10b981;">Aktif</div> </div> <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;"> <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Ukuran Data</div> <div id="settings-storage-text" style="font-size:16px;font-weight:800;color:var(--primary-light);">—</div> </div> <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;"> <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Kapasitas</div> <div style="font-size:16px;font-weight:800;color:var(--primary-light);">Ratusan MB</div> </div> <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;"> <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Terakhir Disimpan</div> <div id="settings-last-saved" style="font-size:12px;font-weight:700;color:var(--text);">—</div> </div> </div> <div style="font-size:12px;color:var(--text3);line-height:1.8;padding:12px;background:var(--bg);border-radius:8px;"> <strong>IndexedDB</strong>menyimpan data otomatis setiap ada perubahan, kapasitas jauh lebih besar dari sebelumnya.<br> <strong>Download Backup File</strong>tetap disarankan secara berkala (mingguan/bulanan) sebagai cadangan jika browser di-reset atau komputer rusak.<br> <strong>Export JSON</strong>berguna untuk pindah ke komputer lain atau backup arsip.
             </div> </div> </div> <!-- Data Management Card --> <div class="card"> <div class="card-header"><div class="card-title">Data &amp; Backup</div></div> <div class="card-body" style="display:flex;flex-direction:column;gap:10px;"> <div style="padding:8px 12px;background:rgba(16,185,129,.08);border-radius:6px;border-left:3px solid #10b981;font-size:11px;color:#065f46;">Data tersimpan otomatis di IndexedDB. Download backup sebagai cadangan.
@@ -472,7 +480,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <!-- ═══ MODE ENTITAS ═══ -->
 <div class="form-group" style="grid-column:1/-1;">
   <label>Mode Entitas *</label>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="co-entity-grid">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;" id="co-entity-grid">
     <div class="entity-mode-card" id="ecard-komersial" onclick="selectEntityMode('komersial')" style="cursor:pointer;padding:12px;border:2px solid var(--primary-light);border-radius:var(--radius2);background:rgba(37,99,235,.08);text-align:center;">
       <div style="font-size:22px;margin-bottom:4px;">🏢</div>
       <div style="font-size:12px;font-weight:800;color:var(--primary-light);">Komersial</div>
@@ -488,6 +496,11 @@ textarea.form-control { resize:vertical; min-height:80px; }
       <div style="font-size:12px;font-weight:800;color:var(--text2);">Koperasi</div>
       <div style="font-size:10px;color:var(--text3);margin-top:2px;">KSP, KUD, Kopmen</div>
     </div>
+    <div class="entity-mode-card" id="ecard-baznas" onclick="selectEntityMode('baznas')" style="cursor:pointer;padding:12px;border:2px solid var(--border);border-radius:var(--radius2);text-align:center;">
+      <div style="font-size:22px;margin-bottom:4px;">🕌</div>
+      <div style="font-size:12px;font-weight:800;color:var(--text2);">BAZNAS/LAZ</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px;">Amil Zakat, Infak/Sedekah</div>
+    </div>
   </div>
   <input type="hidden" id="co-entity-mode" value="komersial">
   <!-- Info panel per mode -->
@@ -499,6 +512,9 @@ textarea.form-control { resize:vertical; min-height:80px; }
   </div>
   <div id="entity-info-koperasi" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(245,158,11,.07);border-radius:6px;border-left:3px solid var(--warning);font-size:11px;color:var(--text2);">
     🤝 <strong>PSAK 27 / SAK ETAP Koperasi</strong> — Laporan: PHU (Perhitungan H/U), Neraca, SHU, Arus Kas. Ekuitas → Simpanan Pokok & Wajib
+  </div>
+  <div id="entity-info-baznas" style="display:none;margin-top:8px;padding:8px 12px;background:rgba(16,185,129,.07);border-radius:6px;border-left:3px solid #16a34a;font-size:11px;color:var(--text2);">
+    🕌 <strong>PSAK 109 — Akuntansi Zakat, Infak/Sedekah</strong> — Laporan: Perubahan Dana (Zakat, Infak/Sedekah, Amil, Nonhalal), Perubahan Aset Kelolaan, Posisi Keuangan, Arus Kas
   </div>
 </div>
 <div class="form-group"><label>Standar Akuntansi *</label>
@@ -857,6 +873,8 @@ function renderPage(page) {
     'lra': renderLRA,
     'lsal': renderLSAL,
     'shu': renderSHU,
+    'lpd': renderLPD,
+    'pak': renderPAK,
     'jurnal-penutup': renderJurnalPenutup,
     'komparasi': renderKomparasiPage,
     companies: renderCompanies,
@@ -975,9 +993,9 @@ function renderCompanies() {
     return;
   }
   c.innerHTML = DB.companies.map(co => `
-    <div class="card" style="cursor:pointer;transition:.2s;${DB.current_company_id==co.id?'border-color:var(--primary-light);box-shadow:0 0 0 2px rgba(37,99,235,.15);':''}" onclick="selectCompany(${co.id})"> <div style="padding:20px;"> <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;"> <div style="font-size:32px;">${co.entity_mode==='nirlaba'?'🏛️':co.entity_mode==='koperasi'?'🤝':'🏢'}</div> ${DB.current_company_id==co.id?'<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">AKTIF</span>':''}
+    <div class="card" style="cursor:pointer;transition:.2s;${DB.current_company_id==co.id?'border-color:var(--primary-light);box-shadow:0 0 0 2px rgba(37,99,235,.15);':''}" onclick="selectCompany(${co.id})"> <div style="padding:20px;"> <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;"> <div style="font-size:32px;">${co.entity_mode==='nirlaba'?'🏛️':co.entity_mode==='koperasi'?'🤝':co.entity_mode==='baznas'?'🕌':'🏢'}</div> ${DB.current_company_id==co.id?'<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">AKTIF</span>':''}
         </div> <div style="font-weight:800;font-size:16px;margin-bottom:4px;">${co.name}</div> <div style="font-size:12px;color:var(--text2);">${co.standard} · ${co.type||'—'}</div>
-        <div style="margin-top:4px;"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${co.entity_mode==='nirlaba'?'background:rgba(16,185,129,.12);color:#065f46;':co.entity_mode==='koperasi'?'background:rgba(245,158,11,.12);color:#92400e;':'background:rgba(37,99,235,.1);color:#1d4ed8;'}">${co.entity_mode==='nirlaba'?'Nirlaba (ISAK 35)':co.entity_mode==='koperasi'?'Koperasi (PSAK 27)':'Komersial'}</span></div>
+        <div style="margin-top:4px;"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${co.entity_mode==='nirlaba'?'background:rgba(16,185,129,.12);color:#065f46;':co.entity_mode==='koperasi'?'background:rgba(245,158,11,.12);color:#92400e;':co.entity_mode==='baznas'?'background:rgba(22,163,74,.12);color:#15803d;':'background:rgba(37,99,235,.1);color:#1d4ed8;'}">${co.entity_mode==='nirlaba'?'Nirlaba (ISAK 35)':co.entity_mode==='koperasi'?'Koperasi (PSAK 27)':co.entity_mode==='baznas'?'BAZNAS/LAZ (PSAK 109)':'Komersial'}</span></div>
         <div style="font-size:11px;color:var(--text3);margin-top:4px;">${co.period_start||''} s/d ${co.period_end||''}</div> <div style="display:flex;gap:8px;margin-top:16px;"> <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();selectCompany(${co.id})">Buka</button> <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editCompany(${co.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCompany(${co.id})">Hapus</button> </div> </div> </div> `).join('');
 }
 
@@ -3652,7 +3670,7 @@ function calcKasAkhir() {
 
 // Pilih mode entitas di modal perusahaan
 function selectEntityMode(mode) {
-  ['komersial','nirlaba','koperasi'].forEach(m => {
+  ['komersial','nirlaba','koperasi','baznas'].forEach(m => {
     const card = document.getElementById('ecard-' + m);
     const info = document.getElementById('entity-info-' + m);
     if (!card) return;
@@ -3670,11 +3688,12 @@ function selectEntityMode(mode) {
   });
   const input = document.getElementById('co-entity-mode');
   if (input) input.value = mode;
-  // Auto-adjust standard suggestion for nirlaba/koperasi
+  // Auto-adjust standard suggestion for nirlaba/koperasi/baznas
   const stdSel = document.getElementById('co-standard');
   if (stdSel && !document.getElementById('company-edit-id').value) {
     if (mode === 'nirlaba') stdSel.value = 'SAK UMUM';
     else if (mode === 'koperasi') stdSel.value = 'SAK EMKM';
+    else if (mode === 'baznas') stdSel.value = 'SAK UMUM';
     else stdSel.value = 'SAK EMKM';
   }
 }
@@ -3694,6 +3713,8 @@ function getEntityMode() {
 function isNirlaba()  { return getEntityMode() === 'nirlaba';  }
 // Apakah entitas koperasi?
 function isKoperasi() { return getEntityMode() === 'koperasi'; }
+// Apakah entitas BAZNAS/LAZ?
+function isBaznas()   { return getEntityMode() === 'baznas';   }
 
 function getLaporanNames(standard) {
   // Cek entity mode dari perusahaan aktif terlebih dahulu
@@ -3708,6 +3729,7 @@ function getLaporanNames(standard) {
       hasSAP:         false,
       isNirlaba:      true,
       isKoperasi:     false,
+      isBaznas:       false,
       standarNote:    'ISAK 35 / PSAK 45 — Entitas Nirlaba',
     };
   }
@@ -3721,7 +3743,22 @@ function getLaporanNames(standard) {
       hasSAP:         false,
       isNirlaba:      false,
       isKoperasi:     true,
+      isBaznas:       false,
       standarNote:    'PSAK 27 / SAK ETAP Koperasi',
+    };
+  }
+  if (em === 'baznas') {
+    return {
+      labaRugi:       'Laporan Perubahan Dana',
+      neraca:         'Laporan Posisi Keuangan',
+      ekuitas:        'Laporan Perubahan Aset Kelolaan',
+      arusKas:        'Laporan Arus Kas',
+      modalLabel:     'Dana',
+      hasSAP:         false,
+      isNirlaba:      false,
+      isKoperasi:     false,
+      isBaznas:       true,
+      standarNote:    'PSAK 109 — Akuntansi Zakat, Infak/Sedekah',
     };
   }
   const s = (standard || '').toUpperCase();
@@ -3885,6 +3922,14 @@ function renderLabaRugi() {
   // ═══ KOPERASI — Perhitungan Hasil Usaha (PHU) ═══
   if (em === 'koperasi') {
     renderPHU(co_data, lkNames, revenues, expenses, totRev, totExp, laba);
+    return;
+  }
+  // ═══ BAZNAS/LAZ (PSAK 109) — Laporan Perubahan Dana ═══
+  if (em === 'baznas') {
+    renderLPD();
+    // Tampilkan juga di laba-rugi-content agar navigate tetap bekerja
+    const lrEl = document.getElementById('laba-rugi-content');
+    if (lrEl) lrEl.innerHTML = document.getElementById('lpd-content')?.innerHTML || '';
     return;
   }
 
@@ -4196,11 +4241,173 @@ function updateSHUConfig(key, val) {
   window._shuTimer = setTimeout(renderSHU, 400);
 }
 
+// ══════════════════════════════════════════════════════════════
+// LAPORAN PERUBAHAN DANA — BAZNAS/LAZ (PSAK 109)
+// ══════════════════════════════════════════════════════════════
+function renderLPD() {
+  const co_data = getCompany();
+  if (!co_data) return;
+  const el = document.getElementById('lpd-content');
+  if (!isBaznas()) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🕌</div><p>Laporan Perubahan Dana hanya tersedia untuk entitas <strong>BAZNAS/LAZ</strong>. Ubah mode entitas di pengaturan Perusahaan.</p></div>';
+    return;
+  }
+
+  const allRev = getAccsByType('Pendapatan').filter(a=>a.balance!==0);
+  const allExp = getAccsByType('Beban').filter(a=>a.balance!==0);
+
+  // Klasifikasi otomatis berdasarkan kata kunci nama akun (PSAK 109)
+  const kwZakat   = ['zakat','zis'];
+  const kwInfak   = ['infak','infaq','sedekah','shodaqoh'];
+  const kwAmil    = ['amil','operasional','hak amil','bagian amil'];
+  const kwNonhal  = ['nonhalal','non halal','bunga bank','denda'];
+
+  const matchKw = (a, kws) => kws.some(k => a.name.toLowerCase().includes(k));
+
+  const revZakat  = allRev.filter(a=> matchKw(a,kwZakat));
+  const revInfak  = allRev.filter(a=> !matchKw(a,kwZakat) && matchKw(a,kwInfak));
+  const revAmil   = allRev.filter(a=> !matchKw(a,kwZakat) && !matchKw(a,kwInfak) && matchKw(a,kwAmil));
+  const revNonhal = allRev.filter(a=> matchKw(a,kwNonhal));
+  const revLain   = allRev.filter(a=> !matchKw(a,kwZakat)&&!matchKw(a,kwInfak)&&!matchKw(a,kwAmil)&&!matchKw(a,kwNonhal));
+
+  const expZakat  = allExp.filter(a=> matchKw(a,kwZakat)||a.name.toLowerCase().includes('penyaluran'));
+  const expInfak  = allExp.filter(a=> !matchKw(a,kwZakat)&&!a.name.toLowerCase().includes('penyaluran')&&matchKw(a,kwInfak));
+  const expAmil   = allExp.filter(a=> matchKw(a,kwAmil));
+  const expNonhal = allExp.filter(a=> matchKw(a,kwNonhal));
+  const expLain   = allExp.filter(a=>!matchKw(a,kwZakat)&&!a.name.toLowerCase().includes('penyaluran')&&!matchKw(a,kwInfak)&&!matchKw(a,kwAmil)&&!matchKw(a,kwNonhal));
+
+  const tot = arr => arr.reduce((s,a)=>s+a.balance,0);
+
+  const totRevZ=tot(revZakat), totRevI=tot(revInfak), totRevA=tot(revAmil)+tot(revLain), totRevN=tot(revNonhal);
+  const totExpZ=tot(expZakat), totExpI=tot(expInfak), totExpA=tot(expAmil), totExpN=tot(expNonhal);
+
+  const netZ=totRevZ-totExpZ, netI=totRevI-totExpI, netA=totRevA-totExpA, netN=totRevN-totExpN;
+  const netTotal = netZ+netI+netA+netN;
+
+  const danaSection = (judul, revArr, totRev, expArr, totExp, net, color) => `
+    <div class="report-section" style="margin-bottom:20px;border-left:3px solid ${color};padding-left:12px;">
+      <div class="report-section-title" style="color:${color};">${judul}</div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.5px;padding:6px 0 2px;">Penerimaan</div>
+      ${revArr.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>— Belum ada —</span></div>'}
+      <div class="report-row subtotal"><span>Jumlah Penerimaan</span><span class="report-amount">${fmtC(totRev)}</span></div>
+      <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.5px;padding:6px 0 2px;">Penyaluran / Beban</div>
+      ${expArr.map(a=>`<div class="report-row indent" style="color:var(--danger);"><span>${a.code} ${a.name}</span><span class="report-amount">(${fmtC(a.balance)})</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>— Belum ada —</span></div>'}
+      <div class="report-row subtotal"><span>Jumlah Penyaluran</span><span class="report-amount" style="color:var(--danger);">(${fmtC(totExp)})</span></div>
+      <div class="report-row subtotal" style="border-top:2px solid var(--border);"><span><strong>Kenaikan/(Penurunan) ${judul}</strong></span><span class="report-amount" style="color:${net>=0?'var(--accent2)':'var(--danger)'}"><strong>${net<0?'(':''}${fmtC(Math.abs(net))}${net<0?')':''}</strong></span></div>
+    </div>`;
+
+  el.innerHTML = `
+    <div style="margin-bottom:12px;padding:10px 14px;background:rgba(22,163,74,.07);border-radius:var(--radius2);border-left:4px solid #16a34a;font-size:11px;color:var(--text2);">
+      🕌 <strong>PSAK 109 — Akuntansi Zakat, Infak/Sedekah:</strong> Klasifikasi dana dilakukan otomatis berdasarkan kata kunci nama akun. Gunakan kata <em>zakat/ZIS, infak/sedekah, amil, nonhalal</em> dalam nama akun untuk klasifikasi yang tepat.
+    </div>
+    <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);">
+      <div style="font-size:18px;font-weight:800;">${co_data.name}</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">LAPORAN PERUBAHAN DANA</div>
+      <div style="font-size:12px;color:var(--text3);">Periode: ${co_data.period_start||'—'} s/d ${co_data.period_end||'—'} | PSAK 109</div>
+    </div>
+    <div style="max-width:640px;">
+      ${danaSection('DANA ZAKAT',       revZakat, totRevZ, expZakat, totExpZ, netZ, '#16a34a')}
+      ${danaSection('DANA INFAK/SEDEKAH', revInfak, totRevI, expInfak, totExpI, netI, '#0ea5e9')}
+      ${danaSection('DANA AMIL',        [...revAmil,...revLain], totRevA, expAmil, totExpA, netA, '#7c3aed')}
+      ${danaSection('DANA NONHALAL',    revNonhal, totRevN, expNonhal, totExpN, netN, '#dc2626')}
+      <div class="report-row total" style="margin-top:8px;padding:14px 0;">
+        <span style="font-size:15px;font-weight:800;">KENAIKAN/(PENURUNAN) DANA KESELURUHAN</span>
+        <span class="report-amount" style="font-size:16px;font-weight:800;color:${netTotal>=0?'var(--accent2)':'var(--danger)'};">${netTotal<0?'(':''}${fmtC(Math.abs(netTotal))}${netTotal<0?')':''}</span>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:rgba(22,163,74,.06);border-radius:var(--radius2);border-left:4px solid #16a34a;font-size:11px;color:var(--text2);line-height:1.9;">
+        <strong>Dasar Hukum:</strong><br>
+        • PSAK 109 — Akuntansi Zakat, Infak/Sedekah (IAI, 2010)<br>
+        • UU No. 23 Tahun 2011 tentang Pengelolaan Zakat<br>
+        • BAZNAS Peraturan No. 4 Tahun 2014 tentang Pedoman Akuntansi<br>
+        <strong>Catatan:</strong> Hak Amil atas zakat maksimum 1/8 (12,5%) sesuai ketentuan syariah. Penyaluran diakui saat diserahkan kepada mustahiq.
+      </div>
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// LAPORAN PERUBAHAN ASET KELOLAAN — BAZNAS/LAZ (PSAK 109)
+// ══════════════════════════════════════════════════════════════
+function renderPAK() {
+  const co_data = getCompany();
+  if (!co_data) return;
+  const el = document.getElementById('pak-content');
+  if (!isBaznas()) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">🕌</div><p>Laporan Perubahan Aset Kelolaan hanya tersedia untuk entitas <strong>BAZNAS/LAZ</strong>.</p></div>';
+    return;
+  }
+
+  // Aset tetap produktif dari zakat
+  const asetZakatProd = coFilter(DB.aset_tetap).filter(a =>
+    a.nama_aset && (a.nama_aset.toLowerCase().includes('zakat') || a.nama_aset.toLowerCase().includes('wakaf') || a.nama_aset.toLowerCase().includes('produktif') || a.nama_aset.toLowerCase().includes('kelolaan'))
+  );
+  const totHarga = asetZakatProd.reduce((s,a)=>s+(a.harga_perolehan||0),0);
+  const totAkum  = asetZakatProd.reduce((s,a)=>s+(a.akumulasi_penyusutan||0),0);
+  const totBuku  = asetZakatProd.reduce((s,a)=>s+(a.nilai_buku||a.harga_perolehan||0),0);
+
+  // Akun Aset dari kelompok Aset yang mengandung kata kelolaan/wakaf/produktif/zakat
+  const asetAkun = getAccsByType('Aset').filter(a=>
+    a.balance!==0 && (a.name.toLowerCase().includes('kelolaan')||a.name.toLowerCase().includes('wakaf')||a.name.toLowerCase().includes('zakat produktif')||a.name.toLowerCase().includes('bergulir'))
+  );
+  const totAsetAkun = asetAkun.reduce((s,a)=>s+a.balance,0);
+
+  el.innerHTML = `
+    <div style="margin-bottom:12px;padding:10px 14px;background:rgba(22,163,74,.07);border-radius:var(--radius2);border-left:4px solid #16a34a;font-size:11px;color:var(--text2);">
+      🕌 <strong>PSAK 109 Par. 36–38:</strong> Aset Kelolaan adalah aset tidak lancar yang diperoleh dari dan dikelola untuk kepentingan muzaki/pemberi infak. Aset ini tidak diakui sebagai aset BAZNAS sendiri, namun dilaporkan terpisah.
+    </div>
+    <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);">
+      <div style="font-size:18px;font-weight:800;">${co_data.name}</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">LAPORAN PERUBAHAN ASET KELOLAAN</div>
+      <div style="font-size:12px;color:var(--text3);">Per: ${co_data.period_end||'—'} | PSAK 109</div>
+    </div>
+    <div style="max-width:640px;">
+      <div class="report-section">
+        <div class="report-section-title" style="color:#16a34a;">ASET KELOLAAN DARI ZAKAT PRODUKTIF</div>
+        ${asetZakatProd.length
+          ? asetZakatProd.map(a=>`
+            <div class="report-row indent">
+              <span>${a.nama_aset}</span>
+              <span class="report-amount">${fmtC(a.nilai_buku||a.harga_perolehan||0)}</span>
+            </div>
+            <div class="report-row indent" style="font-size:11px;color:var(--text3);">
+              <span>Harga perolehan: ${fmtC(a.harga_perolehan||0)} — Akum.Susut: (${fmtC(a.akumulasi_penyusutan||0)})</span>
+            </div>`).join('')
+          : '<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>— Belum ada aset tetap dengan kata kunci "zakat/wakaf/produktif/kelolaan" —</span></div>'
+        }
+        <div class="report-row subtotal"><span><strong>Nilai Buku Aset Tetap Kelolaan</strong></span><span class="report-amount"><strong>${fmtC(totBuku)}</strong></span></div>
+      </div>
+      <div class="report-section" style="margin-top:16px;">
+        <div class="report-section-title" style="color:#0ea5e9;">ASET BERGULIR / KELOLAAN (dari CoA)</div>
+        ${asetAkun.length
+          ? asetAkun.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')
+          : '<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>— Belum ada akun aset dengan kata kunci "kelolaan/wakaf/zakat produktif/bergulir" —</span></div>'
+        }
+        <div class="report-row subtotal"><span><strong>Jumlah Aset Bergulir</strong></span><span class="report-amount"><strong>${fmtC(totAsetAkun)}</strong></span></div>
+      </div>
+      <div class="report-row total" style="margin-top:8px;padding:14px 0;">
+        <span style="font-size:15px;font-weight:800;">TOTAL ASET KELOLAAN</span>
+        <span class="report-amount" style="font-size:16px;font-weight:800;color:var(--accent2);">${fmtC(totBuku+totAsetAkun)}</span>
+      </div>
+      <div style="margin-top:16px;padding:12px 16px;background:rgba(14,165,233,.06);border-radius:var(--radius2);border-left:4px solid #0ea5e9;font-size:11px;color:var(--text2);line-height:1.9;">
+        <strong>Cara penggunaan:</strong><br>
+        • Tambahkan aset di menu <strong>Aset Tetap</strong> dengan nama yang mengandung kata <em>zakat/wakaf/produktif/kelolaan</em><br>
+        • Tambahkan akun di <strong>CoA</strong> (tipe Aset) dengan nama <em>kelolaan/wakaf/zakat produktif/bergulir</em><br>
+        • Aset kelolaan disusutkan secara normal namun beban penyusutan diakui sebagai bagian penyaluran
+      </div>
+    </div>`;
+}
+
 // ── RENDER PERUBAHAN EKUITAS ──
 // Rumus: Ekuitas Akhir = Σ(Ekuitas Kredit-normal) − Σ(Ekuitas Debit-normal) + Laba Bersih
 // Ini IDENTIK dengan calcEkuitasAkhir() — laporan ini menjelaskan rinciannya
 function renderPerubahanEkuitas() {
   const co_data    = getCompany();
+  // ═══ BAZNAS/LAZ (PSAK 109) — Laporan Perubahan Aset Kelolaan ═══
+  if (isBaznas()) {
+    renderPAK();
+    const ekEl = document.getElementById('ekuitas-content');
+    if (ekEl) ekEl.innerHTML = document.getElementById('pak-content')?.innerHTML || '';
+    return;
+  }
   const hasEntries = coFilter(DB.journal_entries).length > 0;
   if (!hasEntries) {
     document.getElementById('ekuitas-content').innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--text3);"> <div style="font-size:48px;margin-bottom:12px;opacity:.5;"></div> <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Belum Ada Data Transaksi</div> <div style="font-size:13px;">Tambahkan transaksi di menu <strong>Jurnal Umum</strong>terlebih dahulu untuk melihat laporan ini.</div> </div>`;
@@ -4342,11 +4549,11 @@ function renderNeraca() {
         <div class="report-row subtotal"><span>Total Kewajiban Jangka Panjang</span><span class="report-amount">${fmtC(totKewTL)}</span></div>` : ''}
 
         ${!kewAcss.length ? '<div class="report-row indent" style="color:var(--text3)"><span>Tidak ada kewajiban</span></div>' : ''}
-        <div class="report-row subtotal" style="border-top:2px solid var(--border);margin-top:4px;"> <span><strong>TOTAL KEWAJIBAN</strong></span><span class="report-amount"><strong>${fmtC(totKew)}</strong></span> </div> <!-- EKUITAS / ASET BERSIH / SIMPANAN --> <div class="report-section-title" style="margin-top:20px;color:var(--accent2);">${isNirlaba()?'ASET BERSIH':isKoperasi()?'SIMPANAN & EKUITAS':'EKUITAS'}</div> ${modalAcss.map(a => `<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`
+        <div class="report-row subtotal" style="border-top:2px solid var(--border);margin-top:4px;"> <span><strong>TOTAL KEWAJIBAN</strong></span><span class="report-amount"><strong>${fmtC(totKew)}</strong></span> </div> <!-- EKUITAS / ASET BERSIH / SIMPANAN / DANA --> <div class="report-section-title" style="margin-top:20px;color:var(--accent2);">${isNirlaba()?'ASET BERSIH':isKoperasi()?'SIMPANAN & EKUITAS':isBaznas()?'SALDO DANA':'EKUITAS'}</div> ${modalAcss.map(a => `<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`
         ).join('')}
-        <!-- Laba/Rugi bersih periode: dari Laporan L/R --> <div class="report-row indent" style="color:${laba>=0?'var(--accent2)':'var(--danger)'};"> <span>(+) ${isNirlaba()?'Kenaikan Aset Bersih':isKoperasi()?'SHU (Sisa Hasil Usaha)':getLaporanNames(co_data?.standard).hasSAP?'Surplus/(Defisit) Operasional':'Laba Bersih Periode'}</span> <span class="report-amount">${laba<0?'(':''}${fmtC(Math.abs(laba))}${laba<0?')':''}</span> </div> <!-- Prive/Dividen: mengurangi ekuitas --> ${priveAcss.map(a => `<div class="report-row indent" style="color:var(--danger);"> <span>(-) ${a.code} ${a.name}</span> <span class="report-amount">(${fmtC(a.balance)})</span> </div>`
+        <!-- Laba/Rugi bersih periode: dari Laporan L/R --> <div class="report-row indent" style="color:${laba>=0?'var(--accent2)':'var(--danger)'};"> <span>(+) ${isNirlaba()?'Kenaikan Aset Bersih':isKoperasi()?'SHU (Sisa Hasil Usaha)':isBaznas()?'Kenaikan Dana (PSAK 109)':getLaporanNames(co_data?.standard).hasSAP?'Surplus/(Defisit) Operasional':'Laba Bersih Periode'}</span> <span class="report-amount">${laba<0?'(':''}${fmtC(Math.abs(laba))}${laba<0?')':''}</span> </div> <!-- Prive/Dividen: mengurangi ekuitas --> ${priveAcss.map(a => `<div class="report-row indent" style="color:var(--danger);"> <span>(-) ${a.code} ${a.name}</span> <span class="report-amount">(${fmtC(a.balance)})</span> </div>`
         ).join('')}
-        <div class="report-row subtotal" style="border-top:2px solid var(--border);margin-top:4px;"> <span><strong>${isNirlaba()?'TOTAL ASET BERSIH':isKoperasi()?'TOTAL SIMPANAN & EKUITAS':'TOTAL EKUITAS'}</strong></span><span class="report-amount"><strong>${fmtC(ekuitasAkhir)}</strong></span> </div> <div class="report-row total" style="margin-top:10px;"> <span><strong>TOTAL KEWAJIBAN + ${isNirlaba()?'ASET BERSIH':isKoperasi()?'SIMPANAN':'EKUITAS'}</strong></span> <span class="report-amount"><strong>${fmtC(totKewEk)}</strong></span> </div> </div> </div> `;
+        <div class="report-row subtotal" style="border-top:2px solid var(--border);margin-top:4px;"> <span><strong>${isNirlaba()?'TOTAL ASET BERSIH':isKoperasi()?'TOTAL SIMPANAN & EKUITAS':isBaznas()?'TOTAL SALDO DANA':'TOTAL EKUITAS'}</strong></span><span class="report-amount"><strong>${fmtC(ekuitasAkhir)}</strong></span> </div> <div class="report-row total" style="margin-top:10px;"> <span><strong>TOTAL KEWAJIBAN + ${isNirlaba()?'ASET BERSIH':isKoperasi()?'SIMPANAN':isBaznas()?'SALDO DANA':'EKUITAS'}</strong></span> <span class="report-amount"><strong>${fmtC(totKewEk)}</strong></span> </div> </div> </div> `;
 }
 
 // ── RENDER ARUS KAS ──
@@ -5390,6 +5597,10 @@ function printReport(type) {
       lblPend  = 'PENDAPATAN KOPERASI';
       lblBeban = 'BEBAN KOPERASI';
       lblHasil = laba >= 0 ? 'SISA HASIL USAHA (SHU)' : 'DEFISIT USAHA';
+    } else if (em_lr === 'baznas') {
+      lblPend  = 'PENERIMAAN DANA';
+      lblBeban = 'PENYALURAN / BEBAN DANA';
+      lblHasil = laba >= 0 ? 'KENAIKAN DANA KESELURUHAN' : 'PENURUNAN DANA KESELURUHAN';
     } else {
       lblPend  = isSAP ? 'PENDAPATAN NEGARA/DAERAH' : 'PENDAPATAN';
       lblBeban = isSAP ? 'BEBAN NEGARA/DAERAH'      : 'BEBAN USAHA';
@@ -5399,10 +5610,11 @@ function printReport(type) {
     let revRows = revenues.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
     let expRows = expenses.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
 
-    const noteNirlaba = em_lr === 'nirlaba' ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">ISAK 35 / PSAK 45 — Laporan Aktivitas. Ekuitas disebut Aset Bersih.</p>' : '';
+    const noteNirlaba  = em_lr === 'nirlaba'  ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">ISAK 35 / PSAK 45 — Laporan Aktivitas. Ekuitas disebut Aset Bersih.</p>' : '';
     const noteKoperasi = em_lr === 'koperasi' ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">PSAK 27 / SAK ETAP Koperasi — PHU (Perhitungan Hasil Usaha). Hasil akhir = SHU.</p>' : '';
+    const noteBaznas   = em_lr === 'baznas'   ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">PSAK 109 — Laporan Perubahan Dana (ringkasan). Untuk rincian per dana, cetak laporan LPD.</p>' : '';
 
-    body = `${noteNirlaba}${noteKoperasi}<table> <thead><tr><th>Keterangan</th><th>Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>${lblPend}</strong></td></tr>${revRows}
+    body = `${noteNirlaba}${noteKoperasi}${noteBaznas}<table> <thead><tr><th>Keterangan</th><th>Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>${lblPend}</strong></td></tr>${revRows}
         <tr class="subtotal-row"><td><strong>Total ${lblPend}</strong></td><td class="num"><strong>${fmtC(totRev)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>${lblBeban}</strong></td></tr>${expRows}
         <tr class="subtotal-row"><td><strong>Total ${lblBeban}</strong></td><td class="num"><strong>${fmtC(totExp)}</strong></td></tr> <tr class="total-row"><td><strong>${lblHasil}</strong></td><td class="num" style="color:${laba>=0?'#15803d':'#dc2626'}"><strong>${fmtC(Math.abs(laba))}</strong></td></tr> </tbody></table>`;
   }
@@ -5424,10 +5636,10 @@ function printReport(type) {
     const totAsetB      = totAsetBruto - totContraP;
     const totKewP       = kewAcss.reduce((s,a)     =>s+a.balance,0);
 
-    const lblEkuitas = em_nr === 'nirlaba' ? 'ASET BERSIH' : em_nr === 'koperasi' ? 'SIMPANAN & EKUITAS' : 'EKUITAS';
-    const lblLabaNr  = em_nr === 'nirlaba' ? 'Kenaikan Aset Bersih' : em_nr === 'koperasi' ? 'SHU (Sisa Hasil Usaha)' : getLaporanNames(co_data2?.standard).hasSAP ? 'Surplus/(Defisit) Operasional' : 'Laba Bersih Periode';
-    const lblTotEk   = em_nr === 'nirlaba' ? 'Total Aset Bersih' : em_nr === 'koperasi' ? 'Total Simpanan & Ekuitas' : 'Total Ekuitas';
-    const lblTotKewEk= em_nr === 'nirlaba' ? 'Total Kewajiban + Aset Bersih' : em_nr === 'koperasi' ? 'Total Kewajiban + Simpanan' : 'Total Kewajiban + Ekuitas';
+    const lblEkuitas = em_nr === 'nirlaba' ? 'ASET BERSIH' : em_nr === 'koperasi' ? 'SIMPANAN & EKUITAS' : em_nr === 'baznas' ? 'SALDO DANA' : 'EKUITAS';
+    const lblLabaNr  = em_nr === 'nirlaba' ? 'Kenaikan Aset Bersih' : em_nr === 'koperasi' ? 'SHU (Sisa Hasil Usaha)' : em_nr === 'baznas' ? 'Kenaikan Dana (PSAK 109)' : getLaporanNames(co_data2?.standard).hasSAP ? 'Surplus/(Defisit) Operasional' : 'Laba Bersih Periode';
+    const lblTotEk   = em_nr === 'nirlaba' ? 'Total Aset Bersih' : em_nr === 'koperasi' ? 'Total Simpanan & Ekuitas' : em_nr === 'baznas' ? 'Total Saldo Dana' : 'Total Ekuitas';
+    const lblTotKewEk= em_nr === 'nirlaba' ? 'Total Kewajiban + Aset Bersih' : em_nr === 'koperasi' ? 'Total Kewajiban + Simpanan' : em_nr === 'baznas' ? 'Total Kewajiban + Saldo Dana' : 'Total Kewajiban + Ekuitas';
 
     let asetRows = asetNormal.map(a=>`<tr><td style="padding-left:16px">${a.code} ${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
     if (contraAset.length) {
@@ -5462,10 +5674,10 @@ function printReport(type) {
     let modalRowsP  = modalAcssP.filter(a=>a.balance!==0).map(a=>`<tr><td>${a.code} ${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
     let priveRowsP  = priveAcssP.filter(a=>a.balance!==0).map(a=>`<tr><td style="color:#ef4444">(-) ${a.code} ${a.name}</td><td class="num" style="color:#ef4444">(${fmtC(a.balance)})</td></tr>`).join('');
 
-    const lblSaldoAwal = em_pe === 'nirlaba' ? 'SALDO ASET BERSIH AWAL' : em_pe === 'koperasi' ? 'SALDO SIMPANAN AWAL' : 'MODAL / EKUITAS AWAL';
-    const lblTotAwal   = em_pe === 'nirlaba' ? 'Total Aset Bersih Awal' : em_pe === 'koperasi' ? 'Total Simpanan Awal' : 'Total Modal Awal';
-    const lblHasil     = em_pe === 'nirlaba' ? 'Kenaikan / (Penurunan) Aset Bersih' : em_pe === 'koperasi' ? 'SHU (Sisa Hasil Usaha)' : 'Laba Bersih Periode';
-    const lblAkhir     = em_pe === 'nirlaba' ? 'ASET BERSIH AKHIR PERIODE' : em_pe === 'koperasi' ? 'SIMPANAN AKHIR PERIODE' : 'EKUITAS AKHIR PERIODE';
+    const lblSaldoAwal = em_pe === 'nirlaba' ? 'SALDO ASET BERSIH AWAL' : em_pe === 'koperasi' ? 'SALDO SIMPANAN AWAL' : em_pe === 'baznas' ? 'SALDO DANA AWAL' : 'MODAL / EKUITAS AWAL';
+    const lblTotAwal   = em_pe === 'nirlaba' ? 'Total Aset Bersih Awal' : em_pe === 'koperasi' ? 'Total Simpanan Awal' : em_pe === 'baznas' ? 'Total Dana Awal' : 'Total Modal Awal';
+    const lblHasil     = em_pe === 'nirlaba' ? 'Kenaikan / (Penurunan) Aset Bersih' : em_pe === 'koperasi' ? 'SHU (Sisa Hasil Usaha)' : em_pe === 'baznas' ? 'Kenaikan / (Penurunan) Dana' : 'Laba Bersih Periode';
+    const lblAkhir     = em_pe === 'nirlaba' ? 'ASET BERSIH AKHIR PERIODE' : em_pe === 'koperasi' ? 'SIMPANAN AKHIR PERIODE' : em_pe === 'baznas' ? 'SALDO DANA AKHIR PERIODE' : 'EKUITAS AKHIR PERIODE';
 
     body = `<table> <thead><tr><th>Keterangan</th><th>Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>${lblSaldoAwal}</strong></td></tr> ${modalRowsP}
         <tr class="subtotal-row"><td><strong>${lblTotAwal}</strong></td><td class="num"><strong>${fmtC(totModalP)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>PERUBAHAN PERIODE</strong></td></tr> <tr><td style="padding-left:16px;color:${labaNetPE>=0?'#15803d':'#dc2626'}"> (+) ${lblHasil}</td><td class="num" style="color:${labaNetPE>=0?'#15803d':'#dc2626'}">${labaNetPE<0?'(':''}${fmtC(Math.abs(labaNetPE))}${labaNetPE<0?')':''}</td></tr> ${priveRowsP}
@@ -5571,6 +5783,26 @@ function printReport(type) {
       <tr class="subtotal-row"><td><strong>Total Beban</strong></td><td class="num"><strong>${fmtC(totExp_shu)}</strong></td></tr>
       <tr class="total-row"><td><strong>${shu>=0?'SISA HASIL USAHA (SHU)':'DEFISIT USAHA'}</strong></td><td class="num" style="color:${shu>=0?'#15803d':'#dc2626'}"><strong>${shu<0?'(':''}${fmtC(Math.abs(shu))}${shu<0?')':''}</strong></td></tr>
       </tbody></table>`;
+  }
+
+  else if (type === 'lpd') {
+    if (!isBaznas()) { toast('Laporan Perubahan Dana hanya tersedia untuk entitas BAZNAS/LAZ','error'); return; }
+    renderLPD();
+    title = 'Laporan Perubahan Dana (PSAK 109)';
+    const lpd = document.getElementById('lpd-content');
+    if (lpd) {
+      body = lpd.innerHTML.replace(/<div[^>]*empty-state[^>]*>.*?<\/div>/gs,'');
+    } else { toast('Render LPD gagal','error'); return; }
+  }
+
+  else if (type === 'pak') {
+    if (!isBaznas()) { toast('Laporan Aset Kelolaan hanya tersedia untuk entitas BAZNAS/LAZ','error'); return; }
+    renderPAK();
+    title = 'Laporan Perubahan Aset Kelolaan (PSAK 109)';
+    const pak = document.getElementById('pak-content');
+    if (pak) {
+      body = pak.innerHTML.replace(/<div[^>]*empty-state[^>]*>.*?<\/div>/gs,'');
+    } else { toast('Render PAK gagal','error'); return; }
   }
 
   else if (type === 'jurnal-penutup') {
@@ -5688,6 +5920,7 @@ function printReport(type) {
     // Print all reports sequentially
     const baseReports = ['laba-rugi','neraca','perubahan-ekuitas','arus-kas'];
     if (isKoperasi()) baseReports.push('shu');
+    if (isBaznas())   baseReports.push('lpd','pak');
     baseReports.forEach((t,i) => {
       setTimeout(()=>printReport(t), i*300);
     });
@@ -5844,6 +6077,11 @@ function exportExcel(type) {
       lblBebanEx = 'BEBAN KOPERASI';
       lblHasilEx = (totRev-totExp) >= 0 ? 'SISA HASIL USAHA (SHU)' : 'DEFISIT USAHA';
       sheetNameEx = 'PHU (Laba Rugi)';
+    } else if (em_ex === 'baznas') {
+      lblPendEx  = 'PENERIMAAN DANA';
+      lblBebanEx = 'PENYALURAN / BEBAN DANA';
+      lblHasilEx = (totRev-totExp) >= 0 ? 'KENAIKAN DANA KESELURUHAN' : 'PENURUNAN DANA KESELURUHAN';
+      sheetNameEx = 'Perubahan Dana (PSAK 109)';
     } else {
       lblPendEx  = isSAPex ? 'PENDAPATAN NEGARA/DAERAH' : 'PENDAPATAN';
       lblBebanEx = isSAPex ? 'BEBAN NEGARA/DAERAH' : 'BEBAN USAHA';
@@ -5876,9 +6114,9 @@ function exportExcel(type) {
     const modalX    = ekX.filter(a=>a.normal_balance==='Kredit');
     const priveX    = ekX.filter(a=>a.normal_balance==='Debit');
 
-    const lblEkX   = em_nrx === 'nirlaba' ? 'ASET BERSIH' : em_nrx === 'koperasi' ? 'SIMPANAN & EKUITAS' : 'EKUITAS';
-    const lblLabaX = em_nrx === 'nirlaba' ? 'Kenaikan Aset Bersih' : em_nrx === 'koperasi' ? 'SHU (Sisa Hasil Usaha)' : getLaporanNames(co_data?.standard).hasSAP ? 'Surplus/(Defisit) Operasional' : 'Laba Bersih Periode';
-    const lblTotEkX = em_nrx === 'nirlaba' ? 'Total Aset Bersih' : em_nrx === 'koperasi' ? 'Total Simpanan & Ekuitas' : 'Total Ekuitas';
+    const lblEkX   = em_nrx === 'nirlaba' ? 'ASET BERSIH' : em_nrx === 'koperasi' ? 'SIMPANAN & EKUITAS' : em_nrx === 'baznas' ? 'SALDO DANA' : 'EKUITAS';
+    const lblLabaX = em_nrx === 'nirlaba' ? 'Kenaikan Aset Bersih' : em_nrx === 'koperasi' ? 'SHU (Sisa Hasil Usaha)' : em_nrx === 'baznas' ? 'Kenaikan Dana (PSAK 109)' : getLaporanNames(co_data?.standard).hasSAP ? 'Surplus/(Defisit) Operasional' : 'Laba Bersih Periode';
+    const lblTotEkX = em_nrx === 'nirlaba' ? 'Total Aset Bersih' : em_nrx === 'koperasi' ? 'Total Simpanan & Ekuitas' : em_nrx === 'baznas' ? 'Total Saldo Dana' : 'Total Ekuitas';
 
     const rows = [['Keterangan','Jumlah']];
     rows.push(['ASET','']);
@@ -6052,6 +6290,40 @@ function exportExcel(type) {
       shuRows.push([shu_x>=0?'SISA HASIL USAHA (SHU)':'DEFISIT USAHA', shu_x]);
       addSheet('SHU Koperasi', shuRows);
     }
+    // Jika BAZNAS, tambahkan sheet LPD dan PAK
+    if (isBaznas()) {
+      const allR = getAccsByType('Pendapatan').filter(a=>a.balance!==0);
+      const allE = getAccsByType('Beban').filter(a=>a.balance!==0);
+      const kwZ=['zakat','zis'], kwI=['infak','infaq','sedekah'], kwA=['amil','operasional','hak amil'], kwN=['nonhalal','non halal','bunga bank'];
+      const matchKw=(a,kws)=>kws.some(k=>a.name.toLowerCase().includes(k));
+      const lpdRows=[['Dana','Keterangan','Jumlah']];
+      const danaGrp=[
+        ['DANA ZAKAT',allR.filter(a=>matchKw(a,kwZ)),allE.filter(a=>matchKw(a,kwZ)||a.name.toLowerCase().includes('penyaluran'))],
+        ['DANA INFAK/SEDEKAH',allR.filter(a=>!matchKw(a,kwZ)&&matchKw(a,kwI)),allE.filter(a=>!matchKw(a,kwZ)&&matchKw(a,kwI))],
+        ['DANA AMIL',allR.filter(a=>matchKw(a,kwA)),allE.filter(a=>matchKw(a,kwA))],
+        ['DANA NONHALAL',allR.filter(a=>matchKw(a,kwN)),allE.filter(a=>matchKw(a,kwN))],
+      ];
+      danaGrp.forEach(([nm,rv,ex])=>{
+        const tR=rv.reduce((s,a)=>s+a.balance,0), tE=ex.reduce((s,a)=>s+a.balance,0);
+        lpdRows.push([nm,'Penerimaan','']);
+        rv.forEach(a=>lpdRows.push(['','  '+a.name,a.balance]));
+        lpdRows.push(['','Jumlah Penerimaan',tR],['','Penyaluran/Beban','']);
+        ex.forEach(a=>lpdRows.push(['','  '+a.name,-a.balance]));
+        lpdRows.push(['','Jumlah Penyaluran',-tE],['','Kenaikan/(Penurunan) '+nm,tR-tE],['','','']);
+      });
+      addSheet('Perubahan Dana (PSAK 109)', lpdRows);
+
+      const pakRows=[['Keterangan','Nilai Buku']];
+      const asetKel=coFilter(DB.aset_tetap).filter(a=>a.nama_aset&&['zakat','wakaf','produktif','kelolaan'].some(k=>a.nama_aset.toLowerCase().includes(k)));
+      pakRows.push(['ASET TETAP KELOLAAN','']);
+      asetKel.forEach(a=>pakRows.push(['  '+a.nama_aset, a.nilai_buku||a.harga_perolehan||0]));
+      pakRows.push(['Total Aset Tetap Kelolaan', asetKel.reduce((s,a)=>s+(a.nilai_buku||a.harga_perolehan||0),0)]);
+      const asetAk=getAccsByType('Aset').filter(a=>a.balance!==0&&['kelolaan','wakaf','zakat produktif','bergulir'].some(k=>a.name.toLowerCase().includes(k)));
+      pakRows.push(['',''],['ASET BERGULIR / KELOLAAN (CoA)','']);
+      asetAk.forEach(a=>pakRows.push(['  '+a.code+' '+a.name, a.balance]));
+      pakRows.push(['Total Aset Bergulir', asetAk.reduce((s,a)=>s+a.balance,0)]);
+      addSheet('Aset Kelolaan (PSAK 109)', pakRows);
+    }
 
     const coaRows = [['Kode','Nama Akun','Tipe','Saldo Normal']];
     coFilter(DB.accounts).sort((a,b)=>a.code.localeCompare(b.code,'id',{numeric:true})).forEach(a=>coaRows.push([a.code,a.name,a.type,a.normal_balance]));
@@ -6087,6 +6359,37 @@ function exportExcel(type) {
     rows.push(['','']);
     rows.push([shu_val>=0?'SISA HASIL USAHA (SHU)':'DEFISIT USAHA', shu_val]);
     addSheet('SHU Koperasi', rows);
+  }
+
+  if (type === 'lpd') {
+    if (!isBaznas()) { toast('Laporan LPD hanya tersedia untuk entitas BAZNAS/LAZ','error'); return; }
+    const allRlpd = getAccsByType('Pendapatan').filter(a=>a.balance!==0);
+    const allElpd = getAccsByType('Beban').filter(a=>a.balance!==0);
+    const kwZl=['zakat','zis'], kwIl=['infak','infaq','sedekah'], kwAl=['amil','operasional','hak amil'], kwNl=['nonhalal','non halal','bunga bank'];
+    const mKw=(a,kws)=>kws.some(k=>a.name.toLowerCase().includes(k));
+    const lpdR=[['Dana','Keterangan','Jumlah']];
+    [['DANA ZAKAT',allRlpd.filter(a=>mKw(a,kwZl)),allElpd.filter(a=>mKw(a,kwZl)||a.name.toLowerCase().includes('penyaluran'))],
+     ['DANA INFAK/SEDEKAH',allRlpd.filter(a=>!mKw(a,kwZl)&&mKw(a,kwIl)),allElpd.filter(a=>!mKw(a,kwZl)&&mKw(a,kwIl))],
+     ['DANA AMIL',allRlpd.filter(a=>mKw(a,kwAl)),allElpd.filter(a=>mKw(a,kwAl))],
+     ['DANA NONHALAL',allRlpd.filter(a=>mKw(a,kwNl)),allElpd.filter(a=>mKw(a,kwNl))]
+    ].forEach(([nm,rv,ex])=>{
+      const tR=rv.reduce((s,a)=>s+a.balance,0), tE=ex.reduce((s,a)=>s+a.balance,0);
+      lpdR.push([nm,'Jumlah Penerimaan',tR],[nm,'Jumlah Penyaluran',-tE],[nm,'Kenaikan/(Penurunan)',tR-tE],['','','']);
+    });
+    addSheet('Perubahan Dana (PSAK 109)', lpdR);
+  }
+
+  if (type === 'pak') {
+    if (!isBaznas()) { toast('Laporan PAK hanya tersedia untuk entitas BAZNAS/LAZ','error'); return; }
+    const aKel=coFilter(DB.aset_tetap).filter(a=>a.nama_aset&&['zakat','wakaf','produktif','kelolaan'].some(k=>a.nama_aset.toLowerCase().includes(k)));
+    const aAk=getAccsByType('Aset').filter(a=>a.balance!==0&&['kelolaan','wakaf','zakat produktif','bergulir'].some(k=>a.name.toLowerCase().includes(k)));
+    const pakR=[['Keterangan','Nilai Buku'],['ASET TETAP KELOLAAN','']];
+    aKel.forEach(a=>pakR.push(['  '+a.nama_aset, a.nilai_buku||a.harga_perolehan||0]));
+    pakR.push(['Total Aset Tetap Kelolaan', aKel.reduce((s,a)=>s+(a.nilai_buku||a.harga_perolehan||0),0)],['',''],['ASET BERGULIR / KELOLAAN (CoA)','']);
+    aAk.forEach(a=>pakR.push(['  '+a.code+' '+a.name, a.balance]));
+    pakR.push(['Total Aset Bergulir', aAk.reduce((s,a)=>s+a.balance,0)]);
+    pakR.push(['',''],['TOTAL ASET KELOLAAN', aKel.reduce((s,a)=>s+(a.nilai_buku||a.harga_perolehan||0),0)+aAk.reduce((s,a)=>s+a.balance,0)]);
+    addSheet('Aset Kelolaan (PSAK 109)', pakR);
   }
 
   if (wb.SheetNames.length === 0) { toast('Tidak ada data untuk diekspor','error'); return; }
@@ -7622,25 +7925,27 @@ function updateSidebarForStandard() {
   const std = co_data.standard || '';
   const lkNames = getLaporanNames(std);
   const isSAP = lkNames.hasSAP;
+  const em = getEntityMode();
 
   // Update nav labels
   const navLaBarugi = document.getElementById('nav-label-laba-rugi');
   const navNeraca   = document.getElementById('nav-label-neraca');
   const navEkuitas  = document.getElementById('nav-label-ekuitas');
   const navArusKas  = document.getElementById('nav-label-arus-kas');
-  const em = getEntityMode();
   if (navLaBarugi) {
-    if (em === 'nirlaba')      navLaBarugi.textContent = 'Laporan Aktivitas';
+    if (em === 'nirlaba')       navLaBarugi.textContent = 'Laporan Aktivitas';
     else if (em === 'koperasi') navLaBarugi.textContent = 'PHU';
+    else if (em === 'baznas')   navLaBarugi.textContent = 'Perubahan Dana';
     else navLaBarugi.textContent = isSAP ? 'Lap. Operasional (LO)' : lkNames.labaRugi.replace('Laporan ','');
   }
-  if (navNeraca)   navNeraca.textContent   = isSAP ? 'Neraca' : 'Posisi Keuangan';
-  if (navEkuitas)  {
-    if (em === 'nirlaba')      navEkuitas.textContent = 'Perubahan Aset Bersih';
+  if (navNeraca)  navNeraca.textContent  = isSAP ? 'Neraca' : 'Posisi Keuangan';
+  if (navEkuitas) {
+    if (em === 'nirlaba')       navEkuitas.textContent = 'Perubahan Aset Bersih';
     else if (em === 'koperasi') navEkuitas.textContent = 'Perubahan Simpanan';
+    else if (em === 'baznas')   navEkuitas.textContent = 'Aset Kelolaan';
     else navEkuitas.textContent = 'Perubahan Ekuitas';
   }
-  if (navArusKas)  navArusKas.textContent  = 'Arus Kas';
+  if (navArusKas) navArusKas.textContent = 'Arus Kas';
 
   // Tampilkan/sembunyikan nav SAP
   ['nav-lra','nav-lsal'].forEach(id => {
@@ -7650,6 +7955,11 @@ function updateSidebarForStandard() {
   // Tampilkan/sembunyikan nav SHU (hanya koperasi)
   const navShu = document.getElementById('nav-shu');
   if (navShu) navShu.style.display = isKoperasi() ? 'flex' : 'none';
+  // Tampilkan/sembunyikan nav LPD & PAK (hanya BAZNAS)
+  const navLpd = document.getElementById('nav-lpd');
+  const navPak = document.getElementById('nav-pak');
+  if (navLpd) navLpd.style.display = isBaznas() ? 'flex' : 'none';
+  if (navPak) navPak.style.display = isBaznas() ? 'flex' : 'none';
 
   // Update page titles
   const tLR = document.getElementById('title-laba-rugi');
@@ -7668,8 +7978,13 @@ function updateSidebarForStandard() {
   const pAK = document.getElementById('print-label-arus-kas');
   if (pLR) pLR.textContent = lkNames.labaRugi;
   if (pNr) pNr.textContent = lkNames.neraca;
-  if (pEk) pEk.textContent = lkNames.ekuitas;
   if (pAK) pAK.textContent = lkNames.arusKas;
+  if (pEk) {
+    if (em === 'nirlaba')       pEk.textContent = 'Perubahan Aset Bersih';
+    else if (em === 'koperasi') pEk.textContent = 'Perubahan Simpanan';
+    else if (em === 'baznas')   pEk.textContent = 'Perubahan Aset Kelolaan';
+    else pEk.textContent = lkNames.ekuitas;
+  }
 
   // Update excel dropdown labels
   const xLR = document.getElementById('excel-label-laba-rugi');
@@ -7682,18 +7997,23 @@ function updateSidebarForStandard() {
     const el = document.getElementById(id);
     if (el) el.style.display = isSAP ? 'block' : 'none';
   });
-
-  // Tampilkan/sembunyikan item SHU di print & excel dropdown (hanya koperasi)
+  // Tampilkan/sembunyikan item SHU (koperasi)
   const pShu = document.getElementById('print-item-shu');
   const xShu = document.getElementById('excel-item-shu');
   if (pShu) pShu.style.display = isKoperasi() ? 'block' : 'none';
   if (xShu) xShu.style.display = isKoperasi() ? 'block' : 'none';
+  // Tampilkan/sembunyikan item LPD & PAK (BAZNAS)
+  ['print-item-lpd','print-item-pak','excel-item-lpd','excel-item-pak'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isBaznas() ? 'block' : 'none';
+  });
 
   // Update label perubahan ekuitas di print dropdown
   const pEkLabel = document.getElementById('print-label-ekuitas');
   if (pEkLabel) {
-    if (em === 'nirlaba')      pEkLabel.textContent = 'Perubahan Aset Bersih';
+    if (em === 'nirlaba')       pEkLabel.textContent = 'Perubahan Aset Bersih';
     else if (em === 'koperasi') pEkLabel.textContent = 'Perubahan Simpanan';
+    else if (em === 'baznas')   pEkLabel.textContent = 'Perubahan Aset Kelolaan';
     else pEkLabel.textContent = lkNames.ekuitas;
   }
 }
