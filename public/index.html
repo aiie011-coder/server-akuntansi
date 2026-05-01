@@ -1089,6 +1089,28 @@ function deleteCompany(id) {
     Object.keys(DB.jurnal_penutup).filter(key =>key.startsWith(`${id}_`)).forEach(key =>delete DB.jurnal_penutup[key]);
   }
 
+  // FIX 5: Hapus integration_deltas orphan milik perusahaan ini
+  // (integration_deltas tidak memiliki company_id, sehingga harus di-join via transactions)
+  if (Array.isArray(DB.integration_deltas)) {
+    const trxIdsHapus = new Set(
+      (DB.transactions || []).filter(t => t.company_id == id).map(t => t.id)
+    );
+    DB.integration_deltas = DB.integration_deltas.filter(d => !trxIdsHapus.has(d.trx_id));
+  }
+
+  // FIX 5: Hapus shu_config & locked_periods milik perusahaan ini
+  if (DB.shu_config && DB.shu_config[id]) delete DB.shu_config[id];
+  if (DB.locked_periods) {
+    Object.keys(DB.locked_periods)
+      .filter(key => key.startsWith(`${id}_`))
+      .forEach(key => delete DB.locked_periods[key]);
+  }
+
+  // FIX 5: Hapus audit_log milik perusahaan ini agar tidak menumpuk
+  if (Array.isArray(DB.audit_log)) {
+    DB.audit_log = DB.audit_log.filter(l => l.company_id !== id);
+  }
+
   DB.companies = DB.companies.filter(c =>c.id != id);
   if (DB.current_company_id == id) { DB.current_company_id = null; updateHeader(); }
   autoSave(); renderCompanies(); toast(`🗑️ Perusahaan "${coObj?.name||id}" berhasil dihapus`, 'success');
@@ -1760,32 +1782,19 @@ function applyTrxTemplate(type) {
 // Hapus record baru + balikkan delta yang ditambahkan ke record yang sudah ada.
 function reverseIntegration(trxId) {
   // 1. Hapus record yang dibuat baru dari transaksi ini
+  // FIX 2+3: Piutang, hutang, dan persediaan kini selalu dibuat sebagai record baru per transaksi
+  // (per-invoice/per-batch), sehingga cukup di-filter berdasarkan ref_transaction_id.
   DB.hutang    = DB.hutang.filter(h =>h.ref_transaction_id !== trxId);
   DB.piutang   = DB.piutang.filter(p =>p.ref_transaction_id !== trxId);
   DB.persediaan   = DB.persediaan.filter(p =>p.ref_transaction_id !== trxId);
   DB.aset_tetap   = DB.aset_tetap.filter(a =>a.ref_transaction_id !== trxId);
   DB.perlengkapan = DB.perlengkapan.filter(p =>p.ref_transaction_id !== trxId);
 
-  // 2. Balikkan delta yang ditambahkan ke record existing (tidak punya ref_transaction_id)
+  // 2. Balikkan delta yang ditambahkan ke record existing (hanya untuk persediaan kredit & aset tetap)
+  // Piutang/hutang tidak lagi menggunakan delta karena kini per-record/per-invoice.
   if (!DB.integration_deltas) DB.integration_deltas = [];
   DB.integration_deltas.filter(d =>d.trx_id === trxId).forEach(delta => {
-    if (delta.module === 'piutang') {
-      const idx = DB.piutang.findIndex(p =>p.id === delta.record_id);
-      if (idx >= 0) {
-        DB.piutang[idx].jumlah -= delta.amount;
-        DB.piutang[idx].sisa   -= delta.amount;
-        if (DB.piutang[idx].sisa <= 0.01) DB.piutang[idx].status = 'Lunas';
-        else DB.piutang[idx].status = 'Sebagian';
-      }
-    } else if (delta.module === 'hutang') {
-      const idx = DB.hutang.findIndex(h =>h.id === delta.record_id);
-      if (idx >= 0) {
-        DB.hutang[idx].jumlah -= delta.amount;
-        DB.hutang[idx].sisa   -= delta.amount;
-        if (DB.hutang[idx].sisa <= 0.01) DB.hutang[idx].status = 'Lunas';
-        else DB.hutang[idx].status = 'Sebagian';
-      }
-    } else if (delta.module === 'persediaan') {
+    if (delta.module === 'persediaan') {
       const idx = DB.persediaan.findIndex(p =>p.id === delta.record_id);
       if (idx >= 0) {
         if (delta.direction === 'kredit') {
@@ -1793,21 +1802,8 @@ function reverseIntegration(trxId) {
           DB.persediaan[idx].total_nilai = (DB.persediaan[idx].total_nilai || 0) + delta.amount;
           DB.persediaan[idx].jumlah      = (DB.persediaan[idx].jumlah || 0) + (delta.qty || 0);
           // harga_satuan batch tidak berubah (FIFO)
-        } else {
-          // Reversal pembelian/penambahan: kurangi nilai + qty proporsional
-          const hargaSat    = DB.persediaan[idx].harga_satuan || 0;
-          const nilaiSebelum = DB.persediaan[idx].total_nilai || 0;
-          DB.persediaan[idx].total_nilai = Math.max(0, nilaiSebelum - delta.amount);
-          if (hargaSat > 0) {
-            DB.persediaan[idx].jumlah = Math.max(0,
-              (DB.persediaan[idx].jumlah || 0) - (delta.amount / hargaSat));
-          } else if (nilaiSebelum > 0) {
-            DB.persediaan[idx].jumlah = Math.max(0,
-              (DB.persediaan[idx].jumlah || 0) * (DB.persediaan[idx].total_nilai / nilaiSebelum));
-          }
-          DB.persediaan[idx].harga_satuan = DB.persediaan[idx].jumlah > 0
-            ? DB.persediaan[idx].total_nilai / DB.persediaan[idx].jumlah : 0;
         }
+        // direction='debit' tidak lagi digunakan karena batch baru selalu dibuat per transaksi (FIX 2)
       }
     } else if (delta.module === 'aset_tetap') {
       const idx = DB.aset_tetap.findIndex(a =>a.id === delta.record_id);
@@ -1869,23 +1865,18 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
         /debitur\s+(.+?)(?:\s+|$)/i,
         /dari\s+(.+?)(?:\s+atas|\s+untuk|$)/i
       ]);
-      const existing = coFilter(DB.piutang).find(p =>p.nama_debitur === nama && p.status !== 'Lunas');
-      if (!existing) {
-        DB.piutang.push({
-          id: genId(), company_id: co(), nama_debitur: nama,
-          jumlah: d.debit, sisa: d.debit, status: 'Belum Lunas',
-          tanggal: date, jatuh_tempo: '',
-          ref_transaction_id: trxId, ref_journal_id: jeId
-        });
-      } else {
-        // Tambah ke sisa piutang yang ada — catat delta agar bisa di-reverse
-        const idx = DB.piutang.findIndex(p =>p.id === existing.id);
-        DB.piutang[idx].jumlah += d.debit;
-        DB.piutang[idx].sisa += d.debit;
-        if (DB.piutang[idx].sisa > 0) DB.piutang[idx].status = 'Belum Lunas';
-        if (!DB.integration_deltas) DB.integration_deltas = [];
-        DB.integration_deltas.push({ trx_id: trxId, module: 'piutang', record_id: existing.id, amount: d.debit });
-      }
+      // FIX 3: Gunakan ref_transaction_id sebagai identifikasi unik per faktur.
+      // Setiap debit ke Piutang membuat record baru (per faktur/invoice),
+      // bukan diakumulasi ke record existing berdasarkan nama debitur.
+      // Ini memungkinkan matching pembayaran per faktur.
+      const nomorRef = `TRX-${String(trxId).padStart(6,'0')}`;
+      DB.piutang.push({
+        id: genId(), company_id: co(), nama_debitur: nama,
+        jumlah: d.debit, sisa: d.debit, status: 'Belum Lunas',
+        tanggal: date, jatuh_tempo: '',
+        nomor_ref: nomorRef,
+        ref_transaction_id: trxId, ref_journal_id: jeId
+      });
     }
 
     // ── PIUTANG: jika kredit ke akun Piutang → kurangi sisa (penerimaan) ──
@@ -1914,22 +1905,16 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
         /kepada\s+(.+?)(?:\s+|$)/i,
         /pemasok\s+(.+?)(?:\s+|$)/i
       ]);
-      const existing = coFilter(DB.hutang).find(h =>h.nama_kreditur === nama && h.status !== 'Lunas');
-      if (!existing) {
-        DB.hutang.push({
-          id: genId(), company_id: co(), nama_kreditur: nama,
-          jumlah: d.kredit, sisa: d.kredit, status: 'Belum Lunas',
-          tanggal: date, jatuh_tempo: '',
-          ref_transaction_id: trxId, ref_journal_id: jeId
-        });
-      } else {
-        const idx = DB.hutang.findIndex(h =>h.id === existing.id);
-        DB.hutang[idx].jumlah += d.kredit;
-        DB.hutang[idx].sisa += d.kredit;
-        if (DB.hutang[idx].sisa > 0) DB.hutang[idx].status = 'Belum Lunas';
-        if (!DB.integration_deltas) DB.integration_deltas = [];
-        DB.integration_deltas.push({ trx_id: trxId, module: 'hutang', record_id: existing.id, amount: d.kredit });
-      }
+      // FIX 3: Setiap kredit ke Hutang membuat record baru per faktur (per-invoice tracking).
+      // Pembayaran hutang FIFO akan menyasar faktur terlama lebih dulu.
+      const nomorRef = `TRX-${String(trxId).padStart(6,'0')}`;
+      DB.hutang.push({
+        id: genId(), company_id: co(), nama_kreditur: nama,
+        jumlah: d.kredit, sisa: d.kredit, status: 'Belum Lunas',
+        tanggal: date, jatuh_tempo: '',
+        nomor_ref: nomorRef,
+        ref_transaction_id: trxId, ref_journal_id: jeId
+      });
     }
 
     // ── HUTANG: jika debit ke akun Hutang → bayar hutang ──
@@ -1950,26 +1935,28 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
         });
     }
 
-    // ── PERSEDIAAN: jika debit → tambah stok ──
+    // ── PERSEDIAAN: jika debit → tambah stok (batch FIFO baru per transaksi) ──
     if (d.debit > 0 && acc.type === 'Aset' && isType(acc, ['persediaan barang','persediaan'])) {
-      // Prioritas nama barang: 1) counterparty (nama pemasok sbg identifikasi),
-      // 2) nama akun persediaan itu sendiri (lebih andal dari regex deskripsi)
+      // FIX 2: Setiap pembelian/penambahan persediaan SELALU membuat batch baru (true FIFO).
+      // Batch diidentifikasi dengan ref_transaction_id sehingga FIFO bekerja per tanggal masuk.
+      // Nama barang tetap digunakan sebagai label deskriptif (bukan primary key).
       const namaBarang = counterparty
         ? `Persediaan dari ${counterparty}`
         : acc.name;
-      const existing = coFilter(DB.persediaan).find(p =>p.nama_barang === namaBarang);
-      if (!existing) {
+      // Cek apakah batch dengan trxId ini sudah ada (hindari duplikasi saat retry)
+      const batchExisting = coFilter(DB.persediaan).find(p => p.ref_transaction_id === trxId && p.nama_barang === namaBarang);
+      if (!batchExisting) {
         DB.persediaan.push({
           id: genId(), company_id: co(), nama_barang: namaBarang,
           jumlah: 1, harga_satuan: d.debit, total_nilai: d.debit,
+          tanggal_masuk: date,
           ref_transaction_id: trxId
         });
       } else {
-        const idx = DB.persediaan.findIndex(p =>p.id === existing.id);
-        DB.persediaan[idx].total_nilai = (DB.persediaan[idx].total_nilai || 0) + d.debit;
-        DB.persediaan[idx].harga_satuan = DB.persediaan[idx].total_nilai / (DB.persediaan[idx].jumlah || 1);
-        if (!DB.integration_deltas) DB.integration_deltas = [];
-        DB.integration_deltas.push({ trx_id: trxId, module: 'persediaan', direction: 'debit', record_id: existing.id, amount: d.debit });
+        // Batch sudah ada (kasus edit-ulang transaksi setelah reversal) — update nilainya
+        const idx = DB.persediaan.findIndex(p => p.id === batchExisting.id);
+        DB.persediaan[idx].total_nilai = d.debit;
+        DB.persediaan[idx].harga_satuan = d.debit / (DB.persediaan[idx].jumlah || 1);
       }
     }
 
@@ -2557,7 +2544,47 @@ function savePenyesuaian() {
     // Mode edit — update record yang ada
     const idx = DB.penyesuaian.findIndex(p =>p.id == parseInt(editId));
     if (idx >= 0) {
-      DB.penyesuaian[idx] = { ...DB.penyesuaian[idx], date, description: desc,
+      const oldPen = DB.penyesuaian[idx];
+      const oldAmount = oldPen.amount || 0;
+      const newAmount = amount;
+
+      // FIX 1: Jika penyesuaian ini berasal dari pemakaian perlengkapan (_source='pemakaian_perlengkapan'),
+      // balikkan dulu pengaruh nilai lama, lalu terapkan nilai baru ke record perlengkapan terkait.
+      // Ini mencegah double-count pengurangan saat user mengedit jumlah pemakaian.
+      const srcTrx = oldPen.ref_transaction_id
+        ? DB.transactions.find(t => t.id === oldPen.ref_transaction_id)
+        : DB.transactions.find(t => t._source === 'pemakaian_perlengkapan' && t.description === oldPen.description && t.company_id == co());
+
+      if (srcTrx?._source === 'pemakaian_perlengkapan') {
+        // Identifikasi akun perlengkapan (kredit_acc lama) untuk reversal nilai
+        const perlAccId = oldPen.kredit_acc;
+        if (perlAccId) {
+          // Cari item perlengkapan yang akunnya cocok dan nama item sesuai deskripsi
+          const perlItem = coFilter(DB.perlengkapan).find(p => {
+            const perlAcc = DB.accounts.find(a => a.id === perlAccId);
+            return perlAcc && p.nama_item && oldPen.description &&
+              oldPen.description.toLowerCase().includes(p.nama_item.toLowerCase());
+          });
+          if (perlItem) {
+            const pIdx = DB.perlengkapan.findIndex(x => x.id === perlItem.id);
+            if (pIdx >= 0) {
+              // Kembalikan nilai lama (reversal), lalu kurangi dengan nilai baru
+              const selisih = newAmount - oldAmount; // positif = tambah pemakaian, negatif = kurangi
+              DB.perlengkapan[pIdx].nilai = Math.max(0, (DB.perlengkapan[pIdx].nilai || 0) - selisih);
+            }
+          }
+        }
+        // Update juga journal_detail yang terkait agar saldo akun ikut berubah
+        const relJE = DB.journal_entries.find(je => je.transaction_id === srcTrx.id);
+        if (relJE) {
+          DB.journal_details.filter(jd => jd.journal_id === relJE.id).forEach(jd => {
+            if (jd.debit > 0) jd.debit = newAmount;
+            if (jd.kredit > 0) jd.kredit = newAmount;
+          });
+        }
+      }
+
+      DB.penyesuaian[idx] = { ...oldPen, date, description: desc,
         debit_acc: parseInt(dAcc), kredit_acc: parseInt(kAcc), amount };
     }
     auditLog('UPDATE', 'penyesuaian', parseInt(editId), { desc, date, amount });
@@ -2580,6 +2607,36 @@ function deletePenyesuaian(id) {
   if (!confirm('Hapus penyesuaian ini?')) return;
   const p = DB.penyesuaian.find(x=>x.id==id);
   if (cekPeriodeLock(p?.date)) return; // Saran 2
+
+  // FIX 1: Jika penyesuaian ini berasal dari pemakaian perlengkapan, kembalikan nilai perlengkapan
+  if (p) {
+    const srcTrx = p.ref_transaction_id
+      ? DB.transactions.find(t => t.id === p.ref_transaction_id)
+      : DB.transactions.find(t => t._source === 'pemakaian_perlengkapan' && t.description === p.description && t.company_id == co());
+    if (srcTrx?._source === 'pemakaian_perlengkapan') {
+      const perlAccId = p.kredit_acc;
+      if (perlAccId) {
+        const perlItem = coFilter(DB.perlengkapan).find(item => {
+          const perlAcc = DB.accounts.find(a => a.id === perlAccId);
+          return perlAcc && item.nama_item && p.description &&
+            p.description.toLowerCase().includes(item.nama_item.toLowerCase());
+        });
+        if (perlItem) {
+          const pIdx = DB.perlengkapan.findIndex(x => x.id === perlItem.id);
+          if (pIdx >= 0) {
+            // Kembalikan nilai yang dulu dikurangi
+            DB.perlengkapan[pIdx].nilai = (DB.perlengkapan[pIdx].nilai || 0) + (p.amount || 0);
+          }
+        }
+      }
+      // Hapus juga transaksi/jurnal otomatis yang dibuat oleh pemakaian perlengkapan
+      const relJE = DB.journal_entries.filter(je => je.transaction_id === srcTrx.id);
+      relJE.forEach(je => { DB.journal_details = DB.journal_details.filter(jd => jd.journal_id !== je.id); });
+      DB.journal_entries = DB.journal_entries.filter(je => je.transaction_id !== srcTrx.id);
+      DB.transactions = DB.transactions.filter(t => t.id !== srcTrx.id);
+    }
+  }
+
   auditLog('DELETE', 'penyesuaian', id, { desc: p?.description, amount: p?.amount });
   DB.penyesuaian = DB.penyesuaian.filter(p=>p.id!=id);
   autoSave(); renderPenyesuaian(); toast('Dihapus','success');
@@ -2628,7 +2685,7 @@ function renderHutang() {
   if (!hs.length) { tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada hutang.</p></div></td></tr>`; return; }
   const katLabel_h={'pembelian_kredit':'Pembelian Kredit','pinjaman_bank':'Pinjaman Bank','pinjaman_pribadi':'Pinjaman Pribadi','hutang_gaji':'Hutang Gaji','hutang_pajak':'Hutang Pajak','lain_lain':'Lain-lain'};
   tbody.innerHTML = hs.map(h=>`
-    <tr> <td style="font-weight:600;">${h.nama_kreditur}</td> <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_h[h.kategori]||h.kategori||'—'}</span></td> <td class="td-mono">${fmtC(h.jumlah)}</td> <td>${h.tanggal||'—'}</td> <td>${h.jatuh_tempo||'—'}</td> <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td> <td><span class="badge-status ${h.status=='Lunas'?'badge-lunas':h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td> <td> <button class="btn btn-secondary btn-sm" onclick="openHutangEdit(${h.id})">Edit</button> ${h.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang',${h.id})">Bayar</button>`:''}
+    <tr> <td style="font-weight:600;">${h.nama_kreditur}${h.nomor_ref?`<br><small style="font-size:10px;color:var(--text3);font-family:var(--mono);">${h.nomor_ref}</small>`:''}</td> <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_h[h.kategori]||h.kategori||'—'}</span></td> <td class="td-mono">${fmtC(h.jumlah)}</td> <td>${h.tanggal||'—'}</td> <td>${h.jatuh_tempo||'—'}</td> <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td> <td><span class="badge-status ${h.status=='Lunas'?'badge-lunas':h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td> <td> <button class="btn btn-secondary btn-sm" onclick="openHutangEdit(${h.id})">Edit</button> ${h.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang',${h.id})">Bayar</button>`:''}
         <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang',${h.id})">Hapus</button> </td> </tr> `).join('');
 }
 
@@ -2750,7 +2807,7 @@ function renderPiutang() {
   if (!ps.length) { tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada piutang.</p></div></td></tr>`; return; }
   const katLabel_p={'penjualan_kredit':'Penjualan Kredit','piutang_karyawan':'Piutang Karyawan','piutang_pinjaman':'Pinjaman ke Pihak Lain','piutang_bunga':'Piutang Bunga','lain_lain':'Lain-lain'};
   tbody.innerHTML = ps.map(p=>`
-    <tr> <td style="font-weight:600;">${p.nama_debitur}</td> <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_p[p.kategori]||p.kategori||'—'}</span></td> <td class="td-mono">${fmtC(p.jumlah)}</td> <td>${p.tanggal||'—'}</td> <td>${p.jatuh_tempo||'—'}</td> <td class="td-mono" style="font-weight:700;">${fmtC(p.sisa)}</td> <td><span class="badge-status ${p.status=='Lunas'?'badge-lunas':p.sisa<p.jumlah?'badge-partial':'badge-belum'}">${p.status}</span></td> <td> <button class="btn btn-secondary btn-sm" onclick="openPiutangEdit(${p.id})">Edit</button> ${p.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang',${p.id})">Terima</button>`:''}
+    <tr> <td style="font-weight:600;">${p.nama_debitur}${p.nomor_ref?`<br><small style="font-size:10px;color:var(--text3);font-family:var(--mono);">${p.nomor_ref}</small>`:''}</td> <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_p[p.kategori]||p.kategori||'—'}</span></td> <td class="td-mono">${fmtC(p.jumlah)}</td> <td>${p.tanggal||'—'}</td> <td>${p.jatuh_tempo||'—'}</td> <td class="td-mono" style="font-weight:700;">${fmtC(p.sisa)}</td> <td><span class="badge-status ${p.status=='Lunas'?'badge-lunas':p.sisa<p.jumlah?'badge-partial':'badge-belum'}">${p.status}</span></td> <td> <button class="btn btn-secondary btn-sm" onclick="openPiutangEdit(${p.id})">Edit</button> ${p.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang',${p.id})">Terima</button>`:''}
         <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang',${p.id})">Hapus</button> </td> </tr> `).join('');
 }
 
@@ -4318,9 +4375,18 @@ function renderLaporanAktivitas(co_data, lkNames, revenues, expenses, totRev, to
   const revT  = revenues.filter(a =>  isTerikat(a));
   const totRevUT = revUT.reduce((s,a)=>s+a.balance,0);
   const totRevT  = revT.reduce((s,a)=>s+a.balance,0);
-  const kenaikanUT = totRevUT - totExp;
-  const kenaikanT  = totRevT;
-  const kenaikanTotal = laba;
+
+  // FIX 4: Pisahkan beban menjadi beban tidak terikat dan beban terikat.
+  // Beban terikat diidentifikasi dari nama akun yang mengandung kata kunci "terikat"/"restricted".
+  // Sisanya masuk ke beban tidak terikat. Ini sesuai ISAK 35 paragraf 21-23.
+  const expUT = expenses.filter(a => !isTerikat(a));
+  const expT  = expenses.filter(a =>  isTerikat(a));
+  const totExpUT = expUT.reduce((s,a)=>s+a.balance,0);
+  const totExpT  = expT.reduce((s,a)=>s+a.balance,0);
+
+  const kenaikanUT    = totRevUT - totExpUT;
+  const kenaikanT     = totRevT  - totExpT;
+  const kenaikanTotal = kenaikanUT + kenaikanT; // = laba total
 
   document.getElementById('laba-rugi-content').innerHTML = `
     <div style="margin-bottom:12px;padding:10px 14px;background:rgba(16,185,129,.08);border-radius:var(--radius2);border-left:4px solid var(--accent2);font-size:11px;color:var(--text2);">
@@ -4338,9 +4404,9 @@ function renderLaporanAktivitas(co_data, lkNames, revenues, expenses, totRev, to
         <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:6px 0 2px;">Pendapatan & Penghasilan</div>
         ${revUT.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3)"><span>— Belum ada akun pendapatan tidak terikat —</span></div>'}
         <div class="report-row subtotal"><span><strong>Jumlah Pendapatan Tidak Terikat</strong></span><span class="report-amount"><strong>${fmtC(totRevUT)}</strong></span></div>
-        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 2px;">Beban Program & Pendukung</div>
-        ${expenses.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3)"><span>— Belum ada beban —</span></div>'}
-        <div class="report-row subtotal"><span><strong>Jumlah Beban</strong></span><span class="report-amount"><strong>${fmtC(totExp)}</strong></span></div>
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 2px;">Beban Program & Pendukung (Tidak Terikat)</div>
+        ${expUT.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3)"><span>— Belum ada beban tidak terikat —</span></div>'}
+        <div class="report-row subtotal"><span><strong>Jumlah Beban Tidak Terikat</strong></span><span class="report-amount"><strong>${fmtC(totExpUT)}</strong></span></div>
         <div class="report-row" style="padding:8px 0;margin-top:4px;border-top:1.5px solid var(--border);">
           <span style="font-weight:700;">Kenaikan (Penurunan) Aset Bersih Tidak Terikat</span>
           <span class="report-amount" style="font-weight:700;color:${kenaikanUT>=0?'var(--accent2)':'var(--danger)'};">${kenaikanUT<0?'(':''}${fmtC(Math.abs(kenaikanUT))}${kenaikanUT<0?')':''}</span>
@@ -4350,8 +4416,14 @@ function renderLaporanAktivitas(co_data, lkNames, revenues, expenses, totRev, to
       <div class="report-section" style="margin-top:16px;">
         <div class="report-section-title" style="color:#7c3aed;">ASET BERSIH TERIKAT (TEMPORER & PERMANEN)</div>
         <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Pendapatan yang dibatasi penggunaannya oleh pemberi sumber daya (donor)</div>
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:4px 0 2px;">Pendapatan Terikat</div>
         ${revT.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')||'<div class="report-row indent" style="color:var(--text3)"><span>— Belum ada akun pendapatan terikat —<br><small>Tip: Beri nama akun yang mengandung kata "terikat" atau "restricted"</small></span></div>'}
         <div class="report-row subtotal"><span><strong>Jumlah Pendapatan Terikat</strong></span><span class="report-amount"><strong>${fmtC(totRevT)}</strong></span></div>
+        ${expT.length ? `
+        <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:8px 0 2px;">Beban Terikat</div>
+        ${expT.map(a=>`<div class="report-row indent"><span>${a.code} ${a.name}</span><span class="report-amount">${fmtC(a.balance)}</span></div>`).join('')}
+        <div class="report-row subtotal"><span><strong>Jumlah Beban Terikat</strong></span><span class="report-amount"><strong>${fmtC(totExpT)}</strong></span></div>
+        ` : ''}
         <div class="report-row" style="padding:8px 0;margin-top:4px;border-top:1.5px solid var(--border);">
           <span style="font-weight:700;">Kenaikan (Penurunan) Aset Bersih Terikat</span>
           <span class="report-amount" style="font-weight:700;color:${kenaikanT>=0?'var(--accent2)':'var(--danger)'};">${kenaikanT<0?'(':''}${fmtC(Math.abs(kenaikanT))}${kenaikanT<0?')':''}</span>
@@ -4367,7 +4439,7 @@ function renderLaporanAktivitas(co_data, lkNames, revenues, expenses, totRev, to
         • <strong>Tidak Terikat:</strong> Tidak ada pembatasan dari pemberi sumber daya → dapat digunakan bebas oleh entitas<br>
         • <strong>Terikat Temporer:</strong> Ada pembatasan waktu atau tujuan → akan terbebas setelah terpenuhi<br>
         • <strong>Terikat Permanen:</strong> Pembatasan permanen (misal: dana endowment) → hanya hasil investasinya yang dapat digunakan<br>
-        💡 Beri nama akun dengan kata "terikat" atau "restricted" agar terklasifikasi otomatis
+        💡 Beri nama akun <strong>pendapatan</strong> dan <strong>beban</strong> dengan kata "terikat" atau "restricted" agar terklasifikasi otomatis ke kolom Terikat
       </div>
     </div>`;
 }
