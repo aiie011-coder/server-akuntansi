@@ -1,15 +1,9 @@
 // ══════════════════════════════════════════════════════════════════
 // FILE: api/plan-config.js
-// Letakkan di: server-akuntansi-aiie / api / plan-config.js
-// Endpoint: POST /api/plan-config
-// Dipanggil ZeQui saat startup untuk ambil konfigurasi paket user
 // ══════════════════════════════════════════════════════════════════
 
-// ── Import database helper (sesuaikan dengan yang sudah dipakai di project) ──
-// Contoh pakai @vercel/kv, prisma, atau apapun yang sudah dipakai:
-const { getLicenseByKey, updateLicenseLastSeen } = require('../lib/db'); // SESUAIKAN
+const { getLicenseByKey, updateLicenseLastSeen } = require('../lib/db');
 
-// ── Definisi paket — satu sumber kebenaran ada di sini (server) ──
 const PLAN_DEFINITIONS = {
   trial: {
     plan: 'trial',
@@ -70,8 +64,28 @@ const PLAN_DEFINITIONS = {
   },
 };
 
+// ── Helper: pastikan locked_modules selalu array ──
+// Database sering menyimpan array sebagai string JSON ('["lra","lsal"]')
+// atau string CSV ("lra,lsal"). Fungsi ini menormalkannya.
+function parseLockedModules(value) {
+  if (Array.isArray(value)) return value;
+  if (!value) return [];
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    // Coba parse sebagai JSON array: '["lra","lsal"]'
+    if (trimmed.startsWith('[')) {
+      try { 
+        const parsed = JSON.parse(trimmed);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch(e) { /* lanjut ke CSV */ }
+    }
+    // Fallback: CSV "lra,lsal"
+    return trimmed.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  return [];
+}
+
 module.exports = async function handler(req, res) {
-  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -85,14 +99,12 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // ── Cari lisensi di database ──
     const license = await getLicenseByKey(key);
 
     if (!license) {
       return res.status(200).json({ valid: false, message: 'Lisensi tidak ditemukan' });
     }
 
-    // ── Cek HWID match (opsional tapi disarankan) ──
     if (license.hwid && license.hwid !== hwid) {
       return res.status(200).json({
         valid: false,
@@ -100,7 +112,6 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // ── Cek status aktif ──
     if (!license.is_active) {
       return res.status(200).json({
         valid: false,
@@ -108,15 +119,12 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // ── Tentukan plan — ambil dari database, fallback ke trial ──
     const planName = license.plan || 'trial';
     const planDef  = PLAN_DEFINITIONS[planName] || PLAN_DEFINITIONS.trial;
 
-    // ── Hitung expiry ──
     let expiry_date = license.expiry_date || null;
     let is_expired  = false;
 
-    // Untuk Trial: hitung dari tanggal aktivasi
     if (planName === 'trial' && license.activated_at) {
       const trialEnd = new Date(license.activated_at);
       trialEnd.setDate(trialEnd.getDate() + (planDef.trial_days || 14));
@@ -126,26 +134,30 @@ module.exports = async function handler(req, res) {
       is_expired = new Date(expiry_date) < new Date();
     }
 
-    // ── Override paket dari field khusus di database (jika admin set manual) ──
-    // Ini memungkinkan admin set per-user override:
-    // misalnya max_companies: 5 untuk user tertentu walaupun dia paket Starter
+    // ── Override dari database — dengan normalisasi locked_modules ──
     const customOverrides = {};
-    if (license.max_companies != null) customOverrides.max_companies = license.max_companies;
-    if (license.locked_modules != null) customOverrides.locked_modules = license.locked_modules;
+    if (license.max_companies != null) customOverrides.max_companies  = license.max_companies;
     if (license.export_enabled != null) customOverrides.export_enabled = license.export_enabled;
-    if (license.print_full    != null) customOverrides.print_full     = license.print_full;
+    if (license.print_full     != null) customOverrides.print_full     = license.print_full;
 
-    // ── Update last_seen di database ──
+    // FIX: locked_modules wajib dikirim sebagai array, bukan string
+    if (license.locked_modules != null) {
+      customOverrides.locked_modules = parseLockedModules(license.locked_modules);
+    }
+
     await updateLicenseLastSeen(key, { hwid, last_seen: new Date().toISOString() });
 
-    // ── Balas dengan konfigurasi paket ──
+    // FIX: pastikan locked_modules dari planDef juga array (defensif)
+    const responseLockedModules = customOverrides.locked_modules 
+      ?? parseLockedModules(planDef.locked_modules);
+
     return res.status(200).json({
       valid: true,
       ...planDef,
-      ...customOverrides,   // override admin jika ada
+      ...customOverrides,
+      locked_modules: responseLockedModules,  // selalu array
       expiry_date,
       is_expired,
-      // Jangan kirim data sensitif
       name: license.customer_name || '',
     });
 
