@@ -827,10 +827,9 @@ function auditLog(action, module, recordId, detail = {}) {
 
 // ── initDB: async, prioritas IDB → EMBEDDED_DATA → localStorage lama ──
 async function initDB() {
-  if (!__licenseVerified) {
-    console.warn('initDB diblokir: lisensi belum diverifikasi server');
-    return;
-  }
+  // [FIX] initDB tidak lagi diblokir oleh licenseVerified.
+  // Data lokal (IndexedDB) tetap dimuat agar tombol-tombol berfungsi
+  // setelah login lisensi berhasil (termasuk mode offline dari cache).
   _updateSaveIndicator('saving');
   try {
     const idbData = await loadFromIDB();
@@ -942,7 +941,9 @@ function navigate(page) {
 function renderPage(page) {
   if (!co() && !['companies','settings'].includes(page)) {
     toast('Pilih perusahaan terlebih dahulu','error');
-    navigate('companies'); return;
+    // [FIX] Panggil navigate langsung agar currentPage dan UI sidebar konsisten
+    navigate('companies');
+    return;
   }
   const r = {
     dashboard: renderDashboard,
@@ -1095,7 +1096,7 @@ function renderCompanies() {
 function openCompanyModal() {
   const maxCo = (__planConfig && __planConfig.max_companies) || (PLAN_DEFAULTS[__planConfig?.plan]?.max_companies) || 1;
   if (__licenseVerified && DB.companies.length >= maxCo) {
-    toast(`Paket ${__planConfig.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
+    toast(`Paket ${__planConfig?.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
     showUpgradeModal('companies');
     return;
   }
@@ -1118,7 +1119,7 @@ function saveCompany() {
     const maxCo = (__planConfig && __planConfig.max_companies) || (PLAN_DEFAULTS[__planConfig?.plan]?.max_companies) || 1;
     if (DB.companies.length >= maxCo) {
       closeModal('modal-company');
-      toast(`Paket ${__planConfig.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
+      toast(`Paket ${__planConfig?.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
       showUpgradeModal('companies');
       return;
     }
@@ -7062,12 +7063,21 @@ function toggleDropdown(id) {
   const el = document.getElementById(id);
   const isOpen = el.style.display !== 'none';
   // Close all dropdowns first
-  document.querySelectorAll('[id$="-dropdown"]').forEach(d =>d.style.display = 'none');
+  document.querySelectorAll('[id$="-dropdown"]').forEach(d => d.style.display = 'none');
   el.style.display = isOpen ? 'none' : 'block';
 }
 document.addEventListener('click', e => {
-  if (!e.target.closest('[id$="-dropdown-wrap"]')) {
-    document.querySelectorAll('[id$="-dropdown"]').forEach(d =>d.style.display = 'none');
+  // [FIX] Jangan tutup dropdown jika yang diklik adalah item di dalam dropdown
+  // Bug lama: dropdown menutup SEBELUM onclick item selesai dieksekusi
+  const insideDropdown = e.target.closest('[id$="-dropdown"]');
+  const insideWrap     = e.target.closest('[id$="-dropdown-wrap"]');
+  if (!insideWrap && !insideDropdown) {
+    document.querySelectorAll('[id$="-dropdown"]').forEach(d => d.style.display = 'none');
+  } else if (insideDropdown && !e.target.closest('[id$="-dropdown-wrap"] > button')) {
+    // Klik pada item dropdown — tutup setelah sedikit delay agar onclick item selesai dulu
+    setTimeout(() => {
+      document.querySelectorAll('[id$="-dropdown"]').forEach(d => d.style.display = 'none');
+    }, 150);
   }
 });
 
@@ -8678,6 +8688,23 @@ const PLAN_DEFAULTS = {
   }
 };
 
+// [FIX] Helper: normalisasi planConfig dari server — locked_modules bisa datang sebagai
+// string JSON '["lra"]', string CSV "lra,lsal", array, atau null.
+function normalisePlanConfig(cfg) {
+  if (!cfg) return cfg;
+  if (!Array.isArray(cfg.locked_modules)) {
+    try {
+      const p = JSON.parse(cfg.locked_modules);
+      cfg.locked_modules = Array.isArray(p) ? p : [];
+    } catch(e) {
+      cfg.locked_modules = cfg.locked_modules
+        ? String(cfg.locked_modules).split(',').map(s => s.trim()).filter(Boolean)
+        : [];
+    }
+  }
+  return cfg;
+}
+
 // Ambil planConfig dari server (dipanggil setelah lisensi valid)
 async function fetchPlanConfig(licKey) {
   try {
@@ -8700,6 +8727,8 @@ async function fetchPlanConfig(licKey) {
           if (data[k] !== null && data[k] !== undefined) merged[k] = data[k];
         });
         __planConfig = merged;
+        // [FIX] Normalisasi locked_modules lewat helper terpusat
+        normalisePlanConfig(__planConfig);
         // Cek expired
         if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
           __planConfig.is_expired = true;
@@ -8718,6 +8747,8 @@ async function fetchPlanConfig(licKey) {
         // Cache valid max 3 hari
         if (Date.now() - (c._cached_at || 0) < 3 * 24 * 3600 * 1000) {
           __planConfig = c;
+          // [FIX] Normalisasi locked_modules dari cache juga
+          normalisePlanConfig(__planConfig);
           return true;
         }
       } catch(_) {}
@@ -8730,13 +8761,15 @@ async function fetchPlanConfig(licKey) {
 function canAccess(feature) {
   if (!__planConfig) return false;
   if (__planConfig.is_expired) return false;
-  if (__planConfig.locked_modules && __planConfig.locked_modules.includes(feature)) return false;
+  // [FIX] locked_modules dari server bisa non-array — pastikan selalu array sebelum .includes()
+  const locked = Array.isArray(__planConfig.locked_modules) ? __planConfig.locked_modules : [];
+  if (locked.includes(feature)) return false;
   const map = {
     export:             __planConfig.export_enabled,
     print_full:         __planConfig.print_full,
     'jurnal-penutup':   __planConfig.jurnal_penutup_enabled,
     aset_saldo_menurun: __planConfig.aset_saldo_menurun,
-    'aset-tetap':       !(__planConfig.locked_modules || []).includes('aset-tetap'),
+    'aset-tetap':       !locked.includes('aset-tetap'),
     komparasi:          __planConfig.komparasi_enabled,
     lra:                __planConfig.lra_lsal_enabled,
     lsal:               __planConfig.lra_lsal_enabled,
@@ -8764,7 +8797,7 @@ function showUpgradeModal(feature) {
                      ['komparasi','lra','lsal'].includes(feature) ? 'Pro' : 'Pro';
   document.getElementById('upgrade-modal-feature').textContent = featureLabel;
   document.getElementById('upgrade-modal-plan').textContent = planNeeded;
-  document.getElementById('upgrade-modal-current').textContent = __planConfig.plan_label || __planConfig.plan;
+  document.getElementById('upgrade-modal-current').textContent = __planConfig?.plan_label || __planConfig?.plan || 'Trial';
   openModal('modal-upgrade');
 }
 
@@ -8789,7 +8822,8 @@ function applyPlanRestrictions() {
   }
 
   // ── 3. Sembunyikan/kunci item navigasi
-  const lockedNavPages = cfg.locked_modules || [];
+  // [FIX] Pastikan selalu array — server bisa mengembalikan null/string/undefined
+  const lockedNavPages = Array.isArray(cfg.locked_modules) ? cfg.locked_modules : [];
   lockedNavPages.forEach(mod => {
     // Sembunyikan nav item untuk modul yang dikunci plan (bukan SAP)
     if (!['lra','lsal'].includes(mod)) {
@@ -8813,7 +8847,7 @@ function applyPlanRestrictions() {
   }
 
   // ── 4b. Aset Tetap — kunci nav jika dikunci via locked_modules
-  if ((cfg.locked_modules || []).includes('aset-tetap')) {
+  if (lockedNavPages.includes('aset-tetap')) {
     const el = document.querySelector(`.nav-item[onclick="navigate('aset-tetap')"]`);
     if (el && !el.classList.contains('nav-locked')) {
       el.innerHTML = el.innerHTML + ' <span class="plan-lock"></span>';
@@ -9059,16 +9093,16 @@ async function licUnlock(lic) {
   // Ambil konfigurasi paket dari server
   const planOk = await fetchPlanConfig(lic.key);
   if (!planOk) {
-    toast('\u26a0\ufe0f Konfigurasi paket tidak bisa dimuat \u2014 menggunakan mode Trial offline.', 'info', 5000);
+    toast('⚠️ Konfigurasi paket tidak bisa dimuat — menggunakan mode Trial offline.', 'info', 5000);
   }
+
+  // [FIX] Terapkan pembatasan paket SEBELUM navigate agar canAccess() pakai config terbaru
+  applyPlanRestrictions();
 
   // Jalankan app normal
   await initDB();
   updateHeader();
   navigate('dashboard');
-
-  // Terapkan pembatasan paket (setelah DOM siap)
-  setTimeout(applyPlanRestrictions, 300);
 
   if (!DB.companies.length) {
     setTimeout(()=>{ toast('Selamat datang! Mulai dengan menambahkan perusahaan.','info',5000); navigate('companies'); },600);
