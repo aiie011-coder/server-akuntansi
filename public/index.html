@@ -535,7 +535,25 @@ textarea.form-control { resize:vertical; min-height:80px; }
               style="border-radius:0 var(--radius2) var(--radius2) 0;font-family:var(--mono);font-size:14px;font-weight:700;"
               oninput="syncCOACode()" maxlength="10"> <input type="hidden" id="coa-code"> </div> <small id="coa-code-hint" style="font-size:11px;color:var(--text2);">Nomor urut akun, misal: 001, 002, 101</small> </div> <div class="form-group"> <label>Nama Akun *</label> <input class="form-control" id="coa-name" placeholder="Kas"> </div> <div class="form-group"><label>Saldo Normal</label> <select class="form-control" id="coa-normal"> <option value="Debit">Debit</option><option value="Kredit">Kredit</option> </select> </div> <div class="form-group"> <label>Klasifikasi Neraca
             <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Aset &amp; Kewajiban)</span> </label> <select class="form-control" id="coa-kategori-neraca"> <option value="">— Auto (dari nama akun) —</option> <option value="lancar">Lancar / Jangka Pendek</option> <option value="tidak_lancar">Tidak Lancar / Jangka Panjang</option> </select> <small style="font-size:10px;color:var(--text3);">Wajib diisi jika nama akun non-standar</small> </div> <div class="form-group"> <label>Kategori Arus Kas
-            <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Aset/Kewajiban/Ekuitas)</span> </label> <select class="form-control" id="coa-kategori-arus-kas"> <option value="">— Auto (dari nama akun) —</option> <option value="operasi">Operasi</option> <option value="investasi">Investasi</option> <option value="pendanaan">Pendanaan</option> </select> <small style="font-size:10px;color:var(--text3);">Paksa klasifikasi jika nama akun tidak dikenali otomatis</small> </div> </div> <!-- Header & Sub Header --> <div style="margin-top:16px;padding:14px 16px;background:rgba(37,99,235,.05);border-radius:var(--radius2);border:1px solid rgba(37,99,235,.12);"> <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-light);margin-bottom:12px;">Pengelompokan Akun</div> <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;"> <div class="form-group"> <label>Header</label> <select class="form-control" id="coa-header" onchange="updateCOASubHeaderOptions()"> <option value="">— Tanpa Header —</option> </select> <small style="font-size:11px;color:var(--text2);">Kelompok utama akun</small> </div> <div class="form-group"> <label>Sub Header</label> <select class="form-control" id="coa-subheader"> <option value="">— Tanpa Sub Header —</option> </select> <small style="font-size:11px;color:var(--text2);">Sub kelompok akun</small> </div> </div> <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"> <button class="btn btn-secondary btn-sm" onclick="openModal('modal-coa-header')">Kelola Header</button> </div> </div> <div class="form-grid" style="margin-top:16px;"> <div class="form-group"><label>Saldo Awal (Rp)</label> <input class="form-control" type="number" id="coa-saldo-awal" min="0" value="0" placeholder="0"> <small style="font-size:11px;color:var(--text2);">Isi untuk migrasi dari sistem lain</small> </div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-coa')">Batal</button> <button class="btn btn-primary" onclick="saveCOA()">Simpan</button> </div> </div>
+            <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Aset/Kewajiban/Ekuitas)</span> </label> <select class="form-control" id="coa-kategori-arus-kas"> <option value="">— Auto (dari nama akun) —</option> <option value="operasi">Operasi</option> <option value="investasi">Investasi</option> <option value="pendanaan">Pendanaan</option> </select> <small style="font-size:10px;color:var(--text3);">Paksa klasifikasi jika nama akun tidak dikenali otomatis</small> </div>
+  <!-- W5: Peran Akun — pengganti deteksi keyword nama, akurat untuk nama non-standar -->
+  <div class="form-group" style="grid-column:1/-1;">
+    <label>Peran Akun (Integrasi Sub-Ledger)
+      <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">— isi jika nama akun tidak mengandung kata kunci standar</span>
+    </label>
+    <select class="form-control" id="coa-account-role">
+      <option value="">— Auto (dari nama &amp; tipe akun) —</option>
+      <option value="kas_bank">Kas / Bank (akun kas utama)</option>
+      <option value="piutang_usaha">Piutang Usaha / Tagihan Pelanggan</option>
+      <option value="hutang_usaha">Hutang Usaha / Hutang Dagang</option>
+      <option value="persediaan">Persediaan Barang</option>
+      <option value="perlengkapan">Perlengkapan / Supplies</option>
+      <option value="aset_tetap">Aset Tetap (Peralatan, Kendaraan, dll)</option>
+      <option value="akumulasi_penyusutan">Akumulasi Penyusutan (Contra-Asset)</option>
+      <option value="modal_utama">Modal Utama / Laba Ditahan (Jurnal Penutup)</option>
+    </select>
+    <small style="font-size:10px;color:var(--text3);">Digunakan oleh integrasi otomatis agar tidak bergantung pada nama akun</small>
+  </div> <!-- Header & Sub Header --> <div style="margin-top:16px;padding:14px 16px;background:rgba(37,99,235,.05);border-radius:var(--radius2);border:1px solid rgba(37,99,235,.12);"> <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-light);margin-bottom:12px;">Pengelompokan Akun</div> <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;"> <div class="form-group"> <label>Header</label> <select class="form-control" id="coa-header" onchange="updateCOASubHeaderOptions()"> <option value="">— Tanpa Header —</option> </select> <small style="font-size:11px;color:var(--text2);">Kelompok utama akun</small> </div> <div class="form-group"> <label>Sub Header</label> <select class="form-control" id="coa-subheader"> <option value="">— Tanpa Sub Header —</option> </select> <small style="font-size:11px;color:var(--text2);">Sub kelompok akun</small> </div> </div> <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"> <button class="btn btn-secondary btn-sm" onclick="openModal('modal-coa-header')">Kelola Header</button> </div> </div> <div class="form-grid" style="margin-top:16px;"> <div class="form-group"><label>Saldo Awal (Rp)</label> <input class="form-control" type="number" id="coa-saldo-awal" min="0" value="0" placeholder="0"> <small style="font-size:11px;color:var(--text2);">Isi untuk migrasi dari sistem lain</small> </div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-coa')">Batal</button> <button class="btn btn-primary" onclick="saveCOA()">Simpan</button> </div> </div>
 </div> <!-- Modal Kelola Header & Sub Header -->
 <div class="modal-overlay" id="modal-coa-header"> <div class="modal modal-lg" style="max-width:700px;"> <div class="modal-header"> <div class="modal-title">Kelola Header & Sub Header Akun</div> <button class="modal-close" onclick="closeModal('modal-coa-header')"></button> </div> <div class="modal-body"> <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;"> <!-- Panel Header --> <div> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Header</div> <div style="display:flex;gap:8px;margin-bottom:10px;"> <input class="form-control" id="new-coa-header-name" placeholder="Nama header baru..." style="flex:1;font-size:13px;"> <select class="form-control" id="new-coa-header-type" style="flex:0 0 120px;font-size:12px;"> <option value="Aset">Aset</option><option value="Kewajiban">Kewajiban</option> <option value="Ekuitas">Ekuitas</option><option value="Pendapatan">Pendapatan</option> <option value="Beban">Beban</option> </select> <button class="btn btn-primary btn-sm" onclick="addCOAHeader()">Tambah</button> </div> <div id="coa-header-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius2);"></div> </div> <!-- Panel Sub Header --> <div> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Sub Header</div> <div style="display:flex;gap:8px;margin-bottom:10px;"> <input class="form-control" id="new-coa-subheader-name" placeholder="Nama sub header..." style="flex:1;font-size:13px;"> <select class="form-control" id="new-coa-subheader-parent" style="flex:0 0 130px;font-size:12px;"> <option value="">Pilih Header</option> </select> <button class="btn btn-primary btn-sm" onclick="addCOASubHeader()">Tambah</button> </div> <div id="coa-subheader-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius2);"></div> </div> </div> </div> <div class="modal-footer"> <button class="btn btn-primary" onclick="closeModal('modal-coa-header'); updateCOAHeaderOptions();">Selesai</button> </div> </div>
 </div> <!-- Transaction Modal -->
@@ -556,7 +574,16 @@ textarea.form-control { resize:vertical; min-height:80px; }
 </div> <!-- Company Switcher Modal -->
 <div class="modal-overlay" id="modal-switcher"> <div class="modal" style="max-width:400px;"> <div class="modal-header"><div class="modal-title">Pilih Perusahaan Aktif</div><button class="modal-close" onclick="closeModal('modal-switcher')"></button></div> <div class="modal-body" id="switcher-list" style="display:flex;flex-direction:column;gap:8px;padding:16px;"></div> </div>
 </div> <!-- Bayar Modal -->
-<div class="modal-overlay" id="modal-bayar"> <div class="modal" style="max-width:400px;"> <div class="modal-header"><div class="modal-title" id="bayar-title">Bayar Hutang</div><button class="modal-close" onclick="closeModal('modal-bayar')"></button></div> <div class="modal-body"> <input type="hidden" id="bayar-type" value="hutang"> <input type="hidden" id="bayar-id" value=""> <div id="bayar-info"></div> <div class="form-group"> <label>Jumlah Pembayaran (Rp) *</label> <input class="form-control" type="number" id="bayar-amount" min="0" placeholder="Masukkan jumlah..." required> <small style="font-size:11px;color:var(--text3);">Tidak boleh melebihi sisa tagihan</small> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-bayar')">Batal</button> <button class="btn btn-success" onclick="processBayar()">Bayar</button> </div> </div>
+<div class="modal-overlay" id="modal-bayar"> <div class="modal" style="max-width:420px;"> <div class="modal-header"><div class="modal-title" id="bayar-title">Bayar Hutang</div><button class="modal-close" onclick="closeModal('modal-bayar')"></button></div> <div class="modal-body"> <input type="hidden" id="bayar-type" value="hutang"> <input type="hidden" id="bayar-id" value=""> <input type="hidden" id="bayar-target-id" value=""> <div id="bayar-info"></div>
+  <!-- W2: Pilihan faktur spesifik atau FIFO -->
+  <div class="form-group" style="margin-bottom:12px;">
+    <label>Pilih Faktur Pembayaran</label>
+    <select class="form-control" id="bayar-faktur-select" onchange="onBayarFakturChange()" style="font-size:12px;">
+      <option value="">— Otomatis (FIFO: faktur terlama dulu) —</option>
+    </select>
+    <small style="font-size:11px;color:var(--text3);">Pilih faktur spesifik untuk melunasi faktur tertentu</small>
+  </div>
+  <div class="form-group"> <label>Jumlah Pembayaran (Rp) *</label> <input class="form-control" type="number" id="bayar-amount" min="0" placeholder="Masukkan jumlah..." required> <small style="font-size:11px;color:var(--text3);">Tidak boleh melebihi sisa tagihan faktur yang dipilih</small> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-bayar')">Batal</button> <button class="btn btn-success" onclick="processBayar()">Bayar</button> </div> </div>
 </div> <!-- Modal Jual Persediaan -->
 <div class="modal-overlay" id="modal-catat-pemakaian"> <div class="modal" style="max-width:420px;"> <div class="modal-header"><div class="modal-title">Catat Pemakaian Perlengkapan</div><button class="modal-close" onclick="closeModal('modal-catat-pemakaian')"></button></div> <div class="modal-body"> <input type="hidden" id="pakai-perl-id"> <div id="pakai-perl-info" style="margin-bottom:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);"></div> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Jumlah Nilai Terpakai (Rp) *</label><input class="form-control" type="number" id="pakai-perl-nilai" min="1" placeholder="Masukkan nilai yang terpakai..."></div> <div class="form-group" style="grid-column:1/-1"><label>Tanggal *</label><input class="form-control" type="date" id="pakai-perl-tanggal"></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="pakai-perl-ket" placeholder="Misal: Pemakaian perlengkapan bulan Januari..."></div> </div> <div id="pakai-perl-jurnal" style="margin-top:10px;padding:8px 12px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:8px;font-size:11px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-catat-pemakaian')">Batal</button> <button class="btn btn-warning" onclick="simpanPemakaianPerlengkapan()">Catat Pemakaian</button> </div> </div></div>
 
@@ -1462,7 +1489,8 @@ function saveCOA() {
     header_id: document.getElementById('coa-header').value || null,
     subheader_id: document.getElementById('coa-subheader').value || null,
     kategori_neraca: document.getElementById('coa-kategori-neraca')?.value || '',
-    kategori_arus_kas: document.getElementById('coa-kategori-arus-kas')?.value || ''
+    kategori_arus_kas: document.getElementById('coa-kategori-arus-kas')?.value || '',
+    account_role: document.getElementById('coa-account-role')?.value || ''
   };
   if (id) { const i=DB.accounts.findIndex(a=>a.id==id); DB.accounts[i]=obj; auditLog('UPDATE','coa',obj.id,{code:obj.code,name:obj.name,type:obj.type}); }
   else { DB.accounts.push(obj); auditLog('CREATE','coa',obj.id,{code:obj.code,name:obj.name,type:obj.type}); }
@@ -1482,6 +1510,9 @@ function editCOA(id) {
   }
   if (document.getElementById('coa-kategori-arus-kas')) {
     document.getElementById('coa-kategori-arus-kas').value = a.kategori_arus_kas || '';
+  }
+  if (document.getElementById('coa-account-role')) {
+    document.getElementById('coa-account-role').value = a.account_role || '';
   }
   // Reconstruct prefix + number
   const prefix = getCOAPrefix(a.type);
@@ -1780,6 +1811,31 @@ function applyTrxTemplate(type) {
 // ══════════════════════════════════════════
 // ── BALIK INTEGRASI saat transaksi diedit ──
 // Hapus record baru + balikkan delta yang ditambahkan ke record yang sudah ada.
+// W7: Helper untuk auto-journal dari modul (perlengkapan, persediaan, aset, penyusutan).
+// Memvalidasi total debit = total kredit sebelum disimpan ke DB.
+// Jika tidak balance, cetak console.warn dan JANGAN push agar DB tetap bersih.
+// Return { tid, jeid } jika berhasil, null jika gagal.
+function _pushAutoJournal(date, desc, source, details) {
+  const totD = details.reduce((s,d) => s + (d.debit  || 0), 0);
+  const totK = details.reduce((s,d) => s + (d.kredit || 0), 0);
+  if (Math.abs(totD - totK) > 0.01) {
+    console.warn(`[_pushAutoJournal] SKIP — jurnal tidak balance: "${desc}" D=${totD} K=${totK}`, details);
+    return null;
+  }
+  if (details.some(d => !d.account_id)) {
+    console.warn(`[_pushAutoJournal] SKIP — ada account_id null/undefined: "${desc}"`, details);
+    return null;
+  }
+  const tid  = genId(), jeid = genId();
+  DB.transactions.push({id:tid, company_id:co(), date, description:desc, _source:source});
+  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date, description:desc, _source:source});
+  details.forEach(d => DB.journal_details.push({
+    id:genId(), journal_id:jeid, account_id:d.account_id,
+    debit: d.debit||0, kredit: d.kredit||0
+  }));
+  return { tid, jeid };
+}
+
 function reverseIntegration(trxId) {
   // 1. Hapus record yang dibuat baru dari transaksi ini
   // FIX 2+3: Piutang, hutang, dan persediaan kini selalu dibuat sebagai record baru per transaksi
@@ -1825,6 +1881,33 @@ function reverseIntegration(trxId) {
   DB.integration_deltas = DB.integration_deltas.filter(d =>d.trx_id !== trxId);
 }
 
+// W5: Helper — cek peran akun eksplisit sebelum fallback ke keyword nama
+// Mengatasi peringatan "deteksi akun via keyword: mudah gagal jika penamaan tidak baku"
+function _accHasRole(acc, role) {
+  if (!acc) return false;
+  if (acc.account_role === role) return true;
+  const n = acc.name.toLowerCase();
+  switch (role) {
+    case 'kas_bank':       return acc.type==='Aset'&&acc.normal_balance==='Debit'&&(n.includes('kas')||n.includes('bank')||n.includes('rkud'));
+    case 'piutang_usaha':  return acc.type==='Aset'&&(n.includes('piutang usaha')||n.includes('piutang dagang')||n.includes('tagihan pelanggan'));
+    case 'hutang_usaha':   return acc.type==='Kewajiban'&&(n.includes('hutang usaha')||n.includes('hutang dagang')||n.includes('utang usaha')||n.includes('utang dagang'));
+    case 'persediaan':     return acc.type==='Aset'&&(n.includes('persediaan barang')||n.includes('stok barang')||n.includes('inventory'));
+    case 'perlengkapan':   return acc.type==='Aset'&&(n.includes('perlengkapan')||n.includes('supplies')||n.includes('bahan habis'));
+    case 'aset_tetap':     return acc.type==='Aset'&&acc.normal_balance==='Debit'&&
+                             (n.includes('peralatan')||n.includes('kendaraan')||n.includes('gedung')||
+                              n.includes('mesin')||n.includes('furniture')||n.includes('inventaris')||
+                              n.includes('tanah')||n.includes('bangunan')||n.includes('aset tetap'));
+    case 'akumulasi_penyusutan': return acc.type==='Aset'&&acc.normal_balance==='Kredit'&&(n.includes('akumulasi')||n.includes('depresiasi'));
+    case 'modal_utama':    return acc.type==='Ekuitas'&&acc.normal_balance==='Kredit'&&
+                             (n.includes('modal')||n.includes('laba ditahan')||n.includes('retained')||n.includes('ekuitas'));
+    default: return false;
+  }
+}
+function _findAccByRole(accs, role) {
+  // Prioritas 1: account_role eksplisit; Prioritas 2: keyword fallback
+  return accs.find(a=>a.account_role===role) || accs.find(a=>_accHasRole(a,role));
+}
+
 function integrateTransaction(trxId, jeId, date, desc, details, counterparty='') {
   // Guard: lewati jurnal yang dibuat oleh sistem internal (bukan input user langsung)
   // 'bayar_modal'   → processBayar sudah update saldo hutang/piutang secara langsung
@@ -1834,17 +1917,18 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
   //                   langsung oleh fungsi tersebut; jika diedit via Jurnal Umum maka
   //                   integrateTransaction akan salah double-count
   const trxRecord = DB.transactions.find(t =>t.id === trxId);
-  const skipSources = ['bayar_modal', 'jurnal_penutup', 'auto_module'];
+  // 'penyesuaian' → AJE yang dibuat oleh savePenyesuaian tidak boleh men-trigger sub-ledger
+  const skipSources = ['bayar_modal', 'jurnal_penutup', 'auto_module', 'penyesuaian'];
   if (skipSources.includes(trxRecord?._source)) return;
 
   const accs = coFilter(DB.accounts);
-  const getAcc = (id) =>accs.find(a =>a.id == id);
+  const getAcc = (id) => accs.find(a => a.id == id);
 
-  // Helper: cek apakah akun termasuk kategori tertentu
-  const isType = (acc, keywords) =>keywords.some(kw =>acc.name.toLowerCase().includes(kw));
+  // W5: isType digantikan _accHasRole — prioritas account_role eksplisit, fallback keyword
+  // Baris ini dipertahankan untuk kompatibilitas kode lain yang mungkin masih memanggilnya
+  const isType = (acc, keywords) => keywords.some(kw => acc.name.toLowerCase().includes(kw));
 
   // ── Item 5: Resolusi nama pihak ketiga ──
-  // Prioritas: 1) counterparty eksplisit, 2) regex deskripsi (fallback), 3) substring deskripsi
   const resolveNama = (regexPatterns) => {
     if (counterparty) return counterparty;
     for (const pat of regexPatterns) {
@@ -1859,16 +1943,12 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
     if (!acc) return;
 
     // ── PIUTANG: jika debit ke akun Piutang → tambah piutang baru ──
-    if (d.debit > 0 && acc.type === 'Aset' && isType(acc, ['piutang usaha','piutang dagang'])) {
+    if (d.debit > 0 && _accHasRole(acc, 'piutang_usaha')) {
       const nama = resolveNama([
         /kepada\s+(.+?)(?:\s+atas|\s+untuk|$)/i,
         /debitur\s+(.+?)(?:\s+|$)/i,
         /dari\s+(.+?)(?:\s+atas|\s+untuk|$)/i
       ]);
-      // FIX 3: Gunakan ref_transaction_id sebagai identifikasi unik per faktur.
-      // Setiap debit ke Piutang membuat record baru (per faktur/invoice),
-      // bukan diakumulasi ke record existing berdasarkan nama debitur.
-      // Ini memungkinkan matching pembayaran per faktur.
       const nomorRef = `TRX-${String(trxId).padStart(6,'0')}`;
       DB.piutang.push({
         id: genId(), company_id: co(), nama_debitur: nama,
@@ -1880,16 +1960,15 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
     }
 
     // ── PIUTANG: jika kredit ke akun Piutang → kurangi sisa (penerimaan) ──
-    if (d.kredit > 0 && acc.type === 'Aset' && isType(acc, ['piutang usaha','piutang dagang'])) {
-      // Jika counterparty diisi, kurangi khusus piutang dari debitur itu
+    if (d.kredit > 0 && _accHasRole(acc, 'piutang_usaha')) {
       const targetNama = counterparty || null;
       let sisa = d.kredit;
       coFilter(DB.piutang)
-        .filter(p =>p.status !== 'Lunas' && (!targetNama || p.nama_debitur === targetNama))
-        .sort((a,b) =>a.tanggal.localeCompare(b.tanggal))
+        .filter(p => p.status !== 'Lunas' && (!targetNama || p.nama_debitur === targetNama))
+        .sort((a,b) => a.tanggal.localeCompare(b.tanggal))
         .forEach(p => {
           if (sisa <= 0) return;
-          const idx = DB.piutang.findIndex(x =>x.id === p.id);
+          const idx = DB.piutang.findIndex(x => x.id === p.id);
           const bayar = Math.min(sisa, DB.piutang[idx].sisa);
           DB.piutang[idx].sisa -= bayar;
           sisa -= bayar;
@@ -1899,14 +1978,12 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
     }
 
     // ── HUTANG: jika kredit ke akun Hutang → tambah hutang ──
-    if (d.kredit > 0 && acc.type === 'Kewajiban' && isType(acc, ['hutang usaha','hutang dagang'])) {
+    if (d.kredit > 0 && _accHasRole(acc, 'hutang_usaha')) {
       const nama = resolveNama([
         /dari\s+(.+?)(?:\s+atas|\s+untuk|$)/i,
         /kepada\s+(.+?)(?:\s+|$)/i,
         /pemasok\s+(.+?)(?:\s+|$)/i
       ]);
-      // FIX 3: Setiap kredit ke Hutang membuat record baru per faktur (per-invoice tracking).
-      // Pembayaran hutang FIFO akan menyasar faktur terlama lebih dulu.
       const nomorRef = `TRX-${String(trxId).padStart(6,'0')}`;
       DB.hutang.push({
         id: genId(), company_id: co(), nama_kreditur: nama,
@@ -1936,32 +2013,26 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
     }
 
     // ── PERSEDIAAN: jika debit → tambah stok (batch FIFO baru per transaksi) ──
-    if (d.debit > 0 && acc.type === 'Aset' && isType(acc, ['persediaan barang','persediaan'])) {
-      // FIX 2: Setiap pembelian/penambahan persediaan SELALU membuat batch baru (true FIFO).
-      // Batch diidentifikasi dengan ref_transaction_id sehingga FIFO bekerja per tanggal masuk.
-      // Nama barang tetap digunakan sebagai label deskriptif (bukan primary key).
-      const namaBarang = counterparty
-        ? `Persediaan dari ${counterparty}`
-        : acc.name;
-      // Cek apakah batch dengan trxId ini sudah ada (hindari duplikasi saat retry)
+    if (d.debit > 0 && _accHasRole(acc, 'persediaan')) {
+      const namaBarang = counterparty ? `Persediaan dari ${counterparty}` : acc.name;
       const batchExisting = coFilter(DB.persediaan).find(p => p.ref_transaction_id === trxId && p.nama_barang === namaBarang);
       if (!batchExisting) {
         DB.persediaan.push({
           id: genId(), company_id: co(), nama_barang: namaBarang,
-          jumlah: 1, harga_satuan: d.debit, total_nilai: d.debit,
-          tanggal_masuk: date,
-          ref_transaction_id: trxId
+          jumlah: 0, harga_satuan: 0, total_nilai: d.debit,
+          tanggal_masuk: date, _dari_jurnal: true, ref_transaction_id: trxId
         });
       } else {
-        // Batch sudah ada (kasus edit-ulang transaksi setelah reversal) — update nilainya
         const idx = DB.persediaan.findIndex(p => p.id === batchExisting.id);
         DB.persediaan[idx].total_nilai = d.debit;
-        DB.persediaan[idx].harga_satuan = d.debit / (DB.persediaan[idx].jumlah || 1);
+        if ((DB.persediaan[idx].jumlah || 0) > 0) {
+          DB.persediaan[idx].harga_satuan = d.debit / DB.persediaan[idx].jumlah;
+        }
       }
     }
 
     // ── PERSEDIAAN: jika kredit (HPP/keluar) → kurangi stok nilai + qty ──
-    if (d.kredit > 0 && acc.type === 'Aset' && isType(acc, ['persediaan barang','persediaan'])) {
+    if (d.kredit > 0 && _accHasRole(acc, 'persediaan')) {
       const pers = coFilter(DB.persediaan);
       if (pers.length > 0) {
         // FIFO: kurangi batch terlama lebih dulu (sort by id asc = urutan masuk)
@@ -2005,15 +2076,18 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
     }
 
     // ── ASET TETAP: jika debit ke akun Aset Tetap → tambah aset ──
-    if (d.debit > 0 && acc.type === 'Aset' && isType(acc, ['peralatan','kendaraan','gedung','bangunan','tanah','mesin','aset tetap'])) {
+    if (d.debit > 0 && _accHasRole(acc, 'aset_tetap')) {
       const namaAset = acc.name;
-      const existing = coFilter(DB.aset_tetap).find(a =>a.nama_aset === namaAset);
+      const existing = coFilter(DB.aset_tetap).find(a => a.nama_aset === namaAset);
       if (!existing) {
+        const n = acc.name.toLowerCase();
+        const masaManfaat = _accHasRole(acc,'kendaraan') || n.includes('kendaraan') ? 5
+          : n.includes('gedung') || n.includes('bangunan') ? 20 : 4;
         DB.aset_tetap.push({
           id: genId(), company_id: co(), nama_aset: namaAset,
           harga_perolehan: d.debit,
           tahun_perolehan: new Date(date).getFullYear(),
-          masa_manfaat: isType(acc, ['kendaraan']) ? 5 : isType(acc, ['gedung','bangunan']) ? 20 : 4,
+          masa_manfaat: masaManfaat,
           akumulasi_penyusutan: 0,
           beban_penyusutan: d.debit / (isType(acc, ['kendaraan']) ? 5 : isType(acc, ['gedung','bangunan']) ? 20 : 4),
           tambahan_aset: 0, pengurangan_aset: 0,
@@ -2021,8 +2095,10 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
           ref_transaction_id: trxId
         });
       } else {
+        // FIX KRITIS #1: harga_perolehan adalah nilai perolehan awal — TIDAK ditambah di sini.
+        // Penambahan nilai aset dicatat di tambahan_aset saja.
+        // hargaEf = harga_perolehan (awal) + tambahan_aset (akumulasi) - pengurangan_aset
         const idx = DB.aset_tetap.findIndex(a =>a.id === existing.id);
-        DB.aset_tetap[idx].harga_perolehan += d.debit;
         DB.aset_tetap[idx].tambahan_aset = (DB.aset_tetap[idx].tambahan_aset || 0) + d.debit;
         const hargaEf = DB.aset_tetap[idx].harga_perolehan + (DB.aset_tetap[idx].tambahan_aset||0) - (DB.aset_tetap[idx].pengurangan_aset||0);
         DB.aset_tetap[idx].nilai_buku = hargaEf - (DB.aset_tetap[idx].akumulasi_penyusutan || 0);
@@ -2033,7 +2109,7 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
     }
 
     // ── PERLENGKAPAN: jika debit ke akun Perlengkapan → tambah perlengkapan ──
-    if (d.debit > 0 && acc.type === 'Aset' && isType(acc, ['perlengkapan'])) {
+    if (d.debit > 0 && _accHasRole(acc, 'perlengkapan')) {
       const namaItem = desc.substring(0, 50);
       const existing = coFilter(DB.perlengkapan).find(p =>p.nama_item === namaItem);
       if (!existing) {
@@ -2281,7 +2357,10 @@ function getBukuBesarData(accId, includeAdj) {
   });
 
   if (includeAdj) {
-    const penRows = coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId||p.kredit_acc==accId);
+    // FIX KRITIS #3: Penyesuaian baru (dengan ref_journal_id) sudah masuk journal_details
+    // dan tampil di buku besar via loop coJEs di atas. Hanya penyesuaian LAMA
+    // (tanpa ref_journal_id, data sebelum fix) yang perlu ditampilkan manual di sini.
+    const penRows = coFilter(DB.penyesuaian).filter(p=>(p.debit_acc==accId||p.kredit_acc==accId) && !p.ref_journal_id);
     penRows.forEach(p=>{
       const d = p.debit_acc==accId ? p.amount : 0;
       const k = p.kredit_acc==accId ? p.amount : 0;
@@ -2442,8 +2521,12 @@ function getAccountBalance(accId, includePenyesuaian=false) {
   const JEs = coFilter(DB.journal_entries).map(je=>je.id);
   DB.journal_details.filter(d=>JEs.includes(d.journal_id)&&d.account_id==accId).forEach(d=>{totD+=d.debit; totK+=d.kredit;});
   if (includePenyesuaian) {
-    coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId).forEach(p=>totD+=p.amount);
-    coFilter(DB.penyesuaian).filter(p=>p.kredit_acc==accId).forEach(p=>totK+=p.amount);
+    // FIX KRITIS #3: Penyesuaian yang sudah memiliki ref_journal_id telah diposting
+    // ke journal_details (Fix #3), sehingga sudah terhitung di loop JEs di atas.
+    // Hanya penyesuaian LAMA (sebelum fix, tanpa ref_journal_id) yang perlu
+    // ditambahkan secara manual di sini agar backward-compatible.
+    coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId && !p.ref_journal_id).forEach(p=>totD+=p.amount);
+    coFilter(DB.penyesuaian).filter(p=>p.kredit_acc==accId && !p.ref_journal_id).forEach(p=>totK+=p.amount);
   }
   const saldoAwal = acc.saldo_awal || 0;
   const mutasi = acc.normal_balance=='Debit' ? totD-totK : totK-totD;
@@ -2456,27 +2539,31 @@ function renderNeracaSaldo() {
   const rows = accs.map(a=>{
     const bal = getAccountBalance(a.id);
     if (bal==0) return '';
-    // FIX BUG KRITIS #2: Saldo abnormal TETAP ditampilkan di kolom normal akunnya
-    // (bukan dipindah ke kolom lawan). Ini sesuai prinsip akuntansi — saldo negatif
-    // pada Kas misalnya = error, bukan kredit. Tampilkan merah di kolom asalnya.
-    const isDebit = a.normal_balance=='Debit';
-    // Saldo positif = normal, saldo negatif = abnormal (tetap di kolom asal)
+    const isDebit  = a.normal_balance === 'Debit';
+    // W4: Saldo abnormal (negatif) TETAP di kolom asal sebagai nilai negatif,
+    // sehingga total D ≠ total K dan NS terdeteksi TIDAK BALANCE.
+    // Ini adalah perilaku yang benar secara akuntansi — saldo abnormal adalah error
+    // yang harus terlihat, bukan disembunyikan dengan memindahkan ke kolom lawan.
     const abnormal = bal < 0;
-    const d = isDebit  ? Math.abs(bal) : 0;
-    const k = !isDebit ? Math.abs(bal) : 0;
-    // Untuk total balance check: saldo abnormal menyebabkan NS tidak balance (benar)
-    totD += isDebit  ? (bal > 0 ? bal : 0) : (bal < 0 ? Math.abs(bal) : 0);
-    totK += !isDebit ? (bal > 0 ? bal : 0) : (bal < 0 ? Math.abs(bal) : 0);
+    const d = isDebit  ? bal : 0;   // bisa negatif jika abnormal
+    const k = !isDebit ? bal : 0;   // bisa negatif jika abnormal
+    totD += d;
+    totK += k;
     const cellStyle = abnormal ? 'color:var(--danger);font-weight:700;' : '';
-    return `<tr${abnormal?' style="background:rgba(239,68,68,.04);"':''}> <td class="td-mono">${a.code}</td> <td style="font-weight:600;">${a.name}${abnormal?` <span title="Saldo abnormal: akun ${isDebit?'Debit':'Kredit'} ini punya saldo negatif. Periksa jurnal." style="cursor:help;color:var(--danger);"></span>`:''}</td> <td class="td-mono" style="${isDebit?cellStyle:''}">${isDebit?fmtC(Math.abs(bal)):''}</td> <td class="td-mono" style="${!isDebit?cellStyle:''}">${!isDebit?fmtC(Math.abs(bal)):''}</td> </tr>`;
+    return `<tr${abnormal?' style="background:rgba(239,68,68,.04);"':''}>
+      <td class="td-mono">${a.code}</td>
+      <td style="font-weight:600;">${a.name}${abnormal?` <span title="Saldo abnormal: akun ${isDebit?'Debit':'Kredit'}-normal ini memiliki saldo negatif (${fmtC(bal)}). Periksa jurnal — NS akan TIDAK BALANCE." style="cursor:help;color:var(--danger);"> ⚠</span>`:''}</td>
+      <td class="td-mono" style="${isDebit?cellStyle:''}">${isDebit?fmtC(bal):''}</td>
+      <td class="td-mono" style="${!isDebit?cellStyle:''}">${!isDebit?fmtC(bal):''}</td>
+    </tr>`;
   }).join('');
   const isNSBalance = Math.abs(totD - totK) < 1;
   const balanceBar = `
     <tr> <td colspan="4" style="padding:8px 14px;"> <div style="padding:8px 14px;border-radius:6px;font-size:12px;font-weight:700;
              background:${isNSBalance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};
              color:${isNSBalance?'#065f46':'#991b1b'};"> ${isNSBalance
-            ? ` Neraca Saldo BALANCE — Total Debit = Total Kredit = ${fmtC(totD)}`
-            : ` Neraca Saldo TIDAK BALANCE — Debit: ${fmtC(totD)} | Kredit: ${fmtC(totK)} | Selisih: ${fmtC(Math.abs(totD-totK))}`}
+            ? '\u2705 Neraca Saldo BALANCE \u2014 Total Debit = Total Kredit = ' + fmtC(totD)
+            : '\u26a0 Neraca Saldo TIDAK BALANCE \u2014 Debit: ' + fmtC(totD) + ' | Kredit: ' + fmtC(totK) + ' | Selisih: ' + fmtC(Math.abs(totD-totK)) + (accs.some(a=>getAccountBalance(a.id)<0)?' (ada saldo abnormal — lihat baris yang ditandai ⚠)':'')  }
         </div> </td> </tr>`;
   document.getElementById('ns-tbody').innerHTML = rows || '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text3);">Tidak ada data</td></tr>';
   document.getElementById('ns-tfoot').innerHTML =
@@ -2586,15 +2673,53 @@ function savePenyesuaian() {
 
       DB.penyesuaian[idx] = { ...oldPen, date, description: desc,
         debit_acc: parseInt(dAcc), kredit_acc: parseInt(kAcc), amount };
+
+      // FIX KRITIS #3 (edit): update journal_details & journal_entry terkait agar
+      // Buku Besar konsisten. Jika ref_journal_id ada, update nilainya;
+      // jika belum ada (data lama sebelum fix), buat jurnal baru sekarang.
+      const adjJeid = oldPen.ref_journal_id;
+      if (adjJeid) {
+        const adjJE = DB.journal_entries.find(je => je.id === adjJeid);
+        if (adjJE) {
+          adjJE.date = date;
+          adjJE.description = '[AJE] ' + desc;
+          const adjTrx = DB.transactions.find(t => t.id === adjJE.transaction_id);
+          if (adjTrx) { adjTrx.date = date; adjTrx.description = '[AJE] ' + desc; }
+        }
+        DB.journal_details.filter(jd => jd.journal_id === adjJeid).forEach(jd => {
+          if (jd.debit  > 0) { jd.account_id = parseInt(dAcc); jd.debit  = amount; }
+          if (jd.kredit > 0) { jd.account_id = parseInt(kAcc); jd.kredit = amount; }
+        });
+      } else {
+        // Data lama — buat jurnal baru dan tautkan ke record penyesuaian
+        const tidNew = genId(); const jeidNew = genId();
+        DB.transactions.push({id:tidNew, company_id:co(), date, description:'[AJE] '+desc, _source:'penyesuaian'});
+        DB.journal_entries.push({id:jeidNew, company_id:co(), transaction_id:tidNew, date, description:'[AJE] '+desc, _source:'penyesuaian'});
+        DB.journal_details.push({id:genId(), journal_id:jeidNew, account_id:parseInt(dAcc), debit:amount, kredit:0});
+        DB.journal_details.push({id:genId(), journal_id:jeidNew, account_id:parseInt(kAcc), debit:0, kredit:amount});
+        DB.penyesuaian[idx].ref_journal_id   = jeidNew;
+        DB.penyesuaian[idx].ref_transaction_id = tidNew;
+      }
     }
     auditLog('UPDATE', 'penyesuaian', parseInt(editId), { desc, date, amount });
     toast('✅ Penyesuaian diperbarui', 'success');
   } else {
+    // FIX KRITIS #3: Penyesuaian kini juga membuat journal_entry + journal_details
+    // agar mutasi terlihat di Buku Besar (tanpa perlu flag includePenyesuaian).
+    // journal_entry dibuat dengan _source='penyesuaian' agar tidak di-trigger ulang
+    // oleh integrateTransaction.
     const newId = genId();
-    DB.penyesuaian.push({id:newId,company_id:co(),date,description:desc,
-      debit_acc:parseInt(dAcc),kredit_acc:parseInt(kAcc),amount});
+    const tidAdj = genId();
+    const jeidAdj = genId();
+    DB.transactions.push({id:tidAdj, company_id:co(), date, description:'[AJE] '+desc, _source:'penyesuaian'});
+    DB.journal_entries.push({id:jeidAdj, company_id:co(), transaction_id:tidAdj, date, description:'[AJE] '+desc, _source:'penyesuaian'});
+    DB.journal_details.push({id:genId(), journal_id:jeidAdj, account_id:parseInt(dAcc), debit:amount, kredit:0});
+    DB.journal_details.push({id:genId(), journal_id:jeidAdj, account_id:parseInt(kAcc), debit:0, kredit:amount});
+    DB.penyesuaian.push({id:newId, company_id:co(), date, description:desc,
+      debit_acc:parseInt(dAcc), kredit_acc:parseInt(kAcc), amount,
+      ref_journal_id:jeidAdj, ref_transaction_id:tidAdj});
     auditLog('CREATE', 'penyesuaian', newId, { desc, date, amount });
-    toast('Penyesuaian disimpan','success');
+    toast('Penyesuaian disimpan & diposting ke Jurnal Umum','success');
   }
   // Reset form ke mode tambah
   document.getElementById('pen-edit-id').value = '';
@@ -2638,6 +2763,21 @@ function deletePenyesuaian(id) {
   }
 
   auditLog('DELETE', 'penyesuaian', id, { desc: p?.description, amount: p?.amount });
+
+  // FIX KRITIS #3 (delete): hapus jurnal yang dibuat saat penyesuaian disimpan.
+  // Khusus penyesuaian dari pemakaian perlengkapan, jurnal sudah dihapus di blok
+  // di atas (srcTrx._source='pemakaian_perlengkapan'). Untuk penyesuaian manual
+  // yang memiliki ref_journal_id terpisah, hapus di sini.
+  if (p?.ref_journal_id && !(p?.ref_transaction_id && DB.transactions.find(t=>t.id===p.ref_transaction_id)?._source==='pemakaian_perlengkapan')) {
+    const adjJeid = p.ref_journal_id;
+    const adjJE   = DB.journal_entries.find(je => je.id === adjJeid);
+    if (adjJE) {
+      DB.journal_details   = DB.journal_details.filter(jd => jd.journal_id !== adjJeid);
+      DB.transactions      = DB.transactions.filter(t  => t.id  !== adjJE.transaction_id);
+      DB.journal_entries   = DB.journal_entries.filter(je => je.id !== adjJeid);
+    }
+  }
+
   DB.penyesuaian = DB.penyesuaian.filter(p=>p.id!=id);
   autoSave(); renderPenyesuaian(); toast('Dihapus','success');
 }
@@ -2667,7 +2807,7 @@ function renderNSPA() {
         color:${isBalance?'var(--accent2)':'var(--danger)'};
         border-top:2px solid ${isBalance?'var(--accent2)':'var(--danger)'};"> ${isBalance
           ? ' NS Penyesuaian BALANCE — Debit = Kredit'
-          : ` NS Penyesuaian TIDAK BALANCE — Selisih: ${fmtC(Math.abs(totD-totK))}`}
+          : ' NS Penyesuaian TIDAK BALANCE — Selisih: ' + fmtC(Math.abs(totD-totK))}
       </td> </tr>`;
 }
 
@@ -2916,31 +3056,74 @@ function openBayar(type, id) {
   const rec = arr?.find(x =>x.id == id);
   if (!rec) { toast('Data tidak ditemukan', 'error'); return; }
 
-  document.getElementById('bayar-type').value = type;
-  document.getElementById('bayar-id').value = id;
+  document.getElementById('bayar-type').value   = type;
+  document.getElementById('bayar-id').value     = id;
+  document.getElementById('bayar-target-id').value = '';
   document.getElementById('bayar-amount').value = '';
-  document.getElementById('bayar-amount').max = rec.sisa;
+  document.getElementById('bayar-amount').max   = rec.sisa;
   document.getElementById('bayar-title').textContent = type === 'hutang' ? ' Bayar Hutang' : ' Terima Piutang';
 
-  // Tampilkan info sisa tagihan
-  const pihak = type === 'hutang' ? rec.nama_kreditur : rec.nama_debitur;
+  // W2: Isi dropdown faktur se-counterparty yang masih ada sisa,
+  // diurutkan berdasarkan jatuh tempo (terlama/terdekat dulu) agar aging terlihat
+  const pihakKey  = type === 'hutang' ? 'nama_kreditur' : 'nama_debitur';
+  const pihakVal  = rec[pihakKey];
+  const belumLunas = coFilter(DB[type])
+    .filter(x => x[pihakKey] === pihakVal && x.sisa > 0)
+    .sort((a,b) => {
+      // Prioritaskan yang sudah jatuh tempo (jatuh_tempo paling lama / terkecil)
+      const da = a.jatuh_tempo || a.tanggal || '';
+      const db = b.jatuh_tempo || b.tanggal || '';
+      return da.localeCompare(db);
+    });
+  const sel = document.getElementById('bayar-faktur-select');
+  const today = new Date().toISOString().split('T')[0];
+  sel.innerHTML = `<option value="">— Otomatis (FIFO: faktur terlama dulu) —</option>` +
+    belumLunas.map(x => {
+      const jt  = x.jatuh_tempo || x.tanggal || '—';
+      const overdue = jt < today && jt !== '—';
+      const label = `${x.keterangan||x.deskripsi||('Faktur #'+x.id)} | Sisa: ${fmtC(x.sisa)} | JT: ${jt}${overdue?' ⚠ Jatuh tempo':''}`;
+      return `<option value="${x.id}"${x.id==id?' selected':''}>${label}</option>`;
+    }).join('');
+
+  // Tampilkan info sisa tagihan (faktur yang sedang dibuka)
   const infoEl = document.getElementById('bayar-info');
   if (infoEl) {
     infoEl.innerHTML = `
-      <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius2);padding:12px 14px;margin-bottom:14px;"> <div style="font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600;">${type==='hutang'?'Kreditur':'Debitur'}: <span style="color:var(--text);font-weight:700;">${pihak}</span></div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"> <span style="color:var(--text2);">Total ${type==='hutang'?'Hutang':'Piutang'}:</span> <span class="td-mono" style="font-weight:600;">${fmtC(rec.jumlah)}</span> </div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"> <span style="color:var(--text2);">Sudah Dibayar:</span> <span class="td-mono" style="color:var(--accent2);font-weight:600;">${fmtC(rec.jumlah - rec.sisa)}</span> </div> <div style="display:flex;justify-content:space-between;font-size:13px;padding-top:6px;border-top:1px solid var(--border);"> <span style="font-weight:700;">Sisa ${type==='hutang'?'Hutang':'Piutang'}:</span> <span class="td-mono" style="font-weight:800;color:${rec.sisa>0?'var(--danger)':'var(--accent2)'};">${fmtC(rec.sisa)}</span> </div> </div>`;
+      <div style="background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius2);padding:12px 14px;margin-bottom:12px;"> <div style="font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:600;">${type==='hutang'?'Kreditur':'Debitur'}: <span style="color:var(--text);font-weight:700;">${pihakVal}</span></div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;"> <span style="color:var(--text2);">Total ${type==='hutang'?'Hutang':'Piutang'}:</span> <span class="td-mono" style="font-weight:600;">${fmtC(rec.jumlah)}</span> </div> <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"> <span style="color:var(--text2);">Sudah Dibayar:</span> <span class="td-mono" style="color:var(--accent2);font-weight:600;">${fmtC(rec.jumlah - rec.sisa)}</span> </div> <div style="display:flex;justify-content:space-between;font-size:13px;padding-top:6px;border-top:1px solid var(--border);"> <span style="font-weight:700;">Sisa ${type==='hutang'?'Hutang':'Piutang'}:</span> <span class="td-mono" style="font-weight:800;color:${rec.sisa>0?'var(--danger)':'var(--accent2)'};">${fmtC(rec.sisa)}</span> </div> </div>`;
   }
 
   openModal('modal-bayar');
 }
 
+// W2: Update max amount saat faktur yang dipilih berubah
+function onBayarFakturChange() {
+  const type     = document.getElementById('bayar-type').value;
+  const targetId = document.getElementById('bayar-faktur-select').value;
+  document.getElementById('bayar-target-id').value = targetId;
+  if (!targetId) {
+    // FIFO mode — ambil sisa dari faktur terlama
+    const origId  = parseInt(document.getElementById('bayar-id').value);
+    const rec     = DB[type]?.find(x=>x.id==origId);
+    if (rec) document.getElementById('bayar-amount').max = rec.sisa;
+    return;
+  }
+  const rec = DB[type]?.find(x=>x.id==parseInt(targetId));
+  if (rec) {
+    document.getElementById('bayar-amount').max   = rec.sisa;
+    document.getElementById('bayar-amount').value = rec.sisa; // auto-fill sisa faktur yang dipilih
+  }
+}
+
 function processBayar() {
-  const type=document.getElementById('bayar-type').value;
-  const id=parseInt(document.getElementById('bayar-id').value);
-  const amount=parseFloat(document.getElementById('bayar-amount').value)||0;
+  const type     = document.getElementById('bayar-type').value;
+  const origId   = parseInt(document.getElementById('bayar-id').value);
+  const targetId = parseInt(document.getElementById('bayar-target-id').value) || origId;
+  const amount   = parseFloat(document.getElementById('bayar-amount').value) || 0;
   if (!amount || amount <= 0) { toast('Masukkan jumlah pembayaran yang valid','error'); return; }
   const arr = DB[type];
-  const i = arr.findIndex(x=>x.id==id);
-  if (i<0) return;
+  // W2: Bayar faktur yang dipilih user (spesifik), atau FIFO ke faktur paling lama
+  const i = arr.findIndex(x => x.id == targetId);
+  if (i < 0) { toast('Faktur tidak ditemukan','error'); return; }
   const rec = arr[i];
 
   // Peringatan jika input melebihi sisa — jangan silent clamp
@@ -3019,8 +3202,27 @@ function renderPersediaan() {
     <div class="stat-card blue"><div class="stat-label">Total Nilai Persediaan</div><div class="stat-value">${fmtC(totalNilai)}</div><div class="stat-icon"></div></div> <div class="stat-card green"><div class="stat-label">Total Qty Barang</div><div class="stat-value">${totalQty}</div><div class="stat-icon"></div></div> <div class="stat-card purple"><div class="stat-label">Beli Tunai</div><div class="stat-value">${tunai}</div><div class="stat-icon"></div></div> <div class="stat-card orange"><div class="stat-label">Beli Kredit</div><div class="stat-value">${kredit}</div><div class="stat-icon"></div></div> `;
   const tbody = document.getElementById('persediaan-tbody');
   if (!ps.length) { tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada persediaan.</p></div></td></tr>`; return; }
-  tbody.innerHTML = ps.map(p=>`
-    <tr> <td style="font-weight:600;">${p.nama_barang}</td> <td class="td-mono">${p.jumlah}</td> <td class="td-mono">${fmtC(p.harga_satuan)}</td> <td class="td-mono" style="font-weight:700;">${fmtC(p.total_nilai)}</td> <td>${p.tanggal||'—'}</td> <td><span class="badge-status ${p.metode==='kredit'?'badge-belum':'badge-lunas'}">${p.metode==='kredit'?'Kredit':'Tunai'}</span></td> <td> <button class="btn btn-success btn-sm" onclick="openJualPersediaan(${p.id})" title="Catat penjualan">Jual</button> <button class="btn btn-secondary btn-sm" onclick="editPersediaan(${p.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePersediaan(${p.id})">Hapus</button> </td> </tr> `).join('');
+  // FIX KRITIS #2: Tampilkan banner jika ada batch dari jurnal yang qty-nya belum diisi
+  const batchTanpaQty = ps.filter(p=>p._dari_jurnal && (p.jumlah||0)===0);
+  const warningBanner = batchTanpaQty.length > 0
+    ? `<tr><td colspan="7" style="padding:0;"><div style="margin:4px 0;padding:10px 16px;background:rgba(245,158,11,.12);border-left:4px solid var(--warning);font-size:12px;color:#92400e;"> ⚠ <strong>${batchTanpaQty.length} batch persediaan</strong> dari Jurnal Umum belum memiliki jumlah unit. Klik <strong>Edit</strong> pada baris yang ditandai untuk mengisi qty dan harga satuan agar FIFO akurat. </div></td></tr>`
+    : '';
+  tbody.innerHTML = warningBanner + ps.map(p=>{
+    const needsQty = p._dari_jurnal && (p.jumlah||0)===0;
+    return `<tr${needsQty?' style="background:rgba(245,158,11,.06);"':''}>
+      <td style="font-weight:600;">${p.nama_barang}${needsQty?` <span title="Qty belum diisi — klik Edit" style="color:var(--warning);cursor:help;font-size:12px;">⚠ Qty belum diisi</span>`:''}${p._dari_jurnal&&!needsQty?` <small style="color:var(--text3);font-size:10px;display:block;">dari jurnal</small>`:''}</td>
+      <td class="td-mono" style="${needsQty?'color:var(--warning);font-weight:700;':''}"> ${needsQty?'— isi qty':''}${!needsQty?p.jumlah:''}</td>
+      <td class="td-mono">${fmtC(p.harga_satuan)}</td>
+      <td class="td-mono" style="font-weight:700;">${fmtC(p.total_nilai)}</td>
+      <td>${p.tanggal||p.tanggal_masuk||'—'}</td>
+      <td><span class="badge-status ${p.metode==='kredit'?'badge-belum':'badge-lunas'}">${p.metode==='kredit'?'Kredit':'Tunai'}</span></td>
+      <td>
+        ${!needsQty?`<button class="btn btn-success btn-sm" onclick="openJualPersediaan(${p.id})" title="Catat penjualan">Jual</button>`:''}
+        <button class="btn ${needsQty?'btn-primary':'btn-secondary'} btn-sm" onclick="editPersediaan(${p.id})">${needsQty?'Isi Qty':'Edit'}</button>
+        <button class="btn btn-danger btn-sm" onclick="deletePersediaan(${p.id})">Hapus</button>
+      </td>
+    </tr>`;
+  }).join('');
 }
 
 function openPersediaanModal() {
@@ -3446,18 +3648,24 @@ function simpanPemakaianPerlengkapan() {
   }
   const desc = ket || `Pemakaian perlengkapan ${p.nama_item}`;
   const accs = coFilter(DB.accounts);
+  // W5: Gunakan _accHasRole untuk mencari akun beban perlengkapan & akun perlengkapan
   const bebanAcc = accs.find(a=>a.type==='Beban'&&(a.name.toLowerCase().includes('perlengkapan')||a.name.toLowerCase().includes('beban perlengkapan')));
-  const perlAcc = accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('perlengkapan'));
-  // Catat jurnal penyesuaian
+  const perlAcc  = _findAccByRole(accs, 'perlengkapan');
   const penyId = genId();
   if (bebanAcc && perlAcc) {
-    DB.penyesuaian.push({id:penyId,company_id:co(),date:tanggal,description:desc,debit_acc:bebanAcc.id,kredit_acc:perlAcc.id,amount:nilai});
-    const tid=genId(), jeid=genId();
-    DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:'pemakaian_perlengkapan'});
-    DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:'pemakaian_perlengkapan'});
-    DB.journal_details.push({id:genId(),journal_id:jeid,account_id:bebanAcc.id,debit:nilai,kredit:0});
-    DB.journal_details.push({id:genId(),journal_id:jeid,account_id:perlAcc.id,debit:0,kredit:nilai});
-    toast(`✅ Pemakaian dicatat: ${bebanAcc.name} (D) / ${perlAcc.name} (K) — ${fmtC(nilai)}`,'success',4000);
+    // W7: Gunakan _pushAutoJournal untuk validasi D=K sebelum push
+    const autoJ = _pushAutoJournal(tanggal, desc, 'pemakaian_perlengkapan', [
+      { account_id: bebanAcc.id, debit: nilai, kredit: 0 },
+      { account_id: perlAcc.id,  debit: 0,     kredit: nilai }
+    ]);
+    if (autoJ) {
+      DB.penyesuaian.push({id:penyId,company_id:co(),date:tanggal,description:desc,
+        debit_acc:bebanAcc.id,kredit_acc:perlAcc.id,amount:nilai,
+        ref_journal_id:autoJ.jeid, ref_transaction_id:autoJ.tid});
+      toast(`✅ Pemakaian dicatat: ${bebanAcc.name} (D) / ${perlAcc.name} (K) — ${fmtC(nilai)}`,'success',4000);
+    } else {
+      toast('⚠ Jurnal pemakaian tidak balance — periksa akun.','error',4000);
+    }
   } else {
     DB.penyesuaian.push({id:penyId,company_id:co(),date:tanggal,description:desc,debit_acc:null,kredit_acc:null,amount:nilai});
     toast('Pemakaian dicatat ke riwayat. Buat akun "Beban Perlengkapan" dan "Perlengkapan" di CoA untuk jurnal otomatis.','info',5000);
@@ -3861,14 +4069,19 @@ function hitung_penyusutan_all() {
     if (bebanAcc && akumAcc) {
       const desc = 'Penyusutan '+a.nama_aset+' ('+periodeLabel+')';
       const penyId = genId();
-      DB.penyesuaian.push({id:penyId,company_id:co(),date:today,description:desc,debit_acc:bebanAcc.id,kredit_acc:akumAcc.id,amount:beban});
-      const tid=genId(), jeid=genId();
-      DB.transactions.push({id:tid,company_id:co(),date:today,description:desc,_source:'penyusutan_auto'});
-      DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,_source:'penyusutan_auto'});
-      DB.journal_details.push({id:genId(),journal_id:jeid,account_id:bebanAcc.id,debit:beban,kredit:0});
-      DB.journal_details.push({id:genId(),journal_id:jeid,account_id:akumAcc.id,debit:0,kredit:beban});
-      DB.penyusutan_log.push({company_id:co(),aset_id:a.id,periode:periodeLabel,penyesuaian_id:penyId,journal_id:jeid,tanggal:today});
-      added++;
+      // W7: Gunakan _pushAutoJournal agar D=K divalidasi sebelum disimpan
+      const autoJ = _pushAutoJournal(today, desc, 'penyusutan_auto', [
+        { account_id: bebanAcc.id, debit: beban, kredit: 0 },
+        { account_id: akumAcc.id,  debit: 0,     kredit: beban }
+      ]);
+      if (autoJ) {
+        DB.penyesuaian.push({id:penyId,company_id:co(),date:today,description:desc,
+          debit_acc:bebanAcc.id,kredit_acc:akumAcc.id,amount:beban,
+          ref_journal_id:autoJ.jeid, ref_transaction_id:autoJ.tid});
+        DB.penyusutan_log.push({company_id:co(),aset_id:a.id,periode:periodeLabel,
+          penyesuaian_id:penyId,journal_id:autoJ.jeid,tanggal:today});
+        added++;
+      } else { skipped++; }
     }
   });
     autoSave(); renderAsetTetap(); renderNeracaSaldo();
@@ -4194,21 +4407,53 @@ function calcTotalAsetBersih(withAdj=true) {
 // Verifikasi: kasOperasi + kasInvestasi + kasPendanaan = saldo kas di Neraca
 function _getKategoriArusKas(acc) {
   if (!acc) return 'operasi';
-  // Prioritas 1: field eksplisit dari CoA
+  // Prioritas 1: field eksplisit dari CoA (paling akurat — user set manual)
   if (acc.kategori_arus_kas === 'investasi') return 'investasi';
   if (acc.kategori_arus_kas === 'pendanaan') return 'pendanaan';
   if (acc.kategori_arus_kas === 'operasi')   return 'operasi';
-  // Prioritas 2: heuristik nama akun (backward compatibility)
+  // Prioritas 2: heuristik nama akun yang diperluas
   const n = acc.name.toLowerCase();
-  if (acc.type==='Aset' && acc.normal_balance==='Debit'
+  // --- PENDANAAN: modal, pinjaman, hutang bank/jangka panjang, obligasi, saham ---
+  if (acc.type === 'Ekuitas') return 'pendanaan';
+  if (acc.type === 'Kewajiban' && (
+      n.includes('pinjaman') || n.includes('hutang bank') ||
+      n.includes('hutang jangka') || n.includes('obligasi') ||
+      n.includes('kredit bank') || n.includes('wesel bayar') ||
+      n.includes('modal pinjaman') || n.includes('utang bank') ||
+      n.includes('utang jangka') || n.includes('leasing') ||
+      n.includes('sewa pembiayaan') || n.includes('finance lease')
+  )) return 'pendanaan';
+  // --- INVESTASI: aset tidak lancar non-kas, investasi, properti, instrumen keuangan ---
+  if (acc.type === 'Aset' && acc.normal_balance === 'Debit' && (
+      n.includes('gedung') || n.includes('bangunan') || n.includes('tanah') ||
+      n.includes('mesin') || n.includes('peralatan') || n.includes('kendaraan') ||
+      n.includes('aset tetap') || n.includes('properti') ||
+      n.includes('investasi') || n.includes('saham') ||
+      n.includes('obligasi') || n.includes('reksa dana') ||
+      n.includes('aset tidak lancar') || n.includes('intangible') ||
+      n.includes('hak paten') || n.includes('goodwill') || n.includes('franchise')
+  )) return 'investasi';
+  // Fallback lama: Aset Debit-normal yang bukan kas/piutang/persediaan/perlengkapan → investasi
+  if (acc.type === 'Aset' && acc.normal_balance === 'Debit'
       && !n.includes('kas') && !n.includes('bank')
       && !n.includes('piutang') && !n.includes('persediaan')
       && !n.includes('perlengkapan') && !n.includes('biaya dibayar')
-      && !n.includes('pajak dibayar')) return 'investasi';
-  if (acc.type==='Ekuitas') return 'pendanaan';
-  if (acc.type==='Kewajiban' && (n.includes('pinjaman') || n.includes('hutang bank')
-      || n.includes('hutang jangka') || n.includes('obligasi'))) return 'pendanaan';
+      && !n.includes('pajak dibayar') && !n.includes('uang muka')
+      && !n.includes('deposito')) return 'investasi';
   return 'operasi';
+}
+
+// Kembalikan daftar akun counter yang tidak memiliki kategori_arus_kas eksplisit
+// (untuk ditampilkan sebagai peringatan di laporan arus kas)
+function _getAkunArusKasTidakEksplisit() {
+  return coFilter(DB.accounts).filter(a =>
+    !a.kategori_arus_kas &&
+    a.type !== 'Pendapatan' && a.type !== 'Beban' &&
+    a.type !== 'Pendapatan-LRA' && a.type !== 'Belanja' && a.type !== 'Pembiayaan' &&
+    !(a.type === 'Aset' && a.normal_balance === 'Debit' &&
+      (a.name.toLowerCase().includes('kas') || a.name.toLowerCase().includes('bank') ||
+       a.name.toLowerCase().includes('rkud') || a.name.toLowerCase().includes('rekening kas')))
+  );
 }
 
 function calcArusKas() {
@@ -4768,7 +5013,8 @@ function renderPAK() {
 
 // ── RENDER PERUBAHAN EKUITAS ──
 // Rumus: Ekuitas Akhir = Σ(Ekuitas Kredit-normal) − Σ(Ekuitas Debit-normal) + Laba Bersih
-// Ini IDENTIK dengan calcEkuitasAkhir() — laporan ini menjelaskan rinciannya
+// W3 FIX: Saldo awal = saldo_awal field akun (opening balance)
+//         Mutasi periode = journal_details periode berjalan saja
 function renderPerubahanEkuitas() {
   const co_data    = getCompany();
   // ═══ BAZNAS/LAZ (PSAK 109) — Laporan Perubahan Aset Kelolaan ═══
@@ -4784,28 +5030,132 @@ function renderPerubahanEkuitas() {
     return;
   }
   const ekAcss     = getAccsByType('Ekuitas');
-  // Semua akun ekuitas normal Kredit: Modal Saham, Modal Pemilik, Agio, Laba Ditahan, dll
-  const kreditAcss = ekAcss.filter(a =>a.normal_balance === 'Kredit');
-  // Semua akun ekuitas normal Debit: Prive, Dividen, dll (mengurangi ekuitas)
-  const debitAcss  = ekAcss.filter(a =>a.normal_balance === 'Debit');
+  const kreditAcss = ekAcss.filter(a => a.normal_balance === 'Kredit');
+  const debitAcss  = ekAcss.filter(a => a.normal_balance === 'Debit');
 
-  const totalKredit = kreditAcss.reduce((s,a) =>s + a.balance, 0);
-  const totalDebit  = debitAcss.reduce((s,a)  =>s + a.balance, 0);
-  const laba        = calcLabaBersih();
-  // Ekuitas akhir = konsisten dgn calcEkuitasAkhir()
-  const ekuitasAkhir = totalKredit - totalDebit + laba;
+  // W3: Pisahkan saldo awal (opening) vs mutasi periode (dari jurnal)
+  // getAccountBalance = saldo_awal + mutasi jurnal
+  // mutasi periode = getAccountBalance - saldo_awal
+  const getOpeningBal = a => a.saldo_awal || 0;
+  const getMutasiPeriode = a => {
+    const total = getAccountBalance(a.id);
+    return total - getOpeningBal(a);
+  };
 
-  const kreditRows = kreditAcss.filter(a =>a.balance !== 0).map(a => `<div class="report-row indent"> <span>${a.code} ${a.name}</span> <span class="report-amount">${fmtC(a.balance)}</span> </div>`).join('');
+  const kreditRows = kreditAcss.filter(a => getAccountBalance(a.id) !== 0 || getOpeningBal(a) !== 0).map(a => {
+    const opening = getOpeningBal(a);
+    const mutasi  = getMutasiPeriode(a);
+    const total   = getAccountBalance(a.id);
+    return `<tr>
+      <td style="padding:6px 10px;font-size:12px;">${a.code} ${a.name}</td>
+      <td class="td-mono" style="padding:6px 10px;font-size:12px;">${fmtC(opening)}</td>
+      <td class="td-mono" style="padding:6px 10px;font-size:12px;color:${mutasi>=0?'var(--accent2)':'var(--danger)'};">${mutasi>=0?'+':''}${fmtC(mutasi)}</td>
+      <td class="td-mono" style="padding:6px 10px;font-size:12px;font-weight:700;">${fmtC(total)}</td>
+    </tr>`;
+  }).join('');
 
-  const debitRows = debitAcss.filter(a =>a.balance !== 0).map(a => `<div class="report-row indent" style="color:var(--danger);"> <span>(-) ${a.code} ${a.name}</span> <span class="report-amount">(${fmtC(a.balance)})</span> </div>`).join('');
+  const debitRows = debitAcss.filter(a => getAccountBalance(a.id) !== 0).map(a => {
+    const opening = getOpeningBal(a);
+    const mutasi  = getMutasiPeriode(a);
+    const total   = getAccountBalance(a.id);
+    return `<tr style="color:var(--danger);">
+      <td style="padding:6px 10px;font-size:12px;">(-) ${a.code} ${a.name}</td>
+      <td class="td-mono" style="padding:6px 10px;font-size:12px;">(${fmtC(opening)})</td>
+      <td class="td-mono" style="padding:6px 10px;font-size:12px;">${mutasi>=0?'+':''}(${fmtC(Math.abs(mutasi))})</td>
+      <td class="td-mono" style="padding:6px 10px;font-size:12px;font-weight:700;">(${fmtC(total)})</td>
+    </tr>`;
+  }).join('');
+
+  const totalKreditOpening = kreditAcss.reduce((s,a) => s + getOpeningBal(a), 0);
+  const totalDebitOpening  = debitAcss.reduce((s,a)  => s + getOpeningBal(a), 0);
+  const ekuitasAwalBersih  = totalKreditOpening - totalDebitOpening;
+
+  const totalKreditMutasi  = kreditAcss.reduce((s,a) => s + getMutasiPeriode(a), 0);
+  const totalDebitMutasi   = debitAcss.reduce((s,a)  => s + getMutasiPeriode(a), 0);
+
+  const laba         = calcLabaBersih();
+  const ekuitasAkhir = calcEkuitasAkhir();
+
+  const ekLabel = isNirlaba() ? 'Aset Bersih' : isKoperasi() ? 'Simpanan/Ekuitas' : 'Ekuitas';
 
   document.getElementById('ekuitas-content').innerHTML = `
-    <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).ekuitas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}</div> </div> <div style="max-width:560px;"> <div class="report-section-title">${isNirlaba()?'SALDO ASET BERSIH AWAL':isKoperasi()?'SALDO SIMPANAN AWAL':'SALDO EKUITAS AWAL / MODAL DISETOR'}</div> ${kreditRows || '<div class="report-row indent" style="color:var(--text3)"><span>— Belum ada akun ekuitas —</span></div>'}
-      <div class="report-row subtotal"> <span><strong>${isNirlaba()?'Total Aset Bersih Awal':isKoperasi()?'Total Simpanan Awal':'Total Modal / Ekuitas Awal'}</strong></span> <span class="report-amount"><strong>${fmtC(totalKredit)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">PERUBAHAN SELAMA PERIODE</div> <div class="report-row indent" style="color:${laba>=0?'var(--accent2)':'var(--danger)'};"> <span>(${laba>=0?'+':'−'}) ${isNirlaba()?'Kenaikan Aset Bersih':isKoperasi()?'SHU (Sisa Hasil Usaha)':'Laba Bersih Periode'}
-          <small style="color:var(--text3);font-style:italic;"> ← dari ${isNirlaba()?'Laporan Aktivitas':isKoperasi()?'PHU':'Laporan L/R'}</small> </span> <span class="report-amount" style="color:${laba>=0?'var(--accent2)':'var(--danger)'};"> ${laba < 0 ? '(' : ''}${fmtC(Math.abs(laba))}${laba < 0 ? ')' : ''}
-        </span> </div> ${debitRows}
-      <div class="report-row subtotal"> <span><strong>Net Perubahan Periode</strong></span> <span class="report-amount" style="color:${(laba-totalDebit)>=0?'var(--accent2)':'var(--danger)'};"> <strong>${fmtC(laba - totalDebit)}</strong> </span> </div> <div class="report-row total" style="margin-top:10px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">${isNirlaba()?'ASET BERSIH AKHIR PERIODE':isKoperasi()?'SIMPANAN AKHIR PERIODE':'EKUITAS AKHIR PERIODE'}</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(ekuitasAkhir)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:rgba(37,99,235,.07);border-radius:var(--radius2);border-left:4px solid var(--primary-lighter);"> <div style="font-size:12px;color:var(--text2);line-height:1.7;"> <strong>${isNirlaba()?'Aset Bersih':isKoperasi()?'Simpanan':'Ekuitas'} Akhir ${fmtC(ekuitasAkhir)}</strong> → masuk ke sisi ${isNirlaba()?'Aset Bersih':isKoperasi()?'Simpanan/Ekuitas':'Ekuitas'} di <strong>Neraca</strong><br> <span style="font-size:11px;color:var(--text3);">Rumus: (${fmtC(totalKredit)}) − (${fmtC(totalDebit)}) + ${isKoperasi()?'SHU':'Laba'} (${fmtC(laba)}) = ${fmtC(ekuitasAkhir)}
-          </span> </div> </div> </div> `;
+    <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);">
+      <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).ekuitas.toUpperCase()}</div>
+      <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}</div>
+    </div>
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead>
+        <tr style="background:var(--bg);border-bottom:2px solid var(--border);">
+          <th style="text-align:left;padding:8px 10px;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Akun</th>
+          <th style="text-align:right;padding:8px 10px;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Saldo Awal</th>
+          <th style="text-align:right;padding:8px 10px;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Mutasi Periode</th>
+          <th style="text-align:right;padding:8px 10px;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Saldo Akhir</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background:rgba(37,99,235,.04);">
+          <td colspan="4" style="padding:6px 10px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;">
+            ${ekLabel} Normal Kredit (Modal, Laba Ditahan, dll)
+          </td>
+        </tr>
+        ${kreditRows || `<tr><td colspan="4" style="padding:8px 10px;color:var(--text3);font-size:12px;">—</td></tr>`}
+        <tr style="border-top:1px solid var(--border);background:var(--bg);">
+          <td style="padding:7px 10px;font-weight:700;">Subtotal ${ekLabel}</td>
+          <td class="td-mono" style="padding:7px 10px;font-weight:700;">${fmtC(totalKreditOpening)}</td>
+          <td class="td-mono" style="padding:7px 10px;font-weight:700;color:${totalKreditMutasi>=0?'var(--accent2)':'var(--danger)'};">${totalKreditMutasi>=0?'+':''}${fmtC(totalKreditMutasi)}</td>
+          <td class="td-mono" style="padding:7px 10px;font-weight:700;">${fmtC(kreditAcss.reduce((s,a)=>s+getAccountBalance(a.id),0))}</td>
+        </tr>
+        ${debitAcss.filter(a=>getAccountBalance(a.id)!==0).length ? `
+        <tr style="background:rgba(239,68,68,.04);">
+          <td colspan="4" style="padding:6px 10px;font-size:11px;font-weight:700;color:var(--danger);text-transform:uppercase;letter-spacing:.5px;">
+            Pengurang ${ekLabel} (Prive, Dividen, dll)
+          </td>
+        </tr>
+        ${debitRows}
+        <tr style="border-top:1px solid var(--border);background:var(--bg);">
+          <td style="padding:7px 10px;font-weight:700;color:var(--danger);">Subtotal Pengurang</td>
+          <td class="td-mono" style="padding:7px 10px;font-weight:700;color:var(--danger);">(${fmtC(totalDebitOpening)})</td>
+          <td class="td-mono" style="padding:7px 10px;font-weight:700;color:var(--danger);">(${fmtC(Math.abs(totalDebitMutasi))})</td>
+          <td class="td-mono" style="padding:7px 10px;font-weight:700;color:var(--danger);">(${fmtC(debitAcss.reduce((s,a)=>s+getAccountBalance(a.id),0))})</td>
+        </tr>` : ''}
+        <tr style="border-top:2px solid var(--border);background:rgba(37,99,235,.04);">
+          <td style="padding:8px 10px;font-weight:800;">Ekuitas Awal Bersih (Opening)</td>
+          <td class="td-mono" style="padding:8px 10px;font-weight:800;">${fmtC(ekuitasAwalBersih)}</td>
+          <td></td><td></td>
+        </tr>
+        <tr style="background:rgba(16,185,129,.05);">
+          <td colspan="4" style="padding:6px 10px;font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.5px;">
+            Perubahan dari Laba/Rugi Periode
+          </td>
+        </tr>
+        <tr>
+          <td style="padding:6px 10px 6px 22px;font-size:12px;">${isNirlaba()?'Kenaikan Aset Bersih':isKoperasi()?'SHU (Sisa Hasil Usaha)':'Laba Bersih Periode'}
+            <small style="color:var(--text3);font-style:italic;"> ← dari ${isNirlaba()?'Laporan Aktivitas':isKoperasi()?'PHU':'Laporan L/R'}</small>
+          </td>
+          <td class="td-mono" style="padding:6px 10px;color:var(--text3);">—</td>
+          <td class="td-mono" style="padding:6px 10px;color:${laba>=0?'var(--accent2)':'var(--danger)'};font-weight:700;">${laba>=0?'+':''}${laba<0?'(':''}${fmtC(Math.abs(laba))}${laba<0?')':''}</td>
+          <td class="td-mono" style="padding:6px 10px;color:${laba>=0?'var(--accent2)':'var(--danger)'};font-weight:700;">${fmtC(laba)}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr style="background:rgba(37,99,235,.08);border-top:2px solid var(--border);">
+          <td style="padding:12px 10px;font-size:14px;font-weight:800;">${isNirlaba()?'ASET BERSIH AKHIR':isKoperasi()?'EKUITAS AKHIR (SIMPANAN)':'EKUITAS AKHIR PERIODE'}</td>
+          <td></td>
+          <td></td>
+          <td class="td-mono" style="padding:12px 10px;font-size:15px;font-weight:800;">${fmtC(ekuitasAkhir)}</td>
+        </tr>
+      </tfoot>
+    </table>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);">
+      <strong>Catatan:</strong> Saldo Awal diambil dari kolom <em>saldo_awal</em> di Chart of Accounts.
+      Mutasi Periode mencerminkan seluruh transaksi yang diposting pada periode berjalan.
+      ${ekuitasAwalBersih===0&&kreditAcss.some(a=>getAccountBalance(a.id)>0)?
+        `<br><span style="color:var(--warning);">⚠ Saldo Awal nol — isi kolom <strong>saldo_awal</strong> di CoA agar laporan ini menampilkan opening balance yang benar.</span>`:''
+      }
+    </div>`;
 }
 
 // ── RENDER NERACA ──
@@ -4900,8 +5250,8 @@ function renderNeraca() {
     <div style="text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).neraca.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Per tanggal: ${co_data?.period_end||new Date().toISOString().split('T')[0]} | ${co_data?.standard||'—'}</div> </div> <!-- Status balance --> <div style="padding:10px 16px;border-radius:var(--radius2);margin-bottom:16px;font-size:12px;font-weight:700;
          background:${isBalance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};
          color:${isBalance?'#065f46':'#991b1b'};"> ${isBalance
-        ? ` Neraca BALANCE — Aset Bersih (${fmtC(totAset)}) = Kewajiban (${fmtC(totKew)}) + Ekuitas (${fmtC(ekuitasAkhir)})`
-        : ` Neraca TIDAK BALANCE — Selisih: ${fmtC(selisih)} | Periksa jurnal Anda`}
+        ? '✅ Neraca BALANCE — Aset Bersih (' + fmtC(totAset) + ') = Kewajiban (' + fmtC(totKew) + ') + Ekuitas (' + fmtC(ekuitasAkhir) + ')'
+        : '⚠ Neraca TIDAK BALANCE — Selisih: ' + fmtC(selisih) + ' | Periksa jurnal Anda'}
     </div> <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;"> <!-- ═══ SISI KIRI: ASET ═══ --> <div> <div class="report-section-title" style="color:var(--primary-light);">ASET</div> <!-- Aset Lancar --> <div style="font-size:11px;font-weight:700;color:var(--text3);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.8px;">Aset Lancar</div> ${rowsAset(asetLancar) || '<div class="report-row indent" style="color:var(--text3)"><span>—</span></div>'}
         <div class="report-row subtotal"> <span>Total Aset Lancar</span><span class="report-amount">${fmtC(totAsetLancar)}</span> </div> <!-- Aset Tidak Lancar --> ${asetTidakLancar.length || contraAsetAktif.length ? `
         <div style="font-size:11px;font-weight:700;color:var(--text3);margin:14px 0 4px;text-transform:uppercase;letter-spacing:.8px;">Aset Tidak Lancar</div> ${rowsAset(asetTidakLancar)}
@@ -5017,6 +5367,39 @@ function renderArusKas() {
     if (el) el.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--text3);"> <div style="font-size:48px;margin-bottom:12px;opacity:.5;"></div> <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Belum Ada Data Transaksi</div> <div style="font-size:13px;">Tambahkan transaksi di menu <strong>Jurnal Umum</strong>terlebih dahulu untuk melihat laporan ini.</div> </div>`;
     return;
   }
+
+  // W1: Cek akun counter yang tidak memiliki kategori_arus_kas eksplisit
+  // agar user bisa tahu klasifikasi mana yang masih berdasarkan heuristik
+  const allAccs = coFilter(DB.accounts);
+  const kasIds  = allAccs.filter(a =>a.type==='Aset'&&a.normal_balance==='Debit'&&
+    (a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank')||
+     a.name.toLowerCase().includes('rkud')||a.name.toLowerCase().includes('rekening kas'))).map(a=>a.id);
+  const JEids   = coFilter(DB.journal_entries).map(je=>je.id);
+  const counterAkunSet = new Set();
+  JEids.forEach(jeId=>{
+    const details = DB.journal_details.filter(d=>d.journal_id===jeId);
+    const hasKas  = details.some(d=>kasIds.includes(d.account_id));
+    if (!hasKas) return;
+    details.filter(d=>!kasIds.includes(d.account_id)).forEach(d=>{
+      const acc = allAccs.find(a=>a.id===d.account_id);
+      if (acc && !acc.kategori_arus_kas &&
+          acc.type!=='Pendapatan' && acc.type!=='Beban' &&
+          acc.type!=='Pendapatan-LRA' && acc.type!=='Belanja') {
+        counterAkunSet.add(acc.name);
+      }
+    });
+  });
+  const heuristicWarning = counterAkunSet.size > 0
+    ? `<div style="margin-bottom:14px;padding:10px 16px;background:rgba(245,158,11,.1);border-radius:var(--radius2);border-left:4px solid var(--warning);font-size:12px;color:#92400e;">
+        ⚠ <strong>${counterAkunSet.size} akun</strong> diklasifikasikan otomatis (heuristik nama) karena belum diset di CoA:
+        <em>${[...counterAkunSet].slice(0,5).join(', ')}${counterAkunSet.size>5?` dan ${counterAkunSet.size-5} lainnya`:''}</em>.
+        Untuk hasil lebih akurat, buka <strong>Chart of Accounts</strong> → edit akun → isi kolom <strong>Kategori Arus Kas</strong>.
+       </div>`
+    : '';
+
+  const elAK = document.getElementById('arus-kas-content');
+  // Sisipkan banner sebelum konten utama — render konten dulu, lalu prepend banner
+  const _origInner = (html) => { elAK.innerHTML = heuristicWarning + html; };
   const kasAkhirNeraca = calcKasAkhir();
 
   if (_metodeArusKas === 'tidak-langsung') {
@@ -5038,8 +5421,10 @@ function renderArusKas() {
     const rowsKL = perubahanKewLancar.map(x => `
       <div class="report-row indent"> <span style="font-size:12px;">Perubahan ${x.name}</span> <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span> </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
 
-    document.getElementById('arus-kas-content').innerHTML = `
-      <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Tidak Langsung</div> </div> <div style="max-width:580px;"> <div class="report-section-title">I. AKTIVITAS OPERASI</div> <div class="report-row indent"> <span style="font-weight:700;">Laba Bersih Periode</span> <span class="report-amount" style="font-weight:700;color:${clr(labaBersih)};">${fmtK(labaBersih)}</span> </div> <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Koreksi beban non-kas</div> ${totalPenyusutan ? `<div class="report-row indent"> <span style="font-size:12px;">Beban penyusutan (non-kas)</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(totalPenyusutan)}</span> </div>` : `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>Tidak ada beban penyusutan</span></div>`}
+    _origInner(`
+      <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Tidak Langsung</div> </div> <div style="max-width:580px;">
+ <div class="report-section-title">I. AKTIVITAS OPERASI</div> <div class="report-row indent"> <span style="font-weight:700;">Laba Bersih Periode</span> <span class="report-amount" style="font-weight:700;color:${clr(labaBersih)};">${fmtK(labaBersih)}</span> </div> <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">
+Koreksi beban non-kas</div> ${totalPenyusutan ? '<div class="report-row indent"> <span style="font-size:12px;">Beban penyusutan (non-kas)</span> <span class="report-amount" style="color:var(--accent2);">+' + fmtC(totalPenyusutan) + '</span> </div>' : '<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>Tidak ada beban penyusutan</span></div>'}
 
         <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Perubahan aset lancar (non-kas)</div> ${rowsAL}
 
@@ -5047,11 +5432,12 @@ function renderArusKas() {
 
         <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Operasi</strong></span> <span class="report-amount" style="color:${clr(kasOperasi)};"><strong>${fmtK(kasOperasi)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">II. AKTIVITAS INVESTASI</div> ${buildArusKasDetail('investasi')}
         <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Investasi</strong></span> <span class="report-amount" style="color:${clr(kasInvestasi)};"><strong>${fmtK(kasInvestasi)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">III. AKTIVITAS PENDANAAN</div> ${buildArusKasDetail('pendanaan')}
-        <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Pendanaan</strong></span> <span class="report-amount" style="color:${clr(kasPendanaan)};"><strong>${fmtK(kasPendanaan)}</strong></span> </div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">${fmtC(kasAwalPeriode)}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhir)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${balance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${balance?'var(--accent2)':'var(--danger)'};"> <div style="font-size:12px;font-weight:700;color:${balance?'#065f46':'#991b1b'};"> ${balance
-              ? ` Verified: Kas Akhir (${fmtC(kasAkhir)}) = Kas & Setara Kas di Neraca (${fmtC(kasAkhirNeraca)})`
-              : ` Selisih ${fmtC(selisih)} antara Arus Kas dan saldo Kas di Neraca`}
+        <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Pendanaan</strong></span> <span class="report-amount" style="color:${clr(kasPendanaan)};"><strong>${fmtK(kasPendanaan)}</strong></span> </div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">
+${fmtC(kasAwalPeriode)}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhir)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${balance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${balance?'var(--accent2)':'var(--danger)'};">
+ <div style="font-size:12px;font-weight:700;color:${balance?'#065f46':'#991b1b'};"> 
+${balance ? ('\u2705 Verified: Kas Akhir (' + fmtC(kasAkhir) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : ('\u26a0 Selisih ' + fmtC(selisih) + ' antara Arus Kas dan saldo Kas di Neraca')}
           </div> </div> <div style="margin-top:10px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);"> <strong>Metode Tidak Langsung:</strong>Dimulai dari laba bersih, kemudian dikoreksi dengan beban non-kas (penyusutan) dan perubahan modal kerja untuk mendapatkan arus kas dari operasi.
-        </div> </div> `;
+        </div> </div> `);
     return;
   }
 
@@ -5062,16 +5448,13 @@ function renderArusKas() {
   const selisihKas = Math.abs(kasAkhirArusKas - kasAkhirNeraca);
   const kasBalance = selisihKas < 1;
 
-  document.getElementById('arus-kas-content').innerHTML = `
+  _origInner(`
     <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Langsung — menampilkan penerimaan &amp; pengeluaran kas nyata</div> </div> <div style="max-width:580px;"> <div class="report-section-title">I. AKTIVITAS OPERASI</div> ${buildArusKasDetail('operasi')}
       <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Operasi</strong></span><span class="report-amount" style="color:${kasOperasi>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasOperasi<0?'(':''}${fmtC(Math.abs(kasOperasi))}${kasOperasi<0?')':''}</strong></span></div> <div class="report-section-title" style="margin-top:20px;">II. AKTIVITAS INVESTASI</div> ${buildArusKasDetail('investasi')}
       <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Investasi</strong></span><span class="report-amount" style="color:${kasInvestasi>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasInvestasi<0?'(':''}${fmtC(Math.abs(kasInvestasi))}${kasInvestasi<0?')':''}</strong></span></div> <div class="report-section-title" style="margin-top:20px;">III. AKTIVITAS PENDANAAN</div> ${buildArusKasDetail('pendanaan')}
-      <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Pendanaan</strong></span><span class="report-amount" style="color:${kasPendanaan>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasPendanaan<0?'(':''}${fmtC(Math.abs(kasPendanaan))}${kasPendanaan<0?')':''}</strong></span></div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">${fmtC(_kasAwal2)}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhirArusKas)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${kasBalance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${kasBalance?'var(--accent2)':'var(--danger)'};"> <div style="font-size:12px;font-weight:700;color:${kasBalance?'#065f46':'#991b1b'};"> ${kasBalance
-            ? ` Verified: Kas Akhir Arus Kas (${fmtC(kasAkhirArusKas)}) = Kas & Setara Kas di Neraca (${fmtC(kasAkhirNeraca)})`
-            : ` Perbedaan ${fmtC(selisihKas)} antara Arus Kas dan saldo Kas di Neraca. Periksa klasifikasi transaksi.`
-          }
+      <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Pendanaan</strong></span><span class="report-amount" style="color:${kasPendanaan>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasPendanaan<0?'(':''}${fmtC(Math.abs(kasPendanaan))}${kasPendanaan<0?')':''}</strong></span></div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">${fmtC(_kasAwal2)}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhirArusKas)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${kasBalance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${kasBalance?'var(--accent2)':'var(--danger)'};"> <div style="font-size:12px;font-weight:700;color:${kasBalance?'#065f46':'#991b1b'};"> ${kasBalance ? ('✅ Verified: Kas Akhir Arus Kas (' + fmtC(kasAkhirArusKas) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : ('⚠ Perbedaan ' + fmtC(selisihKas) + ' antara Arus Kas dan saldo Kas di Neraca. Periksa klasifikasi transaksi.')}
         </div> </div> <div style="margin-top:10px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);"> <strong>Metode Langsung:</strong>Menampilkan setiap arus kas masuk dan keluar secara langsung dari aktivitas operasi, investasi, dan pendanaan.
-      </div> </div> `;
+      </div> </div> `);
 }
 
 // Helper: bangun detail per transaksi untuk tiap kategori arus kas
@@ -5166,10 +5549,25 @@ function buatJurnalPenutup() {
   }
 
   // ── Langkah 2: Tutup semua akun Beban → Ikhtisar L/R ──
-  if (bebanAcss.length) {
-    rows += `<tr style="background:rgba(239,68,68,.04);"> <td>${tanggal}</td> <td style="font-weight:700;color:var(--danger);">Menutup akun beban ke Ikhtisar L/R</td> <td colspan="3"></td> </tr>`;
-    rows += `<tr> <td></td><td></td> <td style="padding-left:12px;color:var(--text2);font-style:italic;">Ikhtisar Laba Rugi</td> <td class="td-mono" style="color:var(--danger);">${fmtR(totalBeban)}</td> <td></td> </tr>`;
-    bebanAcss.forEach(a => {
+  // W6: Pisahkan HPP dari Beban Operasional agar lebih informatif
+  const isHPP_acc = a => a.account_role === 'hpp' ||
+    (() => { const n=a.name.toLowerCase(); return n.includes('harga pokok')||n.includes('hpp')||n.includes('cost of good')||n.includes('biaya produksi')||n.includes('beban pokok'); })();
+  const bebanHPP  = bebanAcss.filter(a =>  isHPP_acc(a));
+  const bebanOps  = bebanAcss.filter(a => !isHPP_acc(a));
+  const totHPP    = bebanHPP.reduce((s,a) => s + a.balance, 0);
+  const totOps    = bebanOps.reduce((s,a) => s + a.balance, 0);
+
+  if (bebanHPP.length) {
+    rows += `<tr style="background:rgba(239,68,68,.04);"> <td>${tanggal}</td> <td style="font-weight:700;color:var(--danger);">Menutup akun HPP ke Ikhtisar L/R</td> <td colspan="3"></td> </tr>`;
+    rows += `<tr> <td></td><td></td> <td style="padding-left:12px;color:var(--text2);font-style:italic;">Ikhtisar Laba Rugi</td> <td class="td-mono" style="color:var(--danger);">${fmtR(totHPP)}</td> <td></td> </tr>`;
+    bebanHPP.forEach(a => {
+      rows += `<tr> <td></td><td></td> <td style="padding-left:24px;color:var(--danger);">${a.code} — ${a.name}</td> <td></td> <td class="td-mono" style="color:var(--danger);">${fmtR(a.balance)}</td> </tr>`;
+    });
+  }
+  if (bebanOps.length) {
+    rows += `<tr style="background:rgba(239,68,68,.04);"> <td>${tanggal}</td> <td style="font-weight:700;color:var(--danger);">Menutup akun Beban Operasional ke Ikhtisar L/R</td> <td colspan="3"></td> </tr>`;
+    rows += `<tr> <td></td><td></td> <td style="padding-left:12px;color:var(--text2);font-style:italic;">Ikhtisar Laba Rugi</td> <td class="td-mono" style="color:var(--danger);">${fmtR(totOps)}</td> <td></td> </tr>`;
+    bebanOps.forEach(a => {
       rows += `<tr> <td></td><td></td> <td style="padding-left:24px;color:var(--danger);">${a.code} — ${a.name}</td> <td></td> <td class="td-mono" style="color:var(--danger);">${fmtR(a.balance)}</td> </tr>`;
     });
   }
@@ -6111,8 +6509,8 @@ function printReport(type) {
           <tr class="subtotal-row"><td><strong>Arus Kas Bersih dari Operasi</strong></td><td class="num" style="color:${colorKas(ko)}"><strong>${fmtKas(ko)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>II. AKTIVITAS INVESTASI</strong></td></tr> ${buildRowsTL('investasi')}
           <tr class="subtotal-row"><td><strong>Arus Kas Bersih dari Investasi</strong></td><td class="num" style="color:${colorKas(ki)}"><strong>${fmtKas(ki)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>III. AKTIVITAS PENDANAAN</strong></td></tr> ${buildRowsTL('pendanaan')}
           <tr class="subtotal-row"><td><strong>Arus Kas Bersih dari Pendanaan</strong></td><td class="num" style="color:${colorKas(kp)}"><strong>${fmtKas(kp)}</strong></td></tr> <tr class="total-row"><td><strong>KAS DAN SETARA KAS AKHIR</strong></td><td class="num"><strong>${fmtC(kasAkhirAK)}</strong></td></tr> <tr><td colspan="2" style="padding:8px 12px;font-size:11px;color:${Math.abs(kasAkhirAK-kasNeraca)<1?'#15803d':'#dc2626'};font-weight:700;"> ${Math.abs(kasAkhirAK-kasNeraca)<1
-              ? `&#10003; Verified: Kas Akhir (${fmtC(kasAkhirAK)}) = Kas di Neraca (${fmtC(kasNeraca)})`
-              : `&#9888; Selisih ${fmtC(Math.abs(kasAkhirAK-kasNeraca))} antara Arus Kas dan Kas di Neraca`}
+              ? '&#10003; Verified: Kas Akhir (' + fmtC(kasAkhirAK) + ') = Kas di Neraca (' + fmtC(kasNeraca) + ')'
+              : '&#9888; Selisih ' + fmtC(Math.abs(kasAkhirAK-kasNeraca)) + ' antara Arus Kas dan Kas di Neraca'}
           </td></tr> </tbody></table>`;
 
     } else {
@@ -6143,8 +6541,8 @@ function printReport(type) {
           <tr class="subtotal-row"><td><strong>Arus Kas Bersih dari Operasi</strong></td><td class="num" style="color:${colorKas(ko)}"><strong>${fmtKas(ko)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>II. AKTIVITAS INVESTASI</strong></td></tr> ${buildRows('investasi')}
           <tr class="subtotal-row"><td><strong>Arus Kas Bersih dari Investasi</strong></td><td class="num" style="color:${colorKas(ki)}"><strong>${fmtKas(ki)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>III. AKTIVITAS PENDANAAN</strong></td></tr> ${buildRows('pendanaan')}
           <tr class="subtotal-row"><td><strong>Arus Kas Bersih dari Pendanaan</strong></td><td class="num" style="color:${colorKas(kp)}"><strong>${fmtKas(kp)}</strong></td></tr> <tr class="total-row"><td><strong>KAS DAN SETARA KAS AKHIR</strong></td><td class="num"><strong>${fmtC(kasAkhirAK)}</strong></td></tr> <tr><td colspan="2" style="padding:8px 12px;font-size:11px;color:${Math.abs(kasAkhirAK-kasNeraca)<1?'#15803d':'#dc2626'};font-weight:700;"> ${Math.abs(kasAkhirAK-kasNeraca)<1
-              ? `&#10003; Verified: Kas Akhir (${fmtC(kasAkhirAK)}) = Kas di Neraca (${fmtC(kasNeraca)})`
-              : `&#9888; Selisih ${fmtC(Math.abs(kasAkhirAK-kasNeraca))} antara Arus Kas dan Kas di Neraca`}
+              ? '&#10003; Verified: Kas Akhir (' + fmtC(kasAkhirAK) + ') = Kas di Neraca (' + fmtC(kasNeraca) + ')'
+              : '&#9888; Selisih ' + fmtC(Math.abs(kasAkhirAK-kasNeraca)) + ' antara Arus Kas dan Kas di Neraca'}
           </td></tr> </tbody></table>`;
     }
   }
@@ -8607,7 +9005,8 @@ function renderLRA() {
         silpaAngg, silpaReal,
         silpaReal >= 0 ? 'var(--accent2)' : 'var(--danger)'
       )}
-    </div> <div style="margin-top:16px;padding:12px 16px;background:rgba(37,99,235,.07);border-radius:var(--radius2);border-left:4px solid var(--primary-lighter);font-size:11px;color:var(--text2);line-height:1.9;"> <strong>Rumus LRA (PP 71/2010):</strong><br> <span style="font-family:var(--mono);">Surplus/(Defisit) = Pendapatan − Belanja</span><br> <span style="font-family:var(--mono);">Pembiayaan Neto  = Penerimaan Pembiayaan − Pengeluaran Pembiayaan</span><br> <span style="font-family:var(--mono);font-weight:700;">SiLPA/(SiKPA)    = Surplus/(Defisit) + Pembiayaan Neto</span><br> <div style="margin-top:6px;padding:6px 10px;background:${silpaReal>=0?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)'};border-radius:6px;"> <strong>SiLPA Tahun Ini (Realisasi): ${silpaReal<0?'(':''}${fmtC(Math.abs(silpaReal))}${silpaReal<0?')':''}</strong> — Nilai ini akan menjadi <strong>Saldo Awal SAL</strong>pada LSAL periode berikutnya.
+    </div> <div style="margin-top:16px;padding:12px 16px;background:rgba(37,99,235,.07);border-radius:var(--radius2);border-left:4px solid var(--primary-lighter);font-size:11px;color:var(--text2);line-height:1.9;"> <strong>Rumus LRA (PP 71/2010):</strong><br> <span style="font-family:var(--mono);">Surplus/(Defisit) = Pendapatan − Belanja</span><br> <span style="font-family:var(--mono);">Pembiayaan Neto  = Penerimaan Pembiayaan − Pengeluaran Pembiayaan</span>
+<br> <span style="font-family:var(--mono);font-weight:700;">SiLPA/(SiKPA)    = Surplus/(Defisit) + Pembiayaan Neto</span><br> <div style="margin-top:6px;padding:6px 10px;background:${silpaReal>=0?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)'};border-radius:6px;"> <strong>SiLPA Tahun Ini (Realisasi): ${silpaReal<0?'(':''}${fmtC(Math.abs(silpaReal))}${silpaReal<0?')':''}</strong> — Nilai ini akan menjadi <strong>Saldo Awal SAL</strong>pada LSAL periode berikutnya.
       </div> </div> `;
 }
 
