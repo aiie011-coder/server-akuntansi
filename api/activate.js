@@ -23,8 +23,8 @@ module.exports = async function handler(req, res) {
     if (!license)
       return res.json({ valid: false, message: 'Kode lisensi tidak ditemukan. Periksa kembali kode Anda.' });
 
-    if (license.status === 'nonaktif')
-      return res.json({ valid: false, message: 'Lisensi ini telah dinonaktifkan. Hubungi penjual.' });
+    if (license.status === 'nonaktif' || license.is_active === false)
+      return res.json({ valid: false, message: license.revoke_reason || 'Lisensi ini telah dinonaktifkan. Hubungi penjual.' });
 
     if (license.expires && new Date(license.expires) < new Date())
       return res.json({ valid: false, message: `Lisensi telah kadaluarsa sejak ${new Date(license.expires).toLocaleDateString('id-ID')}.` });
@@ -33,15 +33,36 @@ module.exports = async function handler(req, res) {
                          (license.hwid ? [license.hwid] : []);
     const maxDevices = license.max_devices || 1;
 
+    // Helper: normalisasi locked_modules selalu array
+    function parseLockedModules(value) {
+      if (Array.isArray(value)) return value;
+      if (!value) return [];
+      if (typeof value === 'string') {
+        const trimmed = value.trim();
+        if (trimmed.startsWith('[')) {
+          try { const p = JSON.parse(trimmed); return Array.isArray(p) ? p : []; } catch(e) {}
+        }
+        return trimmed.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      return [];
+    }
+
+    // Data plan yang akan disertakan di semua response valid
+    const planData = {
+      plan:        license.plan        || 'trial',
+      expiry_date: license.expiry_date || license.expires || null,
+    };
+
     if (currentHwids.includes(hwid)) {
       return res.json({
         valid: true,
-        message: `Selamat datang kembali, ${license.name || 'Pengguna'}!`,
+        message: `Selamat datang kembali, ${license.customer_name || license.name || 'Pengguna'}!`,
         expires: license.expires || null,
-        name: license.name || '',
+        name: license.customer_name || license.name || '',
         type: license.type || 'lifetime',
         devices: currentHwids.length,
-        max_devices: maxDevices
+        max_devices: maxDevices,
+        ...planData,
       });
     }
 
@@ -69,12 +90,13 @@ module.exports = async function handler(req, res) {
 
     return res.json({
       valid: true,
-      message: `Selamat datang, ${license.name || 'Pengguna'}! Lisensi berhasil diaktivasi.`,
+      message: `Selamat datang, ${license.customer_name || license.name || 'Pengguna'}! Lisensi berhasil diaktivasi.`,
       expires: license.expires || null,
-      name: license.name || '',
+      name: license.customer_name || license.name || '',
       type: license.type || 'lifetime',
       devices: newCount,
-      max_devices: maxDevices
+      max_devices: maxDevices,
+      ...planData,
     });
 
   } catch (err) {
