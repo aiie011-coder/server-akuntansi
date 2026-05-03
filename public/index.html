@@ -858,9 +858,15 @@ function navigate(page) {
     'komparasi': 'komparasi',
     'lra': 'lra',
     'lsal': 'lsal',
+    'aset-tetap': 'aset-tetap',
   };
   if (__licenseVerified && PLAN_GATED_PAGES[page] && !canAccess(PLAN_GATED_PAGES[page])) {
     showUpgradeModal(PLAN_GATED_PAGES[page]);
+    return;
+  }
+  // Cek locked_modules secara generik untuk semua halaman (termasuk yang tidak di PLAN_GATED_PAGES)
+  if (__licenseVerified && __planConfig?.locked_modules?.includes(page)) {
+    showUpgradeModal(page);
     return;
   }
 
@@ -7872,7 +7878,7 @@ let __planConfig = {
   komparasi_enabled: false,
   lra_lsal_enabled: false,
   locked_modules: ['komparasi','lra','lsal'],
-  max_seats: 1
+  max_devices: 1
 };
 
 // Label paket untuk tampilan UI
@@ -7889,28 +7895,28 @@ const PLAN_DEFAULTS = {
     max_companies: 1, export_enabled: false, print_full: false,
     jurnal_penutup_enabled: false,
     aset_saldo_menurun: false, komparasi_enabled: false, lra_lsal_enabled: false,
-    locked_modules: ['komparasi','lra','lsal'], max_seats: 1
+    locked_modules: ['komparasi','lra','lsal'], max_devices: 1
   },
   starter: {
     plan: 'starter', plan_label: 'Starter',
     max_companies: 3, export_enabled: true, print_full: true,
     jurnal_penutup_enabled: true,
     aset_saldo_menurun: false, komparasi_enabled: false, lra_lsal_enabled: false,
-    locked_modules: ['komparasi','lra','lsal'], max_seats: 1
+    locked_modules: ['komparasi','lra','lsal'], max_devices: 1
   },
   pro: {
     plan: 'pro', plan_label: 'Pro',
     max_companies: 10, export_enabled: true, print_full: true,
     jurnal_penutup_enabled: true,
     aset_saldo_menurun: true, komparasi_enabled: true, lra_lsal_enabled: true,
-    locked_modules: [], max_seats: 1
+    locked_modules: [], max_devices: 1
   },
   enterprise: {
     plan: 'enterprise', plan_label: 'Enterprise',
     max_companies: 9999, export_enabled: true, print_full: true,
     jurnal_penutup_enabled: true,
     aset_saldo_menurun: true, komparasi_enabled: true, lra_lsal_enabled: true,
-    locked_modules: [], max_seats: 99, max_devices: 99
+    locked_modules: [], max_devices: 99
   }
 };
 
@@ -7935,9 +7941,6 @@ async function fetchPlanConfig(licKey) {
         Object.keys(data).forEach(k => {
           if (data[k] !== null && data[k] !== undefined) merged[k] = data[k];
         });
-        // Normalisasi nama field: server pakai max_devices, app pakai max_seats
-        if (data.max_devices != null) merged.max_seats = data.max_devices;
-        if (data.max_seats   != null) merged.max_devices = data.max_seats;
         __planConfig = merged;
         // Cek expired
         if (data.expiry_date && new Date(data.expiry_date) < new Date()) {
@@ -7971,13 +7974,14 @@ function canAccess(feature) {
   if (__planConfig.is_expired) return false;
   if (__planConfig.locked_modules && __planConfig.locked_modules.includes(feature)) return false;
   const map = {
-    export:           __planConfig.export_enabled,
-    print_full:       __planConfig.print_full,
-    'jurnal-penutup': __planConfig.jurnal_penutup_enabled,
+    export:             __planConfig.export_enabled,
+    print_full:         __planConfig.print_full,
+    'jurnal-penutup':   __planConfig.jurnal_penutup_enabled,
     aset_saldo_menurun: __planConfig.aset_saldo_menurun,
-    komparasi:        __planConfig.komparasi_enabled,
-    lra:              __planConfig.lra_lsal_enabled,
-    lsal:             __planConfig.lra_lsal_enabled,
+    'aset-tetap':       !(__planConfig.locked_modules || []).includes('aset-tetap'),
+    komparasi:          __planConfig.komparasi_enabled,
+    lra:                __planConfig.lra_lsal_enabled,
+    lsal:               __planConfig.lra_lsal_enabled,
   };
   if (feature in map) return !!map[feature];
   return true; // fitur lain tidak dibatasi
@@ -7986,18 +7990,19 @@ function canAccess(feature) {
 // Tampilkan modal upgrade
 function showUpgradeModal(feature) {
   const labels = {
-    export:           'Export Excel & Multi-Sheet',
-    print_full:       'Print Laporan Lengkap',
-    'jurnal-penutup': 'Jurnal Penutup',
-    aset_saldo_menurun:'Metode Saldo Menurun (Aset Tetap)',
-    komparasi:        'Komparasi Multi-Tahun',
-    lra:              'Laporan Realisasi Anggaran (LRA)',
-    lsal:             'Laporan Saldo Anggaran Lebih (LSAL)',
-    companies:        'Tambah Perusahaan (melebihi batas paket)',
+    export:             'Export Excel & Multi-Sheet',
+    print_full:         'Print Laporan Lengkap',
+    'jurnal-penutup':   'Jurnal Penutup',
+    aset_saldo_menurun: 'Metode Saldo Menurun (Aset Tetap)',
+    'aset-tetap':       'Modul Aset Tetap',
+    komparasi:          'Komparasi Multi-Tahun',
+    lra:                'Laporan Realisasi Anggaran (LRA)',
+    lsal:               'Laporan Saldo Anggaran Lebih (LSAL)',
+    companies:          'Tambah Perusahaan (melebihi batas paket)',
   };
   const featureLabel = labels[feature] || feature;
   const planNeeded = ['export','print_full','jurnal-penutup'].includes(feature) ? 'Starter' :
-                     ['aset_saldo_menurun'].includes(feature) ? 'Pro' :
+                     ['aset_saldo_menurun','aset-tetap'].includes(feature) ? 'Pro' :
                      ['komparasi','lra','lsal'].includes(feature) ? 'Pro' : 'Pro';
   document.getElementById('upgrade-modal-feature').textContent = featureLabel;
   document.getElementById('upgrade-modal-plan').textContent = planNeeded;
@@ -8046,6 +8051,16 @@ function applyPlanRestrictions() {
       el.innerHTML = el.innerHTML + ' <span class="plan-lock"></span>';
       el.classList.add('nav-locked');
       el._lockedFeature = 'jurnal-penutup';
+    }
+  }
+
+  // ── 4b. Aset Tetap — kunci nav jika dikunci via locked_modules
+  if ((cfg.locked_modules || []).includes('aset-tetap')) {
+    const el = document.querySelector(`.nav-item[onclick="navigate('aset-tetap')"]`);
+    if (el && !el.classList.contains('nav-locked')) {
+      el.innerHTML = el.innerHTML + ' <span class="plan-lock"></span>';
+      el.classList.add('nav-locked');
+      el._lockedFeature = 'aset-tetap';
     }
   }
 
