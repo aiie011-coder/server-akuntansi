@@ -205,7 +205,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
 
 /* ─── MODAL ─── */
 .modal-overlay { position:fixed; inset:0; background:rgba(15,33,64,.6); backdrop-filter:blur(4px); z-index:1000; display:none; align-items:center; justify-content:center; padding:20px; }
-.modal-overlay.show { display:flex; }
+.modal-overlay.show { display:flex !important; }
 .modal { background:var(--card); border-radius:var(--radius); width:100%; max-width:600px; max-height:90vh; overflow-y:auto; box-shadow:var(--shadow2); animation:modalIn .25s ease; }
 .modal-lg { max-width:800px; }
 @keyframes modalIn { from{transform:scale(.95) translateY(-10px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
@@ -8585,6 +8585,24 @@ function loadSampleData() {
 // ══════════════════════════════════════════
 // Override the transactions button to properly init modal
 document.querySelector('[onclick="openModal(\'modal-transaction\')"]')?.setAttribute('onclick', 'openTransactionModal()');
+
+// [FIX] Pindahkan semua modal-overlay ke document.body
+// agar tidak nested di dalam elemen lain yang bisa menyebabkan width/height = 0
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.modal-overlay').forEach(function(modal) {
+    if (modal.parentElement !== document.body) {
+      document.body.appendChild(modal);
+    }
+  });
+});
+// Jalankan juga langsung jika DOMContentLoaded sudah lewat
+if (document.readyState !== 'loading') {
+  document.querySelectorAll('.modal-overlay').forEach(function(modal) {
+    if (modal.parentElement !== document.body) {
+      document.body.appendChild(modal);
+    }
+  });
+}
 
 // ══════════════════════════════════════════
 // LICENSE SYSTEM
