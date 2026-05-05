@@ -504,11 +504,60 @@ textarea.form-control { resize:vertical; min-height:80px; }
         Klik <strong>Preview</strong>untuk melihat drafnya, lalu klik <strong>Posting ke Jurnal Umum</strong>untuk menyimpan ke buku besar. Setelah posting, saldo akun nominal menjadi nol.
       </div> <div class="card"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jp-tbody"> <tr><td colspan="5"><div class="empty-state"><div class="empty-icon"></div><p>Klik <strong>Buat / Refresh Jurnal Penutup</strong>untuk menghitung jurnal penutup dari data transaksi aktif.</p></div></td></tr> </tbody></table></div></div> </div> <!-- ═══ SETTINGS ═══ --> <!-- ═══ KOMPARASI MULTI-TAHUN ═══ --> <div id="page-komparasi" class="page"> <div class="page-header"> <div> <div class="page-title">Komparasi Multi-Tahun</div> <div class="page-subtitle">Bandingkan laporan keuangan antar periode/tahun</div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('komparasi')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('komparasi')">Excel</button> </div> </div> <!-- Pemilihan periode --> <div class="card" style="margin-bottom:20px;"> <div class="card-header"> <div class="card-title">Pilih Periode untuk Dibandingkan</div> </div> <div class="card-body"> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px;"> <div class="form-group"> <label>Periode 1 (Wajib)</label> <select class="form-control" id="komp-p1" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 2 (Wajib)</label> <select class="form-control" id="komp-p2" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 3 (Opsional)</label> <select class="form-control" id="komp-p3" onchange="renderKomparasi()"> <option value="">— Tidak dipilih —</option> </select> </div> <div class="form-group"> <label>Tampilkan</label> <select class="form-control" id="komp-jenis" onchange="renderKomparasi()"> <option value="laba-rugi">Laba Rugi</option> <option value="neraca">Neraca</option> <option value="perubahan-ekuitas">Perubahan Ekuitas</option> <option value="arus-kas">Arus Kas</option> <option value="ringkasan">Ringkasan KPI</option> </select> </div> </div> <div style="font-size:12px;color:var(--text2);">Setiap "Perusahaan" di ZeQui dapat mewakili satu tahun buku. Tambahkan perusahaan baru untuk setiap tahun fiskal.</div> </div> </div> <div id="komparasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih minimal dua periode di atas untuk melihat perbandingan.</p></div> </div> </div> <div id="page-settings" class="page"> <div class="page-header"><div><div class="page-title">Pengaturan</div></div></div> <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;"> <!-- Storage Monitor Card — full width --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Status Penyimpanan IndexedDB</div> <button class="btn btn-secondary btn-sm" onclick="renderSettings()">Refresh</button> </div> <div class="card-body"> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px;"> <div style="padding:12px 16px;background:rgba(16,185,129,.08);border-radius:8px;border:1px solid rgba(16,185,129,.2);text-align:center;"> <div style="font-size:11px;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Status</div> <div id="settings-idb-status" style="font-size:16px;font-weight:800;color:#10b981;">Aktif</div> </div> <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;"> <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Ukuran Data</div> <div id="settings-storage-text" style="font-size:16px;font-weight:800;color:var(--primary-light);">—</div> </div> <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;"> <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Kapasitas</div> <div style="font-size:16px;font-weight:800;color:var(--primary-light);">Ratusan MB</div> </div> <div style="padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);text-align:center;"> <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Terakhir Disimpan</div> <div id="settings-last-saved" style="font-size:12px;font-weight:700;color:var(--text);">—</div> </div> </div> <div style="font-size:12px;color:var(--text3);line-height:1.8;padding:12px;background:var(--bg);border-radius:8px;"> <strong>IndexedDB</strong>menyimpan data otomatis setiap ada perubahan, kapasitas jauh lebih besar dari sebelumnya.<br> <strong>Download Backup File</strong>tetap disarankan secara berkala (mingguan/bulanan) sebagai cadangan jika browser di-reset atau komputer rusak.<br> <strong>Export JSON</strong>berguna untuk pindah ke komputer lain atau backup arsip.
             </div> </div> </div> <!-- Data Management Card --> <div class="card"> <div class="card-header"><div class="card-title">Data &amp; Backup</div></div> <div class="card-body" style="display:flex;flex-direction:column;gap:10px;"> <div style="padding:8px 12px;background:rgba(16,185,129,.08);border-radius:6px;border-left:3px solid #10b981;font-size:11px;color:#065f46;">Data tersimpan otomatis di IndexedDB. Download backup sebagai cadangan.
-            </div> <button class="btn btn-primary" onclick="saveToFile()">Download Backup File</button> <button class="btn btn-success" onclick="loadSampleData()">Muat 4 Data Contoh (SAK EMKM, EP, UMUM, SAP)</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua ke Excel</button> <button class="btn btn-secondary" onclick="exportJSON()">Export JSON (Backup)</button> <label class="btn btn-secondary" style="cursor:pointer;">Import JSON <input type="file" accept=".json" onchange="importJSON(this)" style="display:none"></label> <button class="btn btn-primary" onclick="openImportCSV()" style="background:var(--accent2);border-color:var(--accent2);">📥 Import Transaksi CSV/Excel</button> <button class="btn btn-secondary" onclick="reloadFromEmbedded()" style="border-color:var(--warning);color:var(--warning);">Muat Ulang Data dari File (Reset IDB)</button> <button class="btn btn-danger" onclick="clearAllData()">Hapus Semua Data</button> </div> </div> <!-- Info Card --> <div class="card"> <div class="card-header"><div class="card-title">Persamaan Akuntansi</div></div> <div class="card-body" style="font-size:12px;color:var(--text2);line-height:2;"> <div style="background:var(--bg);padding:12px;border-radius:8px;margin-bottom:10px;font-family:var(--mono);font-size:11px;"> <div> <strong>Posisi Keuangan/Neraca:</strong>Aset = Kewajiban + Ekuitas</div> <div> <strong>Laba Rugi:</strong>Laba = Pendapatan − Beban</div> <div> <strong>Perubahan Ekuitas:</strong></div> <div style="padding-left:16px;">Ekuitas Akhir = Modal + Laba − Prive/Dividen</div> <div> <strong>Arus Kas:</strong>Kas Akhir = Kas di Neraca</div> </div> <p><strong>Aliran Laporan Keuangan:</strong></p> <p>Laba Rugi / LO → Perubahan Ekuitas → Neraca/Posisi Keuangan</p> <p>Arus Kas → Kas di Neraca | SAP: LRA → LSAL</p> <hr style="margin:8px 0;border-color:var(--border)"> <p><strong>ZeQui</strong>v1.0 — Zenith Quality Accounting System</p> <p>SAK UMUM · SAK EP · SAK EMKM · SAP · SAK SYARIAH</p> </div> </div> <!-- Audit Trail Card --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Periode Lock</div> <button class="btn btn-secondary btn-sm" onclick="renderPeriodeLock()">Refresh</button> </div> <div class="card-body" style="padding:0;"> <div style="padding:10px 16px;font-size:12px;color:var(--text3);border-bottom:1px solid var(--border);">Kunci periode bulanan agar jurnal tidak bisa diedit/dihapus. Berguna setelah tutup buku.
+            </div> <button class="btn btn-primary" onclick="saveToFile()">Download Backup File</button> <button class="btn btn-success" onclick="loadSampleData()">Muat 4 Data Contoh (SAK EMKM, EP, UMUM, SAP)</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua ke Excel</button> <button class="btn btn-secondary" onclick="exportJSON()">Export JSON (Backup)</button> <label class="btn btn-secondary" style="cursor:pointer;">Import JSON <input type="file" accept=".json" onchange="importJSON(this)" style="display:none"></label> <button class="btn btn-primary" onclick="openImportCSV()" style="background:var(--accent2);border-color:var(--accent2);">📥 Import Transaksi CSV/Excel</button> <button class="btn btn-secondary" onclick="reloadFromEmbedded()" style="border-color:var(--warning);color:var(--warning);">Muat Ulang Data dari File (Reset IDB)</button> <button class="btn btn-danger" onclick="clearAllData()">Hapus Semua Data</button> </div> </div> <!-- Info Card --> <div class="card"> <div class="card-header"><div class="card-title">Persamaan Akuntansi</div></div> <div class="card-body" style="font-size:12px;color:var(--text2);line-height:2;"> <div style="background:var(--bg);padding:12px;border-radius:8px;margin-bottom:10px;font-family:var(--mono);font-size:11px;"> <div> <strong>Posisi Keuangan/Neraca:</strong>Aset = Kewajiban + Ekuitas</div> <div> <strong>Laba Rugi:</strong>Laba = Pendapatan − Beban</div> <div> <strong>Perubahan Ekuitas:</strong></div> <div style="padding-left:16px;">Ekuitas Akhir = Modal + Laba − Prive/Dividen</div> <div> <strong>Arus Kas:</strong>Kas Akhir = Kas di Neraca</div> </div> <p><strong>Aliran Laporan Keuangan:</strong></p> <p>Laba Rugi / LO → Perubahan Ekuitas → Neraca/Posisi Keuangan</p> <p>Arus Kas → Kas di Neraca | SAP: LRA → LSAL</p> <hr style="margin:8px 0;border-color:var(--border)"> <p><strong>ZeQui</strong>v1.0 — Zenith Quality Accounting System</p> <p>SAK UMUM · SAK EP · SAK EMKM · SAP · SAK SYARIAH</p> </div> </div> <!-- Audit Trail Card --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Periode Lock</div> <div style="display:flex;gap:8px;"><button class="btn btn-primary btn-sm" onclick="bukaPeriodeBaru()" style="background:linear-gradient(135deg,#10b981,#06b6d4);border:none;">🗓 Buka Periode Baru</button><button class="btn btn-secondary btn-sm" onclick="renderPeriodeLock()">Refresh</button></div> </div> <div class="card-body" style="padding:0;"> <div style="padding:10px 16px;font-size:12px;color:var(--text3);border-bottom:1px solid var(--border);">Kunci periode bulanan agar jurnal tidak bisa diedit/dihapus. Terkunci otomatis saat Buka Periode Baru — atau kunci manual per bulan.
             </div> <div id="periode-lock-content"> <div style="text-align:center;padding:24px;color:var(--text3);">Klik  untuk memuat daftar periode.</div> </div> </div> </div> <!-- Audit Trail Card --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Audit Trail</div> <div style="display:flex;gap:8px;align-items:center;"> <input id="audit-search" type="text" placeholder="Cari modul/aksi/detail..." class="form-control" style="width:220px;font-size:12px;" oninput="renderAuditTrail()"> <button class="btn btn-secondary btn-sm" onclick="renderAuditTrail()">Refresh</button> <button class="btn btn-danger btn-sm" onclick="if(confirm('Hapus semua log audit perusahaan ini?')){DB.audit_log=DB.audit_log.filter(l=>l.company_id!==co());autoSave();renderAuditTrail();}">🗑️ Hapus Log</button> </div> </div> <div class="card-body" style="padding:0;"> <div id="audit-trail-content" style="max-height:400px;overflow-y:auto;font-size:12px;"> <div style="text-align:center;padding:32px;color:var(--text3);">Klik  untuk memuat log audit</div> </div> </div> </div> </div> </div> </div><!-- /content -->
 <div id="new-pages-container" style="display:none;flex:1;overflow-y:auto;padding:24px;background:var(--bg);min-height:0;"></div>
 </div><!-- /main -->
 <!-- ═══════════════════ MODALS ═══════════════════ -->
+
+<!-- ═══ MODAL BUKA PERIODE BARU ═══ -->
+<div class="modal-overlay" id="modal-buka-periode">
+  <div class="modal" style="max-width:600px;">
+    <div class="modal-header">
+      <div class="modal-title">🗓 Buka Periode Baru</div>
+      <button class="modal-close" onclick="closeModal('modal-buka-periode')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="padding:10px 14px;background:rgba(16,185,129,.08);border-radius:8px;border-left:4px solid var(--accent2);font-size:12px;color:var(--text2);margin-bottom:16px;">
+        <strong>✅ Cara kerja:</strong> Fitur ini akan mengambil saldo akhir periode berjalan dari setiap akun, lalu menetapkannya sebagai <strong>saldo_awal</strong> periode baru. Semua jurnal, penyesuaian, dan data transaksi periode berjalan <strong>tidak dihapus</strong> — tetap tersimpan di perusahaan/periode lama.
+      </div>
+      <div id="buka-periode-info" style="margin-bottom:16px;padding:12px 14px;background:var(--bg);border-radius:8px;font-size:13px;line-height:2;"></div>
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;">
+        <div class="form-group">
+          <label>Nama Periode Baru *</label>
+          <input class="form-control" id="bp-nama" placeholder="Contoh: PT Usaha Maju 2026" />
+          <small style="font-size:10px;color:var(--text3);">Nama perusahaan/buku untuk periode baru</small>
+        </div>
+        <div class="form-group">
+          <label>Standar Akuntansi</label>
+          <select class="form-control" id="bp-standard">
+            <option value="">— Sama dengan periode sekarang —</option>
+            <option value="SAK EMKM">SAK EMKM</option>
+            <option value="SAK EP">SAK EP</option>
+            <option value="SAK UMUM">SAK UMUM</option>
+            <option value="SAP">SAP</option>
+            <option value="SAK SYARIAH">SAK SYARIAH</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Mulai Periode Baru *</label>
+          <input class="form-control" type="date" id="bp-start" />
+        </div>
+        <div class="form-group">
+          <label>Tanggal Akhir Periode Baru *</label>
+          <input class="form-control" type="date" id="bp-end" />
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:10px 14px;background:rgba(245,158,11,.08);border-radius:8px;border-left:3px solid #f59e0b;font-size:11px;color:#92400e;">
+        🔒 <strong>Periode lama akan dikunci otomatis</strong> saat periode baru dibuat — semua bulan yang memiliki jurnal akan terkunci agar tidak bisa diedit. Anda tetap bisa membuka kunci manual dari tabel Periode Lock jika diperlukan. Periode berjalan <strong>tidak dihapus</strong>.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-buka-periode')">Batal</button>
+      <button class="btn btn-primary" onclick="konfirmasiBukaPeriodeBaru()" style="background:linear-gradient(135deg,#10b981,#06b6d4);border:none;">✅ Buat Periode Baru</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══ MODAL IMPORT CSV/EXCEL ═══ -->
 <div class="modal-overlay" id="modal-import-csv">
@@ -613,6 +662,13 @@ textarea.form-control { resize:vertical; min-height:80px; }
   <select class="form-control" id="co-standard" onchange="onStandardChange()">
     <option>SAK UMUM</option><option>SAK EP</option><option>SAK EMKM</option><option>SAP</option><option>SAK SYARIAH</option>
   </select>
+</div>
+<div class="form-group"><label>Metode Penilaian Persediaan</label>
+  <select class="form-control" id="co-metode-persediaan">
+    <option value="fifo">FIFO (First-In, First-Out)</option>
+    <option value="average">Rata-Rata Tertimbang (Weighted Average)</option>
+  </select>
+  <small style="font-size:11px;color:var(--text2);margin-top:3px;display:block;">LIFO tidak diizinkan oleh PSAK 14 (revisi 2008). Default: FIFO.</small>
 </div>
 <div class="form-group"><label>Jenis Usaha / Bidang</label><input class="form-control" id="co-type" placeholder="Perdagangan, Sosial, Simpan Pinjam, dll"></div>
 <div class="form-group"><label>Periode Mulai</label><input class="form-control" type="date" id="co-start"></div>
@@ -1332,6 +1388,7 @@ function saveCompany() {
     type: document.getElementById('co-type').value,
     period_start: document.getElementById('co-start').value,
     period_end: document.getElementById('co-end').value,
+    metode_persediaan: document.getElementById('co-metode-persediaan')?.value || 'fifo',
     // [FITUR] Nomor jurnal sequential per perusahaan
     _journal_counter: id ? (DB.companies.find(c=>c.id==parseInt(id))?._journal_counter || 0) : 0
   };
@@ -1359,6 +1416,9 @@ function editCompany(id) {
   document.getElementById('co-type').value = c.type||'';
   document.getElementById('co-start').value = c.period_start||'';
   document.getElementById('co-end').value = c.period_end||'';
+  if (document.getElementById('co-metode-persediaan')) {
+    document.getElementById('co-metode-persediaan').value = c.metode_persediaan || 'fifo';
+  }
   // Restore entity mode
   const em = c.entity_mode || 'komersial';
   selectEntityMode(em);
@@ -1595,6 +1655,18 @@ function setNormalBalance() {
   const schema = getActiveSchema();
   const typeDef = schema.types.find(t =>t.value === type);
   if (typeDef) document.getElementById('coa-normal').value = typeDef.normal;
+
+  // [FIX AUDIT] Auto-default kategori_arus_kas saat akun baru dibuat (bisa diubah user)
+  const katEl = document.getElementById('coa-kategori-arus-kas');
+  if (katEl && !document.getElementById('coa-edit-id').value) {
+    // Hanya set default jika ini akun baru (bukan edit) dan field masih kosong
+    if (!katEl.value) {
+      if (type === 'Ekuitas') katEl.value = 'pendanaan';
+      else if (type === 'Kewajiban') katEl.value = 'operasi'; // default kewajiban operasi, user bisa ubah ke pendanaan
+      else if (type === 'Pendapatan' || type === 'Pendapatan-LO' || type === 'Beban') katEl.value = 'operasi';
+      else katEl.value = ''; // Aset tetap, Belanja, Pembiayaan — biarkan user isi manual
+    }
+  }
 }
 
 // ── COA Kode Prefix Logic ──
@@ -2257,9 +2329,9 @@ function _accHasRole(acc, role) {
   const n = acc.name.toLowerCase();
   switch (role) {
     case 'kas_bank':       return acc.type==='Aset'&&acc.normal_balance==='Debit'&&(n.includes('kas')||n.includes('bank')||n.includes('rkud'));
-    case 'piutang_usaha':  return acc.type==='Aset'&&(n.includes('piutang usaha')||n.includes('piutang dagang')||n.includes('tagihan pelanggan'));
+    case 'piutang_usaha':  return acc.type==='Aset'&&(n.includes('piutang usaha')||n.includes('piutang dagang')||n.includes('tagihan pelanggan')||n.includes('piutang pelanggan')||n.includes('piutang penjualan'));
     case 'hutang_usaha':   return acc.type==='Kewajiban'&&(n.includes('hutang usaha')||n.includes('hutang dagang')||n.includes('utang usaha')||n.includes('utang dagang'));
-    case 'persediaan':     return acc.type==='Aset'&&(n.includes('persediaan barang')||n.includes('stok barang')||n.includes('inventory'));
+    case 'persediaan':     return acc.type==='Aset'&&(n.includes('persediaan barang')||n.includes('persediaan')||n.includes('stok barang')||n.includes('inventory')||n.includes('stok'));
     case 'perlengkapan':   return acc.type==='Aset'&&(n.includes('perlengkapan')||n.includes('supplies')||n.includes('bahan habis'));
     case 'aset_tetap':     return acc.type==='Aset'&&acc.normal_balance==='Debit'&&
                              (n.includes('peralatan')||n.includes('kendaraan')||n.includes('gedung')||
@@ -2417,10 +2489,14 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
       const namaBarang = counterparty ? `Persediaan dari ${counterparty}` : acc.name;
       const batchExisting = coFilter(DB.persediaan).find(p => p.ref_transaction_id === trxId && p.nama_barang === namaBarang);
       if (!batchExisting) {
+        // [FIX BUG 2] Batch dari jurnal: jumlah dan harga_satuan diisi 0 karena jurnal tidak
+        // menyimpan kuantitas fisik. User HARUS mengisi kuantitas via modul Persediaan agar
+        // FIFO akurat. Flag _dari_jurnal=true menandai batch ini perlu dilengkapi.
         DB.persediaan.push({
           id: genId(), company_id: co(), nama_barang: namaBarang,
           jumlah: 0, harga_satuan: 0, total_nilai: d.debit,
-          tanggal_masuk: date, _dari_jurnal: true, ref_transaction_id: trxId
+          tanggal_masuk: date, _dari_jurnal: true, ref_transaction_id: trxId,
+          _perlu_qty: true // [FIX BUG 2] flag: batch ini belum ada qty fisik
         });
       } else {
         const idx = DB.persediaan.findIndex(p => p.id === batchExisting.id);
@@ -2596,6 +2672,221 @@ function renderPeriodeLock() {
         </button> </div>`;
   }).join('');
 }
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR: BUKA PERIODE BARU
+// Otomatis mengambil saldo akhir semua akun sebagai saldo_awal periode baru
+// ══════════════════════════════════════════════════════════════════
+function bukaPeriodeBaru() {
+  if (!co()) { toast('Pilih perusahaan dulu', 'error'); return; }
+  const co_data = getCompany();
+  if (!co_data) return;
+
+  // Hitung saldo akhir semua akun untuk ditampilkan sebagai preview
+  const accs = coFilter(DB.accounts).filter(a => !a.is_header);
+  const preview = accs.map(a => ({ ...a, saldo_akhir: getAccountBalance(a.id, true) }));
+  const nonZero = preview.filter(a => a.saldo_akhir !== 0);
+
+  // Isi form dengan nilai default
+  const periodeEnd = co_data.period_end || '';
+  let nextStart = '', nextEnd = '';
+  if (periodeEnd) {
+    const d = new Date(periodeEnd);
+    d.setDate(d.getDate() + 1);
+    nextStart = d.toISOString().split('T')[0];
+    const nextEndDate = new Date(d.getFullYear() + 1, d.getMonth(), d.getDate() - 1);
+    nextEnd = nextEndDate.toISOString().split('T')[0];
+  }
+  document.getElementById('bp-start').value = nextStart;
+  document.getElementById('bp-end').value = nextEnd;
+
+  // Auto-generate nama periode baru
+  const tahunBaru = nextStart ? new Date(nextStart).getFullYear() : '';
+  const namaBase = (co_data.name || 'Perusahaan').replace(/\s+\d{4}$/, '').trim();
+  document.getElementById('bp-nama').value = tahunBaru ? `${namaBase} ${tahunBaru}` : namaBase;
+  document.getElementById('bp-standard').value = '';
+
+  // Preview info
+  const totAkun = accs.length;
+  const totAkunSaldo = nonZero.length;
+  const totAset   = nonZero.filter(a => a.type === 'Aset' && a.normal_balance === 'Debit').reduce((s,a) => s + a.saldo_akhir, 0);
+  const totKwj    = nonZero.filter(a => a.type === 'Kewajiban').reduce((s,a) => s + a.saldo_akhir, 0);
+  const totEk     = nonZero.filter(a => a.type === 'Ekuitas').reduce((s,a) => s + a.saldo_akhir, 0);
+
+  document.getElementById('buka-periode-info').innerHTML = `
+    <div style="font-weight:700;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Ringkasan Saldo Akhir Periode Berjalan</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;">
+      <div style="padding:10px;background:rgba(37,99,235,.06);border-radius:6px;text-align:center;">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Perusahaan</div>
+        <div style="font-weight:800;font-size:13px;">${co_data.name}</div>
+      </div>
+      <div style="padding:10px;background:rgba(37,99,235,.06);border-radius:6px;text-align:center;">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Periode Berjalan</div>
+        <div style="font-weight:700;font-size:12px;">${co_data.period_start||'—'} s/d ${co_data.period_end||'—'}</div>
+      </div>
+      <div style="padding:10px;background:rgba(37,99,235,.06);border-radius:6px;text-align:center;">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Akun Bersaldo</div>
+        <div style="font-weight:800;font-size:13px;">${totAkunSaldo} / ${totAkun} akun</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+      <div style="padding:8px 12px;background:rgba(16,185,129,.07);border-radius:6px;">
+        <div style="font-size:10px;color:var(--text3);">Total Aset Bersih</div>
+        <div style="font-weight:700;font-family:var(--mono);font-size:12px;color:var(--accent2);">${fmtC(totAset)}</div>
+      </div>
+      <div style="padding:8px 12px;background:rgba(239,68,68,.06);border-radius:6px;">
+        <div style="font-size:10px;color:var(--text3);">Total Kewajiban</div>
+        <div style="font-weight:700;font-family:var(--mono);font-size:12px;color:var(--danger);">${fmtC(totKwj)}</div>
+      </div>
+      <div style="padding:8px 12px;background:rgba(37,99,235,.06);border-radius:6px;">
+        <div style="font-size:10px;color:var(--text3);">Total Ekuitas</div>
+        <div style="font-weight:700;font-family:var(--mono);font-size:12px;color:var(--primary-light);">${fmtC(totEk)}</div>
+      </div>
+    </div>
+    ${!totAkunSaldo ? '<div style="margin-top:8px;padding:8px;background:rgba(245,158,11,.1);border-radius:6px;font-size:11px;color:#92400e;">⚠️ Belum ada akun dengan saldo — pastikan sudah ada jurnal sebelum membuka periode baru.</div>' : ''}
+  `;
+
+  openModal('modal-buka-periode');
+}
+
+function konfirmasiBukaPeriodeBaru() {
+  const nama  = document.getElementById('bp-nama').value.trim();
+  const start = document.getElementById('bp-start').value;
+  const end   = document.getElementById('bp-end').value;
+  const std   = document.getElementById('bp-standard').value;
+
+  if (!nama)  { toast('Nama periode baru wajib diisi', 'error'); return; }
+  if (!start) { toast('Tanggal mulai wajib diisi', 'error'); return; }
+  if (!end)   { toast('Tanggal akhir wajib diisi', 'error'); return; }
+  if (start >= end) { toast('Tanggal akhir harus setelah tanggal mulai', 'error'); return; }
+
+  const co_data = getCompany();
+  if (!co_data) return;
+
+  // Cek nama duplikat
+  if (DB.companies.some(c => c.name.toLowerCase() === nama.toLowerCase())) {
+    toast(`Nama "${nama}" sudah digunakan. Gunakan nama yang berbeda.`, 'error', 5000);
+    return;
+  }
+
+  // Kumpulkan saldo akhir semua akun
+  const accs = coFilter(DB.accounts).filter(a => !a.is_header);
+  const saldoAkhirMap = {};
+  accs.forEach(a => {
+    saldoAkhirMap[a.id] = getAccountBalance(a.id, true);
+  });
+
+  // Buat entitas baru
+  const newCoId = genId();
+  const newCo = {
+    id: newCoId,
+    name: nama,
+    standard: std || co_data.standard || 'SAK EMKM',
+    type: co_data.type || '',
+    entity_mode: co_data.entity_mode || 'komersial',
+    period_start: start,
+    period_end: end,
+    metode_persediaan: co_data.metode_persediaan || 'fifo',
+    _journal_counter: 0
+  };
+  DB.companies.push(newCo);
+
+  // Salin CoA dengan saldo_awal = saldo akhir periode berjalan
+  let copiAkun = 0;
+  const newAccIdMap = {}; // oldId → newId (for header references)
+
+  // Pass 1: buat semua akun (tanpa parent dulu)
+  accs.forEach(a => {
+    const newAccId = genId();
+    newAccIdMap[a.id] = newAccId;
+    const saldoAwal = saldoAkhirMap[a.id] || 0;
+    const newAcc = {
+      ...a,
+      id: newAccId,
+      company_id: newCoId,
+      saldo_awal: saldoAwal,
+      // Reset role fields yang spesifik periode
+    };
+    DB.accounts.push(newAcc);
+    copiAkun++;
+  });
+
+  // Pass 2: salin header accounts (akun is_header) juga, agar struktur tetap
+  const headerAccs = coFilter(DB.accounts).filter(a => a.is_header);
+  headerAccs.forEach(a => {
+    const newAccId = genId();
+    newAccIdMap[a.id] = newAccId;
+    DB.accounts.push({
+      ...a,
+      id: newAccId,
+      company_id: newCoId,
+      saldo_awal: 0
+    });
+  });
+
+  // Salin CoA headers (coa_headers table jika ada)
+  if (Array.isArray(DB.coa_headers)) {
+    coFilter(DB.coa_headers).forEach(h => {
+      DB.coa_headers.push({ ...h, id: genId(), company_id: newCoId });
+    });
+  }
+  if (Array.isArray(DB.coa_subheaders)) {
+    coFilter(DB.coa_subheaders).forEach(h => {
+      DB.coa_subheaders.push({ ...h, id: genId(), company_id: newCoId });
+    });
+  }
+
+  // ── Kunci otomatis semua bulan periode lama ──
+  // Kumpulkan semua bulan yang ada transaksi/penyesuaian di entitas lama
+  const bulanLama = new Set();
+  coFilter(DB.transactions).forEach(t => { if (t.date) bulanLama.add(t.date.substring(0, 7)); });
+  coFilter(DB.penyesuaian).forEach(p => { if (p.date) bulanLama.add(p.date.substring(0, 7)); });
+
+  if (!DB.locked_periods) DB.locked_periods = {};
+  const lockTimestamp = new Date().toISOString();
+  let jumlahDikunci = 0;
+  bulanLama.forEach(bulan => {
+    const key = `${co()}_${bulan}`;
+    if (!DB.locked_periods[key]) {
+      DB.locked_periods[key] = lockTimestamp;
+      jumlahDikunci++;
+    }
+  });
+
+  autoSave();
+  closeModal('modal-buka-periode');
+
+  // Tawaran pindah ke perusahaan baru
+  const lockInfo = jumlahDikunci > 0
+    ? `• ${jumlahDikunci} bulan periode lama dikunci otomatis 🔒\n`
+    : '';
+  const pindah = confirm(
+    `✅ Periode baru "${nama}" berhasil dibuat!\n\n` +
+    `• ${copiAkun} akun disalin dengan saldo awal dari saldo akhir periode ini\n` +
+    `• Periode baru: ${start} s/d ${end}\n` +
+    lockInfo +
+    `\nApakah Anda ingin langsung beralih ke periode baru sekarang?`
+  );
+  if (pindah) {
+    selectCompany(newCoId);
+    navigate('coa');
+    toast(`✅ Beralih ke "${nama}" — saldo awal terisi otomatis, periode lama terkunci 🔒`, 'success', 6000);
+  } else {
+    toast(`✅ Periode baru "${nama}" dibuat. Periode lama dikunci (${jumlahDikunci} bulan).`, 'success', 6000);
+  }
+
+  // Refresh Periode Lock jika sedang di halaman settings
+  renderPeriodeLock();
+
+  auditLog('CREATE', 'periode_baru', newCoId, {
+    nama, start, end,
+    sumber: co_data.name,
+    akun_disalin: copiAkun,
+    bulan_dikunci: jumlahDikunci
+  });
+}
+
+
 
 function saveTransaction() {
   if (!co()) return;
@@ -2833,15 +3124,29 @@ function getBukuBesarData(accId, includeAdj) {
   }
   combined.sort((a,b)=>a.date.localeCompare(b.date));
 
-  // Mulai dari saldo_awal agar saldo berjalan konsisten dengan Neraca Saldo
-  let saldo = acc.saldo_awal || 0;
+  // [FIX BUG 4-BB] Konsisten dengan getAccountBalance: jika ada jurnal pembuka yang
+  // sudah mencatat saldo awal akun ini, JANGAN tambahkan saldo_awal dari CoA lagi.
+  const adaJurnalPembukaBB = coFilter(DB.journal_entries).some(je => {
+    const isOpeningSource = je._source === 'jurnal_pembuka' || je._source === 'opening' || je._source === 'saldo_awal';
+    const isOpeningDesc   = typeof je.description === 'string' && (
+      je.description.toLowerCase().includes('saldo awal') ||
+      je.description.toLowerCase().includes('opening balance') ||
+      je.description.toLowerCase().includes('neraca awal') ||
+      je.description.toLowerCase().includes('jurnal pembuka')
+    );
+    if (!isOpeningSource && !isOpeningDesc) return false;
+    return DB.journal_details.some(d => d.journal_id === je.id && d.account_id == accId);
+  });
+  const saldoAwalBB = adaJurnalPembukaBB ? 0 : (acc.saldo_awal || 0);
+
+  let saldo = saldoAwalBB;
   combined.forEach(r=>{
     if (acc.normal_balance==='Debit') saldo += r.debit - r.kredit;
     else saldo += r.kredit - r.debit;
     r.saldo = saldo;
   });
 
-  return {acc, combined, saldo};
+  return {acc, combined, saldo, saldoAwal: saldoAwalBB};
 }
 
 function renderBukuBesar() {
@@ -2858,12 +3163,12 @@ function renderBukuBesar() {
   const includeAdj = document.getElementById('bb-include-adj')?.checked !== false;
   const data = getBukuBesarData(accId, includeAdj);
   if (!data) return;
-  const {acc, combined, saldo} = data;
+  const {acc, combined, saldo, saldoAwal} = data;
 
   const rows = combined.map(r=>`<tr> <td>${r.date}</td> <td style="font-size:11px;color:var(--text3);">${r.ref}</td> <td style="${r.type==='P'?'font-style:italic;color:var(--text2);':''}">${r.desc}</td> <td class="td-mono">${r.debit?fmtC(r.debit):''}</td> <td class="td-mono" style="color:var(--text2);">${r.kredit?fmtC(r.kredit):''}</td> <td class="td-mono" style="font-weight:700;color:${r.saldo>=0?'var(--text)':'var(--danger)'};">${fmtC(r.saldo)}</td> </tr>`);
 
   document.getElementById('bb-content').innerHTML = `
-    <div class="card" style="margin-bottom:12px;"> <div style="padding:16px 20px;display:flex;gap:24px;align-items:center;flex-wrap:wrap;"> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Akun</div><div style="font-weight:800;font-size:16px;">${acc.code} — ${acc.name}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Tipe</div><div style="font-weight:600;">${acc.type}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Saldo Normal</div><div style="font-weight:600;">${acc.normal_balance}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Mutasi</div><div style="font-weight:600;">${combined.length} entri</div></div> <div style="margin-left:auto;text-align:right;"> <div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Saldo Akhir</div> <div style="font-weight:800;font-size:22px;font-family:var(--mono);color:${saldo>=0?'var(--text)':'var(--danger)'};">${fmtC(saldo)}</div> </div> </div> </div> <div class="card"> <div class="table-wrap"><table> <thead><tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo Berjalan</th></tr></thead> <tbody> <tr style="background:var(--bg);"><td colspan="5" style="padding:8px 14px;font-weight:700;font-size:12px;">Saldo Awal</td><td class="td-mono" style="padding:8px 14px;font-weight:700;">${fmtC(acc.saldo_awal||0)}</td></tr> ${rows.join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3);">Tidak ada transaksi</td></tr>'}
+    <div class="card" style="margin-bottom:12px;"> <div style="padding:16px 20px;display:flex;gap:24px;align-items:center;flex-wrap:wrap;"> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Akun</div><div style="font-weight:800;font-size:16px;">${acc.code} — ${acc.name}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Tipe</div><div style="font-weight:600;">${acc.type}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Saldo Normal</div><div style="font-weight:600;">${acc.normal_balance}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Mutasi</div><div style="font-weight:600;">${combined.length} entri</div></div> <div style="margin-left:auto;text-align:right;"> <div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Saldo Akhir</div> <div style="font-weight:800;font-size:22px;font-family:var(--mono);color:${saldo>=0?'var(--text)':'var(--danger)'};">${fmtC(saldo)}</div> </div> </div> </div> <div class="card"> <div class="table-wrap"><table> <thead><tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo Berjalan</th></tr></thead> <tbody> <tr style="background:var(--bg);"><td colspan="5" style="padding:8px 14px;font-weight:700;font-size:12px;">Saldo Awal</td><td class="td-mono" style="padding:8px 14px;font-weight:700;">${fmtC(saldoAwal||0)}</td></tr> ${rows.join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3);">Tidak ada transaksi</td></tr>'}
           <tr style="background:var(--bg);font-weight:800;"> <td colspan="3" style="padding:10px 14px;">SALDO AKHIR</td> <td class="td-mono" style="padding:10px 14px;">${fmtC(combined.reduce((s,r)=>s+r.debit,0))}</td> <td class="td-mono" style="padding:10px 14px;color:var(--text2);">${fmtC(combined.reduce((s,r)=>s+r.kredit,0))}</td> <td class="td-mono" style="padding:10px 14px;color:${saldo>=0?'var(--accent2)':'var(--danger)'};">${fmtC(saldo)}</td> </tr> </tbody> </table></div> </div> `;
 }
 
@@ -2978,14 +3283,18 @@ function exportBukuBesarExcel() {
 // ══════════════════════════════════════════
 // NERACA SALDO
 // ══════════════════════════════════════════
-function getAccountBalance(accId, includePenyesuaian=true) {
+function getAccountBalance(accId, includePenyesuaian=true, excludeSources=[]) {
   // [FIX BUG 1] Default includePenyesuaian=true agar Neraca Saldo selalu konsisten
   // dengan Buku Besar. Penyesuaian lama (tanpa ref_journal_id) wajib disertakan
   // karena tidak ada di journal_details — tanpa ini Neraca bisa tidak balance.
+  // [FIX KRITIS #1] excludeSources: array _source JE yang dikecualikan,
+  // mis. ['jurnal_penutup'] agar calcLabaBersih tidak terdampak setelah penutupan.
   const acc = DB.accounts.find(a=>a.id==accId);
   if (!acc) return 0;
   let totD=0, totK=0;
-  const JEs = coFilter(DB.journal_entries).map(je=>je.id);
+  const JEs = coFilter(DB.journal_entries)
+    .filter(je => !excludeSources.includes(je._source))
+    .map(je=>je.id);
   DB.journal_details.filter(d=>JEs.includes(d.journal_id)&&d.account_id==accId).forEach(d=>{totD+=d.debit; totK+=d.kredit;});
   if (includePenyesuaian) {
     // Hanya penyesuaian LAMA (tanpa ref_journal_id) yang perlu ditambahkan manual.
@@ -2993,9 +3302,38 @@ function getAccountBalance(accId, includePenyesuaian=true) {
     coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId && !p.ref_journal_id).forEach(p=>totD+=p.amount);
     coFilter(DB.penyesuaian).filter(p=>p.kredit_acc==accId && !p.ref_journal_id).forEach(p=>totK+=p.amount);
   }
-  const saldoAwal = acc.saldo_awal || 0;
+  // [FIX BUG 4] Cegah double-count saldo_awal: jika ada jurnal pembuka (_source='jurnal_pembuka'
+  // atau _source='opening' atau deskripsi mengandung 'saldo awal'/'opening balance') yang
+  // sudah mencatat nilai saldo awal ke akun ini, maka JANGAN tambahkan saldo_awal dari CoA lagi.
+  const adaJurnalPembuka = coFilter(DB.journal_entries).some(je => {
+    if (excludeSources.includes(je._source)) return false;
+    const isOpeningSource = je._source === 'jurnal_pembuka' || je._source === 'opening' || je._source === 'saldo_awal';
+    const isOpeningDesc   = typeof je.description === 'string' && (
+      je.description.toLowerCase().includes('saldo awal') ||
+      je.description.toLowerCase().includes('opening balance') ||
+      je.description.toLowerCase().includes('neraca awal') ||
+      je.description.toLowerCase().includes('jurnal pembuka')
+    );
+    if (!isOpeningSource && !isOpeningDesc) return false;
+    return DB.journal_details.some(d => d.journal_id === je.id && d.account_id == accId);
+  });
+  const saldoAwal = adaJurnalPembuka ? 0 : (acc.saldo_awal || 0);
   const mutasi = acc.normal_balance=='Debit' ? totD-totK : totK-totD;
   return saldoAwal + mutasi;
+}
+
+// [FIX KRITIS #1] Hitung saldo akun SEBELUM jurnal penutup diposting.
+// Digunakan oleh calcLabaBersih, calcEkuitasAkhir, Neraca, Lap. Perubahan Ekuitas
+// agar laporan tetap akurat meski jurnal penutup sudah diposting.
+function getAccountBalancePreClose(accId, includePenyesuaian=true) {
+  return getAccountBalance(accId, includePenyesuaian, ['jurnal_penutup']);
+}
+
+// [FIX KRITIS #1] Apakah jurnal penutup sudah diposting untuk perusahaan aktif?
+function isJurnalPenutupPosted() {
+  const tanggal = getCompany()?.period_end || '';
+  const MARKER  = `[PENUTUP] ${tanggal}`;
+  return coFilter(DB.journal_entries).some(je => je.description?.startsWith(MARKER));
 }
 
 function renderNeracaSaldo() {
@@ -3266,10 +3604,14 @@ function deletePenyesuaian(id) {
 // NS SETELAH PENYESUAIAN
 // ══════════════════════════════════════════
 function renderNSPA() {
+  // [FIX SEDANG #4] NSPA = Neraca Saldo Setelah Penyesuaian, SEBELUM Jurnal Penutup.
+  // Gunakan getAccountBalancePreClose agar akun Pendapatan & Beban tetap tampil
+  // dengan saldo normal meski jurnal penutup sudah diposting.
   const accs = coFilter(DB.accounts).sort((a,b)=>a.code.localeCompare(b.code,'id',{numeric:true}));
+  const jpPosted = isJurnalPenutupPosted();
   let totD=0, totK=0;
   const rows = accs.map(a=>{
-    const bal = getAccountBalance(a.id, true);
+    const bal = getAccountBalancePreClose(a.id, true);
     if (bal==0) return '';
     // FIX BUG #1 (NSPA): Saldo abnormal TETAP di kolom normal akunnya sebagai nilai negatif
     // (konsisten dengan renderNeracaSaldo), sehingga total D ≠ total K jika ada saldo abnormal
@@ -3287,13 +3629,17 @@ function renderNSPA() {
   }).join('');
   document.getElementById('nspa-tbody').innerHTML = rows || '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text3);">Tidak ada data</td></tr>';
   const isBalance = Math.abs(totD - totK) < 1;
+  const jpBanner = jpPosted
+    ? `<tr><td colspan="4" style="padding:7px 14px;background:rgba(37,99,235,.07);border-left:4px solid var(--primary-lighter);font-size:11px;color:var(--text2);">ℹ️ <strong>Jurnal Penutup sudah diposting.</strong> Neraca Saldo ini menampilkan saldo <em>sebelum</em> jurnal penutup — sesuai prosedur siklus akuntansi (NSPA harus sebelum penutupan).</td></tr>`
+    : '';
   document.getElementById('nspa-tfoot').innerHTML = `
+    ${jpBanner}
     <tr style="font-weight:800;background:var(--bg);"> <td colspan="2" style="padding:10px 14px;font-weight:800;">TOTAL</td> <td class="td-mono" style="padding:10px 14px;">${fmtC(totD)}</td> <td class="td-mono" style="padding:10px 14px;">${fmtC(totK)}</td> </tr> <tr> <td colspan="4" style="padding:8px 14px;text-align:center;font-weight:700;font-size:13px;
         background:${isBalance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};
         color:${isBalance?'var(--accent2)':'var(--danger)'};
         border-top:2px solid ${isBalance?'var(--accent2)':'var(--danger)'};"> ${isBalance
           ? '✅ NS Penyesuaian BALANCE — Debit = Kredit = ' + fmtC(totD)
-          : '⚠ NS Penyesuaian TIDAK BALANCE — Debit: ' + fmtC(totD) + ' | Kredit: ' + fmtC(totK) + ' | Selisih: ' + fmtC(Math.abs(totD-totK)) + (accs.some(a=>getAccountBalance(a.id,true)<0)?' (ada saldo abnormal — lihat baris ⚠)':'')}
+          : '⚠ NS Penyesuaian TIDAK BALANCE — Debit: ' + fmtC(totD) + ' | Kredit: ' + fmtC(totK) + ' | Selisih: ' + fmtC(Math.abs(totD-totK)) + (accs.some(a=>getAccountBalancePreClose(a.id,true)<0)?' (ada saldo abnormal — lihat baris ⚠)':'')}
       </td> </tr>`;
 }
 
@@ -3556,8 +3902,16 @@ function savePiutang() {
     const accs=coFilter(DB.accounts);
     let debitAcc_piu=null, kreditAcc_piu=null, descJurnal_piu='';
     if (kategori_piu==='penjualan_kredit') {
-      debitAcc_piu=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('piutang usaha')||a.name.toLowerCase().includes('piutang dagang')));
-      kreditAcc_piu=accs.find(a=>a.type==='Pendapatan');
+      // [FIX] Gunakan _findAccByRole agar konsisten dengan alias piutang_usaha yang diperluas
+      debitAcc_piu=_findAccByRole(accs,'piutang_usaha');
+      if (!debitAcc_piu) debitAcc_piu=accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('piutang'));
+      // [FIX BUG 3] Cari akun Pendapatan Penjualan lebih spesifik sebelum fallback ke Pendapatan pertama
+      kreditAcc_piu = accs.find(a=>a.type==='Pendapatan'&&(
+        a.name.toLowerCase().includes('penjualan')||
+        a.name.toLowerCase().includes('pendapatan usaha')||
+        a.name.toLowerCase().includes('pendapatan jasa')
+      ));
+      if (!kreditAcc_piu) kreditAcc_piu=accs.find(a=>a.type==='Pendapatan');
       descJurnal_piu=keterangan_piu||`Penjualan kredit kepada ${nama}`;
     } else if (kategori_piu==='piutang_karyawan') {
       debitAcc_piu=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('piutang karyawan')||a.name.toLowerCase().includes('piutang pegawai')||a.name.toLowerCase().includes('piutang')));
@@ -3700,8 +4054,9 @@ function processBayar() {
     autoSave(); closeModal('modal-bayar'); renderHutang();
   } else if (type==='piutang') {
     // Kas-Bank (D) / Piutang (K)
-    const piuAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('piutang usaha')||a.name.toLowerCase().includes('piutang dagang')));
-    const kasAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
+    // [FIX] Gunakan _findAccByRole agar konsisten dengan alias piutang yang sudah diperluas
+    const piuAcc=_findAccByRole(accs,'piutang_usaha');
+    const kasAcc=_findAccByRole(accs,'kas_bank');
     if (piuAcc&&kasAcc) {
       const desc=`Penerimaan piutang dari ${rec.nama_debitur}`;
       const tid=genId(),jeid=genId();
@@ -3767,6 +4122,7 @@ function renderPersediaan() {
     <div class="stat-card purple"><div class="stat-label">Beli Tunai</div><div class="stat-value">${tunai}</div><div class="stat-icon"></div></div>
     <div class="stat-card orange"><div class="stat-label">Beli Kredit</div><div class="stat-value">${kredit}</div><div class="stat-icon"></div></div>
     ${stokMenipis>0?`<div class="stat-card red"><div class="stat-label">⚠ Stok Menipis</div><div class="stat-value">${stokMenipis} item</div><div class="stat-icon"></div></div>`:''}
+    <div class="stat-card blue" style="cursor:pointer;border-top:3px solid #8b5cf6;" title="Ubah metode di Pengaturan Perusahaan" onclick="editCompany(${co()})"><div class="stat-label">Metode Penilaian</div><div class="stat-value" style="font-size:16px;">${(getCompany()?.metode_persediaan||'fifo').toUpperCase()}</div><div class="stat-sub">PSAK 14 — klik untuk ubah</div></div>
   `;
 
   const tbody = document.getElementById('persediaan-tbody');
@@ -4052,9 +4408,15 @@ function processJualPersediaan() {
 
   // Kumpulkan semua batch FIFO (nama barang sama, perusahaan sama, qty > 0)
   // diurutkan dari yang paling lama (id terkecil = masuk paling awal)
+  // [FIX BUG 2] Filter batch yang qty=0 (dari jurnal, perlu dilengkapi): tampilkan warning
   const batches = coFilter(DB.persediaan)
     .filter(b => b.nama_barang === namaBarang && (b.jumlah||0) > 0)
     .sort((a,b) => a.id - b.id);
+  const batchesQtyNol = coFilter(DB.persediaan)
+    .filter(b => b.nama_barang === namaBarang && (b.jumlah||0) === 0 && b._dari_jurnal);
+  if (batchesQtyNol.length > 0) {
+    toast(`⚠ ${batchesQtyNol.length} batch "${namaBarang}" dari jurnal otomatis belum memiliki kuantitas. Edit di modul Persediaan untuk mengisi qty agar HPP FIFO akurat.`, 'warning', 6000);
+  }
 
   const totalStok = batches.reduce((s,b) => s + (b.jumlah||0), 0);
   if (qty > totalStok) {
@@ -5113,7 +5475,7 @@ const SAP_LAPORAN_MAP = {
 
 // Ambil akun berdasarkan tipe, dengan dukungan alias SAP
 // type bisa berupa string tunggal ATAU array string
-function getAccsByType(type, withAdj=true) {
+function getAccsByType(type, withAdj=true, excludeSources=[]) {
   const types = Array.isArray(type) ? type : [type];
   // Resolusi alias: jika minta 'Pendapatan', untuk SAP juga sertakan 'Pendapatan-LO'
   // PERBAIKAN BUG #3: JANGAN sertakan 'Pendapatan-LRA', 'Belanja', 'Pembiayaan' dalam LO
@@ -5124,7 +5486,7 @@ function getAccsByType(type, withAdj=true) {
   // 'Pendapatan-LRA', 'Belanja', 'Pembiayaan' hanya diambil jika diminta eksplisit
   return coFilter(DB.accounts)
     .filter(a =>resolved.has(a.type))
-    .map(a =>({ ...a, balance: getAccountBalance(a.id, withAdj) }));
+    .map(a =>({ ...a, balance: getAccountBalance(a.id, withAdj, excludeSources) }));
 }
 
 // Validasi: tampilkan peringatan jika akun SAP LRA digunakan di jurnal utama
@@ -5149,12 +5511,14 @@ function cekIsolasiSAP(details, accs) {
 
 // ── LABA BERSIH ──
 // Laba = Total Pendapatan − Total Beban
-// Sumber: akun bertipe Pendapatan & Beban di jurnal
+// [FIX KRITIS #1] Selalu exclude jurnal penutup ('jurnal_penutup') agar
+// Laporan L/R, Neraca, dan Perubahan Ekuitas tetap akurat meski penutupan sudah diposting.
 function calcLabaBersih() {
   // Untuk SAP: menghitung Surplus/Defisit Operasional (LO)
   // Pendapatan-LO sudah dicakup via alias di getAccsByType
-  const rev = getAccsByType('Pendapatan').reduce((s,a) =>s + a.balance, 0);
-  const exp = getAccsByType('Beban').reduce((s,a) =>s + a.balance, 0);
+  const EXCL = ['jurnal_penutup'];
+  const rev = getAccsByType('Pendapatan', true, EXCL).reduce((s,a) =>s + a.balance, 0);
+  const exp = getAccsByType('Beban',      true, EXCL).reduce((s,a) =>s + a.balance, 0);
   return rev - exp;
 }
 
@@ -5163,7 +5527,12 @@ function calcLabaBersih() {
 // • Modal & Laba Ditahan: Ekuitas normal Kredit → saldo positif dari getAccountBalance
 // • Prive/Dividen: Ekuitas normal Debit → saldo positif dari getAccountBalance → dikurangkan
 function calcEkuitasAkhir() {
-  const ekAcss = getAccsByType('Ekuitas');
+  // [FIX KRITIS #1] Gunakan excludeSources=['jurnal_penutup'] agar saldo akun Ekuitas
+  // yang dipakai di sini adalah saldo SEBELUM penutupan. Laba bersih (calcLabaBersih)
+  // juga sudah exclude jurnal penutup. Dengan demikian ekuitas akhir tetap benar
+  // baik sebelum maupun sesudah jurnal penutup diposting.
+  const EXCL = ['jurnal_penutup'];
+  const ekAcss = getAccsByType('Ekuitas', true, EXCL);
   // Akun modal/saham/laba ditahan → normal Kredit → sudah positif
   const modalTotal = ekAcss
     .filter(a =>a.normal_balance === 'Kredit')
@@ -5179,16 +5548,33 @@ function calcEkuitasAkhir() {
 // ── KAS AWAL PERIODE ──
 // Saldo awal (opening balance) akun kas/bank — digunakan di Laporan Arus Kas
 // agar Kas Akhir Arus Kas = kasAwal + mutasi = saldo buku besar
+// [FIX BUG 5] Konsisten dengan getAccountBalance: jika ada jurnal pembuka untuk
+// akun kas, maka saldo_awal sudah tercakup dalam mutasi jurnal — jangan double-count.
 function calcKasAwal() {
-  return coFilter(DB.accounts)
+  const kasAccs = coFilter(DB.accounts)
     .filter(a =>a.type === 'Aset'
       && a.normal_balance === 'Debit'
       && (a.name.toLowerCase().includes('kas')
         || a.name.toLowerCase().includes('bank')
         || a.name.toLowerCase().includes('rkud')
         || a.name.toLowerCase().includes('rekening kas')
-      ))
-    .reduce((s,a) =>s + (a.saldo_awal || 0), 0);
+      ));
+  return kasAccs.reduce((s, a) => {
+    // Cek apakah ada jurnal pembuka yang sudah mencatat saldo awal akun ini
+    const adaJurnalPembuka = coFilter(DB.journal_entries).some(je => {
+      const isOpeningSource = je._source === 'jurnal_pembuka' || je._source === 'opening' || je._source === 'saldo_awal';
+      const isOpeningDesc   = typeof je.description === 'string' && (
+        je.description.toLowerCase().includes('saldo awal') ||
+        je.description.toLowerCase().includes('opening balance') ||
+        je.description.toLowerCase().includes('neraca awal') ||
+        je.description.toLowerCase().includes('jurnal pembuka')
+      );
+      if (!isOpeningSource && !isOpeningDesc) return false;
+      return DB.journal_details.some(d => d.journal_id === je.id && d.account_id == a.id);
+    });
+    // Jika ada jurnal pembuka, saldo_awal sudah termasuk dalam mutasi → jangan tambahkan lagi
+    return s + (adaJurnalPembuka ? 0 : (a.saldo_awal || 0));
+  }, 0);
 }
 
 // ── KAS & SETARA KAS AKHIR ──
@@ -6038,16 +6424,33 @@ function renderPerubahanEkuitas() {
     document.getElementById('ekuitas-content').innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--text3);"> <div style="font-size:48px;margin-bottom:12px;opacity:.5;"></div> <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Belum Ada Data Transaksi</div> <div style="font-size:13px;">Tambahkan transaksi di menu <strong>Jurnal Umum</strong>terlebih dahulu untuk melihat laporan ini.</div> </div>`;
     return;
   }
-  const ekAcss     = getAccsByType('Ekuitas');
+  // [FIX KRITIS #1 + SEDANG #3] Exclude jurnal penutup dari saldo akun Ekuitas
+  // agar Laporan Perubahan Ekuitas tetap benar setelah jurnal penutup diposting.
+  // Laba bersih (calcLabaBersih) juga sudah exclude jurnal penutup secara mandiri.
+  const EXCL_JP    = ['jurnal_penutup'];
+  const ekAcss     = getAccsByType('Ekuitas', true, EXCL_JP);
   const kreditAcss = ekAcss.filter(a => a.normal_balance === 'Kredit');
   const debitAcss  = ekAcss.filter(a => a.normal_balance === 'Debit');
 
   // W3: Pisahkan saldo awal (opening) vs mutasi periode (dari jurnal)
   // getAccountBalance = saldo_awal + mutasi jurnal
   // mutasi periode = getAccountBalance - saldo_awal
-  const getOpeningBal = a => a.saldo_awal || 0;
+  // [FIX BUG 4-EK] Konsisten dengan getAccountBalance: jika ada jurnal pembuka yang
+  // sudah mencatat saldo awal akun ini, JANGAN tambahkan saldo_awal dari CoA lagi.
+  const _cekJurnalPembukaEk = (accId) => coFilter(DB.journal_entries).some(je => {
+    const isOpeningSource = je._source === 'jurnal_pembuka' || je._source === 'opening' || je._source === 'saldo_awal';
+    const isOpeningDesc   = typeof je.description === 'string' && (
+      je.description.toLowerCase().includes('saldo awal') ||
+      je.description.toLowerCase().includes('opening balance') ||
+      je.description.toLowerCase().includes('neraca awal') ||
+      je.description.toLowerCase().includes('jurnal pembuka')
+    );
+    if (!isOpeningSource && !isOpeningDesc) return false;
+    return DB.journal_details.some(d => d.journal_id === je.id && d.account_id == accId);
+  });
+  const getOpeningBal = a => _cekJurnalPembukaEk(a.id) ? 0 : (a.saldo_awal || 0);
   const getMutasiPeriode = a => {
-    const total = getAccountBalance(a.id);
+    const total = getAccountBalancePreClose(a.id);
     return total - getOpeningBal(a);
   };
 
@@ -6243,7 +6646,10 @@ function renderNeraca() {
   const totKew          = totKewLancar + totKewTL;
 
   // ── EKUITAS — dari calcEkuitasAkhir() ──
-  const ekAcss       = getAccsByType('Ekuitas');
+  // [FIX KRITIS #1] Exclude jurnal penutup agar saldo Ekuitas di Neraca
+  // tidak terdampak double-count setelah jurnal penutup diposting.
+  const EXCL_JP      = ['jurnal_penutup'];
+  const ekAcss       = getAccsByType('Ekuitas', true, EXCL_JP);
   const modalAcss    = ekAcss.filter(a =>a.normal_balance === 'Kredit' && a.balance !== 0);
   const priveAcss    = ekAcss.filter(a =>a.normal_balance === 'Debit'  && a.balance !== 0);
   const laba         = calcLabaBersih();
@@ -6318,9 +6724,23 @@ function setMetodeArusKas(metode) {
 function calcArusKasTidakLangsung() {
   const labaBersih = calcLabaBersih();
 
-  // 1. Koreksi beban non-kas: Beban Penyusutan (dari jurnal penyesuaian)
-  const penyusutanAcc = coFilter(DB.accounts).filter(a =>a.type === 'Beban' && a.name.toLowerCase().includes('penyusutan'));
-  const totalPenyusutan = penyusutanAcc.reduce((s,a) =>s + getAccountBalance(a.id, true), 0);
+  // 1. Koreksi beban non-kas
+  // [FIX SEDANG #6] Tambah koreksi: amortisasi, kerugian/keuntungan pelepasan aset,
+  // cadangan piutang ragu, dan item non-kas lain sesuai PSAK 2.
+  const isNonKasAcc = a => {
+    const n = a.name.toLowerCase();
+    return n.includes('penyusutan') || n.includes('depresiasi') ||
+           n.includes('amortisasi') || n.includes('cadangan piutang') ||
+           n.includes('piutang ragu') || n.includes('bad debt') ||
+           n.includes('provisi') || n.includes('impairment') ||
+           n.includes('penurunan nilai');
+  };
+  const nonKasAcc = coFilter(DB.accounts).filter(a => a.type === 'Beban' && isNonKasAcc(a));
+  const totalPenyusutan = nonKasAcc.reduce((s,a) =>s + getAccountBalance(a.id, true), 0);
+  // Label detail untuk tampilan: pisahkan penyusutan dari amortisasi/lainnya
+  const penyusutanSaja = nonKasAcc.filter(a => a.name.toLowerCase().includes('penyusutan') || a.name.toLowerCase().includes('depresiasi')).reduce((s,a)=>s+getAccountBalance(a.id,true),0);
+  const amortisasiSaja = nonKasAcc.filter(a => a.name.toLowerCase().includes('amortisasi')).reduce((s,a)=>s+getAccountBalance(a.id,true),0);
+  const provisiSaja    = nonKasAcc.filter(a => !a.name.toLowerCase().includes('penyusutan') && !a.name.toLowerCase().includes('depresiasi') && !a.name.toLowerCase().includes('amortisasi')).reduce((s,a)=>s+getAccountBalance(a.id,true),0);
 
   // 2. Perubahan modal kerja: DELTA = saldo akhir − saldo awal periode
   //    Saldo awal periode = saldo_awal yang diinput di CoA (opening balance)
@@ -6355,18 +6775,41 @@ function calcArusKasTidakLangsung() {
   });
 
   // Hitung delta: saldo akhir (termasuk penyesuaian) dikurangi saldo awal periode (opening balance CoA)
+  // [FIX BUG 1] Jika saldo_awal belum diisi (null/undefined/0) tapi ada mutasi jurnal di periode ini,
+  // gunakan HANYA mutasi periode (saldo akhir dari jurnal saja, tanpa saldo_awal) sebagai delta.
+  // Ini mencegah over-statement perubahan modal kerja saat saldo_awal kosong.
+  // Akun dengan saldo_awal > 0 menggunakan delta normal: saldo_akhir - saldo_awal.
+  const _getMutasiSaja = (accId) => {
+    // Hitung mutasi dari jurnal periode saja (tanpa saldo_awal)
+    let totD=0, totK=0;
+    const JEids = coFilter(DB.journal_entries).map(je=>je.id);
+    DB.journal_details.filter(d=>JEids.includes(d.journal_id)&&d.account_id==accId).forEach(d=>{totD+=d.debit; totK+=d.kredit;});
+    coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId && !p.ref_journal_id).forEach(p=>totD+=p.amount);
+    coFilter(DB.penyesuaian).filter(p=>p.kredit_acc==accId && !p.ref_journal_id).forEach(p=>totK+=p.amount);
+    const acc = DB.accounts.find(a=>a.id==accId);
+    if (!acc) return 0;
+    return acc.normal_balance==='Debit' ? totD-totK : totK-totD;
+  };
+
   const perubahanAsetLancar = asetLancarAcss.map(a => {
     const saldoAkhir = getAccountBalance(a.id, true);
-    const saldoAwal  = a.saldo_awal || 0;
-    const delta      = saldoAkhir - saldoAwal;
-    return { name: a.name, nilai: -delta }; // naik aset lancar = negatif thd kas
+    const hasSaldoAwal = a.saldo_awal != null && a.saldo_awal !== 0;
+    const saldoAwal  = hasSaldoAwal ? (a.saldo_awal || 0) : 0;
+    // [FIX BUG 1] Jika saldo_awal kosong: delta = mutasi periode saja (bukan full saldo akhir)
+    // agar tidak over-count jika akun memiliki opening balance yang belum diisi
+    const delta = hasSaldoAwal ? (saldoAkhir - saldoAwal) : _getMutasiSaja(a.id);
+    const noSaldoAwal = !hasSaldoAwal && saldoAkhir !== 0;
+    return { name: a.name, nilai: -delta, noSaldoAwal }; // naik aset lancar = negatif thd kas
   }).filter(x =>x.nilai !== 0);
 
   const perubahanKewLancar = kewLancarAcss.map(a => {
     const saldoAkhir = getAccountBalance(a.id, true);
-    const saldoAwal  = a.saldo_awal || 0;
-    const delta      = saldoAkhir - saldoAwal;
-    return { name: a.name, nilai: delta }; // naik kewajiban = positif thd kas
+    const hasSaldoAwal = a.saldo_awal != null && a.saldo_awal !== 0;
+    const saldoAwal  = hasSaldoAwal ? (a.saldo_awal || 0) : 0;
+    // [FIX BUG 1] Sama: jika saldo_awal kosong, gunakan mutasi periode saja
+    const delta = hasSaldoAwal ? (saldoAkhir - saldoAwal) : _getMutasiSaja(a.id);
+    const noSaldoAwal = !hasSaldoAwal && saldoAkhir !== 0;
+    return { name: a.name, nilai: delta, noSaldoAwal }; // naik kewajiban = positif thd kas
   }).filter(x =>x.nilai !== 0);
 
   const totalPerubahanMK =
@@ -6423,8 +6866,35 @@ function renderArusKas() {
     : '';
 
   const elAK = document.getElementById('arus-kas-content');
+
+  // [FIX AUDIT] Cek saldo_awal akun kas — jika nol padahal ada transaksi kas, arus kas tidak bisa direkonsiliasi
+  const allKasAccs = coFilter(DB.accounts).filter(a =>
+    a.type==='Aset' && a.normal_balance==='Debit' &&
+    (a.name.toLowerCase().includes('kas') || a.name.toLowerCase().includes('bank') ||
+     a.name.toLowerCase().includes('rkud') || a.name.toLowerCase().includes('rekening kas'))
+  );
+  const kasAwalTotal = allKasAccs.reduce((s,a) => s + (a.saldo_awal || 0), 0);
+  const kasAkhirTotal = allKasAccs.reduce((s,a) => s + getAccountBalance(a.id, true), 0);
+  // Hanya peringatkan jika ada akun kas dengan saldo_awal=0 DAN ada mutasi (saldo ≠ 0)
+  const kasAccsNeedSaldoAwal = allKasAccs.filter(a => !(a.saldo_awal) && getAccountBalance(a.id, true) !== 0);
+  const kasAwalWarning = kasAccsNeedSaldoAwal.length > 0
+    ? `<div style="margin-bottom:12px;padding:10px 16px;background:rgba(239,68,68,.08);border-radius:var(--radius2);border-left:4px solid var(--danger);font-size:12px;color:#991b1b;">
+        ⚠ <strong>Saldo Awal Kas Belum Diisi:</strong> ${kasAccsNeedSaldoAwal.map(a=>a.name).join(', ')} memiliki saldo_awal = 0.
+        Akibatnya, <strong>Kas Akhir di Laporan Arus Kas mungkin tidak sama dengan saldo Kas di Neraca</strong>.
+        Buka <strong>Chart of Accounts</strong> → edit akun kas → isi kolom <strong>Saldo Awal</strong> sesuai saldo awal periode.
+       </div>`
+    : '';
+
+  // [FIX AUDIT] Tambahkan catatan opsional untuk SAK EMKM sesuai ED SAK EMKM 2021
+  const std_ak = co_data?.standard || '';
+  const emkmNote = std_ak.toUpperCase() === 'SAK EMKM'
+    ? `<div style="margin-bottom:12px;padding:10px 16px;background:rgba(37,99,235,.06);border-radius:var(--radius2);border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);">
+        ℹ <strong>SAK EMKM:</strong> Laporan Arus Kas <em>tidak diwajibkan</em> bagi entitas EMKM (ED SAK EMKM 2021). Laporan ini ditampilkan sebagai informasi tambahan yang bersifat opsional.
+       </div>`
+    : '';
+
   // Sisipkan banner sebelum konten utama — render konten dulu, lalu prepend banner
-  const _origInner = (html) => { elAK.innerHTML = heuristicWarning + html; };
+  const _origInner = (html) => { elAK.innerHTML = emkmNote + kasAwalWarning + heuristicWarning + html; };
   const kasAkhirNeraca = calcKasAkhir();
 
   if (_metodeArusKas === 'tidak-langsung') {
@@ -6441,15 +6911,15 @@ function renderArusKas() {
     const clr  = (v) =>v >= 0 ? 'var(--accent2)' : 'var(--danger)';
 
     const rowsAL = perubahanAsetLancar.map(x => `
-      <div class="report-row indent"> <span style="font-size:12px;">Perubahan ${x.name}</span> <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span> </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
+      <div class="report-row indent"> <span style="font-size:12px;">Perubahan ${x.name}${x.noSaldoAwal?' <span title="Saldo awal nol — delta = saldo akhir penuh. Isi saldo_awal di CoA untuk hasil akurat." style="color:var(--warning);cursor:help;font-size:10px;">⚠</span>':''}</span> <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span> </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
 
     const rowsKL = perubahanKewLancar.map(x => `
-      <div class="report-row indent"> <span style="font-size:12px;">Perubahan ${x.name}</span> <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span> </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
+      <div class="report-row indent"> <span style="font-size:12px;">Perubahan ${x.name}${x.noSaldoAwal?' <span title="Saldo awal nol — delta = saldo akhir penuh. Isi saldo_awal di CoA untuk hasil akurat." style="color:var(--warning);cursor:help;font-size:10px;">⚠</span>':''}</span> <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span> </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
 
     _origInner(`
       <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Tidak Langsung</div> </div> <div style="max-width:580px;">
  <div class="report-section-title">I. AKTIVITAS OPERASI</div> <div class="report-row indent"> <span style="font-weight:700;">Laba Bersih Periode</span> <span class="report-amount" style="font-weight:700;color:${clr(labaBersih)};">${fmtK(labaBersih)}</span> </div> <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">
-Koreksi beban non-kas</div> ${totalPenyusutan ? '<div class="report-row indent"> <span style="font-size:12px;">Beban penyusutan (non-kas)</span> <span class="report-amount" style="color:var(--accent2);">+' + fmtC(totalPenyusutan) + '</span> </div>' : '<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>Tidak ada beban penyusutan</span></div>'}
+Koreksi beban non-kas (PSAK 2)</div> ${totalPenyusutan ? `<div class="report-row indent"> <span style="font-size:12px;">Beban penyusutan/depresiasi</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(penyusutanSaja)}</span> </div>${amortisasiSaja ? `<div class="report-row indent"> <span style="font-size:12px;">Amortisasi</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(amortisasiSaja)}</span> </div>` : ''}${provisiSaja ? `<div class="report-row indent"> <span style="font-size:12px;">Provisi/cadangan piutang ragu</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(provisiSaja)}</span> </div>` : ''}` : '<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>Tidak ada beban non-kas</span></div>'}
 
         <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Perubahan aset lancar (non-kas)</div> ${rowsAL}
 
@@ -6458,10 +6928,10 @@ Koreksi beban non-kas</div> ${totalPenyusutan ? '<div class="report-row indent">
         <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Operasi</strong></span> <span class="report-amount" style="color:${clr(kasOperasi)};"><strong>${fmtK(kasOperasi)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">II. AKTIVITAS INVESTASI</div> ${buildArusKasDetail('investasi')}
         <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Investasi</strong></span> <span class="report-amount" style="color:${clr(kasInvestasi)};"><strong>${fmtK(kasInvestasi)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">III. AKTIVITAS PENDANAAN</div> ${buildArusKasDetail('pendanaan')}
         <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Pendanaan</strong></span> <span class="report-amount" style="color:${clr(kasPendanaan)};"><strong>${fmtK(kasPendanaan)}</strong></span> </div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">
-${fmtC(kasAwalPeriode)}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhir)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${balance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${balance?'var(--accent2)':'var(--danger)'};">
+${fmtC(kasAwalPeriode)}${kasAwalPeriode===0?'&nbsp;<span style="font-size:10px;color:var(--warning);font-weight:700;">⚠ nol — isi saldo_awal di CoA</span>':''}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhir)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${balance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${balance?'var(--accent2)':'var(--danger)'};">
  <div style="font-size:12px;font-weight:700;color:${balance?'#065f46':'#991b1b'};"> 
-${balance ? ('\u2705 Verified: Kas Akhir (' + fmtC(kasAkhir) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : ('\u26a0 Selisih ' + fmtC(selisih) + ' antara Arus Kas dan saldo Kas di Neraca')}
-          </div> </div> <div style="margin-top:10px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);"> <strong>Metode Tidak Langsung:</strong>Dimulai dari laba bersih, kemudian dikoreksi dengan beban non-kas (penyusutan) dan perubahan modal kerja untuk mendapatkan arus kas dari operasi.
+${balance ? ('\u2705 Rekonsiliasi OK: Kas Akhir Arus Kas (' + fmtC(kasAkhir) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : ('\u26a0 Selisih rekonsiliasi ' + fmtC(selisih) + ' \u2014 Kas Akhir Arus Kas (' + fmtC(kasAkhir) + ') \u2260 Kas di Neraca (' + fmtC(kasAkhirNeraca) + '). Periksa saldo_awal akun kas di CoA.')}
+          </div> </div> <div style="margin-top:10px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);"> <strong>Metode Tidak Langsung (PSAK 2):</strong> Kas Awal + Net Cash (Operasi+Investasi+Pendanaan) = Kas Akhir. Kas Awal diambil dari kolom <em>saldo_awal</em> akun kas/bank di Chart of Accounts.
         </div> </div> `);
     return;
   }
@@ -6477,8 +6947,8 @@ ${balance ? ('\u2705 Verified: Kas Akhir (' + fmtC(kasAkhir) + ') = Kas & Setara
     <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Langsung — menampilkan penerimaan &amp; pengeluaran kas nyata</div> </div> <div style="max-width:580px;"> <div class="report-section-title">I. AKTIVITAS OPERASI</div> ${buildArusKasDetail('operasi')}
       <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Operasi</strong></span><span class="report-amount" style="color:${kasOperasi>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasOperasi<0?'(':''}${fmtC(Math.abs(kasOperasi))}${kasOperasi<0?')':''}</strong></span></div> <div class="report-section-title" style="margin-top:20px;">II. AKTIVITAS INVESTASI</div> ${buildArusKasDetail('investasi')}
       <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Investasi</strong></span><span class="report-amount" style="color:${kasInvestasi>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasInvestasi<0?'(':''}${fmtC(Math.abs(kasInvestasi))}${kasInvestasi<0?')':''}</strong></span></div> <div class="report-section-title" style="margin-top:20px;">III. AKTIVITAS PENDANAAN</div> ${buildArusKasDetail('pendanaan')}
-      <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Pendanaan</strong></span><span class="report-amount" style="color:${kasPendanaan>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasPendanaan<0?'(':''}${fmtC(Math.abs(kasPendanaan))}${kasPendanaan<0?')':''}</strong></span></div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">${fmtC(_kasAwal2)}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhirArusKas)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${kasBalance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${kasBalance?'var(--accent2)':'var(--danger)'};"> <div style="font-size:12px;font-weight:700;color:${kasBalance?'#065f46':'#991b1b'};"> ${kasBalance ? ('✅ Verified: Kas Akhir Arus Kas (' + fmtC(kasAkhirArusKas) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : ('⚠ Perbedaan ' + fmtC(selisihKas) + ' antara Arus Kas dan saldo Kas di Neraca. Periksa klasifikasi transaksi.')}
-        </div> </div> <div style="margin-top:10px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);"> <strong>Metode Langsung:</strong>Menampilkan setiap arus kas masuk dan keluar secara langsung dari aktivitas operasi, investasi, dan pendanaan.
+      <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Pendanaan</strong></span><span class="report-amount" style="color:${kasPendanaan>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasPendanaan<0?'(':''}${fmtC(Math.abs(kasPendanaan))}${kasPendanaan<0?')':''}</strong></span></div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">${fmtC(_kasAwal2)}${_kasAwal2===0?'&nbsp;<span style="font-size:10px;color:var(--warning);font-weight:700;">⚠ nol — isi saldo_awal di CoA</span>':''}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhirArusKas)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${kasBalance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${kasBalance?'var(--accent2)':'var(--danger)'};"> <div style="font-size:12px;font-weight:700;color:${kasBalance?'#065f46':'#991b1b'};"> ${kasBalance ? ('✅ Rekonsiliasi OK: Kas Akhir Arus Kas (' + fmtC(kasAkhirArusKas) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : ('⚠ Selisih rekonsiliasi ' + fmtC(selisihKas) + ' — Kas Akhir Arus Kas (' + fmtC(kasAkhirArusKas) + ') ≠ Kas di Neraca (' + fmtC(kasAkhirNeraca) + '). Periksa saldo_awal akun kas di CoA atau klasifikasi transaksi.')}
+        </div> </div> <div style="margin-top:10px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);"> <strong>Metode Langsung (PSAK 2):</strong> Menampilkan setiap arus kas masuk dan keluar secara langsung. Kas Awal diambil dari kolom <em>saldo_awal</em> akun kas/bank di Chart of Accounts.
       </div> </div> `);
 }
 
@@ -6487,6 +6957,9 @@ ${balance ? ('\u2705 Verified: Kas Akhir (' + fmtC(kasAkhir) + ') = Kas & Setara
 // Helper: bangun detail per transaksi untuk tiap kategori arus kas
 // FIX BUG KRITIS #3: menggunakan _getKategoriArusKas() yang menghormati field CoA
 function buildArusKasDetail(kategori) {
+  // [FIX KRITIS #2] Gunakan logika proporsional yang IDENTIK dengan calcArusKas()
+  // agar angka detail per transaksi konsisten dengan total yang ditampilkan.
+  // Sebelumnya: winner-takes-all (satu kategori menang semua) → tidak cocok dengan total proporsional.
   const allAccs = coFilter(DB.accounts);
   const kasIds = allAccs
     .filter(a =>a.type==='Aset' && a.normal_balance==='Debit'
@@ -6507,19 +6980,51 @@ function buildArusKasDetail(kategori) {
     const netKas = kasLines.reduce((s,d) =>s + d.debit - d.kredit, 0);
     if (netKas === 0) return;
 
-    const counterAccs = details
-      .filter(d => !kasIds.includes(d.account_id))
-      .map(d =>allAccs.find(a =>a.id === d.account_id))
-      .filter(Boolean);
-    const adaInvestasi = counterAccs.some(a => _getKategoriArusKas(a) === 'investasi');
-    const adaPendanaan = counterAccs.some(a => _getKategoriArusKas(a) === 'pendanaan');
+    // --- Proporsional (sama persis dengan calcArusKas) ---
+    const counterDetails = details.filter(d => !kasIds.includes(d.account_id));
+    const counterAccs = counterDetails.map(d => ({
+      acc: allAccs.find(a => a.id === d.account_id),
+      netAmt: d.debit - d.kredit
+    })).filter(x => x.acc);
 
-    let kat = 'operasi';
-    if (adaInvestasi)      kat = 'investasi';
-    else if (adaPendanaan) kat = 'pendanaan';
+    let totInv=0, totPend=0, totOp=0;
+    counterAccs.forEach(({acc, netAmt}) => {
+      const kat = _getKategoriArusKas(acc);
+      const abs = Math.abs(netAmt);
+      if (kat === 'investasi')       totInv  += abs;
+      else if (kat === 'pendanaan')  totPend += abs;
+      else                           totOp   += abs;
+    });
+    const totCounter = totInv + totPend + totOp;
 
-    if (kat !== kategori) return;
-    rows.push(`<div class="report-row indent"> <span style="font-size:12px;">${je.date} — ${je.description}</span> <span class="report-amount" style="color:${netKas>=0?'var(--accent2)':'var(--danger)'};">${netKas>=0?'+':''}${fmtC(netKas)}</span> </div>`);
+    let kasOp=0, kasInv=0, kasPend=0;
+    if (totCounter === 0) {
+      kasOp = netKas;
+    } else if (totInv === 0 && totPend === 0) {
+      kasOp = netKas;
+    } else if (totInv === 0 && totOp === 0) {
+      kasPend = netKas;
+    } else if (totPend === 0 && totOp === 0) {
+      kasInv = netKas;
+    } else {
+      kasInv  = netKas * (totInv  / totCounter);
+      kasPend = netKas * (totPend / totCounter);
+      kasOp   = netKas * (totOp   / totCounter);
+    }
+
+    // Nilai untuk kategori yang diminta
+    const nilaiKat = kategori === 'investasi' ? kasInv
+                   : kategori === 'pendanaan' ? kasPend
+                   : kasOp;
+
+    if (Math.abs(nilaiKat) < 0.01) return; // tidak ada kontribusi ke kategori ini
+
+    // Jika proporsional (pecahan), tampilkan keterangan pembagian
+    const isProporsional = (totCounter > 0) && (totInv > 0) && (totPend > 0 || totOp > 0)
+                        || (totInv > 0 && totPend > 0);
+    const labelProp = isProporsional ? ` <span style="font-size:10px;color:var(--text3);"> (prop.)</span>` : '';
+
+    rows.push(`<div class="report-row indent"> <span style="font-size:12px;">${je.date} — ${je.description}${labelProp}</span> <span class="report-amount" style="color:${nilaiKat>=0?'var(--accent2)':'var(--danger)'};">${nilaiKat>=0?'+':''}${fmtC(Math.round(nilaiKat))}</span> </div>`);
   });
 
   return rows.length ? rows.join('')
@@ -10983,14 +11488,15 @@ function renderLaporanPajak() {
   const totalGaji   = sumAcc(accGaji);
   const pph21Terpotong = sumAcc(accPPh21);
 
-  // Tarif PPh 21 PTKP 2024 (TK/0)
+  // Tarif PPh 21 PTKP 2024 (TK/0) — sesuai UU HPP No.7/2021
   const PTKP = 54000000;
   const hitungPPh21 = (bruto) => {
     const pkp = Math.max(0, bruto - PTKP);
-    if (pkp <= 60000000)  return pkp * 0.05;
-    if (pkp <= 250000000) return 3000000 + (pkp-60000000)*0.15;
-    if (pkp <= 500000000) return 31500000 + (pkp-250000000)*0.25;
-    return 94000000 + (pkp-500000000)*0.30;
+    if (pkp <= 60000000)    return pkp * 0.05;
+    if (pkp <= 250000000)   return 3000000   + (pkp-60000000)*0.15;
+    if (pkp <= 500000000)   return 31500000  + (pkp-250000000)*0.25;
+    if (pkp <= 5000000000)  return 94000000  + (pkp-500000000)*0.30;
+    return 1444000000 + (pkp-5000000000)*0.35; // [FIX AUDIT] bracket 35% UU HPP 2021
   };
   const pph21Estimasi = hitungPPh21(totalGaji);
 
@@ -11046,7 +11552,9 @@ function renderLaporanPajak() {
             </tr>
           </table>
           <div style="margin-top:12px;font-size:11px;color:var(--text3);padding:8px 10px;background:var(--bg);border-radius:6px;">
-            Estimasi tarif progresif PPh 21 PTKP TK/0 = Rp54 juta. Untuk perhitungan akurat gunakan DJP Online atau konsultan pajak.
+            ⚠️ <strong>Catatan penting:</strong> Estimasi ini menghitung PPh 21 dengan asumsi <em>satu karyawan TK/0</em> menerima seluruh gaji.
+            Jika ada beberapa karyawan, PPh 21 harus dihitung <strong>per karyawan</strong> lalu dijumlahkan — hasilnya akan berbeda karena tarif progresif.
+            Gunakan DJP Online atau konsultan pajak untuk perhitungan akurat per karyawan.
           </div>`
         }
       </div>
