@@ -83,6 +83,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); overflo
 
 /* ─── MAIN ─── */
 #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+#content { flex:1; overflow-y:auto; padding:24px; min-height:0; }
 #new-pages-container { flex:1; overflow-y:auto; padding:24px; background:var(--bg); min-height:0; }
 #new-pages-container::-webkit-scrollbar { width:6px; }
 #new-pages-container::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
@@ -505,8 +506,8 @@ textarea.form-control { resize:vertical; min-height:80px; }
             </div> </div> </div> <!-- Data Management Card --> <div class="card"> <div class="card-header"><div class="card-title">Data &amp; Backup</div></div> <div class="card-body" style="display:flex;flex-direction:column;gap:10px;"> <div style="padding:8px 12px;background:rgba(16,185,129,.08);border-radius:6px;border-left:3px solid #10b981;font-size:11px;color:#065f46;">Data tersimpan otomatis di IndexedDB. Download backup sebagai cadangan.
             </div> <button class="btn btn-primary" onclick="saveToFile()">Download Backup File</button> <button class="btn btn-success" onclick="loadSampleData()">Muat 4 Data Contoh (SAK EMKM, EP, UMUM, SAP)</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua ke Excel</button> <button class="btn btn-secondary" onclick="exportJSON()">Export JSON (Backup)</button> <label class="btn btn-secondary" style="cursor:pointer;">Import JSON <input type="file" accept=".json" onchange="importJSON(this)" style="display:none"></label> <button class="btn btn-primary" onclick="openImportCSV()" style="background:var(--accent2);border-color:var(--accent2);">📥 Import Transaksi CSV/Excel</button> <button class="btn btn-secondary" onclick="reloadFromEmbedded()" style="border-color:var(--warning);color:var(--warning);">Muat Ulang Data dari File (Reset IDB)</button> <button class="btn btn-danger" onclick="clearAllData()">Hapus Semua Data</button> </div> </div> <!-- Info Card --> <div class="card"> <div class="card-header"><div class="card-title">Persamaan Akuntansi</div></div> <div class="card-body" style="font-size:12px;color:var(--text2);line-height:2;"> <div style="background:var(--bg);padding:12px;border-radius:8px;margin-bottom:10px;font-family:var(--mono);font-size:11px;"> <div> <strong>Posisi Keuangan/Neraca:</strong>Aset = Kewajiban + Ekuitas</div> <div> <strong>Laba Rugi:</strong>Laba = Pendapatan − Beban</div> <div> <strong>Perubahan Ekuitas:</strong></div> <div style="padding-left:16px;">Ekuitas Akhir = Modal + Laba − Prive/Dividen</div> <div> <strong>Arus Kas:</strong>Kas Akhir = Kas di Neraca</div> </div> <p><strong>Aliran Laporan Keuangan:</strong></p> <p>Laba Rugi / LO → Perubahan Ekuitas → Neraca/Posisi Keuangan</p> <p>Arus Kas → Kas di Neraca | SAP: LRA → LSAL</p> <hr style="margin:8px 0;border-color:var(--border)"> <p><strong>ZeQui</strong>v1.0 — Zenith Quality Accounting System</p> <p>SAK UMUM · SAK EP · SAK EMKM · SAP · SAK SYARIAH</p> </div> </div> <!-- Audit Trail Card --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Periode Lock</div> <button class="btn btn-secondary btn-sm" onclick="renderPeriodeLock()">Refresh</button> </div> <div class="card-body" style="padding:0;"> <div style="padding:10px 16px;font-size:12px;color:var(--text3);border-bottom:1px solid var(--border);">Kunci periode bulanan agar jurnal tidak bisa diedit/dihapus. Berguna setelah tutup buku.
             </div> <div id="periode-lock-content"> <div style="text-align:center;padding:24px;color:var(--text3);">Klik  untuk memuat daftar periode.</div> </div> </div> </div> <!-- Audit Trail Card --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Audit Trail</div> <div style="display:flex;gap:8px;align-items:center;"> <input id="audit-search" type="text" placeholder="Cari modul/aksi/detail..." class="form-control" style="width:220px;font-size:12px;" oninput="renderAuditTrail()"> <button class="btn btn-secondary btn-sm" onclick="renderAuditTrail()">Refresh</button> <button class="btn btn-danger btn-sm" onclick="if(confirm('Hapus semua log audit perusahaan ini?')){DB.audit_log=DB.audit_log.filter(l=>l.company_id!==co());autoSave();renderAuditTrail();}">🗑️ Hapus Log</button> </div> </div> <div class="card-body" style="padding:0;"> <div id="audit-trail-content" style="max-height:400px;overflow-y:auto;font-size:12px;"> <div style="text-align:center;padding:32px;color:var(--text3);">Klik  untuk memuat log audit</div> </div> </div> </div> </div> </div> </div><!-- /content -->
-</div><!-- /main -->
 <div id="new-pages-container" style="display:none;flex:1;overflow-y:auto;padding:24px;background:var(--bg);min-height:0;"></div>
+</div><!-- /main -->
 <!-- ═══════════════════ MODALS ═══════════════════ -->
 
 <!-- ═══ MODAL IMPORT CSV/EXCEL ═══ -->
@@ -1117,13 +1118,17 @@ function navigate(page) {
 
   // Halaman baru (render ke container terpisah)
   const contentPages = ['rekonsiliasi','template-transaksi','laporan-pajak'];
+  const contentEl = document.getElementById('content');
   if (contentPages.includes(page)) {
-    // Sembunyikan semua page-* div
+    // Sembunyikan semua page-* div dan #content agar tidak ada jarak kosong
     document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    if (contentEl) contentEl.style.display = 'none';
     // Tampilkan container halaman baru
     if (newPageContainer) newPageContainer.style.display = '';
     renderPage(page);
   } else {
+    // Halaman lama: tampilkan #content, sembunyikan new-pages-container
+    if (contentEl) contentEl.style.display = '';
     // Halaman lama: aktifkan page-* div yang sesuai
     const pageEl = document.getElementById('page-' + page);
     if (pageEl) pageEl.classList.add('active');
