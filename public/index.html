@@ -83,6 +83,9 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); overflo
 
 /* ─── MAIN ─── */
 #main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+#new-pages-container { flex:1; overflow-y:auto; padding:24px; background:var(--bg); min-height:0; }
+#new-pages-container::-webkit-scrollbar { width:6px; }
+#new-pages-container::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
 
 /* ─── HEADER ─── */
 #header {
@@ -477,7 +480,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
 </div> <!-- LICENSE INFO BAR (shown when activated) -->
 <div id="lic-info-bar" style="display:none;"> <span>Lisensi Aktif &nbsp;|&nbsp; <span id="lic-info-plan" style="font-weight:700;">Trial</span></span> <span id="lic-info-key" style="color:rgba(148,163,184,.4);">-</span> <span id="lic-info-exp"></span>
 </div> <!-- SIDEBAR -->
-<nav id="sidebar"> <div id="sidebar-logo"> <div class="logo-icon" id="app-logo-wrap" style="background:transparent;padding:0;overflow:hidden;"> <img id="app-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;"> <div id="app-logo-default" style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📊</div> </div> <div> <span>ZeQui</span> <small>Zenith Quality Accounting System</small> </div> </div> <div id="sidebar-nav"> <div class="nav-group-label">Utama</div> <div class="nav-item" onclick="navigate('dashboard')">Dashboard</div> <div class="nav-item" onclick="navigate('companies')">Perusahaan</div> <div class="nav-item" onclick="navigate('coa')">Akun (CoA)</div> <div class="nav-group-label">Transaksi</div> <div class="nav-item" onclick="navigate('transactions')">Transaksi</div> <div class="nav-item" onclick="navigate('jurnal')">Jurnal Umum</div> <div class="nav-item" onclick="navigate('buku-besar')">Buku Besar</div> <div class="nav-item" onclick="navigate('neraca-saldo')">Neraca Saldo</div> <div class="nav-item" onclick="navigate('penyesuaian')">Jurnal Penyesuaian</div> <div class="nav-item" onclick="navigate('ns-penyesuaian')">NS Penyesuaian</div> <div class="nav-group-label">Aset &amp; Kewajiban</div> <div class="nav-item" onclick="navigate('hutang')">Hutang (AP)</div> <div class="nav-item" onclick="navigate('piutang')">Piutang (AR)</div> <div class="nav-item" onclick="navigate('persediaan')">Persediaan</div> <div class="nav-item" onclick="navigate('perlengkapan')">Perlengkapan</div> <div class="nav-item" onclick="navigate('aset-tetap')">Aset Tetap</div> <div class="nav-group-label">Laporan</div> <div class="nav-item" onclick="navigate('laba-rugi')" id="nav-laba-rugi"><span id="nav-label-laba-rugi">Laba Rugi</span></div> <div class="nav-item active" onclick="navigate('neraca')" id="nav-neraca"><span id="nav-label-neraca">Posisi Keuangan</span></div> <div class="nav-item" onclick="navigate('perubahan-ekuitas')" id="nav-ekuitas"><span id="nav-label-ekuitas">Perubahan Ekuitas</span></div> <div class="nav-item" onclick="navigate('arus-kas')" id="nav-arus-kas"><span id="nav-label-arus-kas">Arus Kas</span></div> <div class="nav-item" onclick="navigate('lra')" id="nav-lra" style="display:none;">Realisasi Anggaran (LRA)</div> <div class="nav-item" onclick="navigate('lsal')" id="nav-lsal" style="display:none;">Saldo Anggaran Lebih (LSAL)</div> <div class="nav-item" onclick="navigate('shu')" id="nav-shu" style="display:none;">Laporan SHU</div> <div class="nav-item" onclick="navigate('lpd')" id="nav-lpd" style="display:none;">Perubahan Dana</div> <div class="nav-item" onclick="navigate('pak')" id="nav-pak" style="display:none;">Aset Kelolaan</div> <div class="nav-item" onclick="navigate('jurnal-penutup')">Jurnal Penutup</div> <div class="nav-group-label">Sistem</div> <div class="nav-item" onclick="navigate('komparasi')">Komparasi Multi-Tahun</div> <div class="nav-item" onclick="navigate('settings')">Pengaturan</div> </div> <div id="sidebar-footer"> <button class="save-btn-main" onclick="saveToFile()">Backup File</button> </div>
+<nav id="sidebar"> <div id="sidebar-logo"> <div class="logo-icon" id="app-logo-wrap" style="background:transparent;padding:0;overflow:hidden;"> <img id="app-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;"> <div id="app-logo-default" style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📊</div> </div> <div> <span>ZeQui</span> <small>Zenith Quality Accounting System</small> </div> </div> <div id="sidebar-nav"> <div class="nav-group-label">Utama</div> <div class="nav-item" onclick="navigate('dashboard')">Dashboard</div> <div class="nav-item" onclick="navigate('companies')">Perusahaan</div> <div class="nav-item" onclick="navigate('coa')">Akun (CoA)</div> <div class="nav-group-label">Transaksi</div> <div class="nav-item" onclick="navigate('transactions')">Transaksi</div> <div class="nav-item" onclick="navigate('jurnal')">Jurnal Umum</div> <div class="nav-item" onclick="navigate('buku-besar')">Buku Besar</div> <div class="nav-item" onclick="navigate('neraca-saldo')">Neraca Saldo</div> <div class="nav-item" onclick="navigate('penyesuaian')">Jurnal Penyesuaian</div> <div class="nav-item" onclick="navigate('ns-penyesuaian')">NS Penyesuaian</div> <div class="nav-group-label">Aset &amp; Kewajiban</div> <div class="nav-item" onclick="navigate('hutang')">Hutang (AP)</div> <div class="nav-item" onclick="navigate('piutang')">Piutang (AR)</div> <div class="nav-item" onclick="navigate('persediaan')">Persediaan</div> <div class="nav-item" onclick="navigate('perlengkapan')">Perlengkapan</div> <div class="nav-item" onclick="navigate('aset-tetap')">Aset Tetap</div> <div class="nav-group-label">Laporan</div> <div class="nav-item" onclick="navigate('laba-rugi')" id="nav-laba-rugi"><span id="nav-label-laba-rugi">Laba Rugi</span></div> <div class="nav-item active" onclick="navigate('neraca')" id="nav-neraca"><span id="nav-label-neraca">Posisi Keuangan</span></div> <div class="nav-item" onclick="navigate('perubahan-ekuitas')" id="nav-ekuitas"><span id="nav-label-ekuitas">Perubahan Ekuitas</span></div> <div class="nav-item" onclick="navigate('arus-kas')" id="nav-arus-kas"><span id="nav-label-arus-kas">Arus Kas</span></div> <div class="nav-item" onclick="navigate('lra')" id="nav-lra" style="display:none;">Realisasi Anggaran (LRA)</div> <div class="nav-item" onclick="navigate('lsal')" id="nav-lsal" style="display:none;">Saldo Anggaran Lebih (LSAL)</div> <div class="nav-item" onclick="navigate('shu')" id="nav-shu" style="display:none;">Laporan SHU</div> <div class="nav-item" onclick="navigate('lpd')" id="nav-lpd" style="display:none;">Perubahan Dana</div> <div class="nav-item" onclick="navigate('pak')" id="nav-pak" style="display:none;">Aset Kelolaan</div> <div class="nav-item" onclick="navigate('jurnal-penutup')">Jurnal Penutup</div> <div class="nav-group-label">Alat Bantu</div> <div class="nav-item" onclick="navigate('rekonsiliasi')">Rekonsiliasi Bank</div> <div class="nav-item" onclick="navigate('template-transaksi')">Template Berulang</div> <div class="nav-item" onclick="navigate('laporan-pajak')">Laporan Pajak</div> <div class="nav-group-label">Sistem</div> <div class="nav-item" onclick="navigate('komparasi')">Komparasi Multi-Tahun</div> <div class="nav-item" onclick="navigate('settings')">Pengaturan</div> </div> <div id="sidebar-footer"> <button class="save-btn-main" onclick="saveToFile()">Backup File</button> </div>
 </nav> <!-- MAIN -->
 <div id="main"> <!-- Mobile overlay for sidebar -->
 <div id="mobile-sidebar-overlay" onclick="closeMobileSidebar()"></div>
@@ -502,13 +505,15 @@ textarea.form-control { resize:vertical; min-height:80px; }
             </div> </div> </div> <!-- Data Management Card --> <div class="card"> <div class="card-header"><div class="card-title">Data &amp; Backup</div></div> <div class="card-body" style="display:flex;flex-direction:column;gap:10px;"> <div style="padding:8px 12px;background:rgba(16,185,129,.08);border-radius:6px;border-left:3px solid #10b981;font-size:11px;color:#065f46;">Data tersimpan otomatis di IndexedDB. Download backup sebagai cadangan.
             </div> <button class="btn btn-primary" onclick="saveToFile()">Download Backup File</button> <button class="btn btn-success" onclick="loadSampleData()">Muat 4 Data Contoh (SAK EMKM, EP, UMUM, SAP)</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua ke Excel</button> <button class="btn btn-secondary" onclick="exportJSON()">Export JSON (Backup)</button> <label class="btn btn-secondary" style="cursor:pointer;">Import JSON <input type="file" accept=".json" onchange="importJSON(this)" style="display:none"></label> <button class="btn btn-primary" onclick="openImportCSV()" style="background:var(--accent2);border-color:var(--accent2);">📥 Import Transaksi CSV/Excel</button> <button class="btn btn-secondary" onclick="reloadFromEmbedded()" style="border-color:var(--warning);color:var(--warning);">Muat Ulang Data dari File (Reset IDB)</button> <button class="btn btn-danger" onclick="clearAllData()">Hapus Semua Data</button> </div> </div> <!-- Info Card --> <div class="card"> <div class="card-header"><div class="card-title">Persamaan Akuntansi</div></div> <div class="card-body" style="font-size:12px;color:var(--text2);line-height:2;"> <div style="background:var(--bg);padding:12px;border-radius:8px;margin-bottom:10px;font-family:var(--mono);font-size:11px;"> <div> <strong>Posisi Keuangan/Neraca:</strong>Aset = Kewajiban + Ekuitas</div> <div> <strong>Laba Rugi:</strong>Laba = Pendapatan − Beban</div> <div> <strong>Perubahan Ekuitas:</strong></div> <div style="padding-left:16px;">Ekuitas Akhir = Modal + Laba − Prive/Dividen</div> <div> <strong>Arus Kas:</strong>Kas Akhir = Kas di Neraca</div> </div> <p><strong>Aliran Laporan Keuangan:</strong></p> <p>Laba Rugi / LO → Perubahan Ekuitas → Neraca/Posisi Keuangan</p> <p>Arus Kas → Kas di Neraca | SAP: LRA → LSAL</p> <hr style="margin:8px 0;border-color:var(--border)"> <p><strong>ZeQui</strong>v1.0 — Zenith Quality Accounting System</p> <p>SAK UMUM · SAK EP · SAK EMKM · SAP · SAK SYARIAH</p> </div> </div> <!-- Audit Trail Card --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Periode Lock</div> <button class="btn btn-secondary btn-sm" onclick="renderPeriodeLock()">Refresh</button> </div> <div class="card-body" style="padding:0;"> <div style="padding:10px 16px;font-size:12px;color:var(--text3);border-bottom:1px solid var(--border);">Kunci periode bulanan agar jurnal tidak bisa diedit/dihapus. Berguna setelah tutup buku.
             </div> <div id="periode-lock-content"> <div style="text-align:center;padding:24px;color:var(--text3);">Klik  untuk memuat daftar periode.</div> </div> </div> </div> <!-- Audit Trail Card --> <div class="card" style="grid-column:1/-1;"> <div class="card-header" style="justify-content:space-between;"> <div class="card-title">Audit Trail</div> <div style="display:flex;gap:8px;align-items:center;"> <input id="audit-search" type="text" placeholder="Cari modul/aksi/detail..." class="form-control" style="width:220px;font-size:12px;" oninput="renderAuditTrail()"> <button class="btn btn-secondary btn-sm" onclick="renderAuditTrail()">Refresh</button> <button class="btn btn-danger btn-sm" onclick="if(confirm('Hapus semua log audit perusahaan ini?')){DB.audit_log=DB.audit_log.filter(l=>l.company_id!==co());autoSave();renderAuditTrail();}">🗑️ Hapus Log</button> </div> </div> <div class="card-body" style="padding:0;"> <div id="audit-trail-content" style="max-height:400px;overflow-y:auto;font-size:12px;"> <div style="text-align:center;padding:32px;color:var(--text3);">Klik  untuk memuat log audit</div> </div> </div> </div> </div> </div> </div><!-- /content -->
-</div><!-- /main --> <!-- ═══════════════════ MODALS ═══════════════════ -->
+</div><!-- /main -->
+<div id="new-pages-container" style="display:none;flex:1;overflow-y:auto;padding:24px;background:var(--bg);min-height:0;"></div>
+<!-- ═══════════════════ MODALS ═══════════════════ -->
 
 <!-- ═══ MODAL IMPORT CSV/EXCEL ═══ -->
 <div class="modal-overlay" id="modal-import-csv">
   <div class="modal" style="max-width:700px;">
     <div class="modal-header">
-      <div class="modal-title">📥 Import Transaksi dari CSV / Excel</div>
+      <div class="modal-title">Import Transaksi dari CSV / Excel</div>
       <button class="modal-close" onclick="closeModal('modal-import-csv')">✕</button>
     </div>
     <div class="modal-body">
@@ -525,7 +530,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
           <li>Format tanggal: <code>YYYY-MM-DD</code> atau <code>DD/MM/YYYY</code></li>
           <li>Angka tanpa pemisah ribuan — contoh: <code>5000000</code> bukan <code>5.000.000</code></li>
         </ul>
-        <button class="btn btn-secondary btn-sm" onclick="downloadTemplateCSV()" style="margin-top:8px;">⬇️ Download Template CSV</button>
+        <button class="btn btn-secondary btn-sm" onclick="downloadTemplateCSV()" style="margin-top:8px;">Download Template CSV</button>
       </div>
       <div class="form-group">
         <label>Pilih File (.csv, .xlsx, .xls)</label>
@@ -556,7 +561,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-import-csv')">Batal</button>
-      <button class="btn btn-primary" id="btn-import-csv-confirm" onclick="confirmImportCSV()" style="display:none;">✅ Import Sekarang</button>
+      <button class="btn btn-primary" id="btn-import-csv-confirm" onclick="confirmImportCSV()" style="display:none;">Import Sekarang</button>
     </div>
   </div>
 </div>
@@ -613,33 +618,121 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <div class="form-group"><label>Periode Akhir</label><input class="form-control" type="date" id="co-end"></div>
 </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-company')">Batal</button> <button class="btn btn-primary" onclick="saveCompany()">Simpan</button> </div> </div>
 </div> <!-- COA Modal -->
-<div class="modal-overlay" id="modal-coa"> <div class="modal"> <div class="modal-header"><div class="modal-title">Akun</div><button class="modal-close" onclick="closeModal('modal-coa')"></button></div> <div class="modal-body"> <input type="hidden" id="coa-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1;"> <label>Tipe * <span id="coa-standard-badge" style="font-weight:400;font-size:11px;color:var(--text3);margin-left:6px;"></span></label> <select class="form-control" id="coa-type" onchange="setNormalBalance(); updateCOAHeaderOptions(); autoSuggestCOACode();"> </select> <small id="coa-type-hint" style="font-size:11px;color:var(--text2);"></small> </div> <div class="form-group"> <label>Kode Akun *</label> <div style="display:flex;align-items:center;gap:0;"> <span id="coa-code-prefix" style="
-              padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);
-              border-right:none;border-radius:var(--radius2) 0 0 var(--radius2);
-              font-family:var(--mono);font-size:14px;font-weight:800;
-              color:var(--primary-light);white-space:nowrap;min-width:36px;text-align:center;">1-</span> <input class="form-control" id="coa-code-num" placeholder="001"
-              style="border-radius:0 var(--radius2) var(--radius2) 0;font-family:var(--mono);font-size:14px;font-weight:700;"
-              oninput="syncCOACode()" maxlength="10"> <input type="hidden" id="coa-code"> </div> <small id="coa-code-hint" style="font-size:11px;color:var(--text2);">Nomor urut akun, misal: 001, 002, 101</small> </div> <div class="form-group"> <label>Nama Akun *</label> <input class="form-control" id="coa-name" placeholder="Kas"> </div> <div class="form-group"><label>Saldo Normal</label> <select class="form-control" id="coa-normal"> <option value="Debit">Debit</option><option value="Kredit">Kredit</option> </select> </div> <div class="form-group"> <label>Klasifikasi Neraca
-            <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Aset &amp; Kewajiban)</span> </label> <select class="form-control" id="coa-kategori-neraca"> <option value="">— Auto (dari nama akun) —</option> <option value="lancar">Lancar / Jangka Pendek</option> <option value="tidak_lancar">Tidak Lancar / Jangka Panjang</option> </select> <small style="font-size:10px;color:var(--text3);">Wajib diisi jika nama akun non-standar</small> </div> <div class="form-group"> <label>Kategori Arus Kas
-            <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Aset/Kewajiban/Ekuitas)</span> </label> <select class="form-control" id="coa-kategori-arus-kas"> <option value="">— Auto (dari nama akun) —</option> <option value="operasi">Operasi</option> <option value="investasi">Investasi</option> <option value="pendanaan">Pendanaan</option> </select> <small style="font-size:10px;color:var(--text3);">Paksa klasifikasi jika nama akun tidak dikenali otomatis</small> </div>
-  <!-- W5: Peran Akun — pengganti deteksi keyword nama, akurat untuk nama non-standar -->
-  <div class="form-group" style="grid-column:1/-1;">
-    <label>Peran Akun (Integrasi Sub-Ledger)
-      <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">— isi jika nama akun tidak mengandung kata kunci standar</span>
-    </label>
-    <select class="form-control" id="coa-account-role">
-      <option value="">— Auto (dari nama &amp; tipe akun) —</option>
-      <option value="kas_bank">Kas / Bank (akun kas utama)</option>
-      <option value="piutang_usaha">Piutang Usaha / Tagihan Pelanggan</option>
-      <option value="hutang_usaha">Hutang Usaha / Hutang Dagang</option>
-      <option value="persediaan">Persediaan Barang</option>
-      <option value="perlengkapan">Perlengkapan / Supplies</option>
-      <option value="aset_tetap">Aset Tetap (Peralatan, Kendaraan, dll)</option>
-      <option value="akumulasi_penyusutan">Akumulasi Penyusutan (Contra-Asset)</option>
-      <option value="modal_utama">Modal Utama / Laba Ditahan (Jurnal Penutup)</option>
-    </select>
-    <small style="font-size:10px;color:var(--text3);">Digunakan oleh integrasi otomatis agar tidak bergantung pada nama akun</small>
-  </div> <!-- Header & Sub Header --> <div style="margin-top:16px;padding:14px 16px;background:rgba(37,99,235,.05);border-radius:var(--radius2);border:1px solid rgba(37,99,235,.12);"> <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-light);margin-bottom:12px;">Pengelompokan Akun</div> <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;"> <div class="form-group"> <label>Header</label> <select class="form-control" id="coa-header" onchange="updateCOASubHeaderOptions()"> <option value="">— Tanpa Header —</option> </select> <small style="font-size:11px;color:var(--text2);">Kelompok utama akun</small> </div> <div class="form-group"> <label>Sub Header</label> <select class="form-control" id="coa-subheader"> <option value="">— Tanpa Sub Header —</option> </select> <small style="font-size:11px;color:var(--text2);">Sub kelompok akun</small> </div> </div> <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"> <button class="btn btn-secondary btn-sm" onclick="openModal('modal-coa-header')">Kelola Header</button> </div> </div> <div class="form-grid" style="margin-top:16px;"> <div class="form-group"><label>Saldo Awal (Rp)</label> <input class="form-control" type="number" id="coa-saldo-awal" min="0" value="0" placeholder="0"> <small style="font-size:11px;color:var(--text2);">Isi untuk migrasi dari sistem lain</small> </div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-coa')">Batal</button> <button class="btn btn-primary" onclick="saveCOA()">Simpan</button> </div> </div>
+<div class="modal-overlay" id="modal-coa">
+  <div class="modal" style="max-width:620px;">
+    <div class="modal-header">
+      <div class="modal-title">Akun <span id="coa-standard-badge" style="font-weight:400;font-size:11px;color:var(--text3);margin-left:6px;"></span></div>
+      <button class="modal-close" onclick="closeModal('modal-coa')"></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="coa-edit-id">
+      <div class="form-grid">
+        <!-- Tipe -->
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Tipe *</label>
+          <select class="form-control" id="coa-type" onchange="setNormalBalance(); updateCOAHeaderOptions(); autoSuggestCOACode();"></select>
+          <small id="coa-type-hint" style="font-size:11px;color:var(--text2);"></small>
+        </div>
+        <!-- Kode Akun -->
+        <div class="form-group">
+          <label>Kode Akun *</label>
+          <div style="display:flex;align-items:center;">
+            <span id="coa-code-prefix" style="padding:9px 12px;background:var(--bg);border:1.5px solid var(--border);border-right:none;border-radius:var(--radius2) 0 0 var(--radius2);font-family:var(--mono);font-size:14px;font-weight:800;color:var(--primary-light);white-space:nowrap;min-width:36px;text-align:center;">1-</span>
+            <input class="form-control" id="coa-code-num" placeholder="001" style="border-radius:0 var(--radius2) var(--radius2) 0;font-family:var(--mono);font-size:14px;font-weight:700;" oninput="syncCOACode()" maxlength="10">
+            <input type="hidden" id="coa-code">
+          </div>
+          <small id="coa-code-hint" style="font-size:11px;color:var(--text2);">Nomor urut akun, misal: 001, 002, 101</small>
+        </div>
+        <!-- Nama Akun -->
+        <div class="form-group">
+          <label>Nama Akun *</label>
+          <input class="form-control" id="coa-name" placeholder="Kas">
+        </div>
+        <!-- Saldo Normal -->
+        <div class="form-group">
+          <label>Saldo Normal</label>
+          <select class="form-control" id="coa-normal">
+            <option value="Debit">Debit</option>
+            <option value="Kredit">Kredit</option>
+          </select>
+        </div>
+        <!-- Klasifikasi Neraca -->
+        <div class="form-group">
+          <label>Klasifikasi Neraca <span style="font-weight:400;font-size:10px;color:var(--text3);">(Aset &amp; Kewajiban)</span></label>
+          <select class="form-control" id="coa-kategori-neraca">
+            <option value="">— Auto —</option>
+            <option value="lancar">Lancar / Jangka Pendek</option>
+            <option value="tidak_lancar">Tidak Lancar / Jangka Panjang</option>
+          </select>
+          <small style="font-size:10px;color:var(--text3);">Wajib diisi jika nama akun non-standar</small>
+        </div>
+        <!-- Kategori Arus Kas -->
+        <div class="form-group">
+          <label>Kategori Arus Kas <span style="font-weight:400;font-size:10px;color:var(--text3);">(Aset/Kewajiban/Ekuitas)</span></label>
+          <select class="form-control" id="coa-kategori-arus-kas">
+            <option value="">— Auto —</option>
+            <option value="operasi">Operasi</option>
+            <option value="investasi">Investasi</option>
+            <option value="pendanaan">Pendanaan</option>
+          </select>
+          <small style="font-size:10px;color:var(--text3);">Paksa klasifikasi jika nama akun tidak dikenali</small>
+        </div>
+        <!-- Peran Akun -->
+        <div class="form-group" style="grid-column:1/-1;">
+          <label>Peran Akun (Integrasi Sub-Ledger) <span style="font-weight:400;font-size:10px;color:var(--text3);">— isi jika nama akun tidak mengandung kata kunci standar</span></label>
+          <select class="form-control" id="coa-account-role">
+            <option value="">— Auto (dari nama &amp; tipe akun) —</option>
+            <option value="kas_bank">Kas / Bank (akun kas utama)</option>
+            <option value="piutang_usaha">Piutang Usaha / Tagihan Pelanggan</option>
+            <option value="hutang_usaha">Hutang Usaha / Hutang Dagang</option>
+            <option value="persediaan">Persediaan Barang</option>
+            <option value="perlengkapan">Perlengkapan / Supplies</option>
+            <option value="aset_tetap">Aset Tetap (Peralatan, Kendaraan, dll)</option>
+            <option value="akumulasi_penyusutan">Akumulasi Penyusutan (Contra-Asset)</option>
+            <option value="modal_utama">Modal Utama / Laba Ditahan (Jurnal Penutup)</option>
+          </select>
+          <small style="font-size:10px;color:var(--text3);">Digunakan oleh integrasi otomatis agar tidak bergantung pada nama akun</small>
+        </div>
+      </div>
+
+      <!-- Pengelompokan Akun -->
+      <div style="margin-top:16px;padding:14px 16px;background:rgba(37,99,235,.05);border-radius:var(--radius2);border:1px solid rgba(37,99,235,.12);">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-light);margin-bottom:12px;">Pengelompokan Akun</div>
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label>Header</label>
+            <select class="form-control" id="coa-header" onchange="updateCOASubHeaderOptions()">
+              <option value="">— Tanpa Header —</option>
+            </select>
+            <small style="font-size:11px;color:var(--text2);">Kelompok utama akun</small>
+          </div>
+          <div class="form-group">
+            <label>Sub Header</label>
+            <select class="form-control" id="coa-subheader">
+              <option value="">— Tanpa Sub Header —</option>
+            </select>
+            <small style="font-size:11px;color:var(--text2);">Sub kelompok akun</small>
+          </div>
+        </div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-secondary btn-sm" onclick="openModal('modal-coa-header')">Kelola Header</button>
+        </div>
+      </div>
+
+      <!-- Saldo Awal -->
+      <div class="form-grid" style="margin-top:16px;">
+        <div class="form-group">
+          <label>Saldo Awal (Rp)</label>
+          <input class="form-control" type="number" id="coa-saldo-awal" min="0" value="0" placeholder="0">
+          <small style="font-size:11px;color:var(--text2);">Isi untuk migrasi dari sistem lain</small>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-coa')">Batal</button>
+      <button class="btn btn-primary" onclick="saveCOA()">Simpan</button>
+    </div>
+  </div>
 </div> <!-- Modal Kelola Header & Sub Header -->
 <div class="modal-overlay" id="modal-coa-header"> <div class="modal modal-lg" style="max-width:700px;"> <div class="modal-header"> <div class="modal-title">Kelola Header & Sub Header Akun</div> <button class="modal-close" onclick="closeModal('modal-coa-header')"></button> </div> <div class="modal-body"> <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;"> <!-- Panel Header --> <div> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Header</div> <div style="display:flex;gap:8px;margin-bottom:10px;"> <input class="form-control" id="new-coa-header-name" placeholder="Nama header baru..." style="flex:1;font-size:13px;"> <select class="form-control" id="new-coa-header-type" style="flex:0 0 120px;font-size:12px;"> <option value="Aset">Aset</option><option value="Kewajiban">Kewajiban</option> <option value="Ekuitas">Ekuitas</option><option value="Pendapatan">Pendapatan</option> <option value="Beban">Beban</option> </select> <button class="btn btn-primary btn-sm" onclick="addCOAHeader()">Tambah</button> </div> <div id="coa-header-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius2);"></div> </div> <!-- Panel Sub Header --> <div> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Sub Header</div> <div style="display:flex;gap:8px;margin-bottom:10px;"> <input class="form-control" id="new-coa-subheader-name" placeholder="Nama sub header..." style="flex:1;font-size:13px;"> <select class="form-control" id="new-coa-subheader-parent" style="flex:0 0 130px;font-size:12px;"> <option value="">Pilih Header</option> </select> <button class="btn btn-primary btn-sm" onclick="addCOASubHeader()">Tambah</button> </div> <div id="coa-subheader-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius2);"></div> </div> </div> </div> <div class="modal-footer"> <button class="btn btn-primary" onclick="closeModal('modal-coa-header'); updateCOAHeaderOptions();">Selesai</button> </div> </div>
 </div> <!-- Transaction Modal -->
@@ -707,6 +800,8 @@ let DB = {
   audit_log: [],
   locked_periods: {},
   jurnal_penutup: {},
+  templates: [],
+  rekonsiliasi: [],
   current_company_id: null,
   _id_counter: 1
 };
@@ -928,7 +1023,7 @@ async function initDB() {
       if (saved) try { DB = JSON.parse(saved); migrateDB(); } catch(_) {}
     }
     _updateSaveIndicator('error');
-    toast('⚠️ IndexedDB tidak tersedia, menggunakan penyimpanan sementara', 'warning', 5000);
+    toast('Selisih: IndexedDB tidak tersedia, menggunakan penyimpanan sementara', 'warning', 5000);
   }
   // Tidak lagi butuh setInterval — autoSave dipanggil langsung di setiap operasi
 }
@@ -997,22 +1092,43 @@ function navigate(page) {
     showUpgradeModal(PLAN_GATED_PAGES[page]);
     return;
   }
-  // Cek locked_modules secara generik untuk semua halaman (termasuk yang tidak di PLAN_GATED_PAGES)
   if (__licenseVerified && __planConfig?.locked_modules?.includes(page)) {
     showUpgradeModal(page);
     return;
   }
 
-  document.querySelectorAll('.page').forEach(p =>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n =>n.classList.remove('active'));
-  const pageEl = document.getElementById('page-' + page);
-  if (pageEl) pageEl.classList.add('active');
-  // Support both onclick-based and id-based nav items
+  // Semua page-* div: hapus active, reset display
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = '';
+  });
+
+  // Sembunyikan container halaman baru jika ada
+  const newPageContainer = document.getElementById('new-pages-container');
+  if (newPageContainer) newPageContainer.style.display = 'none';
+
+  // Update active nav
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const navById = document.getElementById('nav-' + page);
   if (navById) navById.classList.add('active');
   else document.querySelector(`.nav-item[onclick="navigate('${page}')"]`)?.classList.add('active');
+
   currentPage = page;
-  renderPage(page);
+
+  // Halaman baru (render ke container terpisah)
+  const contentPages = ['rekonsiliasi','template-transaksi','laporan-pajak'];
+  if (contentPages.includes(page)) {
+    // Sembunyikan semua page-* div
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    // Tampilkan container halaman baru
+    if (newPageContainer) newPageContainer.style.display = '';
+    renderPage(page);
+  } else {
+    // Halaman lama: aktifkan page-* div yang sesuai
+    const pageEl = document.getElementById('page-' + page);
+    if (pageEl) pageEl.classList.add('active');
+    renderPage(page);
+  }
 }
 
 function renderPage(page) {
@@ -1047,6 +1163,9 @@ function renderPage(page) {
     'pak': renderPAK,
     'jurnal-penutup': renderJurnalPenutup,
     'komparasi': renderKomparasiPage,
+    'rekonsiliasi': renderRekonsiliasi,
+    'template-transaksi': renderTemplateTransaksi,
+    'laporan-pajak': renderLaporanPajak,
     companies: renderCompanies,
     settings: renderSettings,
   };
@@ -1658,7 +1777,7 @@ function saveCOA() {
   // Peringatan (bukan blokir) agar user tetap bisa input saldo kontra jika diperlukan.
   if (obj.saldo_awal < 0) {
     const lanjut = confirm(
-      `⚠️ Peringatan: Saldo Awal negatif (${obj.saldo_awal.toLocaleString('id-ID')})\n\n` +
+      `Selisih: Peringatan: Saldo Awal negatif (${obj.saldo_awal.toLocaleString('id-ID')})\n\n` +
       `Akun "${obj.name}" bertipe ${obj.type} dengan saldo normal ${obj.normal_balance}.\n` +
       `Saldo awal negatif jarang terjadi dan bisa merusak neraca saldo.\n\n` +
       `Lanjutkan menyimpan?`
@@ -1677,7 +1796,7 @@ function saveCOA() {
     const isNominal = ['Pendapatan','Beban','Pendapatan-LO','Pendapatan-LRA','Belanja','Pembiayaan'].includes(obj.type);
     if (isNominal && obj.saldo_awal !== 0) {
       const lanjut = confirm(
-        `⚠️ Peringatan: Saldo Awal diisi pada akun nominal\n\n` +
+        `Selisih: Peringatan: Saldo Awal diisi pada akun nominal\n\n` +
         `Akun "${obj.name}" bertipe ${obj.type}.\n` +
         `Akun nominal (Pendapatan/Beban) biasanya tidak memiliki saldo awal — saldo dimulai dari nol tiap periode.\n\n` +
         `Lanjutkan menyimpan?`
@@ -2163,7 +2282,7 @@ function cekJurnalPenutupSudahPosting() {
   const sudah  = coFilter(DB.journal_entries).some(je => je.description?.startsWith(marker));
   if (!sudah) return false;
   return !confirm(
-    `⚠️ Jurnal Penutup sudah diposting untuk periode ${tanggal}.\n\n` +
+    `Selisih: Jurnal Penutup sudah diposting untuk periode ${tanggal}.\n\n` +
     `Menambah/mengubah data setelah jurnal penutup diposting akan membuat laporan keuangan tidak akurat.\n\n` +
     `Disarankan: hapus posting jurnal penutup lama dulu, selesaikan semua entri, baru posting ulang.\n\nLanjutkan?`
   );
@@ -2631,7 +2750,7 @@ function deleteTransaction(id) {
   if (adaYangSudahDibayar.length > 0) {
     const names = adaYangSudahDibayar.map(x => x.nama_kreditur || x.nama_debitur || x.nama_pelanggan || '').filter(Boolean).join(', ');
     if (!confirm(
-      `⚠️ Peringatan: Transaksi ini memiliki hutang/piutang yang sudah sebagian dibayar${names ? ' (' + names + ')' : ''}.\n\n` +
+      `Selisih: Peringatan: Transaksi ini memiliki hutang/piutang yang sudah sebagian dibayar${names ? ' (' + names + ')' : ''}.\n\n` +
       `Menghapus transaksi ini akan menghapus record hutang/piutang dari sub-ledger, ` +
       `tetapi pembayaran yang sudah dicatat TIDAK otomatis dibalik.\n\n` +
       `Disarankan batalkan pembayaran terkait terlebih dahulu sebelum menghapus transaksi ini.\n\n` +
@@ -2967,7 +3086,7 @@ function savePenyesuaian() {
   const co_pen = getCompany();
   if (co_pen?.period_start && co_pen?.period_end) {
     if (date < co_pen.period_start || date >co_pen.period_end) {
-      if (!confirm(`⚠️ Tanggal (${date}) di luar periode ${co_pen.period_start} s/d ${co_pen.period_end}. Lanjutkan?`)) return;
+      if (!confirm(`Selisih: Tanggal (${date}) di luar periode ${co_pen.period_start} s/d ${co_pen.period_end}. Lanjutkan?`)) return;
     }
   }
   // Saran 2: Cek periode lock
@@ -3184,11 +3303,34 @@ function renderHutang() {
   document.getElementById('hutang-stats').innerHTML = `
     <div class="stat-card red"><div class="stat-label">Total Hutang</div><div class="stat-value">${fmtC(total)}</div><div class="stat-icon"></div></div> <div class="stat-card orange"><div class="stat-label">Sisa Hutang</div><div class="stat-value">${fmtC(sisa)}</div><div class="stat-icon"></div></div> <div class="stat-card green"><div class="stat-label">Lunas</div><div class="stat-value">${lunas}</div><div class="stat-icon"></div></div> <div class="stat-card blue"><div class="stat-label">Belum Lunas</div><div class="stat-value">${hs.length-lunas}</div><div class="stat-icon">⏳</div></div> `;
   const tbody = document.getElementById('hutang-tbody');
+  // Banner jatuh tempo
+  if (!document.getElementById('hutang-jatuh-banner')) {
+    const banner = document.createElement('div');
+    banner.id = 'hutang-jatuh-banner';
+    tbody.closest('table')?.parentElement?.insertBefore(banner, tbody.closest('table'));
+  }
+  renderJatuhTempoBanner('hutang-jatuh-banner', DB.hutang, 'nama_kreditur', 'Hutang ke');
   if (!hs.length) { tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada hutang.</p></div></td></tr>`; return; }
   const katLabel_h={'pembelian_kredit':'Pembelian Kredit','pinjaman_bank':'Pinjaman Bank','pinjaman_pribadi':'Pinjaman Pribadi','hutang_gaji':'Hutang Gaji','hutang_pajak':'Hutang Pajak','lain_lain':'Lain-lain'};
-  tbody.innerHTML = hs.map(h=>`
-    <tr> <td style="font-weight:600;">${h.nama_kreditur}${h.nomor_ref?`<br><small style="font-size:10px;color:var(--text3);font-family:var(--mono);">${h.nomor_ref}</small>`:''}</td> <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_h[h.kategori]||h.kategori||'—'}</span></td> <td class="td-mono">${fmtC(h.jumlah)}</td> <td>${h.tanggal||'—'}</td> <td>${h.jatuh_tempo||'—'}</td> <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td> <td><span class="badge-status ${h.status=='Lunas'?'badge-lunas':h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td> <td> <button class="btn btn-secondary btn-sm" onclick="openHutangEdit(${h.id})">Edit</button> ${h.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang',${h.id})">Bayar</button>`:''}
-        <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang',${h.id})">Hapus</button> </td> </tr> `).join('');
+  tbody.innerHTML = hs.map(h=>{
+    const today=new Date(); today.setHours(0,0,0,0);
+    const jt=h.jatuh_tempo?new Date(h.jatuh_tempo):null;
+    const lewat=jt&&jt<today&&h.status!='Lunas';
+    const dekat=jt&&!lewat&&Math.round((jt-today)/86400000)<=7&&h.status!='Lunas';
+    return `
+    <tr style="${lewat?'background:rgba(239,68,68,.04)':dekat?'background:rgba(245,158,11,.04)':''}">
+      <td style="font-weight:600;">${h.nama_kreditur}${h.nomor_ref?`<br><small style="font-size:10px;color:var(--text3);font-family:var(--mono);">${h.nomor_ref}</small>`:''}</td>
+      <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_h[h.kategori]||h.kategori||'—'}</span></td>
+      <td class="td-mono">${fmtC(h.jumlah)}</td>
+      <td>${h.tanggal||'—'}</td>
+      <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${h.jatuh_tempo||'—'}${lewat?' ❗':dekat?' ⏰':''}</td>
+      <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td>
+      <td><span class="badge-status ${h.status=='Lunas'?'badge-lunas':h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td>
+      <td><button class="btn btn-secondary btn-sm" onclick="openHutangEdit(${h.id})">Edit</button>
+          ${h.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang',${h.id})">Bayar</button>`:''}
+          <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang',${h.id})">Hapus</button></td>
+    </tr>`;
+  }).join('');
 }
 
 function openHutangModal() {
@@ -3228,7 +3370,7 @@ function saveHutang() {
   const co_hut = getCompany();
   if (!id && co_hut?.period_start && co_hut?.period_end) {
     if (tanggal < co_hut.period_start || tanggal >co_hut.period_end) {
-      if (!confirm(`⚠️ Tanggal (${tanggal}) di luar periode aktif ${co_hut.period_start} s/d ${co_hut.period_end}.\nLanjutkan?`)) return;
+      if (!confirm(`Selisih: Tanggal (${tanggal}) di luar periode aktif ${co_hut.period_start} s/d ${co_hut.period_end}.\nLanjutkan?`)) return;
     }
   }
   const oldRec_hut = id ? DB.hutang.find(h=>h.id==parseInt(id)) : null;
@@ -3317,11 +3459,34 @@ function renderPiutang() {
   document.getElementById('piutang-stats').innerHTML = `
     <div class="stat-card green"><div class="stat-label">Total Piutang</div><div class="stat-value">${fmtC(total)}</div><div class="stat-icon"></div></div> <div class="stat-card blue"><div class="stat-label">Sisa Piutang</div><div class="stat-value">${fmtC(sisa)}</div><div class="stat-icon">⏳</div></div> <div class="stat-card green"><div class="stat-label">Lunas</div><div class="stat-value">${lunas}</div><div class="stat-icon"></div></div> <div class="stat-card orange"><div class="stat-label">Belum Lunas</div><div class="stat-value">${ps.length-lunas}</div><div class="stat-icon"></div></div> `;
   const tbody = document.getElementById('piutang-tbody');
+  // Banner jatuh tempo
+  if (!document.getElementById('piutang-jatuh-banner')) {
+    const banner = document.createElement('div');
+    banner.id = 'piutang-jatuh-banner';
+    tbody.closest('table')?.parentElement?.insertBefore(banner, tbody.closest('table'));
+  }
+  renderJatuhTempoBanner('piutang-jatuh-banner', DB.piutang, 'nama_debitur', 'Piutang dari');
   if (!ps.length) { tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada piutang.</p></div></td></tr>`; return; }
   const katLabel_p={'penjualan_kredit':'Penjualan Kredit','piutang_karyawan':'Piutang Karyawan','piutang_pinjaman':'Pinjaman ke Pihak Lain','piutang_bunga':'Piutang Bunga','lain_lain':'Lain-lain'};
-  tbody.innerHTML = ps.map(p=>`
-    <tr> <td style="font-weight:600;">${p.nama_debitur}${p.nomor_ref?`<br><small style="font-size:10px;color:var(--text3);font-family:var(--mono);">${p.nomor_ref}</small>`:''}</td> <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_p[p.kategori]||p.kategori||'—'}</span></td> <td class="td-mono">${fmtC(p.jumlah)}</td> <td>${p.tanggal||'—'}</td> <td>${p.jatuh_tempo||'—'}</td> <td class="td-mono" style="font-weight:700;">${fmtC(p.sisa)}</td> <td><span class="badge-status ${p.status=='Lunas'?'badge-lunas':p.sisa<p.jumlah?'badge-partial':'badge-belum'}">${p.status}</span></td> <td> <button class="btn btn-secondary btn-sm" onclick="openPiutangEdit(${p.id})">Edit</button> ${p.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang',${p.id})">Terima</button>`:''}
-        <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang',${p.id})">Hapus</button> </td> </tr> `).join('');
+  tbody.innerHTML = ps.map(p=>{
+    const today=new Date(); today.setHours(0,0,0,0);
+    const jt=p.jatuh_tempo?new Date(p.jatuh_tempo):null;
+    const lewat=jt&&jt<today&&p.status!='Lunas';
+    const dekat=jt&&!lewat&&Math.round((jt-today)/86400000)<=7&&p.status!='Lunas';
+    return `
+    <tr style="${lewat?'background:rgba(239,68,68,.04)':dekat?'background:rgba(245,158,11,.04)':''}">
+      <td style="font-weight:600;">${p.nama_debitur}${p.nomor_ref?`<br><small style="font-size:10px;color:var(--text3);font-family:var(--mono);">${p.nomor_ref}</small>`:''}</td>
+      <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_p[p.kategori]||p.kategori||'—'}</span></td>
+      <td class="td-mono">${fmtC(p.jumlah)}</td>
+      <td>${p.tanggal||'—'}</td>
+      <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${p.jatuh_tempo||'—'}${lewat?' ❗':dekat?' ⏰':''}</td>
+      <td class="td-mono" style="font-weight:700;">${fmtC(p.sisa)}</td>
+      <td><span class="badge-status ${p.status=='Lunas'?'badge-lunas':p.sisa<p.jumlah?'badge-partial':'badge-belum'}">${p.status}</span></td>
+      <td><button class="btn btn-secondary btn-sm" onclick="openPiutangEdit(${p.id})">Edit</button>
+          ${p.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang',${p.id})">Terima</button>`:''}
+          <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang',${p.id})">Hapus</button></td>
+    </tr>`;
+  }).join('');
 }
 
 function openPiutangModal() {
@@ -3361,7 +3526,7 @@ function savePiutang() {
   const co_piu = getCompany();
   if (!id && co_piu?.period_start && co_piu?.period_end) {
     if (tanggal < co_piu.period_start || tanggal >co_piu.period_end) {
-      if (!confirm(`⚠️ Tanggal (${tanggal}) di luar periode aktif ${co_piu.period_start} s/d ${co_piu.period_end}.\nLanjutkan?`)) return;
+      if (!confirm(`Selisih: Tanggal (${tanggal}) di luar periode aktif ${co_piu.period_start} s/d ${co_piu.period_end}.\nLanjutkan?`)) return;
     }
   }
   const oldRec_piu = id ? DB.piutang.find(p=>p.id==parseInt(id)) : null;
@@ -3502,7 +3667,7 @@ function processBayar() {
 
   // Peringatan jika input melebihi sisa — jangan silent clamp
   if (amount >rec.sisa) {
-    toast(`⚠️ Jumlah melebihi sisa (${fmtC(rec.sisa)}). Pembayaran dibatasi otomatis ke sisa tagihan.`, 'info', 4000);
+    toast(`Selisih: Jumlah melebihi sisa (${fmtC(rec.sisa)}). Pembayaran dibatasi otomatis ke sisa tagihan.`, 'info', 4000);
   }
 
   const bayar = Math.min(amount, rec.sisa);
@@ -4407,7 +4572,7 @@ function openCatatPemakaian(id) {
     jEl.innerHTML = `Jurnal: <strong>${bebanAcc.name}</strong> (D) / <strong>${perlAcc.name}</strong> (K)`;
   } else if (jEl) {
     jEl.style.display='block';
-    jEl.innerHTML = '⚠️ Akun "Beban Perlengkapan" atau "Perlengkapan" belum ada di CoA — jurnal tidak otomatis dibuat.';
+    jEl.innerHTML = 'Selisih: Akun "Beban Perlengkapan" atau "Perlengkapan" belum ada di CoA — jurnal tidak otomatis dibuat.';
   }
   openModal('modal-catat-pemakaian');
 }
@@ -4840,7 +5005,7 @@ function hitung_penyusutan_all() {
     if (metodePenyusutan==='saldo-menurun') {
       const tarif = (a.tarif_sm||0)/100;
       if (tarif<=0) {
-        toast(`⚠️ Aset "${a.nama_aset}" metode saldo menurun tapi tarif belum diatur. Dilewati.`,'error',4000);
+        toast(`Selisih: Aset "${a.nama_aset}" metode saldo menurun tapi tarif belum diatur. Dilewati.`,'error',4000);
         skipped++;
         return;
       }
@@ -4897,7 +5062,7 @@ function hitung_penyusutan_all() {
     }
   });
     autoSave(); renderAsetTetap(); renderNeracaSaldo();
-  if (!bebanAcc || !akumAcc) toast('⚠️ Penyusutan dihitung tapi akun belum ada. Buat akun "Beban Penyusutan" (Beban) dan "Akumulasi Penyusutan" (Aset) di CoA.','error',6000);
+  if (!bebanAcc || !akumAcc) toast('Selisih: Penyusutan dihitung tapi akun belum ada. Buat akun "Beban Penyusutan" (Beban) dan "Akumulasi Penyusutan" (Aset) di CoA.','error',6000);
   else if (skipped>0) toast(`✅ ${added} jurnal penyusutan dibuat. ${skipped} aset dilewati (sudah dihitung/tarif/masa habis/di bawah residu).`,'info',5000);
   else toast(`✅ ${added} jurnal penyusutan diposting ke Jurnal Umum. Neraca Saldo & Laba Rugi diperbarui.`,'success',4000);
 }
@@ -4973,7 +5138,7 @@ function cekIsolasiSAP(details, accs) {
     return acc && tipoLO.has(acc.type);
   });
   if (adaLRA && adaLO) {
-    toast('⚠️ Peringatan SAP: Jurnal ini mencampur akun LRA (basis kas) dengan akun LO (basis akrual) dalam satu entri. Ini dapat merusak laporan. Pisahkan jurnal LRA dan LO.', 'error', 8000);
+    toast('Selisih: Peringatan SAP: Jurnal ini mencampur akun LRA (basis kas) dengan akun LO (basis akrual) dalam satu entri. Ini dapat merusak laporan. Pisahkan jurnal LRA dan LO.', 'error', 8000);
   }
 }
 
@@ -5645,7 +5810,7 @@ function renderSHU() {
       </div>
       <!-- Distribusi SHU -->
       <div class="report-section-title">DISTRIBUSI SHU (per RAT)</div>
-      ${pctErr ? `<div style="margin-bottom:12px;padding:8px 14px;background:rgba(239,68,68,.1);border-radius:6px;border-left:3px solid var(--danger);font-size:11px;color:#991b1b;">⚠️ Total persentase ${pctTotal.toFixed(1)}% ≠ 100%. Sesuaikan persentase di bawah agar total = 100%.</div>` : ''}
+      ${pctErr ? `<div style="margin-bottom:12px;padding:8px 14px;background:rgba(239,68,68,.1);border-radius:6px;border-left:3px solid var(--danger);font-size:11px;color:#991b1b;">Selisih: Total persentase ${pctTotal.toFixed(1)}% ≠ 100%. Sesuaikan persentase di bawah agar total = 100%.</div>` : ''}
       <div style="overflow:hidden;border-radius:var(--radius2);border:1px solid var(--border);margin-bottom:20px;">
         <table style="width:100%;border-collapse:collapse;font-size:13px;">
           <thead>
@@ -6486,7 +6651,7 @@ function postingJurnalPenutup() {
   // Guard: cegah double-posting pada periode yang sama
   const sudahPosting = coFilter(DB.journal_entries).some(je =>je.description && je.description.startsWith(MARKER));
   if (sudahPosting) {
-    if (!confirm(`⚠️ Jurnal penutup untuk periode ${tanggal} sudah pernah diposting.\n\nPosting ulang akan membuat entri duplikat dan merusak saldo. Lanjutkan hanya jika Anda yakin ingin membatalkan yang lama lebih dulu.\n\nLanjutkan?`)) return;
+    if (!confirm(`Selisih: Jurnal penutup untuk periode ${tanggal} sudah pernah diposting.\n\nPosting ulang akan membuat entri duplikat dan merusak saldo. Lanjutkan hanya jika Anda yakin ingin membatalkan yang lama lebih dulu.\n\nLanjutkan?`)) return;
   }
 
   // Kumpulkan akun & saldo (sama persis dengan buatJurnalPenutup)
@@ -9256,7 +9421,7 @@ async function licUnlock(lic) {
   // Ambil konfigurasi paket dari server
   const planOk = await fetchPlanConfig(lic.key);
   if (!planOk) {
-    toast('⚠️ Konfigurasi paket tidak bisa dimuat — menggunakan mode Trial offline.', 'info', 5000);
+    toast('Selisih: Konfigurasi paket tidak bisa dimuat — menggunakan mode Trial offline.', 'info', 5000);
   }
 
   // [FIX] Terapkan pembatasan paket SEBELUM navigate agar canAccess() pakai config terbaru
@@ -9273,6 +9438,7 @@ async function licUnlock(lic) {
 
   // ── Saran 4: Reminder penyusutan otomatis ──
   setTimeout(cekReminderPenyusutan, 1500);
+  setTimeout(cekJatuhTempo, 2500);
 }
 
 
@@ -9323,7 +9489,7 @@ async function licUnlock(lic) {
       // Server error (5xx) — buka offline, tandai untuk re-cek berikutnya
       __licenseVerified = true;
       licUnlock(lic);
-      setTimeout(()=>toast('⚠️ Verifikasi lisensi offline (server tidak tersedia). Fitur tetap berjalan normal.','info',5000), 1500);
+      setTimeout(()=>toast('Selisih: Verifikasi lisensi offline (server tidak tersedia). Fitur tetap berjalan normal.','info',5000), 1500);
     }
   } catch (e) {
     // Tidak ada internet — buka offline, data tersimpan lokal masih valid
@@ -10356,6 +10522,567 @@ function confirmImportCSV() {
   renderTransactions();
   toast(`✅ Import selesai: ${imported} jurnal berhasil${skip>0?' | '+skip+' jurnal tidak balance (dilewati)':''}`, 'success', 5000);
   if (currentPage === 'transactions') renderTransactions();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR 1: NOTIFIKASI JATUH TEMPO HUTANG / PIUTANG
+// Dipanggil otomatis saat startup dan saat navigate ke hutang/piutang
+// ══════════════════════════════════════════════════════════════════
+function cekJatuhTempo() {
+  if (!co()) return;
+  const today    = new Date(); today.setHours(0,0,0,0);
+  const h7       = new Date(today); h7.setDate(h7.getDate() + 7);
+  const h1       = new Date(today); h1.setDate(h1.getDate() + 1);
+  const hasil    = [];
+
+  const cekList = (list, jenisLabel, namaField) => {
+    coFilter(list).filter(x => x.status !== 'Lunas' && x.jatuh_tempo).forEach(x => {
+      const jt = new Date(x.jatuh_tempo); jt.setHours(0,0,0,0);
+      const selisih = Math.round((jt - today) / 86400000);
+      const nama = x[namaField] || '—';
+      if (selisih < 0) {
+        hasil.push({ tipe: 'danger', msg: `${jenisLabel} <strong>${nama}</strong> sudah lewat jatuh tempo ${Math.abs(selisih)} hari lalu (${fmtC(x.sisa)})` });
+      } else if (selisih === 0) {
+        hasil.push({ tipe: 'danger', msg: `🔴 ${jenisLabel} <strong>${nama}</strong> jatuh tempo <strong>hari ini</strong>! (${fmtC(x.sisa)})` });
+      } else if (selisih === 1) {
+        hasil.push({ tipe: 'warning', msg: `🟡 ${jenisLabel} <strong>${nama}</strong> jatuh tempo <strong>besok</strong> (${fmtC(x.sisa)})` });
+      } else if (selisih <= 7) {
+        hasil.push({ tipe: 'info', msg: `🔵 ${jenisLabel} <strong>${nama}</strong> jatuh tempo ${selisih} hari lagi — ${x.jatuh_tempo} (${fmtC(x.sisa)})` });
+      }
+    });
+  };
+
+  cekList(DB.hutang,  'Hutang ke',    'nama_kreditur');
+  cekList(DB.piutang, 'Piutang dari', 'nama_debitur');
+
+  if (hasil.length === 0) return;
+
+  // Tampilkan max 3 notif toast, sisanya dilihat di dashboard
+  hasil.slice(0, 3).forEach((h, i) => {
+    setTimeout(() => toast(h.msg, h.tipe, 8000), i * 1200);
+  });
+  if (hasil.length > 3) {
+    setTimeout(() => toast(`📋 +${hasil.length - 3} notifikasi jatuh tempo lainnya — cek halaman Hutang/Piutang`, 'info', 6000), 4000);
+  }
+}
+
+// Banner jatuh tempo di halaman hutang/piutang
+function renderJatuhTempoBanner(containerId, list, namaField, jenisLabel) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const items = coFilter(list).filter(x => x.status !== 'Lunas' && x.jatuh_tempo).map(x => {
+    const jt = new Date(x.jatuh_tempo); jt.setHours(0,0,0,0);
+    const selisih = Math.round((jt - today) / 86400000);
+    return { ...x, selisih };
+  }).filter(x => x.selisih <= 7).sort((a,b) => a.selisih - b.selisih);
+
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (!items.length) { container.innerHTML = ''; return; }
+
+  const rows = items.map(x => {
+    const warna = x.selisih < 0 ? 'var(--danger)' : x.selisih <= 1 ? '#f59e0b' : 'var(--primary-light)';
+    const label = x.selisih < 0 ? `Terlambat ${Math.abs(x.selisih)} hari` : x.selisih === 0 ? 'Hari ini!' : x.selisih === 1 ? 'Besok' : `${x.selisih} hari lagi`;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.05);">
+      <span style="font-size:12px;">${jenisLabel} <strong>${x[namaField]||'—'}</strong></span>
+      <span style="font-size:11px;color:${warna};font-weight:700;">${label} — ${fmtC(x.sisa)}</span>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = `<div style="padding:10px 14px;background:rgba(245,158,11,.08);border-radius:8px;border-left:4px solid #f59e0b;margin-bottom:12px;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#b45309;margin-bottom:6px;">Mendekati Jatuh Tempo (7 hari ke depan)</div>
+    ${rows}
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR 2: REKONSILIASI BANK
+// ══════════════════════════════════════════════════════════════════
+function renderRekonsiliasi() {
+  const accs = coFilter(DB.accounts).filter(a => _accHasRole(a,'kas_bank') || a.type==='Aset' && (a.name.toLowerCase().includes('bank') || a.name.toLowerCase().includes('kas')));
+  const rekList = coFilter(DB.rekonsiliasi||[]);
+
+  document.getElementById('new-pages-container').innerHTML = `
+  <div class="page-header">
+    <div><div class="page-title">Rekonsiliasi Bank</div><div class="page-subtitle">Cocokkan mutasi rekening bank dengan catatan jurnal</div></div>
+    <div class="page-actions"><button class="btn btn-primary" onclick="openRekonsiliasi()">+ Rekonsiliasi Baru</button></div>
+  </div>
+  ${accs.length === 0 ? `<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada akun kas/bank. Tambahkan akun dengan tipe Aset yang mengandung kata "Kas" atau "Bank" di CoA.</p></div></div></div>` : ''}
+  ${rekList.length === 0 ? `<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada rekonsiliasi. Klik <strong>+ Rekonsiliasi Baru</strong> untuk mulai.</p></div></div></div>` :
+    `<div class="card"><div class="table-wrap"><table><thead><tr>
+      <th>Periode</th><th>Akun Bank</th><th>Saldo Buku</th><th>Saldo Bank</th><th>Selisih</th><th>Status</th><th>Aksi</th>
+    </tr></thead><tbody>${rekList.map(r => {
+      const acc = accs.find(a=>a.id==r.account_id);
+      const selisih = (r.saldo_bank||0) - (r.saldo_buku||0);
+      return `<tr>
+        <td>${r.periode||'—'}</td>
+        <td>${acc ? acc.code+' — '+acc.name : '—'}</td>
+        <td class="td-mono">${fmtC(r.saldo_buku||0)}</td>
+        <td class="td-mono">${fmtC(r.saldo_bank||0)}</td>
+        <td class="td-mono" style="color:${Math.abs(selisih)<1?'var(--accent2)':'var(--danger)'};font-weight:700;">${fmtC(Math.abs(selisih))} ${Math.abs(selisih)<1?'':selisih>0?'(Bank lebih)':'(Buku lebih)'}</td>
+        <td><span class="badge-status ${Math.abs(selisih)<1?'badge-lunas':'badge-belum'}">${Math.abs(selisih)<1?'Seimbang':'Selisih'}</span></td>
+        <td><button class="btn btn-secondary btn-sm" onclick="editRekonsiliasi(${r.id})">Detail</button>
+            <button class="btn btn-danger btn-sm" onclick="hapusRekonsiliasi(${r.id})">Hapus</button></td>
+      </tr>`;
+    }).join('')}</tbody></table></div></div>`
+  }`;
+}
+
+let _rekState = { items: [], account_id: null };
+
+function openRekonsiliasi(id) {
+  const accs = coFilter(DB.accounts).filter(a => _accHasRole(a,'kas_bank') || (a.type==='Aset' && (a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas'))));
+  if (!accs.length) { toast('Tambahkan akun Kas/Bank di CoA terlebih dahulu','error'); return; }
+
+  const rek = id ? coFilter(DB.rekonsiliasi||[]).find(r=>r.id==id) : null;
+  _rekState = rek ? { ...rek, items: rek.items||[] } : { id: null, account_id: accs[0].id, periode: '', saldo_bank: 0, items: [] };
+
+  const today = new Date().toISOString().split('T')[0];
+  const accOpts = accs.map(a=>`<option value="${a.id}" ${_rekState.account_id==a.id?'selected':''}>${a.code} — ${a.name}</option>`).join('');
+
+  // Ambil transaksi jurnal untuk akun terpilih
+  _renderRekItems();
+
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay show';
+  modal.id = 'modal-rekonsiliasi-temp';
+  modal.innerHTML = `<div class="modal modal-lg" style="max-width:800px;">
+    <div class="modal-header"><div class="modal-title">Rekonsiliasi Bank</div><button class="modal-close" onclick="document.getElementById('modal-rekonsiliasi-temp').remove()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div class="form-group"><label>Akun Bank *</label>
+          <select class="form-control" id="rek-account" onchange="_rekChangeAcc(this.value)">${accOpts}</select></div>
+        <div class="form-group"><label>Periode *</label>
+          <input class="form-control" id="rek-periode" type="month" value="${_rekState.periode||today.substring(0,7)}"></div>
+        <div class="form-group"><label>Saldo Rekening Bank (Rp) *</label>
+          <input class="form-control" type="number" id="rek-saldo-bank" value="${_rekState.saldo_bank||0}" placeholder="Saldo di rekening koran" oninput="_rekUpdateSummary()"></div>
+      </div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Transaksi di Buku Besar — centang yang sudah muncul di rekening bank</div>
+      <div style="max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;">
+        <table style="width:100%;font-size:12px;border-collapse:collapse;">
+          <thead style="position:sticky;top:0;background:var(--bg-card);z-index:1;">
+            <tr>
+              <th style="padding:7px 10px;text-align:center;border-bottom:1px solid var(--border);width:36px;"><input type="checkbox" id="rek-check-all" onchange="_rekCheckAll(this.checked)"></th>
+              <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">Tanggal</th>
+              <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">No. Jurnal</th>
+              <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">Keterangan</th>
+              <th style="padding:7px 10px;text-align:right;border-bottom:1px solid var(--border);">Debit</th>
+              <th style="padding:7px 10px;text-align:right;border-bottom:1px solid var(--border);">Kredit</th>
+            </tr>
+          </thead>
+          <tbody id="rek-tbody"></tbody>
+        </table>
+      </div>
+      <div id="rek-summary" style="margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:8px;font-size:13px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="document.getElementById('modal-rekonsiliasi-temp').remove()">Batal</button>
+      <button class="btn btn-primary" onclick="saveRekonsiliasi()">Simpan Rekonsiliasi</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+  _rekChangeAcc(accs[0].id);
+}
+
+function _rekChangeAcc(accId) {
+  _rekState.account_id = parseInt(accId);
+  _renderRekItems();
+}
+
+function _renderRekItems() {
+  const tbody = document.getElementById('rek-tbody');
+  if (!tbody) return;
+  const accId = _rekState.account_id;
+  const JEs = coFilter(DB.journal_entries).map(je=>je.id);
+  const details = DB.journal_details.filter(d => JEs.includes(d.journal_id) && d.account_id == accId);
+
+  _rekState.rows = details.map(d => {
+    const je  = DB.journal_entries.find(e=>e.id==d.journal_id);
+    const checked = (_rekState.items||[]).includes(d.id);
+    return { id: d.id, date: je?.date||'', desc: je?.description||'', jno: getJournalNo(je), debit: d.debit, kredit: d.kredit, checked };
+  }).sort((a,b)=>a.date.localeCompare(b.date));
+
+  tbody.innerHTML = _rekState.rows.map(r => `
+    <tr id="rek-row-${r.id}" style="${r.checked?'background:rgba(16,185,129,.05)':''}">
+      <td style="padding:5px 10px;text-align:center;"><input type="checkbox" data-rid="${r.id}" ${r.checked?'checked':''} onchange="_rekToggle(${r.id},this.checked)"></td>
+      <td style="padding:5px 10px;">${r.date}</td>
+      <td style="padding:5px 10px;color:var(--text3);font-family:var(--mono);">${r.jno}</td>
+      <td style="padding:5px 10px;max-width:220px;overflow:hidden;text-overflow:ellipsis;">${r.desc}</td>
+      <td style="padding:5px 10px;text-align:right;">${r.debit?fmtC(r.debit):''}</td>
+      <td style="padding:5px 10px;text-align:right;color:var(--text2);">${r.kredit?fmtC(r.kredit):''}</td>
+    </tr>`).join('');
+  _rekUpdateSummary();
+}
+
+function _rekToggle(id, checked) {
+  if (!_rekState.items) _rekState.items = [];
+  if (checked) { if (!_rekState.items.includes(id)) _rekState.items.push(id); }
+  else { _rekState.items = _rekState.items.filter(x=>x!==id); }
+  const row = document.getElementById('rek-row-'+id);
+  if (row) row.style.background = checked ? 'rgba(16,185,129,.05)' : '';
+  _rekUpdateSummary();
+}
+
+function _rekCheckAll(checked) {
+  (_rekState.rows||[]).forEach(r => _rekToggle(r.id, checked));
+  document.querySelectorAll('#rek-tbody input[type=checkbox]').forEach(cb => cb.checked = checked);
+}
+
+function _rekUpdateSummary() {
+  const summary = document.getElementById('rek-summary');
+  if (!summary) return;
+  const saldoBank = parseFloat(document.getElementById('rek-saldo-bank')?.value)||0;
+  const checked = (_rekState.rows||[]).filter(r => (_rekState.items||[]).includes(r.id));
+  const totalD = checked.reduce((s,r)=>s+r.debit,0);
+  const totalK = checked.reduce((s,r)=>s+r.kredit,0);
+  const saldoBuku = totalD - totalK;
+  const selisih = saldoBank - saldoBuku;
+  const balance = Math.abs(selisih) < 1;
+  summary.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+      <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Item Dicentang</div><div style="font-weight:700;">${checked.length} item</div></div>
+      <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Saldo Buku</div><div class="td-mono" style="font-weight:700;">${fmtC(saldoBuku)}</div></div>
+      <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Saldo Bank</div><div class="td-mono" style="font-weight:700;">${fmtC(saldoBank)}</div></div>
+      <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Selisih</div>
+        <div class="td-mono" style="font-weight:700;color:${balance?'var(--accent2)':'var(--danger)'};">${balance?'Seimbang':'Selisih: '+fmtC(Math.abs(selisih))}</div></div>
+    </div>`;
+}
+
+function saveRekonsiliasi() {
+  const accId   = parseInt(document.getElementById('rek-account').value)||0;
+  const periode = document.getElementById('rek-periode').value;
+  const saldoBank = parseFloat(document.getElementById('rek-saldo-bank').value)||0;
+  if (!periode) { toast('Periode wajib diisi','error'); return; }
+  const checked = (_rekState.rows||[]).filter(r=>(_rekState.items||[]).includes(r.id));
+  const saldoBuku = checked.reduce((s,r)=>s+r.debit-r.kredit,0);
+  if (!DB.rekonsiliasi) DB.rekonsiliasi = [];
+  const obj = { id: _rekState.id||genId(), company_id:co(), account_id:accId, periode, saldo_bank:saldoBank, saldo_buku:saldoBuku, items: _rekState.items||[], updated_at:new Date().toISOString() };
+  const idx = DB.rekonsiliasi.findIndex(r=>r.id==obj.id);
+  if (idx>=0) DB.rekonsiliasi[idx]=obj; else DB.rekonsiliasi.push(obj);
+  autoSave();
+  document.getElementById('modal-rekonsiliasi-temp')?.remove();
+  renderRekonsiliasi();
+  toast(`Rekonsiliasi disimpan — Selisih: ${fmtC(Math.abs(saldoBank-saldoBuku))}`, Math.abs(saldoBank-saldoBuku)<1?'success':'warning', 5000);
+}
+
+function editRekonsiliasi(id) { openRekonsiliasi(id); }
+function hapusRekonsiliasi(id) {
+  if (!confirm('Hapus rekonsiliasi ini?')) return;
+  DB.rekonsiliasi = (DB.rekonsiliasi||[]).filter(r=>r.id!=id);
+  autoSave(); renderRekonsiliasi();
+  toast('Rekonsiliasi dihapus','success');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR 3: TEMPLATE TRANSAKSI BERULANG
+// ══════════════════════════════════════════════════════════════════
+function renderTemplateTransaksi() {
+  const list = coFilter(DB.templates||[]);
+  document.getElementById('new-pages-container').innerHTML = `
+  <div class="page-header">
+    <div><div class="page-title">Template Transaksi Berulang</div><div class="page-subtitle">Simpan transaksi rutin seperti gaji, sewa, cicilan agar bisa digunakan ulang</div></div>
+    <div class="page-actions"><button class="btn btn-primary" onclick="openTemplateModal()">+ Template Baru</button></div>
+  </div>
+  ${list.length===0 ?
+    `<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada template. Klik <strong>+ Template Baru</strong> untuk membuat transaksi berulang.</p></div></div></div>` :
+    `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+      ${list.map(t=>{
+        const frekLabel = {harian:'Setiap Hari',mingguan:'Setiap Minggu',bulanan:'Setiap Bulan',tahunan:'Setiap Tahun'}[t.frekuensi]||t.frekuensi;
+        const totD = (t.details||[]).reduce((s,d)=>s+d.debit,0);
+        return `<div class="card">
+          <div class="card-header" style="justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div class="card-title">${t.nama}</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px;">${frekLabel} — ${fmtC(totD)}</div>
+            </div>
+            <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(37,99,235,.08);color:var(--primary-light);white-space:nowrap;">${t.frekuensi}</span>
+          </div>
+          <div class="card-body" style="padding-top:0;">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">${t.keterangan||'—'}</div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">Terakhir digunakan: ${t.last_used||'Belum pernah'}</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-primary btn-sm" onclick="gunakanTemplate(${t.id})">Gunakan Sekarang</button>
+              <button class="btn btn-secondary btn-sm" onclick="editTemplate(${t.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusTemplate(${t.id})">Hapus</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`
+  }`;
+}
+
+function openTemplateModal(id) {
+  const t = id ? coFilter(DB.templates||[]).find(x=>x.id==id) : null;
+  const accs = coFilter(DB.accounts).filter(a=>!a.is_header);
+  const accOpts = accs.map(a=>`<option value="${a.id}">${a.code} — ${a.name}</option>`).join('');
+
+  const detailRows = (t?.details||[{},{},{}]).map((d,i)=>`
+    <tr id="tmpl-row-${i}">
+      <td style="padding:4px 6px;"><select class="form-control" id="tmpl-acc-${i}" style="font-size:12px;"><option value="">— Pilih Akun —</option>${accs.map(a=>`<option value="${a.id}" ${d.account_id==a.id?'selected':''}>${a.code} — ${a.name}</option>`).join('')}</select></td>
+      <td style="padding:4px 6px;"><input class="form-control" type="number" id="tmpl-d-${i}" value="${d.debit||0}" style="font-size:12px;" min="0"></td>
+      <td style="padding:4px 6px;"><input class="form-control" type="number" id="tmpl-k-${i}" value="${d.kredit||0}" style="font-size:12px;" min="0"></td>
+      <td style="padding:4px 6px;text-align:center;"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">✕</button></td>
+    </tr>`).join('');
+
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay show';
+  modal.id = 'modal-template-temp';
+  modal.innerHTML = `<div class="modal modal-lg" style="max-width:680px;">
+    <div class="modal-header"><div class="modal-title">${id?'Edit':'Buat'} Template Transaksi</div>
+      <button class="modal-close" onclick="document.getElementById('modal-template-temp').remove()">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="tmpl-edit-id" value="${id||''}">
+      <div class="form-grid">
+        <div class="form-group" style="grid-column:1/-1"><label>Nama Template *</label><input class="form-control" id="tmpl-nama" value="${t?.nama||''}" placeholder="Contoh: Gaji Karyawan Bulanan"></div>
+        <div class="form-group" style="grid-column:1/-1"><label>Keterangan Jurnal *</label><input class="form-control" id="tmpl-ket" value="${t?.keterangan||''}" placeholder="Keterangan yang akan muncul di jurnal saat digunakan"></div>
+        <div class="form-group"><label>Frekuensi</label>
+          <select class="form-control" id="tmpl-frek">
+            <option value="harian"  ${t?.frekuensi==='harian'?'selected':''}>Setiap Hari</option>
+            <option value="mingguan" ${t?.frekuensi==='mingguan'?'selected':''}>Setiap Minggu</option>
+            <option value="bulanan"  ${!t||t?.frekuensi==='bulanan'?'selected':''}>Setiap Bulan</option>
+            <option value="tahunan"  ${t?.frekuensi==='tahunan'?'selected':''}>Setiap Tahun</option>
+          </select></div>
+      </div>
+      <div style="font-weight:700;font-size:13px;margin:12px 0 8px;">Detail Jurnal</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead><tr>
+          <th style="padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);">Akun</th>
+          <th style="padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);">Debit</th>
+          <th style="padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);">Kredit</th>
+          <th style="padding:6px 8px;width:36px;border-bottom:1px solid var(--border);"></th>
+        </tr></thead>
+        <tbody id="tmpl-tbody">${detailRows}</tbody>
+      </table>
+      <button class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="_addTmplRow()">+ Tambah Baris</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="document.getElementById('modal-template-temp').remove()">Batal</button>
+      <button class="btn btn-primary" onclick="saveTemplate()">Simpan Template</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+
+let _tmplRowCount = 3;
+function _addTmplRow() {
+  const i = _tmplRowCount++;
+  const accs = coFilter(DB.accounts).filter(a=>!a.is_header);
+  const tr = document.createElement('tr');
+  tr.id = 'tmpl-row-'+i;
+  tr.innerHTML = `
+    <td style="padding:4px 6px;"><select class="form-control" id="tmpl-acc-${i}" style="font-size:12px;"><option value="">— Pilih Akun —</option>${accs.map(a=>`<option value="${a.id}">${a.code} — ${a.name}</option>`).join('')}</select></td>
+    <td style="padding:4px 6px;"><input class="form-control" type="number" id="tmpl-d-${i}" value="0" style="font-size:12px;" min="0"></td>
+    <td style="padding:4px 6px;"><input class="form-control" type="number" id="tmpl-k-${i}" value="0" style="font-size:12px;" min="0"></td>
+    <td style="padding:4px 6px;text-align:center;"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">✕</button></td>`;
+  document.getElementById('tmpl-tbody').appendChild(tr);
+}
+
+function saveTemplate() {
+  const nama = document.getElementById('tmpl-nama').value.trim();
+  const ket  = document.getElementById('tmpl-ket').value.trim();
+  const frek = document.getElementById('tmpl-frek').value;
+  const id   = document.getElementById('tmpl-edit-id').value;
+  if (!nama||!ket) { toast('Nama dan keterangan wajib diisi','error'); return; }
+
+  const rows = [...document.getElementById('tmpl-tbody').querySelectorAll('tr')];
+  const details = rows.map(tr => {
+    const idx = tr.id.replace('tmpl-row-','');
+    const accId  = parseInt(document.getElementById('tmpl-acc-'+idx)?.value)||0;
+    const debit  = parseFloat(document.getElementById('tmpl-d-'+idx)?.value)||0;
+    const kredit = parseFloat(document.getElementById('tmpl-k-'+idx)?.value)||0;
+    return { account_id:accId, debit, kredit };
+  }).filter(d=>d.account_id&&(d.debit||d.kredit));
+
+  if (details.length<2) { toast('Minimal 2 baris detail jurnal','error'); return; }
+  const totD=details.reduce((s,d)=>s+d.debit,0), totK=details.reduce((s,d)=>s+d.kredit,0);
+  if (Math.abs(Math.round(totD)-Math.round(totK))>1) { toast(`Debit (${fmtC(totD)}) ≠ Kredit (${fmtC(totK)}). Jurnal harus balance.`,'error'); return; }
+
+  if (!DB.templates) DB.templates=[];
+  const obj={id:id?parseInt(id):genId(), company_id:co(), nama, keterangan:ket, frekuensi:frek, details, last_used:id?(DB.templates.find(x=>x.id==parseInt(id))?.last_used||null):null};
+  const idx2=DB.templates.findIndex(x=>x.id==obj.id);
+  if(idx2>=0) DB.templates[idx2]=obj; else DB.templates.push(obj);
+  autoSave();
+  document.getElementById('modal-template-temp')?.remove();
+  renderTemplateTransaksi();
+  toast('Template disimpan','success');
+}
+
+function gunakanTemplate(id) {
+  const t = coFilter(DB.templates||[]).find(x=>x.id==id);
+  if (!t) return;
+  // Pre-fill modal transaksi dengan detail dari template
+  navigate('transactions');
+  setTimeout(()=>{
+    openTransactionModal();
+    setTimeout(()=>{
+      document.getElementById('trx-desc').value = t.keterangan;
+      // Isi detail jurnal
+      const tbody = document.getElementById('jd-tbody');
+      tbody.innerHTML='';
+      t.details.forEach(d=>{
+        addJournalRow();
+        const rows=tbody.querySelectorAll('tr');
+        const last=rows[rows.length-1];
+        const sel=last.querySelector('select');
+        if(sel){sel.value=d.account_id; sel.dispatchEvent(new Event('change'));}
+        const dinp=last.querySelectorAll('input[type=number]');
+        if(dinp[0]) { dinp[0].value=d.debit||0; dinp[0].dispatchEvent(new Event('input')); }
+        if(dinp[1]) { dinp[1].value=d.kredit||0; dinp[1].dispatchEvent(new Event('input')); }
+      });
+      updateJournalTotals();
+      // Update last_used
+      const idx=DB.templates.findIndex(x=>x.id==id);
+      if(idx>=0) DB.templates[idx].last_used=new Date().toISOString().split('T')[0];
+      autoSave();
+      toast(`Template "${t.nama}" dimuat ke form transaksi`,'success',3000);
+    },200);
+  },100);
+}
+
+function editTemplate(id) { openTemplateModal(id); }
+function hapusTemplate(id) {
+  if (!confirm('Hapus template ini?')) return;
+  DB.templates=(DB.templates||[]).filter(x=>x.id!=id);
+  autoSave(); renderTemplateTransaksi();
+  toast('Template dihapus','success');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR 4: LAPORAN PAJAK — PPh 21 & PPN
+// ══════════════════════════════════════════════════════════════════
+function renderLaporanPajak() {
+  const co_data = getCompany();
+  const jes = coFilter(DB.journal_entries);
+  const jeIds = jes.map(je=>je.id);
+  const accs  = coFilter(DB.accounts);
+
+  // Hitung PPN: cari akun PPN Keluaran & Masukan
+  const accPPNKeluaran = accs.filter(a=>a.name.toLowerCase().includes('ppn keluaran')||a.name.toLowerCase().includes('pajak keluaran'));
+  const accPPNMasukan  = accs.filter(a=>a.name.toLowerCase().includes('ppn masukan')||a.name.toLowerCase().includes('pajak masukan'));
+  const accGaji        = accs.filter(a=>a.name.toLowerCase().includes('gaji')||a.name.toLowerCase().includes('upah')||a.name.toLowerCase().includes('salari'));
+  const accPPh21       = accs.filter(a=>a.name.toLowerCase().includes('pph 21')||a.name.toLowerCase().includes('pajak penghasilan karyawan'));
+
+  const sumAcc = (accList) => {
+    let tot=0;
+    accList.forEach(a=>{
+      DB.journal_details.filter(d=>jeIds.includes(d.journal_id)&&d.account_id==a.id).forEach(d=>{
+        tot += (a.normal_balance==='Kredit') ? d.kredit-d.debit : d.debit-d.kredit;
+      });
+    });
+    return tot;
+  };
+
+  const ppnKeluaran = sumAcc(accPPNKeluaran);
+  const ppnMasukan  = sumAcc(accPPNMasukan);
+  const ppnKurang   = ppnKeluaran - ppnMasukan;
+  const totalGaji   = sumAcc(accGaji);
+  const pph21Terpotong = sumAcc(accPPh21);
+
+  // Tarif PPh 21 PTKP 2024 (TK/0)
+  const PTKP = 54000000;
+  const hitungPPh21 = (bruto) => {
+    const pkp = Math.max(0, bruto - PTKP);
+    if (pkp <= 60000000)  return pkp * 0.05;
+    if (pkp <= 250000000) return 3000000 + (pkp-60000000)*0.15;
+    if (pkp <= 500000000) return 31500000 + (pkp-250000000)*0.25;
+    return 94000000 + (pkp-500000000)*0.30;
+  };
+  const pph21Estimasi = hitungPPh21(totalGaji);
+
+  document.getElementById('new-pages-container').innerHTML = `
+  <div class="page-header">
+    <div>
+      <div class="page-title">Laporan Pajak</div>
+      <div class="page-subtitle">Ringkasan PPh 21 dan PPN berdasarkan data jurnal — ${co_data?.name||''}</div>
+    </div>
+    <div class="page-actions">
+      <button class="btn btn-secondary" onclick="exportPajakExcel()">Export Excel</button>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+
+    <!-- PPN -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">Pajak Pertambahan Nilai (PPN)</div></div>
+      <div class="card-body">
+        ${accPPNKeluaran.length===0&&accPPNMasukan.length===0 ?
+          `<div class="empty-state" style="padding:16px 0;"><p style="font-size:12px;">Belum ada akun PPN Keluaran / PPN Masukan di CoA.<br>Tambahkan akun dengan nama mengandung "PPN Keluaran" atau "PPN Masukan".</p></div>` :
+          `<table style="width:100%;font-size:13px;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PPN Keluaran (Penjualan)</td><td class="td-mono" style="text-align:right;font-weight:600;">${fmtC(ppnKeluaran)}</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PPN Masukan (Pembelian)</td><td class="td-mono" style="text-align:right;font-weight:600;">${fmtC(ppnMasukan)}</td></tr>
+            <tr style="background:rgba(37,99,235,.04);border-radius:4px;">
+              <td style="padding:10px 0;font-weight:700;">${ppnKurang>=0?'PPN Kurang Bayar':'PPN Lebih Bayar'}</td>
+              <td class="td-mono" style="text-align:right;font-weight:700;font-size:15px;color:${ppnKurang>=0?'var(--danger)':'var(--accent2)'};">${fmtC(Math.abs(ppnKurang))}</td>
+            </tr>
+          </table>
+          <div style="margin-top:12px;font-size:11px;color:var(--text3);padding:8px 10px;background:var(--bg);border-radius:6px;">
+            PPN 11% sesuai UU HPP No.7/2021. Kurang bayar = wajib setor ke DJP. Lebih bayar = dapat dikompensasi.
+          </div>`
+        }
+      </div>
+    </div>
+
+    <!-- PPh 21 -->
+    <div class="card">
+      <div class="card-header"><div class="card-title">PPh Pasal 21 (Karyawan)</div></div>
+      <div class="card-body">
+        ${accGaji.length===0 ?
+          `<div class="empty-state" style="padding:16px 0;"><p style="font-size:12px;">Belum ada akun Gaji/Upah di CoA.<br>Tambahkan akun dengan nama mengandung "Gaji" atau "Upah".</p></div>` :
+          `<table style="width:100%;font-size:13px;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">Total Gaji/Upah (Bruto)</td><td class="td-mono" style="text-align:right;font-weight:600;">${fmtC(totalGaji)}</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PTKP (TK/0)</td><td class="td-mono" style="text-align:right;">${fmtC(PTKP)}</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PKP</td><td class="td-mono" style="text-align:right;">${fmtC(Math.max(0,totalGaji-PTKP))}</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PPh 21 Estimasi (tarif progresif)</td><td class="td-mono" style="text-align:right;font-weight:600;">${fmtC(pph21Estimasi)}</td></tr>
+            <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PPh 21 Sudah Dipotong (dari jurnal)</td><td class="td-mono" style="text-align:right;color:var(--accent2);font-weight:600;">${fmtC(pph21Terpotong)}</td></tr>
+            <tr style="background:rgba(37,99,235,.04);">
+              <td style="padding:10px 0;font-weight:700;">Selisih</td>
+              <td class="td-mono" style="text-align:right;font-weight:700;font-size:15px;color:${Math.abs(pph21Estimasi-pph21Terpotong)<1000?'var(--accent2)':'var(--danger)'};">${fmtC(Math.abs(pph21Estimasi-pph21Terpotong))}</td>
+            </tr>
+          </table>
+          <div style="margin-top:12px;font-size:11px;color:var(--text3);padding:8px 10px;background:var(--bg);border-radius:6px;">
+            Estimasi tarif progresif PPh 21 PTKP TK/0 = Rp54 juta. Untuk perhitungan akurat gunakan DJP Online atau konsultan pajak.
+          </div>`
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Daftar transaksi terkait pajak -->
+  <div class="card">
+    <div class="card-header"><div class="card-title">Transaksi Terkait Pajak</div></div>
+    <div class="card-body" style="padding:0;">
+      ${[...accPPNKeluaran,...accPPNMasukan,...accGaji,...accPPh21].length===0 ?
+        `<div class="empty-state"><p style="font-size:12px;">Belum ada akun pajak di CoA.<br>Tambahkan akun PPN Keluaran, PPN Masukan, Beban Gaji, atau PPh 21.</p></div>` :
+        `<div class="table-wrap"><table><thead><tr>
+          <th>Tanggal</th><th>No. Jurnal</th><th>Keterangan</th><th>Akun Pajak</th><th>Debit</th><th>Kredit</th>
+        </tr></thead>
+        <tbody>${(() => {
+          const pajakAccIds = [...accPPNKeluaran,...accPPNMasukan,...accGaji,...accPPh21].map(a=>a.id);
+          const rows = [];
+          jes.forEach(je=>{
+            DB.journal_details.filter(d=>d.journal_id==je.id&&pajakAccIds.includes(d.account_id)).forEach(d=>{
+              const acc=accs.find(a=>a.id==d.account_id);
+              rows.push(`<tr>
+                <td>${je.date}</td>
+                <td class="td-mono" style="color:var(--text3);">${getJournalNo(je)}</td>
+                <td>${je.description}</td>
+                <td>${acc?acc.name:'—'}</td>
+                <td class="td-mono">${d.debit?fmtC(d.debit):''}</td>
+                <td class="td-mono" style="color:var(--text2);">${d.kredit?fmtC(d.kredit):''}</td>
+              </tr>`);
+            });
+          });
+          return rows.length?rows.join(''):'<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3);">Belum ada transaksi pajak</td></tr>';
+        })()}</tbody></table></div>`
+      }
+    </div>
+  </div>`;
+}
+
+function exportPajakExcel() {
+  toast('Export laporan pajak ke Excel sedang disiapkan...','info',2000);
+  exportExcel('pajak');
 }
 
 
