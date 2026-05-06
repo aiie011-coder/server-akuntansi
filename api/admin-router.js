@@ -41,15 +41,13 @@ function isAuthorized(req, body) {
   return false;
 }
 
-// Normalisasi locked_modules — selalu simpan sebagai array JSON string ke Supabase
-// karena kolom bertipe text. Saat dibaca, plan-config.js akan parse kembali.
+// Normalisasi locked_modules — selalu simpan sebagai JSON string ke Supabase
 function normalizeLockedModules(value) {
   if (value === undefined || value === null) return undefined;
   if (Array.isArray(value)) return JSON.stringify(value);
   if (typeof value === 'string') {
     const t = value.trim();
     if (t.startsWith('[')) return t; // sudah JSON string
-    // CSV → JSON string
     const arr = t.split(',').map(s => s.trim()).filter(Boolean);
     return JSON.stringify(arr);
   }
@@ -190,15 +188,15 @@ module.exports = async function handler(req, res) {
       if (komparasi_enabled      !== undefined) updates.komparasi_enabled      = komparasi_enabled;
       if (lra_lsal_enabled       !== undefined) updates.lra_lsal_enabled       = lra_lsal_enabled;
 
-      // FIX: locked_modules disimpan sebagai JSON string karena kolom Supabase bertipe text
+      // locked_modules disimpan sebagai JSON string
       if (locked_modules !== undefined) {
         updates.locked_modules = normalizeLockedModules(locked_modules);
       }
 
-      // Reset HWID jika diminta
+      // FIX: Reset HWID — hwids harus JSON string, bukan array JS
       if (reset_hwid) {
         updates.hwid  = null;
-        updates.hwids = [];
+        updates.hwids = '[]'; // FIX: string, bukan array []
       }
 
       await updateLicense(license_key, updates);
@@ -215,7 +213,21 @@ module.exports = async function handler(req, res) {
     }
 
     if (action === 'upload-logo') {
-      const { image_base64, file_name, mime_type } = body;
+      const { image_base64, file_name, mime_type, delete_logo } = body;
+
+      // Handle delete logo
+      if (delete_logo) {
+        await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.logo_url`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json', 'Prefer': 'return=representation',
+          },
+          body: JSON.stringify({ value: null, updated_at: new Date().toISOString() }),
+        });
+        return res.status(200).json({ success: true, message: 'Logo dihapus' });
+      }
+
       if (!image_base64 || !file_name)
         return res.status(400).json({ error: 'image_base64 dan file_name wajib diisi' });
       const base64Data     = image_base64.replace(/^data:image\/\w+;base64,/, '');
