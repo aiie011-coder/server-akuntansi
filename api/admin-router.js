@@ -148,6 +148,13 @@ module.exports = async function handler(req, res) {
         max_devices:    max_devices || 1,
         is_active:      true,
         updated_at:     new Date().toISOString(),
+        // Kolom lama — dibutuhkan oleh activate.js
+        name:           customer_name,
+        type:           'lifetime',
+        status:         'unused',
+        hwid:           null,
+        hwids:          '[]',
+        activated_at:   null,
       };
       await query('POST', 'licenses', row);
       return res.status(200).json({ success: true, key, message: `Lisensi ${key} berhasil dibuat` });
