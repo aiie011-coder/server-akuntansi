@@ -507,7 +507,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
 
  <!-- Backup Reminder Banners -->
  <div id="backup-reminder-warn" style="display:none;margin-bottom:16px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #f59e0b;border-radius:12px;padding:14px 18px;display:flex;align-items:flex-start;gap:12px;">
- <div style="font-size:22px;flex-shrink:0;margin-top:1px;"></div>
+ <div style="font-size:22px;flex-shrink:0;margin-top:1px;">⏰</div>
  <div style="flex:1;">
  <div style="font-weight:700;font-size:13px;color:#92400e;margin-bottom:2px;">Sudah 7 Hari Sejak Backup Terakhir</div>
  <div style="font-size:12px;color:#a16207;line-height:1.5;">Disarankan melakukan backup file secara rutin untuk menghindari kehilangan data. Klik tombol di bawah untuk backup sekarang.</div>
@@ -1289,6 +1289,17 @@ function getStorageInfo() {
  return { usedKB, usedMB, pct, unlimited: true };
 }
 
+// [FIX XSS] Sanitasi HTML untuk mencegah XSS — gunakan sebelum innerHTML dengan data user
+function escapeHtml(str) {
+ if (str === null || str === undefined) return '';
+ return String(str)
+ .replace(/&/g, '&amp;')
+ .replace(/</g, '&lt;')
+ .replace(/>/g, '&gt;')
+ .replace(/"/g, '&quot;')
+ .replace(/'/g, '&#39;');
+}
+
 function genId() {
  return ++DB._id_counter;
 }
@@ -1882,8 +1893,6 @@ const DEFAULT_COA = [
  {code:'5-005',name:'Beban Penyusutan',type:'Beban',normal:'Debit'},
  {code:'5-006',name:'Beban Listrik & Air',type:'Beban',normal:'Debit'},
  {code:'5-007',name:'Beban Lain-lain',type:'Beban',normal:'Debit'},
- // [FIX C2] Akun Ikhtisar L/R diperlukan untuk jalur jurnal penutup 3-langkah standar
- {code:'3-004',name:'Ikhtisar Laba Rugi',type:'Ekuitas',normal:'Kredit'},
 ];
 
 function loadDefaultCOA() {
@@ -3191,6 +3200,16 @@ function konfirmasiBukaPeriodeBaru() {
 function saveTransaction() {
  if (!co()) return;
  const date = document.getElementById('trx-date').value;
+ // [FIX C1] Peringatan jika tanggal di luar periode perusahaan
+ const _coC1 = getCompany();
+ if (date && _coC1?.period_start && _coC1?.period_end) {
+ if (date < _coC1.period_start || date > _coC1.period_end) {
+  if (!confirm(
+  'Peringatan: Tanggal transaksi (' + date + ') di luar periode aktif\n' +
+  '(' + _coC1.period_start + ' s/d ' + _coC1.period_end + ').\n\nLanjutkan?'
+  )) return;
+ }
+ }
  const desc = document.getElementById('trx-desc').value.trim();
  if (!date||!desc) { toast('Tanggal dan keterangan wajib diisi','error'); return; }
 
@@ -3199,7 +3218,7 @@ function saveTransaction() {
  if (co_data?.period_start && co_data?.period_end) {
  if (date < co_data.period_start || date > co_data.period_end) {
  const konfirm = confirm(
- `Peringatan: Tanggal transaksi (${date}) berada di luar periode akuntansi\n` +
+ ` Peringatan: Tanggal transaksi (${date}) berada di luar periode akuntansi\n` +
  `Periode aktif: ${co_data.period_start} s/d ${co_data.period_end}\n\n` +
  `Lanjutkan tetap menyimpan?`
  );
@@ -3284,7 +3303,7 @@ function saveTransaction() {
  if (p==='persediaan') renderPersediaan();
  if (p==='aset-tetap') renderAsetTetap();
  if (p==='perlengkapan') renderPerlengkapan();
- toast('Transaksi disimpan & terintegrasi ke semua modul','success');
+ toast(' Transaksi disimpan & terintegrasi ke semua modul','success');
 }
 
 function renderTransactions() {
@@ -4000,7 +4019,7 @@ function renderHutang() {
  <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_h[h.kategori]||h.kategori||'—'}</span></td>
  <td class="td-mono">${fmtC(h.jumlah)}</td>
  <td>${h.tanggal||'—'}</td>
- <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${h.jatuh_tempo||'—'}${lewat?' ':dekat?' ':''}</td>
+ <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${h.jatuh_tempo||'—'}${lewat?' ':dekat?' ⏰':''}</td>
  <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td>
  <td><span class="badge-status ${h.status=='Lunas'?'badge-lunas':h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td>
  <td><button class="btn btn-secondary btn-sm" onclick="openHutangEdit(${h.id})">Edit</button>
@@ -4036,7 +4055,7 @@ function openHutangEdit(id) {
 
 function saveHutang() {
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
- // [FIX C5] Cek periode lock sebelum menyimpan hutang dan auto-jurnalnya
+ // [FIX C5] Cek periode lock
  const _htglH = document.getElementById('hutang-tanggal')?.value || new Date().toISOString().split('T')[0];
  if (cekPeriodeLock(_htglH)) return;
  if (cekJurnalPenutupSudahPosting()) return;
@@ -4159,7 +4178,7 @@ function renderPiutang() {
  <td><span style="font-size:11px;padding:2px 7px;border-radius:4px;background:var(--bg);border:1px solid var(--border);">${katLabel_p[p.kategori]||p.kategori||'—'}</span></td>
  <td class="td-mono">${fmtC(p.jumlah)}</td>
  <td>${p.tanggal||'—'}</td>
- <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${p.jatuh_tempo||'—'}${lewat?' ':dekat?' ':''}</td>
+ <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${p.jatuh_tempo||'—'}${lewat?' ':dekat?' ⏰':''}</td>
  <td class="td-mono" style="font-weight:700;">${fmtC(p.sisa)}</td>
  <td><span class="badge-status ${p.status=='Lunas'?'badge-lunas':p.sisa<p.jumlah?'badge-partial':'badge-belum'}">${p.status}</span></td>
  <td><button class="btn btn-secondary btn-sm" onclick="openPiutangEdit(${p.id})">Edit</button>
@@ -4195,7 +4214,7 @@ function openPiutangEdit(id) {
 
 function savePiutang() {
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
- // [FIX C5] Cek periode lock sebelum menyimpan piutang dan auto-jurnalnya
+ // [FIX C5] Cek periode lock
  const _htglP = document.getElementById('piutang-tanggal')?.value || new Date().toISOString().split('T')[0];
  if (cekPeriodeLock(_htglP)) return;
  if (cekJurnalPenutupSudahPosting()) return;
@@ -4345,6 +4364,9 @@ function onBayarFakturChange() {
 }
 
 function processBayar() {
+ // [FIX] Cek periode lock berdasarkan tanggal bayar
+ const _tanggalB = document.getElementById('bayar-tanggal')?.value || new Date().toISOString().split('T')[0];
+ if (cekPeriodeLock(_tanggalB)) return;
  const type = document.getElementById('bayar-type').value;
  const origId = parseInt(document.getElementById('bayar-id').value);
  const targetId = parseInt(document.getElementById('bayar-target-id').value) || origId;
@@ -4406,6 +4428,9 @@ function processBayar() {
 function deleteRecord(type, id) {
  if (!confirm('Hapus data ini? Jurnal terkait juga akan dihapus.')) return;
  const rec = DB[type].find(x=>x.id==id);
+ // [FIX] Cek periode lock menggunakan tanggal jurnal terkait
+ const _recDate = rec?.tanggal || rec?.date || null;
+ if (_recDate && cekPeriodeLock(_recDate)) return;
  // Hapus jurnal yang dibuat otomatis saat data ini dicatat
  if (rec?.ref_journal_id) {
  const je = DB.journal_entries.find(e=>e.id===rec.ref_journal_id);
@@ -4515,6 +4540,9 @@ function openPersediaanModal() {
 
 function savePersediaan() {
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
+ // [FIX] Cek periode lock
+ const _tglPers = document.getElementById('persediaan-tanggal')?.value || new Date().toISOString().split('T')[0];
+ if (cekPeriodeLock(_tglPers)) return;
  if (cekJurnalPenutupSudahPosting()) return;
  const nama=document.getElementById('pers-nama').value.trim();
  if (!nama) { toast('Nama barang wajib','error'); return; }
@@ -4632,6 +4660,9 @@ function editPersediaan(id) {
 
 function deletePersediaan(id) {
  if (!confirm('Hapus persediaan ini? Jurnal & hutang terkait (jika ada) juga akan dihapus.')) return;
+ // [FIX] Cek periode lock
+ const _pRef = DB.persediaan?.find(x=>x.id==id);
+ if (_pRef?.tanggal && cekPeriodeLock(_pRef.tanggal)) return;
  const p=DB.persediaan.find(x=>x.id==id);
  if (p?.ref_journal_id) {
  const je=DB.journal_entries.find(e=>e.id===p.ref_journal_id);
@@ -4659,7 +4690,7 @@ function openJualPersediaan(id) {
  document.getElementById('jual-pers-tanggal').value=new Date().toISOString().split('T')[0];
  // Tampilkan info barang
  const infoEl=document.getElementById('jual-pers-info');
- if(infoEl) infoEl.innerHTML=`<strong>${p.nama_barang}</strong> &nbsp;|&nbsp; Stok tersedia: <strong>${p.jumlah} unit</strong> &nbsp;|&nbsp; HPP/unit: <strong>${fmtC(p.harga_satuan)}</strong>`;
+ if(infoEl) infoEl.innerHTML=`<strong>${escapeHtml(p.nama_barang)}</strong> &nbsp;|&nbsp; Stok tersedia: <strong>${p.jumlah} unit</strong> &nbsp;|&nbsp; HPP/unit: <strong>${fmtC(p.harga_satuan)}</strong>`;
  openModal('modal-jual-persediaan');
  updateJualPreview();
 }
@@ -4899,6 +4930,9 @@ function updateReturPreview() {
 
 function processReturPenjualan() {
  if (!Array.isArray(DB.retur_penjualan)) DB.retur_penjualan = [];
+ // [FIX] Cek periode lock sebelum proses retur
+ const _tanggalR = document.getElementById('retur-tanggal')?.value || new Date().toISOString().split('T')[0];
+ if (cekPeriodeLock(_tanggalR)) return;
  const id = parseInt(document.getElementById('retur-pers-id').value);
  const qty = parseFloat(document.getElementById('retur-qty').value)||0;
  const hargaJual = parseFloat(document.getElementById('retur-harga-jual').value)||0;
@@ -5146,6 +5180,9 @@ function openPerlengkapanModal() {
 
 function savePerlengkapan() {
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
+ // [FIX] Cek periode lock
+ const _tglPerl = document.getElementById('perlengkapan-tanggal')?.value || new Date().toISOString().split('T')[0];
+ if (cekPeriodeLock(_tglPerl)) return;
  const nama=document.getElementById('perl-nama').value.trim();
  if (!nama) { toast('Nama item wajib','error'); return; }
  const jumlah=parseFloat(document.getElementById('perl-jumlah').value)||0;
@@ -5237,6 +5274,9 @@ function editPerlengkapan(id) {
 
 function deletePerlengkapan(id) {
  if (!confirm('Hapus perlengkapan ini? Jurnal & hutang terkait (jika ada) juga akan dihapus.')) return;
+ // [FIX] Cek periode lock
+ const _plRef = DB.perlengkapan?.find(x=>x.id==id);
+ if (_plRef?.tanggal && cekPeriodeLock(_plRef.tanggal)) return;
  const p=DB.perlengkapan.find(x=>x.id==id);
  if (p?.ref_journal_id) {
  const je=DB.journal_entries.find(e=>e.id===p.ref_journal_id);
@@ -5518,9 +5558,7 @@ function saveAset() {
  tanggal, metode, keterangan:ket,
  metode_penyusutan: metodePenyusutan,
  tarif_sm: metodePenyusutan==='saldo-menurun'?tarifSM:null,
- nilai_residu: metodePenyusutan==='garis-lurus'?nilaiResidu:0,
- // [FIX C3] tanggal_perolehan = tanggal agar hitung_penyusutan_all() bisa pro-rata bulan pertama
- tanggal_perolehan: tanggal
+ nilai_residu: metodePenyusutan==='garis-lurus'?nilaiResidu:0
  };
  if (id) {
  const oldRec=DB.aset_tetap.find(x=>x.id==parseInt(id));
@@ -5610,7 +5648,9 @@ function editAset(id) {
 
 function deleteAset(id) {
  if (!confirm('Hapus aset ini? Jurnal terkait juga akan dihapus.')) return;
+ // [FIX] Cek periode lock berdasarkan tanggal perolehan
  const a=DB.aset_tetap.find(x=>x.id==id);
+ if (a?.tanggal && cekPeriodeLock(a.tanggal)) return;
  if (a?.ref_journal_id) {
  const je=DB.journal_entries.find(e=>e.id===a.ref_journal_id);
  if (je) {
@@ -5657,7 +5697,7 @@ function cekReminderPenyusutan() {
  animation:slideInRight .3s ease;
  `;
  el.innerHTML = `
- <div style="display:flex;align-items:flex-start;gap:10px;"> <div style="font-size:24px;line-height:1;"></div> <div style="flex:1;"> <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Reminder Penyusutan</div> <div style="font-size:12px;color:var(--text2);line-height:1.4;">Penyusutan aset tetap periode <strong>${periodeIni}</strong> belum dihitung.
+ <div style="display:flex;align-items:flex-start;gap:10px;"> <div style="font-size:24px;line-height:1;">⏰</div> <div style="flex:1;"> <div style="font-size:13px;font-weight:700;margin-bottom:4px;">Reminder Penyusutan</div> <div style="font-size:12px;color:var(--text2);line-height:1.4;">Penyusutan aset tetap periode <strong>${periodeIni}</strong> belum dihitung.
  <strong>${asets.length} aset</strong> perlu diproses.
  </div> <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;"> <button class="btn btn-primary btn-sm" style="font-size:11px;" onclick="hitung_penyusutan_all();document.getElementById('penyusutan-reminder')?.remove();"> Hitung Sekarang
  </button> <button class="btn btn-secondary btn-sm" style="font-size:11px;" onclick="navigate('aset-tetap');document.getElementById('penyusutan-reminder')?.remove();">Ke Aset Tetap
@@ -5885,12 +5925,8 @@ function calcEkuitasAkhir() {
 // [FIX BUG 5] Konsisten dengan getAccountBalance: jika ada jurnal pembuka untuk
 // akun kas, maka saldo_awal sudah tercakup dalam mutasi jurnal — jangan double-count.
 function calcKasAwal() {
- // [FIX BUG-S3] Prioritaskan _source resmi ('jurnal_pembuka','opening','saldo_awal')
- // sebagai satu-satunya penanda jurnal pembuka. Deteksi via keyword deskripsi hanya
- // sebagai fallback terakhir — mencegah jurnal biasa yang kebetulan mengandung kata
- // "saldo awal" (mis: "Koreksi saldo awal kas") salah dideteksi sebagai jurnal pembuka.
  const kasAccs = coFilter(DB.accounts)
- .filter(a => a.type === 'Aset'
+ .filter(a =>a.type === 'Aset'
  && a.normal_balance === 'Debit'
  && (a.name.toLowerCase().includes('kas')
  || a.name.toLowerCase().includes('bank')
@@ -5898,27 +5934,20 @@ function calcKasAwal() {
  || a.name.toLowerCase().includes('rekening kas')
  ));
  return kasAccs.reduce((s, a) => {
- const jesCo = coFilter(DB.journal_entries);
- // Pass 1: cek _source resmi (prioritas utama, tidak bisa false-positive)
- const adaSourceResmi = jesCo.some(je => {
- const isResmi = je._source === 'jurnal_pembuka' || je._source === 'opening' || je._source === 'saldo_awal';
- if (!isResmi) return false;
+ // Cek apakah ada jurnal pembuka yang sudah mencatat saldo awal akun ini
+ const adaJurnalPembuka = coFilter(DB.journal_entries).some(je => {
+ const isOpeningSource = je._source === 'jurnal_pembuka' || je._source === 'opening' || je._source === 'saldo_awal';
+ const isOpeningDesc = typeof je.description === 'string' && (
+ je.description.toLowerCase().includes('saldo awal') ||
+ je.description.toLowerCase().includes('opening balance') ||
+ je.description.toLowerCase().includes('neraca awal') ||
+ je.description.toLowerCase().includes('jurnal pembuka')
+ );
+ if (!isOpeningSource && !isOpeningDesc) return false;
  return DB.journal_details.some(d => d.journal_id === je.id && d.account_id == a.id);
  });
- if (adaSourceResmi) return s; // saldo_awal sudah dalam jurnal → skip
- // Pass 2: fallback keyword deskripsi — HANYA jika tidak ada _source resmi sama sekali
- // Dibatasi hanya pada jurnal yang deskripsinya dimulai dengan kata kunci
- // (bukan sekadar mengandung) untuk mengurangi false-positive
- const adaDescFallback = jesCo.some(je => {
- if (je._source) return false; // ada _source tapi bukan resmi — skip
- const d = (je.description || '').toLowerCase().trimStart();
- const isOpeningDesc = d.startsWith('saldo awal') || d.startsWith('opening balance') ||
- d.startsWith('neraca awal') || d.startsWith('jurnal pembuka') ||
- d.startsWith('setoran modal') || d.startsWith('modal awal');
- if (!isOpeningDesc) return false;
- return DB.journal_details.some(jd => jd.journal_id === je.id && jd.account_id == a.id);
- });
- return s + (adaDescFallback ? 0 : (a.saldo_awal || 0));
+ // Jika ada jurnal pembuka, saldo_awal sudah termasuk dalam mutasi → jangan tambahkan lagi
+ return s + (adaJurnalPembuka ? 0 : (a.saldo_awal || 0));
  }, 0);
 }
 
@@ -7367,7 +7396,7 @@ function buildArusKasDetail(kategori) {
  || (totInv > 0 && totPend > 0);
  const labelProp = isProporsional ? ` <span style="font-size:10px;color:var(--text3);"> (prop.)</span>` : '';
 
- rows.push(`<div class="report-row indent"> <span style="font-size:12px;">${je.date} — ${je.description}${labelProp}</span> <span class="report-amount" style="color:${nilaiKat>=0?'var(--accent2)':'var(--danger)'};">${nilaiKat>=0?'+':''}${fmtC(Math.round(nilaiKat))}</span> </div>`);
+ rows.push(`<div class="report-row indent"> <span style="font-size:12px;">${escapeHtml(je.date)} — ${escapeHtml(je.description)}${labelProp}</span> <span class="report-amount" style="color:${nilaiKat>=0?'var(--accent2)':'var(--danger)'};">${nilaiKat>=0?'+':''}${fmtC(Math.round(nilaiKat))}</span> </div>`);
  });
 
  return rows.length ? rows.join('')
@@ -7403,7 +7432,7 @@ function buatJurnalPenutup() {
  toast('Tidak ada akun Pendapatan/Beban dengan saldo yang perlu ditutup.', 'info'); return;
  }
  if (!modalAcc) {
- toast('Akun Modal/Ekuitas tidak ditemukan di CoA. Tambahkan akun bertipe Ekuitas (saldo normal Kredit) terlebih dahulu.', 'error', 6000); return;
+ toast(' Akun Modal/Ekuitas tidak ditemukan di CoA. Tambahkan akun bertipe Ekuitas (saldo normal Kredit) terlebih dahulu.', 'error', 6000); return;
  }
 
  const totalPend = pendAcss.reduce((s,a) =>s + a.balance, 0);
@@ -7498,7 +7527,7 @@ function buatJurnalPenutup() {
   tanggal,
   snapshotTime: Date.now()
  };
- toast(`Jurnal penutup berhasil dibuat! Laba Bersih: ${fmtR(labaBersih)}`, 'success', 5000);
+ toast(` Jurnal penutup berhasil dibuat! Laba Bersih: ${fmtR(labaBersih)}`, 'success', 5000);
 }
 
 // 
@@ -7699,9 +7728,9 @@ function postingJurnalPenutup() {
  DB.locked_periods[`${co()}_${bulan}`] = true;
  d.setMonth(d.getMonth()+1);
  }
- toast(`Jurnal penutup diposting! ${pendAcss.length + bebanAcss.length} akun ditutup. Periode ${coData.period_start} s/d ${coData.period_end} otomatis dikunci.`, 'success', 7000);
+ toast(` Jurnal penutup diposting! ${pendAcss.length + bebanAcss.length} akun ditutup. Periode ${coData.period_start} s/d ${coData.period_end} otomatis dikunci.`, 'success', 7000);
  } else {
- toast(`Jurnal penutup berhasil diposting! ${pendAcss.length + bebanAcss.length} akun nominal ditutup ke Modal.`, 'success', 6000);
+ toast(` Jurnal penutup berhasil diposting! ${pendAcss.length + bebanAcss.length} akun nominal ditutup ke Modal.`, 'success', 6000);
  }
 }
 
@@ -10076,36 +10105,9 @@ function applyPlanRestrictions() {
  }
 
  // 2. Expired banner
- // [FIX C8] Grace period 7 hari jika server tidak bisa dijangkau saat cache expired
- // Pengguna tetap bisa bekerja selama 7 hari tanpa koneksi ke server lisensi
- const __graceKey = 'zq_lic_last_valid_ts';
- const __graceDays = 7;
- if (cfg.plan && cfg.plan !== 'trial') {
- // Catat timestamp terakhir lisensi valid
- try { localStorage.setItem(__graceKey, Date.now().toString()); } catch(_) {}
- }
- const __isInGrace = (() => {
- try {
-  const ts = parseInt(localStorage.getItem(__graceKey) || '0');
-  if (!ts) return false;
-  return (Date.now() - ts) / (1000 * 60 * 60 * 24) <= __graceDays;
- } catch(_) { return false; }
- })();
- if (cfg.is_expired && !__isInGrace) {
+ if (cfg.is_expired) {
  const expBanner = document.getElementById('expired-banner');
  if (expBanner) expBanner.style.display = 'flex';
- } else if (cfg.is_expired && __isInGrace) {
- // Lisensi expired tapi masih dalam grace period — tampilkan peringatan ringan
- console.warn('[ZeQui] Lisensi expired tapi masih dalam grace period ' + __graceDays + ' hari.');
- const expBanner = document.getElementById('expired-banner');
- if (expBanner) {
-  expBanner.style.display = 'flex';
-  expBanner.style.background = 'rgba(245,158,11,.12)';
-  expBanner.style.borderColor = 'rgba(245,158,11,.3)';
-  // Ganti teks expired banner jika elemen tersedia
-  const bannerMsg = expBanner.querySelector('.banner-msg');
-  if (bannerMsg) bannerMsg.textContent = 'Lisensi expired — Grace period ' + __graceDays + ' hari aktif. Perbarui lisensi segera.';
- }
  }
 
  // 3. Sembunyikan/kunci item navigasi
@@ -10554,7 +10556,7 @@ function renderHutangAging() {
  }).forEach(h => {
  const hari = h.jatuh_tempo ? Math.ceil((today - new Date(h.jatuh_tempo)) / 86400000) : null;
  const warnStyle = hari !== null && hari > 0 ? `color:#ef4444;font-weight:700;` : hari !== null && hari > -7 ? `color:#f59e0b;font-weight:700;` : '';
- html += `<tr> <td style="font-weight:600;">${h.nama_kreditur}</td> <td>${h.jatuh_tempo||'—'}</td> <td style="${warnStyle}">${hari === null ? '—' : hari <= 0 ? `${Math.abs(hari)} hr lagi` : `${hari} hr lewat`}</td> <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td> <td><span class="badge-status ${h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td> </tr>`;
+ html += `<tr> <td style="font-weight:600;">${escapeHtml(h.nama_kreditur)}</td> <td>${h.jatuh_tempo||'—'}</td> <td style="${warnStyle}">${hari === null ? '—' : hari <= 0 ? `${Math.abs(hari)} hr lagi` : `${hari} hr lewat`}</td> <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td> <td><span class="badge-status ${h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td> </tr>`;
  });
  html += `</tbody></table>`;
  el.innerHTML = html;
@@ -10699,7 +10701,7 @@ function renderPersediaanRingkasan() {
  let html = `<div class="bp-summary-box"> <div class="bp-summary-item"><span class="bp-summary-label">Total Nilai</span><span class="bp-summary-value">${fmtC(totalNilai)}</span></div> <div class="bp-summary-item"><span class="bp-summary-label">Total Qty</span><span class="bp-summary-value">${totalQty}</span></div> <div class="bp-summary-item"><span class="bp-summary-label">Jenis Barang</span><span class="bp-summary-value">${ps.length}</span></div> </div> <table class="mutasi-table"><thead><tr><th>Nama Barang</th><th>Stok</th><th>Harga Satuan</th><th>Total Nilai</th><th>% dari Total</th></tr></thead><tbody>`;
  ps.sort((a,b)=>(b.total_nilai||0)-(a.total_nilai||0)).forEach(p => {
  const pct = totalNilai > 0 ? ((p.total_nilai||0)/totalNilai*100).toFixed(1) : '0.0';
- html += `<tr><td style="font-weight:600;"> ${p.nama_barang}</td><td class="td-mono">${p.jumlah} unit</td><td class="td-mono">${fmtC(p.harga_satuan)}</td><td class="td-mono" style="font-weight:700;">${fmtC(p.total_nilai)}</td><td><div style="display:flex;align-items:center;gap:6px;"><div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:var(--primary-light);border-radius:3px;"></div></div><span style="font-size:11px;font-family:var(--mono);">${pct}%</span></div></td></tr>`;
+ html += `<tr><td style="font-weight:600;"> ${escapeHtml(p.nama_barang)}</td><td class="td-mono">${p.jumlah} unit</td><td class="td-mono">${fmtC(p.harga_satuan)}</td><td class="td-mono" style="font-weight:700;">${fmtC(p.total_nilai)}</td><td><div style="display:flex;align-items:center;gap:6px;"><div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;"><div style="width:${pct}%;height:100%;background:var(--primary-light);border-radius:3px;"></div></div><span style="font-size:11px;font-family:var(--mono);">${pct}%</span></div></td></tr>`;
  });
  html += `</tbody><tfoot><tr style="background:var(--bg);font-weight:800;"><td colspan="3">TOTAL</td><td class="td-mono">${fmtC(totalNilai)}</td><td>100%</td></tr></tfoot></table>`;
  el.innerHTML = html;
@@ -11593,11 +11595,7 @@ function openRekonsiliasi(id) {
  if (!accs.length) { toast('Tambahkan akun Kas/Bank di CoA terlebih dahulu','error'); return; }
 
  const rek = id ? coFilter(DB.rekonsiliasi||[]).find(r=>r.id==id) : null;
- // [FIX BUG-S6] Auto-populate saldo buku dari getAccountBalance agar konsisten dengan buku besar
- // Pengguna tidak perlu input manual yang bisa berbeda dari data aktual
- const _defaultAccId = accs[0]?.id;
- const _autoSaldoBuku = _defaultAccId ? getAccountBalance(_defaultAccId, true) : 0;
- _rekState = rek ? { ...rek, items: rek.items||[] } : { id: null, account_id: _defaultAccId, periode: '', saldo_bank: 0, saldo_buku_auto: _autoSaldoBuku, items: [] };
+ _rekState = rek ? { ...rek, items: rek.items||[] } : { id: null, account_id: accs[0].id, periode: '', saldo_bank: 0, items: [] };
 
  const today = new Date().toISOString().split('T')[0];
  const accOpts = accs.map(a=>`<option value="${a.id}" ${_rekState.account_id==a.id?'selected':''}>${a.code} — ${a.name}</option>`).join('');
@@ -11648,12 +11646,7 @@ function openRekonsiliasi(id) {
 
 function _rekChangeAcc(accId) {
  _rekState.account_id = parseInt(accId);
- // [FIX BUG-S6] Update saldo buku otomatis saat akun berubah
- _rekState.saldo_buku_auto = getAccountBalance(parseInt(accId), true) || 0;
  _renderRekItems();
- // Update label info saldo buku di modal jika sudah terbuka
- const infoEl = document.getElementById('rek-saldo-buku-info');
- if (infoEl) infoEl.textContent = 'Saldo per Buku Besar: ' + fmtC(_rekState.saldo_buku_auto);
 }
 
 function _renderRekItems() {
@@ -11702,25 +11695,17 @@ function _rekUpdateSummary() {
  const checked = (_rekState.rows||[]).filter(r => (_rekState.items||[]).includes(r.id));
  const totalD = checked.reduce((s,r)=>s+r.debit,0);
  const totalK = checked.reduce((s,r)=>s+r.kredit,0);
- const saldoBukuItem = totalD - totalK; // saldo dari item dicentang
- // [FIX BUG-S6] Saldo buku resmi dari getAccountBalance (bukan hanya item dicentang)
- const saldoBukuResmi = _rekState.saldo_buku_auto || getAccountBalance(_rekState.account_id, true) || 0;
- const selisih = saldoBank - saldoBukuResmi;
+ const saldoBuku = totalD - totalK;
+ const selisih = saldoBank - saldoBuku;
  const balance = Math.abs(selisih) < 1;
- // Selisih dari item dicentang vs saldo buku resmi (outstanding items)
- const outstanding = saldoBukuResmi - saldoBukuItem;
- summary.innerHTML =
- '<div style="margin-bottom:8px;padding:6px 10px;background:rgba(37,99,235,.06);border-radius:6px;font-size:11px;color:var(--text2);">' +
- 'Saldo per Buku Besar (otomatis): <strong>' + fmtC(saldoBukuResmi) + '</strong>' +
- (Math.abs(outstanding) > 1 ? ' &nbsp;|&nbsp; Outstanding (belum di bank): <strong>' + fmtC(Math.abs(outstanding)) + '</strong>' : '') +
- '</div>' +
- '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">' +
- '<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Item Dicentang</div><div style="font-weight:700;">' + checked.length + ' item</div></div>' +
- '<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Saldo Buku Besar</div><div class="td-mono" style="font-weight:700;">' + fmtC(saldoBukuResmi) + '</div></div>' +
- '<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Saldo Bank</div><div class="td-mono" style="font-weight:700;">' + fmtC(saldoBank) + '</div></div>' +
- '<div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Selisih</div>' +
- '<div class="td-mono" style="font-weight:700;color:' + (balance?'var(--accent2)':'var(--danger)') + ';">' + (balance?'Seimbang':'Selisih: '+fmtC(Math.abs(selisih))) + '</div></div>' +
- '</div>';
+ summary.innerHTML = `
+ <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+ <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Item Dicentang</div><div style="font-weight:700;">${checked.length} item</div></div>
+ <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Saldo Buku</div><div class="td-mono" style="font-weight:700;">${fmtC(saldoBuku)}</div></div>
+ <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Saldo Bank</div><div class="td-mono" style="font-weight:700;">${fmtC(saldoBank)}</div></div>
+ <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Selisih</div>
+ <div class="td-mono" style="font-weight:700;color:${balance?'var(--accent2)':'var(--danger)'};">${balance?'Seimbang':'Selisih: '+fmtC(Math.abs(selisih))}</div></div>
+ </div>`;
 }
 
 function saveRekonsiliasi() {
@@ -11971,7 +11956,6 @@ function renderLaporanPajak() {
  <div>
  <div class="page-title">Laporan Pajak</div>
  <div class="page-subtitle">Ringkasan PPh 21 dan PPN berdasarkan data jurnal — ${co_data?.name||''}</div>
- <div style="margin-top:6px;display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid #fbbf24;">Alat Bantu Estimasi — Bukan untuk pelaporan SPT resmi</div>
  </div>
  <div class="page-actions">
  <button class="btn btn-secondary" onclick="exportPajakExcel()">Export Excel</button>
