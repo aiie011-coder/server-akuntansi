@@ -6832,9 +6832,9 @@ function renderPerubahanEkuitas() {
  const total = getAccountBalance(a.id);
  return `<tr>
  <td style="padding:6px 10px;font-size:12px;">${a.code} ${a.name}</td>
- <td class="td-mono" style="padding:6px 10px;font-size:12px;">${fmtC(opening)}</td>
- <td class="td-mono" style="padding:6px 10px;font-size:12px;color:${mutasi>=0?'var(--accent2)':'var(--danger)'};">${mutasi>=0?'+':''}${fmtC(mutasi)}</td>
- <td class="td-mono" style="padding:6px 10px;font-size:12px;font-weight:700;">${fmtC(total)}</td>
+ <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;">${fmtC(opening)}</td>
+ <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;color:${mutasi>=0?'var(--accent2)':'var(--danger)'};">${mutasi>=0?'+':''}${fmtC(mutasi)}</td>
+ <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;font-weight:700;">${fmtC(total)}</td>
  </tr>`;
  }).join('');
 
@@ -6844,9 +6844,9 @@ function renderPerubahanEkuitas() {
  const total = getAccountBalance(a.id);
  return `<tr style="color:var(--danger);">
  <td style="padding:6px 10px;font-size:12px;">(-) ${a.code} ${a.name}</td>
- <td class="td-mono" style="padding:6px 10px;font-size:12px;">(${fmtC(opening)})</td>
- <td class="td-mono" style="padding:6px 10px;font-size:12px;">${mutasi>=0?'+':''}(${fmtC(Math.abs(mutasi))})</td>
- <td class="td-mono" style="padding:6px 10px;font-size:12px;font-weight:700;">(${fmtC(total)})</td>
+ <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;">(${fmtC(opening)})</td>
+ <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;">${mutasi>=0?'+':''}(${fmtC(Math.abs(mutasi))})</td>
+ <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;font-weight:700;">(${fmtC(total)})</td>
  </tr>`;
  }).join('');
 
@@ -6869,7 +6869,13 @@ function renderPerubahanEkuitas() {
  <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}</div>
  </div>
  <div style="overflow-x:auto;">
- <table style="width:100%;border-collapse:collapse;font-size:12px;">
+ <table style="width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;">
+ <colgroup>
+ <col style="width:40%;">
+ <col style="width:20%;">
+ <col style="width:20%;">
+ <col style="width:20%;">
+ </colgroup>
  <thead>
  <tr style="background:var(--bg);border-bottom:2px solid var(--border);">
  <th style="text-align:left;padding:8px 10px;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Akun</th>
@@ -6887,9 +6893,9 @@ function renderPerubahanEkuitas() {
  ${kreditRows || `<tr><td colspan="4" style="padding:8px 10px;color:var(--text3);font-size:12px;">—</td></tr>`}
  <tr style="border-top:1px solid var(--border);background:var(--bg);">
  <td style="padding:7px 10px;font-weight:700;">Subtotal ${ekLabel}</td>
- <td class="td-mono" style="padding:7px 10px;font-weight:700;">${fmtC(totalKreditOpening)}</td>
- <td class="td-mono" style="padding:7px 10px;font-weight:700;color:${totalKreditMutasi>=0?'var(--accent2)':'var(--danger)'};">${totalKreditMutasi>=0?'+':''}${fmtC(totalKreditMutasi)}</td>
- <td class="td-mono" style="padding:7px 10px;font-weight:700;">${fmtC(kreditAcss.reduce((s,a)=>s+getAccountBalance(a.id),0))}</td>
+ <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;">${fmtC(totalKreditOpening)}</td>
+ <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;color:${totalKreditMutasi>=0?'var(--accent2)':'var(--danger)'};">${totalKreditMutasi>=0?'+':''}${fmtC(totalKreditMutasi)}</td>
+ <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;">${fmtC(kreditAcss.reduce((s,a)=>s+getAccountBalance(a.id),0))}</td>
  </tr>
  ${debitAcss.filter(a=>getAccountBalance(a.id)!==0).length ? `
  <tr style="background:rgba(239,68,68,.04);">
@@ -6900,14 +6906,14 @@ function renderPerubahanEkuitas() {
  ${debitRows}
  <tr style="border-top:1px solid var(--border);background:var(--bg);">
  <td style="padding:7px 10px;font-weight:700;color:var(--danger);">Subtotal Pengurang</td>
- <td class="td-mono" style="padding:7px 10px;font-weight:700;color:var(--danger);">(${fmtC(totalDebitOpening)})</td>
- <td class="td-mono" style="padding:7px 10px;font-weight:700;color:var(--danger);">(${fmtC(Math.abs(totalDebitMutasi))})</td>
- <td class="td-mono" style="padding:7px 10px;font-weight:700;color:var(--danger);">(${fmtC(debitAcss.reduce((s,a)=>s+getAccountBalance(a.id),0))})</td>
+ <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;color:var(--danger);">(${fmtC(totalDebitOpening)})</td>
+ <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;color:var(--danger);">(${fmtC(Math.abs(totalDebitMutasi))})</td>
+ <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;color:var(--danger);">(${fmtC(debitAcss.reduce((s,a)=>s+getAccountBalance(a.id),0))})</td>
  </tr>` : ''}
  <tr style="border-top:2px solid var(--border);background:rgba(37,99,235,.04);">
  <td style="padding:8px 10px;font-weight:800;">Ekuitas Awal Bersih (Opening)</td>
- <td class="td-mono" style="padding:8px 10px;font-weight:800;">${fmtC(ekuitasAwalBersih)}</td>
- <td></td><td></td>
+ <td class="td-mono" style="padding:8px 10px;font-weight:800;text-align:right;">${fmtC(ekuitasAwalBersih)}</td>
+ <td style="padding:8px 10px;"></td><td style="padding:8px 10px;"></td>
  </tr>
  <tr style="background:rgba(16,185,129,.05);">
  <td colspan="4" style="padding:6px 10px;font-size:11px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:.5px;">
@@ -6918,17 +6924,17 @@ function renderPerubahanEkuitas() {
  <td style="padding:6px 10px 6px 22px;font-size:12px;">${isNirlaba()?'Kenaikan Aset Bersih':isKoperasi()?'SHU (Sisa Hasil Usaha)':'Laba Bersih Periode'}
  <small style="color:var(--text3);font-style:italic;"> ← dari ${isNirlaba()?'Laporan Aktivitas':isKoperasi()?'PHU':'Laporan L/R'}</small>
  </td>
- <td class="td-mono" style="padding:6px 10px;color:var(--text3);">—</td>
- <td class="td-mono" style="padding:6px 10px;color:${laba>=0?'var(--accent2)':'var(--danger)'};font-weight:700;">${laba>=0?'+':''}${laba<0?'(':''}${fmtC(Math.abs(laba))}${laba<0?')':''}</td>
- <td class="td-mono" style="padding:6px 10px;color:${laba>=0?'var(--accent2)':'var(--danger)'};font-weight:700;">${fmtC(laba)}</td>
+ <td class="td-mono" style="padding:6px 10px;text-align:right;color:var(--text3);">—</td>
+ <td class="td-mono" style="padding:6px 10px;text-align:right;color:${laba>=0?'var(--accent2)':'var(--danger)'};font-weight:700;">${laba>=0?'+':''}${laba<0?'(':''}${fmtC(Math.abs(laba))}${laba<0?')':''}</td>
+ <td class="td-mono" style="padding:6px 10px;text-align:right;color:${laba>=0?'var(--accent2)':'var(--danger)'};font-weight:700;">${fmtC(laba)}</td>
  </tr>
  </tbody>
  <tfoot>
  <tr style="background:rgba(37,99,235,.08);border-top:2px solid var(--border);">
  <td style="padding:12px 10px;font-size:14px;font-weight:800;">${isNirlaba()?'ASET BERSIH AKHIR':isKoperasi()?'EKUITAS AKHIR (SIMPANAN)':'EKUITAS AKHIR PERIODE'}</td>
- <td></td>
- <td></td>
- <td class="td-mono" style="padding:12px 10px;font-size:15px;font-weight:800;">${fmtC(ekuitasAkhir)}</td>
+ <td style="padding:12px 10px;"></td>
+ <td style="padding:12px 10px;"></td>
+ <td class="td-mono" style="padding:12px 10px;font-size:15px;font-weight:800;text-align:right;">${fmtC(ekuitasAkhir)}</td>
  </tr>
  </tfoot>
  </table>
@@ -7289,7 +7295,7 @@ function renderArusKas() {
  <div class="report-row indent"> <span style="font-size:12px;">Perubahan ${x.name}${x.noSaldoAwal?' <span title="Saldo awal nol — delta = saldo akhir penuh. Isi saldo_awal di CoA untuk hasil akurat." style="color:var(--warning);cursor:help;font-size:10px;"></span>':''}</span> <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span> </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
 
  _origInner(`
- <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Tidak Langsung</div> </div> <div style="max-width:580px;">
+ <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Tidak Langsung</div> </div> <div>
  <div class="report-section-title">I. AKTIVITAS OPERASI</div> <div class="report-row indent"> <span style="font-weight:700;">Laba Bersih Periode</span> <span class="report-amount" style="font-weight:700;color:${clr(labaBersih)};">${fmtK(labaBersih)}</span> </div> <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">
 Koreksi beban non-kas (PSAK 2)</div> ${totalPenyusutan ? `<div class="report-row indent"> <span style="font-size:12px;">Beban penyusutan/depresiasi</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(penyusutanSaja)}</span> </div>${amortisasiSaja ? `<div class="report-row indent"> <span style="font-size:12px;">Amortisasi</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(amortisasiSaja)}</span> </div>` : ''}${provisiSaja ? `<div class="report-row indent"> <span style="font-size:12px;">Provisi/cadangan piutang ragu</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(provisiSaja)}</span> </div>` : ''}` : '<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>Tidak ada beban non-kas</span></div>'}
 
@@ -7316,7 +7322,7 @@ ${balance ? ('\u2705 Rekonsiliasi OK: Kas Akhir Arus Kas (' + fmtC(kasAkhir) + '
  const kasBalance = selisihKas < 1;
 
  _origInner(`
- <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Langsung — menampilkan penerimaan &amp; pengeluaran kas nyata</div> </div> <div style="max-width:580px;"> <div class="report-section-title">I. AKTIVITAS OPERASI</div> ${buildArusKasDetail('operasi')}
+ <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Langsung — menampilkan penerimaan &amp; pengeluaran kas nyata</div> </div> <div> <div class="report-section-title">I. AKTIVITAS OPERASI</div> ${buildArusKasDetail('operasi')}
  <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Operasi</strong></span><span class="report-amount" style="color:${kasOperasi>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasOperasi<0?'(':''}${fmtC(Math.abs(kasOperasi))}${kasOperasi<0?')':''}</strong></span></div> <div class="report-section-title" style="margin-top:20px;">II. AKTIVITAS INVESTASI</div> ${buildArusKasDetail('investasi')}
  <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Investasi</strong></span><span class="report-amount" style="color:${kasInvestasi>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasInvestasi<0?'(':''}${fmtC(Math.abs(kasInvestasi))}${kasInvestasi<0?')':''}</strong></span></div> <div class="report-section-title" style="margin-top:20px;">III. AKTIVITAS PENDANAAN</div> ${buildArusKasDetail('pendanaan')}
  <div class="report-row subtotal"><span><strong>Arus Kas Bersih dari Pendanaan</strong></span><span class="report-amount" style="color:${kasPendanaan>=0?'var(--accent2)':'var(--danger)'}"><strong>${kasPendanaan<0?'(':''}${fmtC(Math.abs(kasPendanaan))}${kasPendanaan<0?')':''}</strong></span></div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">${fmtC(_kasAwal2)}${_kasAwal2===0?'&nbsp;<span style="font-size:10px;color:var(--warning);font-weight:700;"> nol — isi saldo_awal di CoA</span>':''}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhirArusKas)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${kasBalance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${kasBalance?'var(--accent2)':'var(--danger)'};"> <div style="font-size:12px;font-weight:700;color:${kasBalance?'#065f46':'#991b1b'};"> ${kasBalance ? (' Rekonsiliasi OK: Kas Akhir Arus Kas (' + fmtC(kasAkhirArusKas) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : (' Selisih rekonsiliasi ' + fmtC(selisihKas) + ' — Kas Akhir Arus Kas (' + fmtC(kasAkhirArusKas) + ') ≠ Kas di Neraca (' + fmtC(kasAkhirNeraca) + '). Periksa saldo_awal akun kas di CoA atau klasifikasi transaksi.')}
@@ -8347,7 +8353,7 @@ function printReport(type) {
  first = false;
  });
  });
- body = `<table><thead><tr><th>Tanggal</th><th>No. Ref</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody>${rows||'<tr><td colspan="6" style="text-align:center">Tidak ada data</td></tr>'}</tbody></table>`;
+ body = `<table><thead><tr><th>Tanggal</th><th>No. Ref</th><th>Keterangan</th><th>Akun</th><th class="num">Debit</th><th class="num">Kredit</th></tr></thead><tbody>${rows||'<tr><td colspan="6" style="text-align:center">Tidak ada data</td></tr>'}</tbody></table>`;
  }
 
  else if (type === 'neraca-saldo' || type === 'ns-penyesuaian') {
@@ -8365,7 +8371,7 @@ function printReport(type) {
  rows += `<tr><td>${a.code}</td><td>${a.name}</td><td class="num">${d?fmtC(d):''}</td><td class="num">${k?fmtC(k):''}</td></tr>`;
  });
  rows += `<tr class="total-row"><td colspan="2"><strong>TOTAL</strong></td><td class="num"><strong>${fmtC(totD)}</strong></td><td class="num"><strong>${fmtC(totK)}</strong></td></tr>`;
- body = `<table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody>${rows}</tbody></table>`;
+ body = `<table><thead><tr><th>Kode</th><th>Nama Akun</th><th class="num">Debit</th><th class="num">Kredit</th></tr></thead><tbody>${rows}</tbody></table>`;
  }
 
  else if (type === 'laba-rugi') {
@@ -8406,7 +8412,7 @@ function printReport(type) {
  const noteKoperasi = em_lr === 'koperasi' ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">PSAK 27 / SAK ETAP Koperasi — PHU (Perhitungan Hasil Usaha). Hasil akhir = SHU.</p>' : '';
  const noteBaznas = em_lr === 'baznas' ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">PSAK 109 — Laporan Perubahan Dana (ringkasan). Untuk rincian per dana, cetak laporan LPD.</p>' : '';
 
- body = `${noteNirlaba}${noteKoperasi}${noteBaznas}<table> <thead><tr><th>Keterangan</th><th>Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>${lblPend}</strong></td></tr>${revRows}
+ body = `${noteNirlaba}${noteKoperasi}${noteBaznas}<table> <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>${lblPend}</strong></td></tr>${revRows}
  <tr class="subtotal-row"><td><strong>Total ${lblPend}</strong></td><td class="num"><strong>${fmtC(totRev)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>${lblBeban}</strong></td></tr>${expRows}
  <tr class="subtotal-row"><td><strong>Total ${lblBeban}</strong></td><td class="num"><strong>${fmtC(totExp)}</strong></td></tr> <tr class="total-row"><td><strong>${lblHasil}</strong></td><td class="num" style="color:${laba>=0?'#15803d':'#dc2626'}"><strong>${fmtC(Math.abs(laba))}</strong></td></tr> </tbody></table>`;
  }
@@ -8445,7 +8451,7 @@ function printReport(type) {
  ekRows += `<tr><td style="padding-left:16px;color:${labaP>=0?'#15803d':'#dc2626'}">${lblLabaNr}</td><td class="num" style="color:${labaP>=0?'#15803d':'#dc2626'}">${labaP<0?'(':''}${fmtC(Math.abs(labaP))}${labaP<0?')':''}</td></tr>`;
  ekRows += privePrnt.map(e=>`<tr><td style="padding-left:16px;color:#ef4444">(-) ${e.code} ${e.name}</td><td class="num" style="color:#ef4444">(${fmtC(e.balance)})</td></tr>`).join('');
 
- body = `<table> <thead><tr><th>Keterangan</th><th>Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>ASET</strong></td></tr>${asetRows}
+ body = `<table> <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>ASET</strong></td></tr>${asetRows}
  <tr class="total-row"><td><strong>Total Aset (Bersih)</strong></td><td class="num"><strong>${fmtC(totAsetB)}</strong></td></tr> <tr><td colspan="2" style="padding-top:16px"><strong>KEWAJIBAN</strong></td></tr>${kewRows}
  <tr class="subtotal-row"><td><strong>Total Kewajiban</strong></td><td class="num"><strong>${fmtC(totKewP)}</strong></td></tr> <tr><td colspan="2" style="padding-top:16px"><strong>${lblEkuitas}</strong></td></tr>${ekRows}
  <tr class="subtotal-row"><td><strong>${lblTotEk}</strong></td><td class="num"><strong>${fmtC(ekAkhir)}</strong></td></tr> <tr class="total-row"><td><strong>${lblTotKewEk}</strong></td><td class="num"><strong>${fmtC(totKewP+ekAkhir)}</strong></td></tr> <tr><td colspan="2" style="padding:8px 12px;font-size:11px;color:${Math.abs(totAsetB-(totKewP+ekAkhir))<1?'#15803d':'#dc2626'};font-weight:700;"> ${Math.abs(totAsetB-(totKewP+ekAkhir))<1?' Neraca BALANCE':' TIDAK BALANCE — Selisih: '+fmtC(Math.abs(totAsetB-(totKewP+ekAkhir)))}
@@ -8471,7 +8477,7 @@ function printReport(type) {
  const lblHasil = em_pe === 'nirlaba' ? 'Kenaikan / (Penurunan) Aset Bersih' : em_pe === 'koperasi' ? 'SHU (Sisa Hasil Usaha)' : em_pe === 'baznas' ? 'Kenaikan / (Penurunan) Dana' : 'Laba Bersih Periode';
  const lblAkhir = em_pe === 'nirlaba' ? 'ASET BERSIH AKHIR PERIODE' : em_pe === 'koperasi' ? 'SIMPANAN AKHIR PERIODE' : em_pe === 'baznas' ? 'SALDO DANA AKHIR PERIODE' : 'EKUITAS AKHIR PERIODE';
 
- body = `<table> <thead><tr><th>Keterangan</th><th>Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>${lblSaldoAwal}</strong></td></tr> ${modalRowsP}
+ body = `<table> <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>${lblSaldoAwal}</strong></td></tr> ${modalRowsP}
  <tr class="subtotal-row"><td><strong>${lblTotAwal}</strong></td><td class="num"><strong>${fmtC(totModalP)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>PERUBAHAN PERIODE</strong></td></tr> <tr><td style="padding-left:16px;color:${labaNetPE>=0?'#15803d':'#dc2626'}"> (+) ${lblHasil}</td><td class="num" style="color:${labaNetPE>=0?'#15803d':'#dc2626'}">${labaNetPE<0?'(':''}${fmtC(Math.abs(labaNetPE))}${labaNetPE<0?')':''}</td></tr> ${priveRowsP}
  <tr class="subtotal-row"><td><strong>Net Perubahan</strong></td><td class="num"><strong>${fmtC(labaNetPE-totPriveP)}</strong></td></tr> <tr class="total-row"><td><strong>${lblAkhir}</strong></td><td class="num"><strong>${fmtC(ekAkhirPE)}</strong></td></tr> </tbody></table>`;
  }
@@ -8568,7 +8574,7 @@ function printReport(type) {
  let revRowsShu = revenues_shu.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
  let expRowsShu = expenses_shu.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
  body = `<p style="font-size:10px;color:#64748b;margin-bottom:8px;">PSAK 27 / UU No. 25/1992 — Akuntansi Perkoperasian. SHU dibagikan sesuai keputusan RAT.</p>
- <table> <thead><tr><th>Keterangan</th><th>Jumlah</th></tr></thead> <tbody>
+ <table> <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead> <tbody>
  <tr><td colspan="2"><strong>PENDAPATAN KOPERASI</strong></td></tr>${revRowsShu}
  <tr class="subtotal-row"><td><strong>Total Pendapatan</strong></td><td class="num"><strong>${fmtC(totRev_shu)}</strong></td></tr>
  <tr><td colspan="2" style="padding-top:12px"><strong>BEBAN KOPERASI</strong></td></tr>${expRowsShu}
@@ -8614,7 +8620,7 @@ function printReport(type) {
  rows+=`<tr><td>${today}</td><td>Menutup ke modal</td><td>Ikhtisar Laba Rugi</td><td class="num">${fmtC(laba)}</td><td></td></tr>`;
  rows+=`<tr><td></td><td></td><td style="padding-left:20px">Modal</td><td></td><td class="num">${fmtC(laba)}</td></tr>`;
  }
- body = `<table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody>${rows}</tbody></table>`;
+ body = `<table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th class="num">Debit</th><th class="num">Kredit</th></tr></thead><tbody>${rows}</tbody></table>`;
  }
 
  else if (type === 'buku-besar') {
@@ -8687,7 +8693,7 @@ function printReport(type) {
  const totAkum = as.reduce((s,a)=>s+(a.akumulasi_penyusutan||0),0);
  const totBuku = as.reduce((s,a)=>s+(a.nilai_buku||a.harga_perolehan||0),0);
  rows += `<tr class="total-row"> <td><strong>TOTAL</strong></td> <td class="num"><strong>${fmtC(totPerolehan)}</strong></td> <td colspan="3"></td> <td class="num"><strong>${fmtC(totAkum)}</strong></td> <td class="num"><strong>${fmtC(totBuku)}</strong></td> <td></td> </tr>`;
- body = `<table> <thead><tr><th>Nama Aset</th><th>Harga Perolehan</th><th>Thn</th><th>Metode Penyusutan</th><th>Beban/Thn</th><th>Akum. Penyusutan</th><th>Nilai Buku</th><th>Tanggal</th></tr></thead> <tbody>${rows}</tbody> </table>`;
+ body = `<table> <thead><tr><th>Nama Aset</th><th class="num">Harga Perolehan</th><th>Thn</th><th>Metode Penyusutan</th><th class="num">Beban/Thn</th><th class="num">Akum. Penyusutan</th><th class="num">Nilai Buku</th><th>Tanggal</th></tr></thead> <tbody>${rows}</tbody> </table>`;
  }
 
  else if (type === 'dashboard') {
@@ -8699,7 +8705,7 @@ function printReport(type) {
  const totEk = calcEkuitasAkhir();
  const kasAkhir= calcKasAkhir();
  const totRev = getAccsByType('Pendapatan').filter(a=>a.balance!==0).reduce((s,a)=>s+a.balance,0);
- body = `<table><thead><tr><th>Indikator</th><th>Nilai</th></tr></thead><tbody> <tr><td>Total Aset</td><td class="num">${fmtC(totAset)}</td></tr> <tr><td>Total Kewajiban</td><td class="num">${fmtC(totKew)}</td></tr> <tr><td>Total Ekuitas</td><td class="num">${fmtC(totEk)}</td></tr> <tr><td>Laba Bersih</td><td class="num">${fmtC(Math.abs(laba))} (${laba>=0?'Laba':'Rugi'})</td></tr> <tr><td>Total Pendapatan</td><td class="num">${fmtC(totRev)}</td></tr> <tr><td>Kas & Setara Kas</td><td class="num">${fmtC(kasAkhir)}</td></tr> <tr class="total-row"><td>Neraca Check (Aset = Kew+Ek)</td><td class="num">${Math.abs(totAset-(totKew+totEk))<1?' BALANCE':' TIDAK BALANCE'}</td></tr> </tbody></table>`;
+ body = `<table><thead><tr><th>Indikator</th><th class="num">Nilai</th></tr></thead><tbody> <tr><td>Total Aset</td><td class="num">${fmtC(totAset)}</td></tr> <tr><td>Total Kewajiban</td><td class="num">${fmtC(totKew)}</td></tr> <tr><td>Total Ekuitas</td><td class="num">${fmtC(totEk)}</td></tr> <tr><td>Laba Bersih</td><td class="num">${fmtC(Math.abs(laba))} (${laba>=0?'Laba':'Rugi'})</td></tr> <tr><td>Total Pendapatan</td><td class="num">${fmtC(totRev)}</td></tr> <tr><td>Kas & Setara Kas</td><td class="num">${fmtC(kasAkhir)}</td></tr> <tr class="total-row"><td>Neraca Check (Aset = Kew+Ek)</td><td class="num">${Math.abs(totAset-(totKew+totEk))<1?' BALANCE':' TIDAK BALANCE'}</td></tr> </tbody></table>`;
  title = 'Ringkasan Dashboard';
  }
 
@@ -8744,19 +8750,21 @@ function printReport(type) {
  .header p { font-size:11px; color:#64748b; margin-top:4px; }
  table { width:100%; border-collapse:collapse; margin-top:8px; }
  thead th { background:#1e3a5f; color:#fff; padding:9px 12px; text-align:left; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; }
+ thead th.num { text-align:right; }
  tbody td { padding:8px 12px; border-bottom:1px solid #e2e8f0; font-size:12px; }
  tbody tr:nth-child(even) { background:#f8fafc; }
  .num { text-align:right; font-family:'Courier New', monospace; }
  .total-row td { font-weight:800; background:#1e3a5f !important; color:#fff; padding:10px 12px; border-top:2px solid #1e3a5f; }
- .total-row .num { text-align:right; }
+ .total-row .num { text-align:right; font-family:'Courier New', monospace; }
  .subtotal-row td { font-weight:700; background:#e0e7ff !important; border-top:1px solid #6366f1; }
+ .subtotal-row .num { text-align:right; font-family:'Courier New', monospace; }
  .footer { margin-top:32px; padding-top:16px; border-top:1px solid #e2e8f0; display:flex; justify-content:space-between; font-size:11px; color:#94a3b8; }
  .sign-area { display:flex; justify-content:flex-end; gap:60px; margin-top:48px; font-size:12px; }
  .sign-box { text-align:center; }
  .sign-box .line { border-top:1px solid #1e293b; margin-top:48px; padding-top:4px; min-width:150px; }
  @media print {
- body { padding:15mm; }
- @page { margin:15mm; }
+ body { padding:0; margin:0; }
+ @page { margin:15mm; size:A4 portrait; }
  }
 </style>
 </head><body>
@@ -11055,7 +11063,7 @@ function renderLRA() {
  // Belanja: lebih kecil dari anggaran = baik (kurang belanja = efisiensi)
  const selColor = isBelanja ? (selisih <= 0 ? 'var(--accent2)' : 'var(--danger)') : (selisih >= 0 ? 'var(--accent2)' : 'var(--danger)');
  const selLabel = isBelanja ? (selisih <= 0 ? fmtC(Math.abs(selisih)) : `(${fmtC(selisih)})`) : (selisih >= 0 ? `+${fmtC(selisih)}` : `(${fmtC(Math.abs(selisih))})`);
- return `<div class="report-row indent"> <span>${d.nama}</span> <span class="report-amount" style="min-width:140px;">${fmtC(d.anggaran)}</span> <span class="report-amount" style="min-width:140px;">${fmtC(d.realisasi)}</span> <span style="min-width:65px;text-align:center;font-family:var(--mono);font-size:12px;color:${pctColor};">${pctVal}${pctVal!=='—'?'%':''}</span> <span class="report-amount" style="min-width:130px;color:${selColor};">${selLabel}</span> </div>`;
+ return `<div style="display:grid;${LRA_GRID};padding:7px 4px 7px 20px;font-size:13px;border-bottom:1px solid rgba(0,0,0,.04);align-items:center;"> <span>${d.nama}</span> <span class="report-amount">${fmtC(d.anggaran)}</span> <span class="report-amount">${fmtC(d.realisasi)}</span> <span style="text-align:center;font-family:var(--mono);font-size:12px;color:${pctColor};">${pctVal}${pctVal!=='—'?'%':''}</span> <span class="report-amount" style="color:${selColor};">${selLabel}</span> </div>`;
  }).join('');
  }
 
@@ -11064,15 +11072,16 @@ function renderLRA() {
  const sel = realVal - angVal;
  const selColor = isBelanja ? (sel <= 0 ? 'var(--accent2)' : 'var(--danger)') : (sel >= 0 ? 'var(--accent2)' : 'var(--danger)');
  const selLabel = isBelanja ? (sel <= 0 ? fmtC(Math.abs(sel)) : `(${fmtC(sel)})`) : (sel >= 0 ? `+${fmtC(sel)}` : `(${fmtC(Math.abs(sel))})`);
- return `<div class="report-row subtotal"> <span><strong>${label}</strong></span> <span class="report-amount" style="min-width:140px;"><strong>${fmtC(angVal)}</strong></span> <span class="report-amount" style="min-width:140px;"><strong>${fmtC(realVal)}</strong></span> <span style="min-width:65px;text-align:center;font-family:var(--mono);font-size:12px;">${pct}</span> <span class="report-amount" style="min-width:130px;color:${selColor};"><strong>${selLabel}</strong></span> </div>`;
+ return `<div style="display:grid;${LRA_GRID};padding:8px 4px;font-size:13px;font-weight:700;border-top:1px solid var(--border);align-items:center;"> <span><strong>${label}</strong></span> <span class="report-amount"><strong>${fmtC(angVal)}</strong></span> <span class="report-amount"><strong>${fmtC(realVal)}</strong></span> <span style="text-align:center;font-family:var(--mono);font-size:12px;">${pct}</span> <span class="report-amount" style="color:${selColor};"><strong>${selLabel}</strong></span> </div>`;
  }
 
  function totalRow(label, angVal, realVal, colorReal) {
- return `<div class="report-row total" style="margin-top:4px;"> <span><strong>${label}</strong></span> <span class="report-amount" style="min-width:140px;"><strong>${fmtC(angVal)}</strong></span> <span class="report-amount" style="min-width:140px;color:${colorReal};"><strong>${realVal < 0 ? '(' : ''}${fmtC(Math.abs(realVal))}${realVal < 0 ? ')' : ''}</strong></span> <span style="min-width:65px;"></span> <span style="min-width:130px;"></span> </div>`;
+ return `<div style="display:grid;${LRA_GRID};margin-top:4px;padding:14px 4px;font-weight:800;border-top:2px solid var(--text);border-bottom:3px double var(--text);align-items:center;"> <span><strong>${label}</strong></span> <span class="report-amount"><strong>${fmtC(angVal)}</strong></span> <span class="report-amount" style="color:${colorReal};"><strong>${realVal < 0 ? '(' : ''}${fmtC(Math.abs(realVal))}${realVal < 0 ? ')' : ''}</strong></span> <span></span> <span></span> </div>`;
  }
 
+ const LRA_GRID = 'grid-template-columns:1fr 150px 150px 65px 140px';
  const colHeader = `
- <div style="display:flex;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);padding:6px 0;border-bottom:2px solid var(--border);margin-bottom:4px;"> <span style="flex:1;">Uraian</span> <span style="min-width:140px;text-align:right;">Anggaran (Rp)</span> <span style="min-width:140px;text-align:right;">Realisasi (Rp)</span> <span style="min-width:65px;text-align:center;">%</span> <span style="min-width:130px;text-align:right;">Lebih/(Kurang)</span> </div>`;
+ <div style="display:grid;${LRA_GRID};font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);padding:6px 4px;border-bottom:2px solid var(--border);margin-bottom:4px;"> <span>Uraian</span> <span style="text-align:right;">Anggaran (Rp)</span> <span style="text-align:right;">Realisasi (Rp)</span> <span style="text-align:center;">%</span> <span style="text-align:right;">Lebih/(Kurang)</span> </div>`;
 
  const hasPemb = penerimaanPembItems.length || pengeluaranPembItems.length;
 
@@ -11097,7 +11106,7 @@ function renderLRA() {
  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;padding:8px 0 2px;">Pengeluaran Pembiayaan</div> ${buildRows(pengeluaranPembItems, true)}
  ${subtotalRow('Jumlah Pengeluaran Pembiayaan (C.2)', totAngKelPemb, totRealKelPemb, true)}` : ''}
 
- <div class="report-row subtotal" style="border-top:2px solid var(--border);margin-top:4px;"> <span><strong>Pembiayaan Neto (C.1) − (C.2)</strong></span> <span class="report-amount" style="min-width:140px;"><strong>${fmtC(totAngPembNeto)}</strong></span> <span class="report-amount" style="min-width:140px;color:${totRealPembNeto>=0?'var(--accent2)':'var(--danger)'};"> <strong>${totRealPembNeto<0?'(':''}${fmtC(Math.abs(totRealPembNeto))}${totRealPembNeto<0?')':''}</strong> </span> <span style="min-width:65px;"></span><span style="min-width:130px;"></span> </div> </div>` : ''}
+ <div style="display:grid;${LRA_GRID};font-weight:700;border-top:2px solid var(--border);margin-top:4px;padding:8px 4px;align-items:center;"> <span><strong>Pembiayaan Neto (C.1) − (C.2)</strong></span> <span class="report-amount"><strong>${fmtC(totAngPembNeto)}</strong></span> <span class="report-amount" style="color:${totRealPembNeto>=0?'var(--accent2)':'var(--danger)'}"> <strong>${totRealPembNeto<0?'(':''}${fmtC(Math.abs(totRealPembNeto))}${totRealPembNeto<0?')':''}</strong> </span> <span></span><span></span> </div> </div>` : ''}
 
  <!-- SiLPA / SiKPA --> <div style="margin-top:8px;"> ${totalRow(
  'SISA LEBIH/(KURANG) PEMBIAYAAN ANGGARAN — SiLPA/(SiKPA)',
@@ -11156,7 +11165,7 @@ function renderLSAL() {
 
  el.innerHTML = `
  <div style="text-align:center;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data.name}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">LAPORAN SALDO ANGGARAN LEBIH (LSAL)</div> <div style="font-size:12px;color:var(--text3);">Untuk Tahun yang Berakhir: ${co_data.period_end||'—'} | SAP PP 71/2010</div> </div> <div style="padding:8px 14px;background:rgba(37,99,235,.06);border-radius:var(--radius2);border-left:3px solid var(--primary-lighter);font-size:11px;color:var(--text2);margin-bottom:16px;"> ℹ <strong>SAL</strong>adalah akumulasi SiLPA dari LRA seluruh tahun yang belum digunakan/dikembalikan. SAL ≠ SiLPA. SiLPA adalah hasil LRA satu tahun, SAL adalah kumulatif lintas tahun.
- </div> <div style="max-width:580px;"> <div class="report-section-title">SALDO ANGGARAN LEBIH (SAL)</div> <!-- SAL Awal --> <div class="report-row indent"> <span><strong>Saldo Anggaran Lebih Awal Periode</strong> <small style="display:block;color:var(--text3);font-weight:400;">(SiLPA akumulatif dari tahun-tahun sebelumnya)</small> </span> <span class="report-amount" style="color:${salAwal>=0?'var(--text)':'var(--danger)'};">${salAwal<0?'(':''}${fmtC(Math.abs(salAwal))}${salAwal<0?')':''}</span> </div> <!-- Penggunaan SAL --> <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Penambah / (Pengurang):</div> <div class="report-row indent" style="color:var(--danger);"> <span>(−) Penggunaan SAL sebagai Penerimaan Pembiayaan
+ </div> <div> <div class="report-section-title">SALDO ANGGARAN LEBIH (SAL)</div> <!-- SAL Awal --> <div class="report-row indent"> <span><strong>Saldo Anggaran Lebih Awal Periode</strong> <small style="display:block;color:var(--text3);font-weight:400;">(SiLPA akumulatif dari tahun-tahun sebelumnya)</small> </span> <span class="report-amount" style="color:${salAwal>=0?'var(--text)':'var(--danger)'};">${salAwal<0?'(':''}${fmtC(Math.abs(salAwal))}${salAwal<0?')':''}</span> </div> <!-- Penggunaan SAL --> <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Penambah / (Pengurang):</div> <div class="report-row indent" style="color:var(--danger);"> <span>(−) Penggunaan SAL sebagai Penerimaan Pembiayaan
  <small style="display:block;color:var(--text3);font-weight:400;">(SAL yang dianggarkan &amp; direalisasi sebagai penerimaan pembiayaan tahun ini — mengurangi SAL)</small> </span> <span class="report-amount" style="color:var(--danger);">(${fmtC(penggunaanSal)})</span> </div> <!-- SiLPA Tahun Berjalan dari LRA --> <div class="report-row indent" style="color:${silpaTahunIni>=0?'var(--accent2)':'var(--danger)'};"> <span>(+) SiLPA / (SiKPA) Tahun Berjalan
  <small style="display:block;color:var(--text3);font-weight:400;">(dari LRA tahun ini — basis kas)</small> </span> <span class="report-amount" style="color:${silpaTahunIni>=0?'var(--accent2)':'var(--danger)'};"> ${hasSilpa
  ? (silpaTahunIni<0?'(':'') + fmtC(Math.abs(silpaTahunIni)) + (silpaTahunIni<0?')':'')
