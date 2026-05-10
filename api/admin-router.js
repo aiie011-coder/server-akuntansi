@@ -3,12 +3,19 @@
 // ============================================================
 const { getLicenseByKey, updateLicense, getAllLicenses, query,
         getLicense, saveLicense, updateLicenseStatus,
-        resetLicenseHWID, listAllLicenses, deleteLicense } = require('../lib/db');
+        resetLicenseHWID, listAllLicenses, deleteLicense,
+        getLicenseUsers, addLicenseUser, updateLicenseUserPin, deactivateLicenseUser } = require('../lib/db');
+
+const crypto = require('crypto');
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || process.env.ADMIN_SECRET || '';
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const VALID_PLANS  = ['trial', 'starter', 'pro', 'enterprise'];
+
+function hashPin(pin) {
+  return crypto.createHash('sha256').update('zequi_salt_' + pin).digest('hex');
+}
 
 function generateKey() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -41,13 +48,12 @@ function isAuthorized(req, body) {
   return false;
 }
 
-// Normalisasi locked_modules — selalu simpan sebagai JSON string ke Supabase
 function normalizeLockedModules(value) {
   if (value === undefined || value === null) return undefined;
   if (Array.isArray(value)) return JSON.stringify(value);
   if (typeof value === 'string') {
     const t = value.trim();
-    if (t.startsWith('[')) return t; // sudah JSON string
+    if (t.startsWith('[')) return t;
     const arr = t.split(',').map(s => s.trim()).filter(Boolean);
     return JSON.stringify(arr);
   }
@@ -148,7 +154,6 @@ module.exports = async function handler(req, res) {
         max_devices:    max_devices || 1,
         is_active:      true,
         updated_at:     new Date().toISOString(),
-        // Kolom lama — dibutuhkan oleh activate.js
         name:           customer_name,
         type:           'lifetime',
         status:         'unused',
@@ -195,15 +200,13 @@ module.exports = async function handler(req, res) {
       if (komparasi_enabled      !== undefined) updates.komparasi_enabled      = komparasi_enabled;
       if (lra_lsal_enabled       !== undefined) updates.lra_lsal_enabled       = lra_lsal_enabled;
 
-      // locked_modules disimpan sebagai JSON string
       if (locked_modules !== undefined) {
         updates.locked_modules = normalizeLockedModules(locked_modules);
       }
 
-      // FIX: Reset HWID — hwids harus JSON string, bukan array JS
       if (reset_hwid) {
         updates.hwid  = null;
-        updates.hwids = '[]'; // FIX: string, bukan array []
+        updates.hwids = '[]';
       }
 
       await updateLicense(license_key, updates);
@@ -222,7 +225,6 @@ module.exports = async function handler(req, res) {
     if (action === 'upload-logo') {
       const { image_base64, file_name, mime_type, delete_logo } = body;
 
-      // Handle delete logo
       if (delete_logo) {
         await fetch(`${SUPABASE_URL}/rest/v1/settings?key=eq.logo_url`, {
           method: 'PATCH',
@@ -260,6 +262,65 @@ module.exports = async function handler(req, res) {
         body: JSON.stringify({ key: 'logo_url', value: publicUrl, updated_at: new Date().toISOString() }),
       });
       return res.status(200).json({ success: true, logo_url: publicUrl, message: 'Logo berhasil diupload' });
+    }
+
+    // ── BARU: Kelola pengguna per lisensi ──────────────────────
+
+    if (action === 'add-user') {
+      // Tambah pengguna baru ke lisensi
+      // Body: { license_key, username, display_name, pin, role }
+      const { license_key, username, display_name, pin, role } = body;
+      if (!license_key || !username || !pin)
+        return res.status(400).json({ error: 'license_key, username, dan pin wajib diisi.' });
+      if (!/^\d{6}$/.test(pin))
+        return res.status(400).json({ error: 'PIN harus 6 digit angka.' });
+
+      const license = await getLicenseByKey(license_key);
+      if (!license) return res.status(404).json({ error: 'Lisensi tidak ditemukan.' });
+
+      const pin_hash = hashPin(pin);
+      try {
+        const newUser = await addLicenseUser({ license_key, username, display_name, pin_hash, role });
+        return res.status(200).json({ success: true, message: `Pengguna "${username}" berhasil ditambahkan.`, user: newUser });
+      } catch (err) {
+        if (err.message && err.message.includes('duplicate')) {
+          return res.status(409).json({ error: `Username "${username}" sudah digunakan di lisensi ini.` });
+        }
+        throw err;
+      }
+    }
+
+    if (action === 'change-pin') {
+      // Ganti PIN pengguna
+      // Body: { license_key, username, new_pin }
+      const { license_key, username, new_pin } = body;
+      if (!license_key || !username || !new_pin)
+        return res.status(400).json({ error: 'license_key, username, dan new_pin wajib diisi.' });
+      if (!/^\d{6}$/.test(new_pin))
+        return res.status(400).json({ error: 'PIN baru harus 6 digit angka.' });
+
+      const pin_hash = hashPin(new_pin);
+      await updateLicenseUserPin(license_key, username.trim().toLowerCase(), pin_hash);
+      return res.status(200).json({ success: true, message: `PIN untuk "${username}" berhasil diubah.` });
+    }
+
+    if (action === 'list-license-users') {
+      // Lihat semua pengguna di suatu lisensi
+      // Body atau query: { license_key }
+      const license_key = body.license_key || req.query.license_key;
+      if (!license_key) return res.status(400).json({ error: 'license_key wajib diisi.' });
+      const users = await getLicenseUsers(license_key);
+      return res.status(200).json({ success: true, users });
+    }
+
+    if (action === 'deactivate-user') {
+      // Nonaktifkan pengguna
+      // Body: { license_key, username }
+      const { license_key, username } = body;
+      if (!license_key || !username)
+        return res.status(400).json({ error: 'license_key dan username wajib diisi.' });
+      await deactivateLicenseUser(license_key, username.trim().toLowerCase());
+      return res.status(200).json({ success: true, message: `Pengguna "${username}" berhasil dinonaktifkan.` });
     }
 
     return res.status(400).json({ error: `Action tidak dikenali: ${action}` });
