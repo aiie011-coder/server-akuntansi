@@ -139,6 +139,14 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ licenses: safe, total: safe.length });
     }
 
+    if (action === 'list-license-users') {
+      // Lihat semua pengguna di suatu lisensi — support GET dan POST
+      const license_key = body.license_key || req.query.license_key;
+      if (!license_key) return res.status(400).json({ error: 'license_key wajib diisi.' });
+      const users = await getLicenseUsers(license_key);
+      return res.status(200).json({ success: true, users });
+    }
+
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
     if (action === 'create-license') {
