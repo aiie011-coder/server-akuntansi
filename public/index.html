@@ -71,7 +71,7 @@ body { font-family:var(--font); background:var(--bg); color:var(--text); overflo
 .nav-item.active { background:rgba(37,99,235,.15); color:#fff; border-left-color:var(--primary-lighter); }
 .nav-item .badge { margin-left:auto; background:var(--danger); color:#fff; font-size:10px; padding:2px 6px; border-radius:20px; }
 
-#sidebar-footer { padding:12px 16px; border-top:1px solid rgba(255,255,255,.07); }
+#sidebar-footer { padding:8px 16px; border-top:1px solid rgba(255,255,255,.07); }
 .save-btn-main {
  width:100%; padding:10px; background:linear-gradient(135deg, #2563eb, #06b6d4);
  border:none; border-radius:var(--radius2); color:#fff; font-family:var(--font);
@@ -628,9 +628,9 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <div id="expired-banner">Masa aktif paket Anda sudah berakhir. Data masih bisa dilihat, tapi fitur terbatas.
  <a onclick="showUpgradeModal('komparasi')">Perpanjang sekarang</a>
 </div> <!-- LICENSE INFO BAR (shown when activated) -->
-<div id="lic-info-bar" style="display:none;"> <span>Lisensi Aktif &nbsp;|&nbsp; <span id="lic-info-plan" style="font-weight:700;">Trial</span></span> <span id="lic-info-key" style="color:rgba(148,163,184,.4);">-</span> <span id="lic-info-exp"></span> <span id="lic-info-user" style="display:none;"> &nbsp;|&nbsp; <span class="user-avatar-mini" id="lic-user-avatar-mini">?</span> <span id="lic-info-username">—</span> <button onclick="showLogoutConfirm()" style="background:none;border:none;color:rgba(148,163,184,.5);font-size:11px;cursor:pointer;margin-left:4px;padding:0;font-family:var(--font);" title="Logout">Logout</button> </span>
+<div id="lic-info-bar" style="display:none;"> <span>Lisensi Aktif &nbsp;|&nbsp; <span id="lic-info-plan" style="font-weight:700;">Trial</span></span> <span id="lic-info-key" style="color:rgba(148,163,184,.4);">-</span> <span id="lic-info-exp"></span> <span id="lic-info-user" style="display:none;"> &nbsp;|&nbsp; <span class="user-avatar-mini" id="lic-user-avatar-mini">?</span> <span id="lic-info-username">—</span> <span id="lic-info-role" style="display:none;font-size:11px;color:rgba(148,163,184,.7);margin-left:4px;"></span> <button onclick="showLogoutConfirm()" style="background:none;border:none;color:rgba(148,163,184,.5);font-size:11px;cursor:pointer;margin-left:4px;padding:0;font-family:var(--font);" title="Logout">Logout</button> </span>
 </div> <!-- SIDEBAR -->
-<nav id="sidebar"> <div id="sidebar-logo"> <div class="logo-icon" id="app-logo-wrap" style="background:transparent;padding:0;overflow:hidden;"> <img id="app-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;"> <div id="app-logo-default" style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="10" width="4" height="11" rx="1" fill="white" opacity="0.9"/><rect x="7" y="6" width="4" height="15" rx="1" fill="white" opacity="0.9"/><rect x="13" y="2" width="4" height="19" rx="1" fill="white" opacity="0.9"/><path d="M2 8 L9 4 L15 1" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/></svg></div> </div> <div> <span>ZeQui</span> <small>Zenith Quality Accounting System</small> </div> </div> <div id="sidebar-nav"> <div class="nav-group-label">Utama</div> <div class="nav-item" onclick="navigate('dashboard')">Dashboard</div> <div class="nav-item" onclick="navigate('companies')">Perusahaan</div> <div class="nav-item" onclick="navigate('coa')">Akun (CoA)</div> <div class="nav-group-label">Transaksi</div> <div class="nav-item" onclick="navigate('transactions')">Transaksi</div> <div class="nav-item" onclick="navigate('jurnal')">Jurnal Umum</div> <div class="nav-item" onclick="navigate('buku-besar')">Buku Besar</div> <div class="nav-item" onclick="navigate('neraca-saldo')">Neraca Saldo</div> <div class="nav-item" onclick="navigate('penyesuaian')">Jurnal Penyesuaian</div> <div class="nav-item" onclick="navigate('ns-penyesuaian')">NS Penyesuaian</div> <div class="nav-group-label">Aset &amp; Kewajiban</div> <div class="nav-item" onclick="navigate('hutang')">Hutang (AP)</div> <div class="nav-item" onclick="navigate('piutang')">Piutang (AR)</div> <div class="nav-item" onclick="navigate('persediaan')">Persediaan</div> <div class="nav-item" onclick="navigate('perlengkapan')">Perlengkapan</div> <div class="nav-item" onclick="navigate('aset-tetap')">Aset Tetap</div> <div class="nav-group-label">Laporan</div> <div class="nav-item" onclick="navigate('laba-rugi')" id="nav-laba-rugi"><span id="nav-label-laba-rugi">Laba Rugi</span></div> <div class="nav-item active" onclick="navigate('neraca')" id="nav-neraca"><span id="nav-label-neraca">Posisi Keuangan</span></div> <div class="nav-item" onclick="navigate('perubahan-ekuitas')" id="nav-ekuitas"><span id="nav-label-ekuitas">Perubahan Ekuitas</span></div> <div class="nav-item" onclick="navigate('arus-kas')" id="nav-arus-kas"><span id="nav-label-arus-kas">Arus Kas</span></div> <div class="nav-item" onclick="navigate('lra')" id="nav-lra" style="display:none;">Realisasi Anggaran (LRA)</div> <div class="nav-item" onclick="navigate('lsal')" id="nav-lsal" style="display:none;">Saldo Anggaran Lebih (LSAL)</div> <div class="nav-item" onclick="navigate('shu')" id="nav-shu" style="display:none;">Laporan SHU</div> <div class="nav-item" onclick="navigate('lpd')" id="nav-lpd" style="display:none;">Perubahan Dana</div> <div class="nav-item" onclick="navigate('pak')" id="nav-pak" style="display:none;">Aset Kelolaan</div> <div class="nav-item" onclick="navigate('jurnal-penutup')">Jurnal Penutup</div> <div class="nav-group-label">Alat Bantu</div> <div class="nav-item" onclick="navigate('rekonsiliasi')">Rekonsiliasi Bank</div> <div class="nav-item" onclick="navigate('template-transaksi')">Template Berulang</div> <div class="nav-item" onclick="navigate('laporan-pajak')">Laporan Pajak</div> <div class="nav-group-label">Sistem</div> <div class="nav-item" onclick="navigate('komparasi')">Komparasi Multi-Tahun</div> <div class="nav-item" onclick="navigate('settings')">Pengaturan</div> </div> <div id="sidebar-footer"> <button class="save-btn-main" onclick="saveToFile()">Backup File</button> </div>
+<nav id="sidebar"> <div id="sidebar-logo"> <div class="logo-icon" id="app-logo-wrap" style="background:transparent;padding:0;overflow:hidden;"> <img id="app-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;"> <div id="app-logo-default" style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="10" width="4" height="11" rx="1" fill="white" opacity="0.9"/><rect x="7" y="6" width="4" height="15" rx="1" fill="white" opacity="0.9"/><rect x="13" y="2" width="4" height="19" rx="1" fill="white" opacity="0.9"/><path d="M2 8 L9 4 L15 1" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/></svg></div> </div> <div> <span>ZeQui</span> <small>Zenith Quality Accounting System</small> </div> </div> <div id="sidebar-nav"> <div class="nav-group-label">Utama</div> <div class="nav-item" onclick="navigate('dashboard')">Dashboard</div> <div class="nav-item" onclick="navigate('companies')">Perusahaan</div> <div class="nav-item" onclick="navigate('coa')">Akun (CoA)</div> <div class="nav-group-label">Transaksi</div> <div class="nav-item" onclick="navigate('transactions')">Transaksi</div> <div class="nav-item" onclick="navigate('jurnal')">Jurnal Umum</div> <div class="nav-item" onclick="navigate('buku-besar')">Buku Besar</div> <div class="nav-item" onclick="navigate('neraca-saldo')">Neraca Saldo</div> <div class="nav-item" onclick="navigate('penyesuaian')">Jurnal Penyesuaian</div> <div class="nav-item" onclick="navigate('ns-penyesuaian')">NS Penyesuaian</div> <div class="nav-group-label">Aset &amp; Kewajiban</div> <div class="nav-item" onclick="navigate('hutang')">Hutang (AP)</div> <div class="nav-item" onclick="navigate('piutang')">Piutang (AR)</div> <div class="nav-item" onclick="navigate('persediaan')">Persediaan</div> <div class="nav-item" onclick="navigate('perlengkapan')">Perlengkapan</div> <div class="nav-item" onclick="navigate('aset-tetap')">Aset Tetap</div> <div class="nav-group-label">Laporan</div> <div class="nav-item" onclick="navigate('laba-rugi')" id="nav-laba-rugi"><span id="nav-label-laba-rugi">Laba Rugi</span></div> <div class="nav-item active" onclick="navigate('neraca')" id="nav-neraca"><span id="nav-label-neraca">Posisi Keuangan</span></div> <div class="nav-item" onclick="navigate('perubahan-ekuitas')" id="nav-ekuitas"><span id="nav-label-ekuitas">Perubahan Ekuitas</span></div> <div class="nav-item" onclick="navigate('arus-kas')" id="nav-arus-kas"><span id="nav-label-arus-kas">Arus Kas</span></div> <div class="nav-item" onclick="navigate('lra')" id="nav-lra" style="display:none;">Realisasi Anggaran (LRA)</div> <div class="nav-item" onclick="navigate('lsal')" id="nav-lsal" style="display:none;">Saldo Anggaran Lebih (LSAL)</div> <div class="nav-item" onclick="navigate('shu')" id="nav-shu" style="display:none;">Laporan SHU</div> <div class="nav-item" onclick="navigate('lpd')" id="nav-lpd" style="display:none;">Perubahan Dana</div> <div class="nav-item" onclick="navigate('pak')" id="nav-pak" style="display:none;">Aset Kelolaan</div> <div class="nav-item" onclick="navigate('jurnal-penutup')">Jurnal Penutup</div> <div class="nav-group-label">Alat Bantu</div> <div class="nav-item" onclick="navigate('rekonsiliasi')">Rekonsiliasi Bank</div> <div class="nav-item" onclick="navigate('template-transaksi')">Template Berulang</div> <div class="nav-item" onclick="navigate('laporan-pajak')">Laporan Pajak</div> <div class="nav-group-label">Sistem</div> <div class="nav-item" onclick="navigate('komparasi')">Komparasi Multi-Tahun</div> <div class="nav-item" onclick="navigate('settings')">Pengaturan</div> </div> <div id="sidebar-footer"> </div>
 </nav> <!-- MAIN -->
 <div id="main"> <!-- Mobile overlay for sidebar -->
 <div id="mobile-sidebar-overlay" onclick="closeMobileSidebar()"></div>
@@ -1726,9 +1726,11 @@ function renderCompanies() {
  </div> <div style="font-weight:800;font-size:16px;margin-bottom:4px;">${co.name}</div> <div style="font-size:12px;color:var(--text2);">${co.standard} · ${co.type||'—'}</div>
  <div style="margin-top:4px;"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${co.entity_mode==='nirlaba'?'background:rgba(16,185,129,.12);color:#065f46;':co.entity_mode==='koperasi'?'background:rgba(245,158,11,.12);color:#92400e;':co.entity_mode==='baznas'?'background:rgba(22,163,74,.12);color:#15803d;':'background:rgba(37,99,235,.1);color:#1d4ed8;'}">${co.entity_mode==='nirlaba'?'Nirlaba (ISAK 35)':co.entity_mode==='koperasi'?'Koperasi (PSAK 27)':co.entity_mode==='baznas'?'BAZNAS/LAZ (PSAK 109)':'Komersial'}</span></div>
  <div style="font-size:11px;color:var(--text3);margin-top:4px;">${co.period_start||''} s/d ${co.period_end||''}</div> <div style="display:flex;gap:8px;margin-top:16px;"> <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();selectCompany(${co.id})">Buka</button> <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editCompany(${co.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCompany(${co.id})">Hapus</button> </div> </div> </div> `).join('');
+ if (typeof applyRoleRestrictions === 'function') applyRoleRestrictions();
 }
 
 function openCompanyModal() {
+ if (!requireAdmin('Tambah/Edit Perusahaan')) return;
  const maxCo = (__planConfig && __planConfig.max_companies) || (PLAN_DEFAULTS[__planConfig?.plan]?.max_companies) || 1;
  if (__licenseVerified && DB.companies.length >= maxCo) {
  toast(`Paket ${__planConfig?.plan_label||'Trial'} hanya mengizinkan ${maxCo} perusahaan.`, 'error', 4000);
@@ -1804,6 +1806,7 @@ function editCompany(id) {
 }
 
 function deleteCompany(id) {
+ if (!requireAdmin('Hapus Perusahaan')) return;
  const coObj = DB.companies.find(c =>c.id == id);
  const coName = coObj?.name || String(id);
  // Konfirmasi pertama: peringatan umum
@@ -2045,6 +2048,7 @@ const DEFAULT_COA = [
 ];
 
 function loadDefaultCOA() {
+ if (!requireAdmin('Muat CoA Default')) return;
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
  if (!confirm('Muat CoA default? (akun yang ada tidak akan dihapus)')) return;
  DEFAULT_COA.forEach(a => {
@@ -2085,6 +2089,7 @@ function renderCOA() {
  : `<span style="color:var(--text3);font-size:12px;">—</span>`;
  return `
  <tr> <td class="td-mono">${a.code}</td> <td style="font-weight:600;">${a.name}</td> <td><span style="background:${typeColors[a.type]||'#f1f5f9'};color:${typeText[a.type]||'#334155'};padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;">${a.type}</span></td> <td style="font-size:12px;color:var(--text2);">${a.normal_balance}</td> <td>${groupCell}</td> <td> <button class="btn btn-secondary btn-sm" onclick="editCOA(${a.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteCOA(${a.id})">Hapus</button> </td> </tr> `}).join('');
+ if (typeof applyRoleRestrictions === 'function') applyRoleRestrictions();
 }
 
 function setNormalBalance() {
@@ -2241,6 +2246,7 @@ function resetCOAForm() {
 }
 
 function saveCOA() {
+ if (!requireAdmin('Simpan Akun COA')) return;
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
  const code = document.getElementById('coa-code').value.trim();
  const name = document.getElementById('coa-name').value.trim();
@@ -2440,6 +2446,7 @@ function addCOASubHeader() {
 }
 
 function deleteCOAHeader(id) {
+ if (!requireAdmin('Hapus Header COA')) return;
  if (!confirm('Hapus header ini? Sub header dan akun yang terhubung tidak ikut terhapus.')) return;
  DB.coa_headers = DB.coa_headers.filter(h=>h.id!=id);
  DB.coa_subheaders = (DB.coa_subheaders||[]).filter(s=>s.header_id!=id);
@@ -2447,12 +2454,14 @@ function deleteCOAHeader(id) {
 }
 
 function deleteCOASubHeader(id) {
+ if (!requireAdmin('Hapus Sub Header COA')) return;
  if (!confirm('Hapus sub header ini?')) return;
  DB.coa_subheaders = DB.coa_subheaders.filter(s=>s.id!=id);
  autoSave(); renderCOAHeaderModal(); toast('Sub header dihapus','success');
 }
 
 function deleteCOA(id) {
+ if (!requireAdmin('Hapus Akun COA')) return;
  if (!confirm('Hapus akun ini?')) return;
  // Cek pemakaian di journal_details
  const usedInJournal = DB.journal_details.some(d =>d.account_id == id);
@@ -3115,6 +3124,7 @@ function renderPeriodeLock() {
 // Otomatis mengambil saldo akhir semua akun sebagai saldo_awal periode baru
 // 
 function bukaPeriodeBaru() {
+ if (!requireAdmin('Buka Periode Baru')) return;
  if (!co()) { toast('Pilih perusahaan dulu', 'error'); return; }
  const co_data = getCompany();
  if (!co_data) return;
@@ -3501,6 +3511,7 @@ function editTransaction(id) {
 }
 
 function deleteTransaction(id) {
+ if (!requireAdmin('Hapus Transaksi')) return;
  if (!confirm('Hapus transaksi dan jurnalnya?')) return;
  const t = DB.transactions.find(x=>x.id==id);
  if (cekPeriodeLock(t?.date)) return;
@@ -4030,6 +4041,7 @@ function savePenyesuaian() {
 }
 
 function deletePenyesuaian(id) {
+ if (!requireAdmin('Hapus Jurnal Penyesuaian')) return;
  if (!confirm('Hapus penyesuaian ini?')) return;
  const p = DB.penyesuaian.find(x=>x.id==id);
  if (cekPeriodeLock(p?.date)) return; // Saran 2
@@ -8282,6 +8294,7 @@ function renderDashboard() {
 // SAVE TO FILE (fitur utama!)
 // 
 function saveToFile() {
+ if (!requireAdmin('Backup File')) return;
  autoSave();
  let html = document.documentElement.outerHTML;
 
@@ -8418,6 +8431,7 @@ function importJSON(input) {
 }
 
 async function clearAllData() {
+ if (!requireAdmin('Hapus Semua Data')) return;
  if (!confirm('HAPUS SEMUA DATA? Tindakan ini tidak bisa dibatalkan!\n\nSemua perusahaan dan seluruh transaksi akan hilang selamanya.')) return;
  const typed = window.prompt('Ketik "HAPUS SEMUA" (huruf kapital) untuk konfirmasi:');
  if (typed === null) return;
@@ -10689,12 +10703,77 @@ function loginComplete(user, licKey, fromCache) {
   if (mini) mini.textContent = (user.display_name || user.username || '?')[0].toUpperCase();
   const nameEl = document.getElementById('lic-info-username');
   if (nameEl) nameEl.textContent = user.display_name || user.username;
+  // Tampilkan badge role
+  const roleEl = document.getElementById('lic-info-role');
+  if (roleEl) {
+   roleEl.textContent = user.role === 'admin' ? '👑 Admin' : '👤 Operator';
+   roleEl.style.display = 'inline';
+  }
  }
+
+ // Terapkan pembatasan berdasarkan role
+ setTimeout(() => applyRoleRestrictions(), 300);
 
  if (fromCache) {
   setTimeout(() => toast(`👤 Sesi dilanjutkan sebagai ${user.display_name || user.username}`, 'info', 3000), 1000);
  }
 }
+
+// ─── ROLE SYSTEM ──────────────────────────────────────────────
+function isAdmin() {
+ return __currentUser?.role === 'admin';
+}
+
+// Fungsi pembantu: blokir aksi operator dengan pesan
+function requireAdmin(namaFitur) {
+ if (!isAdmin()) {
+  toast(`🔒 Fitur "${namaFitur}" hanya bisa diakses oleh Admin.`, 'warning', 4000);
+  return false;
+ }
+ return true;
+}
+
+// Terapkan pembatasan UI untuk operator
+function applyRoleRestrictions() {
+ if (isAdmin()) {
+  // Admin: tampilkan semua, tidak ada yang disembunyikan
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display = '');
+  return;
+ }
+
+ // Operator: sembunyikan elemen bertanda admin-only
+ document.querySelectorAll('.admin-only').forEach(el => {
+  el.style.display = 'none';
+ });
+
+ // Sembunyikan tombol di COA — Tambah Akun, Muat CoA Default, Edit, Hapus
+ const coaActions = document.querySelector('#page-coa .page-actions');
+ if (coaActions) coaActions.style.display = 'none';
+
+ // Sembunyikan tombol Hapus & Edit di tabel COA (dirender dinamis — handle via renderCOA override)
+ // Sembunyikan tombol Buka Periode Baru
+ document.querySelectorAll('[onclick*="bukaPeriodeBaru"]').forEach(el => el.style.display = 'none');
+
+ // Sembunyikan tombol Backup File di sidebar dan header
+ document.querySelectorAll('[onclick*="saveToFile"]').forEach(el => el.style.display = 'none');
+
+ // Sembunyikan tombol Hapus Semua Data di settings
+ document.querySelectorAll('[onclick*="clearAllData"]').forEach(el => el.style.display = 'none');
+
+ // Sembunyikan tombol Tambah Perusahaan
+ document.querySelectorAll('[onclick*="openCompanyModal"]').forEach(el => el.style.display = 'none');
+
+ // Sembunyikan tombol Hapus Perusahaan (dirender dinamis — ditangani di renderCompanies)
+ // Sembunyikan tombol Jurnal Penutup
+ document.querySelectorAll('[onclick*="saveJurnalPenutup"]').forEach(el => el.style.display = 'none');
+
+ // Sembunyikan tombol Hapus Log Audit
+ document.querySelectorAll('[onclick*="DB.audit_log"]').forEach(el => el.style.display = 'none');
+
+ // Sembunyikan menu Settings di sidebar
+ document.querySelectorAll('[onclick*="navigate(\'settings\')"]').forEach(el => el.style.display = 'none');
+}
+// ─────────────────────────────────────────────────────────────
 
 // Konfirmasi logout
 function showLogoutConfirm() {
