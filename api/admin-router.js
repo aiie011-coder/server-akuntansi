@@ -166,7 +166,7 @@ module.exports = async function handler(req, res) {
         type:           'lifetime',
         status:         'unused',
         hwid:           null,
-        hwids:          '[]',
+        hwids:          [],
         activated_at:   null,
       };
       await query('POST', 'licenses', row);
