@@ -441,6 +441,72 @@ textarea.form-control { resize:vertical; min-height:80px; }
  border-radius:20px; background:rgba(245,158,11,.15); color:#f59e0b;
 }
 
+/* LOGIN PANEL (muncul setelah lisensi terverifikasi) */
+#login-panel {
+ display:none; flex-direction:column; gap:0;
+}
+#login-panel.active { display:flex; }
+#lic-step-indicator {
+ display:flex; align-items:center; justify-content:center; gap:8px;
+ margin-bottom:24px;
+}
+.lic-step {
+ display:flex; align-items:center; gap:6px; font-size:11px; font-weight:700;
+ color:rgba(148,163,184,.4); letter-spacing:.3px;
+}
+.lic-step.done { color:#34d399; }
+.lic-step.active { color:#60a5fa; }
+.lic-step-dot {
+ width:22px; height:22px; border-radius:50%; border:2px solid currentColor;
+ display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800;
+ flex-shrink:0;
+}
+.lic-step-sep { width:24px; height:2px; background:rgba(255,255,255,.08); border-radius:2px; }
+.lic-step.done .lic-step-dot { background:rgba(52,211,153,.15); }
+.lic-step.active .lic-step-dot { background:rgba(96,165,250,.15); }
+.lic-user-avatar {
+ width:48px; height:48px; border-radius:50%;
+ background:linear-gradient(135deg,#2563eb,#06b6d4);
+ display:flex; align-items:center; justify-content:center;
+ font-size:20px; color:#fff; font-weight:800; margin:0 auto 12px; flex-shrink:0;
+}
+.lic-pin-grid {
+ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px;
+}
+.lic-pin-btn {
+ padding:14px 0; background:rgba(255,255,255,.06);
+ border:1.5px solid rgba(255,255,255,.1); border-radius:10px;
+ color:#fff; font-size:17px; font-weight:700; cursor:pointer;
+ transition:.15s; font-family:var(--mono);
+}
+.lic-pin-btn:hover { background:rgba(37,99,235,.3); border-color:#3b82f6; }
+.lic-pin-btn:active { transform:scale(.95); }
+.lic-pin-display {
+ display:flex; justify-content:center; gap:10px; margin:16px 0 4px;
+}
+.lic-pin-dot {
+ width:12px; height:12px; border-radius:50%;
+ border:2px solid rgba(255,255,255,.25); background:transparent; transition:.2s;
+}
+.lic-pin-dot.filled { background:#3b82f6; border-color:#3b82f6; }
+.lic-back-btn {
+ background:none; border:none; color:rgba(148,163,184,.6);
+ font-size:12px; cursor:pointer; margin-top:12px; font-family:var(--font);
+ text-decoration:underline; transition:.2s;
+}
+.lic-back-btn:hover { color:#94a3b8; }
+/* User chip di info bar */
+#lic-info-user {
+ font-weight:700; color:#60a5fa;
+ display:flex; align-items:center; gap:6px;
+}
+#lic-info-user .user-avatar-mini {
+ width:20px; height:20px; border-radius:50%;
+ background:linear-gradient(135deg,#2563eb,#06b6d4);
+ display:inline-flex; align-items:center; justify-content:center;
+ font-size:10px; color:#fff; font-weight:800;
+}
+
 #expired-banner {
  display:none; position:fixed; top:0; left:0; right:0; z-index:9999;
  background:#ef4444; color:#fff; padding:8px 24px;
@@ -470,16 +536,99 @@ textarea.form-control { resize:vertical; min-height:80px; }
 </style>
 </head>
 <body> <!-- LICENSE OVERLAY -->
-<div id="license-overlay"> <div class="lic-box"> <div class="lic-logo" style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;"> <img id="lic-logo-img" src="" alt="Logo" style="width:64px;height:64px;object-fit:contain;border-radius:12px;display:none;"> <div id="lic-logo-default" style="font-size:52px;line-height:1;"><svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="52" rx="12" fill="url(#lg)"/><rect x="8" y="28" width="8" height="16" rx="2" fill="white" opacity="0.9"/><rect x="22" y="20" width="8" height="24" rx="2" fill="white" opacity="0.9"/><rect x="36" y="12" width="8" height="32" rx="2" fill="white" opacity="0.9"/><path d="M11 24 L25 16 L39 9" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/><defs><linearGradient id="lg" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse"><stop stop-color="#2563eb"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs></svg></div> </div> <div class="lic-title">ZeQui</div> <div class="lic-sub">Zenith Quality Accounting System</div> <div class="lic-badge">Lisensi Diperlukan</div> <div class="lic-label">Kode Lisensi</div> <input class="lic-input" id="lic-key-input" type="text" maxlength="23"
- placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
- oninput="licFormatInput(this)"
- onkeydown="if(event.key==='Enter') licActivate()"
- /> <div id="lic-msg" class="lic-err"></div> <button class="lic-btn" id="lic-btn" onclick="licActivate()">Aktivasi Sekarang</button> <div class="lic-footer">Belum punya lisensi? Hubungi penjual untuk mendapatkan kode aktivasi.<br> <span style="font-family:monospace;">v1.0 — © 2026 ZeQui</span> </div> </div>
-</div> <!-- EXPIRED BANNER -->
+<div id="license-overlay"> <div class="lic-box">
+
+ <!-- Logo (bersama untuk semua step) -->
+ <div class="lic-logo" style="display:flex;justify-content:center;align-items:center;margin-bottom:8px;">
+  <img id="lic-logo-img" src="" alt="Logo" style="width:64px;height:64px;object-fit:contain;border-radius:12px;display:none;">
+  <div id="lic-logo-default" style="font-size:52px;line-height:1;"><svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="52" rx="12" fill="url(#lg)"/><rect x="8" y="28" width="8" height="16" rx="2" fill="white" opacity="0.9"/><rect x="22" y="20" width="8" height="24" rx="2" fill="white" opacity="0.9"/><rect x="36" y="12" width="8" height="32" rx="2" fill="white" opacity="0.9"/><path d="M11 24 L25 16 L39 9" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/><defs><linearGradient id="lg" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse"><stop stop-color="#2563eb"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs></svg></div>
+ </div>
+ <div class="lic-title">ZeQui</div>
+ <div class="lic-sub">Zenith Quality Accounting System</div>
+
+ <!-- Step indicator -->
+ <div id="lic-step-indicator" style="margin:16px 0 20px;">
+  <div class="lic-step done" id="step-dot-1">
+   <div class="lic-step-dot">1</div>
+   <span>Lisensi</span>
+  </div>
+  <div class="lic-step-sep"></div>
+  <div class="lic-step" id="step-dot-2">
+   <div class="lic-step-dot">2</div>
+   <span>Login</span>
+  </div>
+ </div>
+
+ <!-- PANEL 1: Input Lisensi -->
+ <div id="lic-panel-license">
+  <div class="lic-badge">Lisensi Diperlukan</div>
+  <div class="lic-label">Kode Lisensi</div>
+  <input class="lic-input" id="lic-key-input" type="text" maxlength="23"
+   placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
+   oninput="licFormatInput(this)"
+   onkeydown="if(event.key==='Enter') licActivate()"
+  />
+  <div id="lic-msg" class="lic-err"></div>
+  <button class="lic-btn" id="lic-btn" onclick="licActivate()">Aktivasi Sekarang</button>
+  <div class="lic-footer">Belum punya lisensi? Hubungi penjual untuk mendapatkan kode aktivasi.<br>
+   <span style="font-family:monospace;">v1.0 — © 2026 ZeQui</span>
+  </div>
+ </div>
+
+ <!-- PANEL 2: Pilih User -->
+ <div id="login-panel">
+  <!-- Step 2a: Pilih username -->
+  <div id="login-step-user">
+   <div style="text-align:center;margin-bottom:16px;">
+    <div style="font-size:14px;font-weight:700;color:rgba(255,255,255,.85);">Pilih Akun Pengguna</div>
+    <div style="font-size:12px;color:rgba(148,163,184,.6);margin-top:4px;">Siapa yang akan menggunakan aplikasi ini?</div>
+   </div>
+   <div id="login-user-list" style="display:flex;flex-direction:column;gap:8px;max-height:240px;overflow-y:auto;padding-right:2px;"></div>
+   <div id="login-user-msg" class="lic-err" style="margin-top:10px;"></div>
+   <button class="lic-back-btn" onclick="loginGoBackToLicense()">← Ganti lisensi</button>
+  </div>
+
+  <!-- Step 2b: Input PIN -->
+  <div id="login-step-pin" style="display:none;">
+   <div style="text-align:center;">
+    <div class="lic-user-avatar" id="login-pin-avatar">?</div>
+    <div style="font-size:15px;font-weight:800;color:#fff;" id="login-pin-name">—</div>
+    <div style="font-size:12px;color:rgba(148,163,184,.6);margin-top:2px;">Masukkan PIN Anda</div>
+   </div>
+   <!-- Dot indicator PIN -->
+   <div class="lic-pin-display" id="pin-dots">
+    <div class="lic-pin-dot" id="pd0"></div>
+    <div class="lic-pin-dot" id="pd1"></div>
+    <div class="lic-pin-dot" id="pd2"></div>
+    <div class="lic-pin-dot" id="pd3"></div>
+    <div class="lic-pin-dot" id="pd4"></div>
+    <div class="lic-pin-dot" id="pd5"></div>
+   </div>
+   <div id="login-pin-msg" class="lic-err" style="margin-bottom:6px;"></div>
+   <!-- Numpad -->
+   <div class="lic-pin-grid">
+    <button class="lic-pin-btn" onclick="pinInput('1')">1</button>
+    <button class="lic-pin-btn" onclick="pinInput('2')">2</button>
+    <button class="lic-pin-btn" onclick="pinInput('3')">3</button>
+    <button class="lic-pin-btn" onclick="pinInput('4')">4</button>
+    <button class="lic-pin-btn" onclick="pinInput('5')">5</button>
+    <button class="lic-pin-btn" onclick="pinInput('6')">6</button>
+    <button class="lic-pin-btn" onclick="pinInput('7')">7</button>
+    <button class="lic-pin-btn" onclick="pinInput('8')">8</button>
+    <button class="lic-pin-btn" onclick="pinInput('9')">9</button>
+    <button class="lic-pin-btn" onclick="pinClear()" style="font-size:13px;color:rgba(148,163,184,.7);">Hapus</button>
+    <button class="lic-pin-btn" onclick="pinInput('0')">0</button>
+    <button class="lic-pin-btn" onclick="pinBackspace()" style="font-size:18px;">⌫</button>
+   </div>
+   <button class="lic-back-btn" onclick="loginGoBackToUsers()">← Pilih pengguna lain</button>
+  </div>
+ </div>
+
+</div></div> <!-- EXPIRED BANNER -->
 <div id="expired-banner">Masa aktif paket Anda sudah berakhir. Data masih bisa dilihat, tapi fitur terbatas.
  <a onclick="showUpgradeModal('komparasi')">Perpanjang sekarang</a>
 </div> <!-- LICENSE INFO BAR (shown when activated) -->
-<div id="lic-info-bar" style="display:none;"> <span>Lisensi Aktif &nbsp;|&nbsp; <span id="lic-info-plan" style="font-weight:700;">Trial</span></span> <span id="lic-info-key" style="color:rgba(148,163,184,.4);">-</span> <span id="lic-info-exp"></span>
+<div id="lic-info-bar" style="display:none;"> <span>Lisensi Aktif &nbsp;|&nbsp; <span id="lic-info-plan" style="font-weight:700;">Trial</span></span> <span id="lic-info-key" style="color:rgba(148,163,184,.4);">-</span> <span id="lic-info-exp"></span> <span id="lic-info-user" style="display:none;"> &nbsp;|&nbsp; <span class="user-avatar-mini" id="lic-user-avatar-mini">?</span> <span id="lic-info-username">—</span> <button onclick="showLogoutConfirm()" style="background:none;border:none;color:rgba(148,163,184,.5);font-size:11px;cursor:pointer;margin-left:4px;padding:0;font-family:var(--font);" title="Logout">Logout</button> </span>
 </div> <!-- SIDEBAR -->
 <nav id="sidebar"> <div id="sidebar-logo"> <div class="logo-icon" id="app-logo-wrap" style="background:transparent;padding:0;overflow:hidden;"> <img id="app-logo-img" src="" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:8px;display:none;"> <div id="app-logo-default" style="width:36px;height:36px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1" y="10" width="4" height="11" rx="1" fill="white" opacity="0.9"/><rect x="7" y="6" width="4" height="15" rx="1" fill="white" opacity="0.9"/><rect x="13" y="2" width="4" height="19" rx="1" fill="white" opacity="0.9"/><path d="M2 8 L9 4 L15 1" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/></svg></div> </div> <div> <span>ZeQui</span> <small>Zenith Quality Accounting System</small> </div> </div> <div id="sidebar-nav"> <div class="nav-group-label">Utama</div> <div class="nav-item" onclick="navigate('dashboard')">Dashboard</div> <div class="nav-item" onclick="navigate('companies')">Perusahaan</div> <div class="nav-item" onclick="navigate('coa')">Akun (CoA)</div> <div class="nav-group-label">Transaksi</div> <div class="nav-item" onclick="navigate('transactions')">Transaksi</div> <div class="nav-item" onclick="navigate('jurnal')">Jurnal Umum</div> <div class="nav-item" onclick="navigate('buku-besar')">Buku Besar</div> <div class="nav-item" onclick="navigate('neraca-saldo')">Neraca Saldo</div> <div class="nav-item" onclick="navigate('penyesuaian')">Jurnal Penyesuaian</div> <div class="nav-item" onclick="navigate('ns-penyesuaian')">NS Penyesuaian</div> <div class="nav-group-label">Aset &amp; Kewajiban</div> <div class="nav-item" onclick="navigate('hutang')">Hutang (AP)</div> <div class="nav-item" onclick="navigate('piutang')">Piutang (AR)</div> <div class="nav-item" onclick="navigate('persediaan')">Persediaan</div> <div class="nav-item" onclick="navigate('perlengkapan')">Perlengkapan</div> <div class="nav-item" onclick="navigate('aset-tetap')">Aset Tetap</div> <div class="nav-group-label">Laporan</div> <div class="nav-item" onclick="navigate('laba-rugi')" id="nav-laba-rugi"><span id="nav-label-laba-rugi">Laba Rugi</span></div> <div class="nav-item active" onclick="navigate('neraca')" id="nav-neraca"><span id="nav-label-neraca">Posisi Keuangan</span></div> <div class="nav-item" onclick="navigate('perubahan-ekuitas')" id="nav-ekuitas"><span id="nav-label-ekuitas">Perubahan Ekuitas</span></div> <div class="nav-item" onclick="navigate('arus-kas')" id="nav-arus-kas"><span id="nav-label-arus-kas">Arus Kas</span></div> <div class="nav-item" onclick="navigate('lra')" id="nav-lra" style="display:none;">Realisasi Anggaran (LRA)</div> <div class="nav-item" onclick="navigate('lsal')" id="nav-lsal" style="display:none;">Saldo Anggaran Lebih (LSAL)</div> <div class="nav-item" onclick="navigate('shu')" id="nav-shu" style="display:none;">Laporan SHU</div> <div class="nav-item" onclick="navigate('lpd')" id="nav-lpd" style="display:none;">Perubahan Dana</div> <div class="nav-item" onclick="navigate('pak')" id="nav-pak" style="display:none;">Aset Kelolaan</div> <div class="nav-item" onclick="navigate('jurnal-penutup')">Jurnal Penutup</div> <div class="nav-group-label">Alat Bantu</div> <div class="nav-item" onclick="navigate('rekonsiliasi')">Rekonsiliasi Bank</div> <div class="nav-item" onclick="navigate('template-transaksi')">Template Berulang</div> <div class="nav-item" onclick="navigate('laporan-pajak')">Laporan Pajak</div> <div class="nav-group-label">Sistem</div> <div class="nav-item" onclick="navigate('komparasi')">Komparasi Multi-Tahun</div> <div class="nav-item" onclick="navigate('settings')">Pengaturan</div> </div> <div id="sidebar-footer"> <button class="save-btn-main" onclick="saveToFile()">Backup File</button> </div>
 </nav> <!-- MAIN -->
@@ -10279,6 +10428,303 @@ function licSaveLocal(key, exp, name) {
  localStorage.setItem(LIC_KEY, licEncode(JSON.stringify(obj)));
 }
 
+// ============================================================
+// LOGIN SYSTEM — Username + PIN (Supabase-backed)
+// ============================================================
+
+const LOGIN_SESSION_KEY = '__zq_login_session__';
+const LOGIN_SESSION_TTL = 8 * 60 * 60 * 1000; // 8 jam
+
+// State login aktif
+let __currentUser = null; // { id, username, display_name, role }
+let __pinBuffer = '';
+let __selectedUserForPin = null;
+
+// Simpan sesi login lokal (berlaku 8 jam)
+function loginSaveSession(user, licKey) {
+ const session = {
+  user,
+  lic_key: licKey,
+  hwid: getHWID(),
+  login_at: Date.now(),
+  expires_at: Date.now() + LOGIN_SESSION_TTL
+ };
+ try { localStorage.setItem(LOGIN_SESSION_KEY, licEncode(JSON.stringify(session))); } catch(_) {}
+}
+
+// Cek sesi login yang masih aktif
+function loginCheckSession(licKey) {
+ try {
+  const raw = localStorage.getItem(LOGIN_SESSION_KEY);
+  if (!raw) return null;
+  const session = JSON.parse(licDecode(raw));
+  if (!session) return null;
+  // Validasi: HWID + key + belum expired
+  if (session.hwid !== getHWID()) return null;
+  if (session.lic_key !== licKey) return null;
+  if (Date.now() > session.expires_at) { localStorage.removeItem(LOGIN_SESSION_KEY); return null; }
+  return session.user;
+ } catch(_) { return null; }
+}
+
+// Hapus sesi login
+function loginClearSession() {
+ try { localStorage.removeItem(LOGIN_SESSION_KEY); } catch(_) {}
+}
+
+// Tampilkan step indicator
+function loginSetStep(step) {
+ const s1 = document.getElementById('step-dot-1');
+ const s2 = document.getElementById('step-dot-2');
+ if (step === 1) {
+  s1.className = 'lic-step active';
+  s2.className = 'lic-step';
+ } else {
+  s1.className = 'lic-step done';
+  s2.className = 'lic-step active';
+ }
+}
+
+// Tampilkan panel login (step 2) setelah lisensi valid
+async function loginShowPanel(licKey) {
+ // Sembunyikan panel lisensi, tampilkan panel login
+ document.getElementById('lic-panel-license').style.display = 'none';
+ document.getElementById('login-panel').classList.add('active');
+ loginSetStep(2);
+
+ // Tampilkan loading
+ const userList = document.getElementById('login-user-list');
+ userList.innerHTML = '<div style="text-align:center;padding:20px;color:rgba(148,163,184,.6);font-size:13px;">⏳ Memuat daftar pengguna...</div>';
+ document.getElementById('login-step-user').style.display = '';
+ document.getElementById('login-step-pin').style.display = 'none';
+
+ // Ambil daftar user dari server
+ try {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 8000);
+  const resp = await fetch(LIC_SERVER + '/api/users', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({ key: licKey, hwid: getHWID(), app: 'zequi-v1' }),
+   signal: ctrl.signal
+  });
+  clearTimeout(t);
+
+  if (!resp.ok) throw new Error('server_' + resp.status);
+  const data = await resp.json();
+
+  if (!data.users || data.users.length === 0) {
+   userList.innerHTML = '<div style="text-align:center;padding:20px;color:#f87171;font-size:13px;">⚠ Belum ada pengguna terdaftar di lisensi ini.<br><span style="font-size:11px;color:rgba(148,163,184,.5);">Hubungi admin untuk menambahkan pengguna.</span></div>';
+   return;
+  }
+
+  // Render daftar user sebagai tombol pilihan
+  userList.innerHTML = data.users.map(u => `
+   <button onclick="loginSelectUser(${JSON.stringify(u).replace(/"/g,'&quot;')})"
+    style="display:flex;align-items:center;gap:12px;padding:12px 14px;
+    background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);
+    border-radius:10px;color:#fff;cursor:pointer;transition:.2s;width:100%;text-align:left;
+    font-family:var(--font);"
+    onmouseover="this.style.background='rgba(37,99,235,.25)';this.style.borderColor='#3b82f6'"
+    onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.borderColor='rgba(255,255,255,.1)'">
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#06b6d4);
+     display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;">
+     ${(u.display_name||u.username||'?')[0].toUpperCase()}
+    </div>
+    <div>
+     <div style="font-weight:700;font-size:14px;">${u.display_name || u.username}</div>
+     <div style="font-size:11px;color:rgba(148,163,184,.6);">${u.role === 'admin' ? '👑 Admin' : '👤 Operator'} · @${u.username}</div>
+    </div>
+    <span style="margin-left:auto;font-size:16px;color:rgba(148,163,184,.3);">›</span>
+   </button>
+  `).join('');
+
+ } catch(e) {
+  // Coba session cache jika offline
+  const cachedSession = loginCheckSession(licKey);
+  if (cachedSession) {
+   // Sesi masih valid, langsung buka
+   loginComplete(cachedSession, licKey, true);
+   return;
+  }
+  userList.innerHTML = `<div style="text-align:center;padding:20px;color:#f87171;font-size:13px;">
+   ${e.name === 'AbortError' ? '⏱ Timeout' : '📡 Tidak bisa terhubung ke server'}.<br>
+   <span style="font-size:11px;color:rgba(148,163,184,.5);">Pastikan terhubung ke internet, lalu coba lagi.</span><br>
+   <button onclick="loginShowPanel('${licKey}')" style="margin-top:10px;background:rgba(37,99,235,.3);border:1px solid #3b82f6;border-radius:8px;color:#fff;padding:8px 16px;cursor:pointer;font-size:12px;font-family:var(--font);">Coba Lagi</button>
+  </div>`;
+ }
+}
+
+// Pilih user → tampilkan step PIN
+function loginSelectUser(user) {
+ __selectedUserForPin = user;
+ __pinBuffer = '';
+ updatePinDots();
+
+ // Isi info panel PIN
+ document.getElementById('login-pin-avatar').textContent = (user.display_name || user.username || '?')[0].toUpperCase();
+ document.getElementById('login-pin-name').textContent = user.display_name || user.username;
+ document.getElementById('login-pin-msg').textContent = '';
+
+ // Transition
+ document.getElementById('login-step-user').style.display = 'none';
+ document.getElementById('login-step-pin').style.display = '';
+}
+
+// Kembali ke pilih user
+function loginGoBackToUsers() {
+ __pinBuffer = '';
+ updatePinDots();
+ document.getElementById('login-step-pin').style.display = 'none';
+ document.getElementById('login-step-user').style.display = '';
+}
+
+// Kembali ke input lisensi
+function loginGoBackToLicense() {
+ document.getElementById('login-panel').classList.remove('active');
+ document.getElementById('lic-panel-license').style.display = '';
+ loginSetStep(1);
+ // Reset input lisensi
+ const btn = document.getElementById('lic-btn');
+ const inp = document.getElementById('lic-key-input');
+ if (btn) { btn.disabled = false; btn.textContent = '🔑 Aktivasi Sekarang'; }
+ if (inp) { inp.disabled = false; }
+ document.getElementById('lic-msg').textContent = '';
+}
+
+// Numpad PIN
+function pinInput(digit) {
+ if (__pinBuffer.length >= 6) return;
+ __pinBuffer += digit;
+ updatePinDots();
+ if (__pinBuffer.length === 6) {
+  setTimeout(loginVerifyPin, 200);
+ }
+}
+function pinBackspace() {
+ __pinBuffer = __pinBuffer.slice(0, -1);
+ updatePinDots();
+ document.getElementById('login-pin-msg').textContent = '';
+}
+function pinClear() {
+ __pinBuffer = '';
+ updatePinDots();
+ document.getElementById('login-pin-msg').textContent = '';
+}
+function updatePinDots() {
+ for (let i = 0; i < 6; i++) {
+  const dot = document.getElementById('pd' + i);
+  if (dot) dot.classList.toggle('filled', i < __pinBuffer.length);
+ }
+}
+
+// Verifikasi PIN ke server
+async function loginVerifyPin() {
+ const user = __selectedUserForPin;
+ const pin = __pinBuffer;
+ const lic = licCheckLocal();
+ if (!user || !lic) return;
+
+ const msgEl = document.getElementById('login-pin-msg');
+ msgEl.textContent = '⏳ Memverifikasi...';
+ msgEl.className = '';
+
+ // Disable tombol numpad sementara
+ document.querySelectorAll('.lic-pin-btn').forEach(b => b.disabled = true);
+
+ try {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 8000);
+  const resp = await fetch(LIC_SERVER + '/api/login', {
+   method: 'POST',
+   headers: { 'Content-Type': 'application/json' },
+   body: JSON.stringify({
+    key: lic.key,
+    username: user.username,
+    pin: pin,
+    hwid: getHWID(),
+    app: 'zequi-v1'
+   }),
+   signal: ctrl.signal
+  });
+  clearTimeout(t);
+
+  const data = await resp.json();
+  if (data.valid) {
+   msgEl.className = 'lic-ok';
+   msgEl.textContent = '✅ Login berhasil!';
+   const lic = licCheckLocal();
+   setTimeout(() => {
+    loginComplete(user, lic.key, false);
+    licUnlock(lic);
+   }, 600);
+  } else {
+   msgEl.className = 'lic-err';
+   msgEl.textContent = '❌ ' + (data.message || 'PIN salah. Coba lagi.');
+   __pinBuffer = '';
+   updatePinDots();
+   document.querySelectorAll('.lic-pin-btn').forEach(b => b.disabled = false);
+  }
+ } catch(e) {
+  msgEl.className = 'lic-err';
+  msgEl.textContent = e.name === 'AbortError'
+   ? '⏱ Timeout. Cek koneksi lalu coba lagi.'
+   : '📡 Gagal terhubung ke server.';
+  __pinBuffer = '';
+  updatePinDots();
+  document.querySelectorAll('.lic-pin-btn').forEach(b => b.disabled = false);
+ }
+}
+
+// Login berhasil — simpan sesi dan buka app
+function loginComplete(user, licKey, fromCache) {
+ __currentUser = user;
+ loginSaveSession(user, licKey);
+
+ // Tampilkan info user di info bar
+ const userInfoEl = document.getElementById('lic-info-user');
+ if (userInfoEl) {
+  userInfoEl.style.display = 'flex';
+  const mini = document.getElementById('lic-user-avatar-mini');
+  if (mini) mini.textContent = (user.display_name || user.username || '?')[0].toUpperCase();
+  const nameEl = document.getElementById('lic-info-username');
+  if (nameEl) nameEl.textContent = user.display_name || user.username;
+ }
+
+ if (fromCache) {
+  setTimeout(() => toast(`👤 Sesi dilanjutkan sebagai ${user.display_name || user.username}`, 'info', 3000), 1000);
+ }
+}
+
+// Konfirmasi logout
+function showLogoutConfirm() {
+ if (!confirm(`Logout dari akun "${__currentUser?.display_name || __currentUser?.username}"?\n\nData tersimpan di perangkat ini dan bisa diakses setelah login ulang.`)) return;
+ loginClearSession();
+ __currentUser = null;
+ __pinBuffer = '';
+ // Tampilkan kembali overlay di step login (lisensi sudah ada)
+ const lic = licCheckLocal();
+ const overlay = document.getElementById('license-overlay');
+ overlay.classList.remove('hidden');
+ if (lic) {
+  // Langsung ke step 2 (pilih user), lisensi masih valid
+  document.getElementById('lic-panel-license').style.display = 'none';
+  document.getElementById('login-panel').classList.add('active');
+  loginSetStep(2);
+  loginShowPanel(lic.key);
+ } else {
+  // Kembali ke step 1
+  document.getElementById('login-panel').classList.remove('active');
+  document.getElementById('lic-panel-license').style.display = '';
+  loginSetStep(1);
+ }
+ // Sembunyikan info user
+ const userInfoEl = document.getElementById('lic-info-user');
+ if (userInfoEl) userInfoEl.style.display = 'none';
+}
+
+// ============================================================
+
 // Tampilkan info bar lisensi 
 function licShowInfoBar(lic) {
  const bar = document.getElementById('lic-info-bar');
@@ -10336,13 +10782,14 @@ async function licActivate() {
  if (data.valid) {
  licSaveLocal(key, data.expires || null, data.name || '');
  msg.className = 'lic-ok';
- msg.textContent = ' ' + (data.message || 'Lisensi berhasil diaktivasi!');
+ msg.textContent = '✅ ' + (data.message || 'Lisensi valid! Silakan login.');
  __licenseVerified = true;
- setTimeout(function() { licUnlock(licCheckLocal()); }, 1200);
+ // Setelah lisensi valid → tampilkan panel login (bukan langsung unlock)
+ setTimeout(function() { loginShowPanel(key); }, 800);
  } else {
- msg.textContent = ' ' + (data.message || 'Kode lisensi tidak valid atau sudah digunakan.');
+ msg.textContent = '❌ ' + (data.message || 'Kode lisensi tidak valid atau sudah digunakan.');
  btn.disabled = false;
- btn.textContent = ' Aktivasi Sekarang';
+ btn.textContent = '🔑 Aktivasi Sekarang';
  }
  } else {
  clearTimeout(fetchTimeout);
@@ -10441,31 +10888,66 @@ async function licUnlock(lic) {
  if (resp.ok) {
  const data = await resp.json();
  if (data.valid) {
- // Lisensi masih valid di server — set flag lalu buka aplikasi
+ // Lisensi masih valid di server — set flag
  __licenseVerified = true;
- licUnlock(lic);
+ // Cek sesi login lokal
+ const cachedUser = loginCheckSession(lic.key);
+ if (cachedUser) {
+  // Sesi login masih valid — langsung buka app
+  licUnlock(lic);
+  loginComplete(cachedUser, lic.key, true);
+ } else {
+  // Perlu login ulang — tampilkan panel login
+  document.getElementById('lic-panel-license').style.display = 'none';
+  document.getElementById('login-panel').classList.add('active');
+  loginSetStep(2);
+  loginShowPanel(lic.key);
+ }
  } else {
  // Lisensi dicabut — hapus lokal, tampilkan pesan di overlay
  localStorage.removeItem(LIC_KEY);
- if (btn) { btn.disabled = false; btn.textContent = ' Aktivasi Sekarang'; }
+ if (btn) { btn.disabled = false; btn.textContent = '🔑 Aktivasi Sekarang'; }
  if (input) { input.disabled = false; input.value = ''; }
  if (msg) {
  msg.className = 'lic-err';
- msg.textContent = ' ' + (data.message || 'Lisensi tidak valid atau telah dicabut.');
+ msg.textContent = '❌ ' + (data.message || 'Lisensi tidak valid atau telah dicabut.');
  }
  }
  } else {
- // Server error (5xx) — buka offline, tandai untuk re-cek berikutnya
+ // Server error (5xx) — buka offline, cek sesi login
  __licenseVerified = true;
+ const cachedUser = loginCheckSession(lic.key);
  licUnlock(lic);
- setTimeout(()=>toast('Selisih: Verifikasi lisensi offline (server tidak tersedia). Fitur tetap berjalan normal.','info',5000), 1500);
+ if (cachedUser) {
+  loginComplete(cachedUser, lic.key, true);
+ } else {
+  // Server error tapi tidak ada sesi — tampilkan panel login
+  document.getElementById('license-overlay').classList.remove('hidden');
+  document.getElementById('lic-panel-license').style.display = 'none';
+  document.getElementById('login-panel').classList.add('active');
+  loginSetStep(2);
+  loginShowPanel(lic.key);
+ }
+ setTimeout(()=>toast('⚠ Verifikasi lisensi offline (server tidak tersedia). Fitur tetap berjalan normal.','info',5000), 1500);
  }
  } catch (e) {
- // Tidak ada internet — buka offline, data tersimpan lokal masih valid
+ // Tidak ada internet — cek sesi login lokal
  __licenseVerified = true;
- licUnlock(lic);
- if (e.name !== 'AbortError') {
- setTimeout(()=>toast(' Mode offline — lisensi diverifikasi dari cache lokal.','info',4000), 1500);
+ const cachedUser = loginCheckSession(lic.key);
+ if (cachedUser) {
+  // Ada sesi valid → buka langsung
+  licUnlock(lic);
+  loginComplete(cachedUser, lic.key, true);
+  if (e.name !== 'AbortError') {
+   setTimeout(()=>toast('📡 Mode offline — lisensi & sesi diverifikasi dari cache lokal.','info',4000), 1500);
+  }
+ } else {
+  // Tidak ada sesi → tampilkan panel login
+  document.getElementById('lic-panel-license').style.display = 'none';
+  document.getElementById('login-panel').classList.add('active');
+  loginSetStep(2);
+  loginShowPanel(lic.key);
+  setTimeout(()=>toast('📡 Mode offline — silakan login untuk melanjutkan.','info',4000), 500);
  }
  }
 })();
