@@ -510,6 +510,35 @@ select.form-control{cursor:pointer;}
         <label>Catatan</label>
         <input class="form-control" id="add-notes" placeholder="Opsional — misal: order #123">
       </div>
+
+      <!-- SECTION: User Login Pertama -->
+      <div style="border-top:1px solid var(--border);margin-top:4px;padding-top:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:.3px;">👤 USER LOGIN PERTAMA</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Buat akun login untuk pelanggan ini sekaligus. Bisa ditambah lagi nanti lewat tombol 👤 Login.</div>
+        <div class="form-grid">
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Username *</label>
+            <input class="form-control" id="add-lu-username" placeholder="misal: admin (huruf kecil)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')">
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Nama Tampilan</label>
+            <input class="form-control" id="add-lu-display" placeholder="misal: Budi Santoso">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group" style="margin-bottom:0;">
+            <label>PIN (6 digit) *</label>
+            <input class="form-control" id="add-lu-pin" type="password" maxlength="6" placeholder="••••••" oninput="this.value=this.value.replace(/\D/g,'')">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Role</label>
+            <select class="form-control" id="add-lu-role">
+              <option value="admin">Admin</option>
+              <option value="operator">Operator</option>
+            </select>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('modal-add-license')">Batal</button>
@@ -1129,12 +1158,23 @@ function openAddLicenseModal() {
   document.querySelectorAll('.device-opt').forEach(o => o.classList.remove('selected'));
   document.querySelector('.device-opt').classList.add('selected');
   document.getElementById('add-max-devices').value = 1;
+  document.getElementById('add-lu-username').value = '';
+  document.getElementById('add-lu-display').value  = '';
+  document.getElementById('add-lu-pin').value      = '';
+  document.getElementById('add-lu-role').value     = 'admin';
   openModal('modal-add-license');
 }
 
 async function addLicense() {
   const name = document.getElementById('add-name').value.trim();
   if (!name) { toast('Nama pelanggan wajib diisi', 'error'); return; }
+
+  // Validasi user pertama
+  const luUsername = document.getElementById('add-lu-username').value.trim();
+  const luPin      = document.getElementById('add-lu-pin').value.trim();
+  if (!luUsername) { toast('Username login pertama wajib diisi', 'error'); return; }
+  if (!/^\d{6}$/.test(luPin)) { toast('PIN login harus tepat 6 digit angka', 'error'); return; }
+
   const maxDevices = parseInt(document.getElementById('add-max-devices').value) || 1;
   const key = generateKey();
   const body = {
@@ -1149,13 +1189,36 @@ async function addLicense() {
     is_active:      true,
   };
   try {
+    // Step 1: Buat lisensi
     const r = await fetch(`${SERVER}/api/admin-router?action=create-license`, {
       method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
     });
     const data = await r.json();
     if (data.success || data.key) {
-      const devText = maxDevices >= 99 ? 'unlimited' : `${maxDevices} perangkat`;
-      toast(`✅ Lisensi dibuat! (${devText})`, 'success', 5000);
+      // Step 2: Tambah user login pertama
+      try {
+        const r2 = await fetch(`${SERVER}/api/admin-router?action=add-user`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            admin_key:    ADMIN_KEY,
+            license_key:  key,
+            username:     luUsername,
+            display_name: document.getElementById('add-lu-display').value.trim() || luUsername,
+            pin:          luPin,
+            role:         document.getElementById('add-lu-role').value,
+          }),
+        });
+        const d2 = await r2.json();
+        if (!d2.success) {
+          toast(`⚠️ Lisensi dibuat tapi user gagal ditambahkan: ${d2.error || ''}`, 'warning', 6000);
+        } else {
+          const devText = maxDevices >= 99 ? 'unlimited' : `${maxDevices} perangkat`;
+          toast(`✅ Lisensi + user "${luUsername}" berhasil dibuat! (${devText})`, 'success', 5000);
+        }
+      } catch(e) {
+        toast('⚠️ Lisensi dibuat tapi gagal tambah user. Tambah manual via tombol 👤 Login.', 'warning', 6000);
+      }
       closeModal('modal-add-license');
       document.getElementById('generated-key-val').textContent = key;
       document.getElementById('generated-key').style.display = 'block';
