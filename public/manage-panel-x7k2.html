@@ -545,6 +545,85 @@ select.form-control{cursor:pointer;}
   </div>
 </div>
 
+<!-- MODAL: KELOLA LOGIN USER PER LISENSI -->
+<div class="modal-overlay" id="modal-login-users">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">👤 Kelola Login User</div>
+        <div id="login-users-subtitle" style="font-size:11px;color:var(--text3);margin-top:2px;font-family:var(--mono);"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-login-users')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:16px 20px;">
+
+      <!-- Daftar user yang sudah ada -->
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;letter-spacing:.3px;">PENGGUNA TERDAFTAR</div>
+      <div id="login-users-list" style="margin-bottom:20px;min-height:48px;">
+        <div style="color:var(--text3);font-size:13px;">⏳ Memuat...</div>
+      </div>
+
+      <!-- Form tambah user baru -->
+      <div style="border-top:1px solid var(--border);padding-top:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:12px;letter-spacing:.3px;">➕ TAMBAH PENGGUNA BARU</div>
+        <div class="form-grid">
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Username *</label>
+            <input class="form-control" id="lu-username" placeholder="misal: budi (huruf kecil)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')">
+            <div class="form-hint">Huruf kecil, angka, underscore saja</div>
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Nama Tampilan</label>
+            <input class="form-control" id="lu-display-name" placeholder="misal: Budi Santoso">
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>PIN (6 digit) *</label>
+            <input class="form-control" id="lu-pin" type="password" maxlength="6" placeholder="••••••" oninput="this.value=this.value.replace(/\D/g,'')">
+            <div class="form-hint">Angka saja, tepat 6 digit</div>
+          </div>
+          <div class="form-group" style="margin-bottom:10px;">
+            <label>Role</label>
+            <select class="form-control" id="lu-role">
+              <option value="operator">Operator</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="addLoginUser()" style="width:100%;">➕ Tambah Pengguna</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: GANTI PIN -->
+<div class="modal-overlay" id="modal-change-pin">
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-header">
+      <div class="modal-title">🔑 Ganti PIN</div>
+      <button class="modal-close" onclick="closeModal('modal-change-pin')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+        Ganti PIN untuk: <strong id="change-pin-username-label"></strong>
+      </div>
+      <div class="form-group">
+        <label>PIN Baru (6 digit) *</label>
+        <input class="form-control" id="change-pin-new" type="password" maxlength="6" placeholder="••••••" oninput="this.value=this.value.replace(/\D/g,'')">
+      </div>
+      <div class="form-group">
+        <label>Konfirmasi PIN</label>
+        <input class="form-control" id="change-pin-confirm" type="password" maxlength="6" placeholder="••••••" oninput="this.value=this.value.replace(/\D/g,'')">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-change-pin')">Batal</button>
+      <button class="btn btn-primary" onclick="saveChangePin()">💾 Simpan PIN Baru</button>
+    </div>
+  </div>
+</div>
+
 <!-- ADMIN LOGIN OVERLAY -->
 <div id="admin-login" style="position:fixed;inset:0;background:rgba(15,33,64,.98);z-index:9999;display:flex;align-items:center;justify-content:center;">
   <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:40px;width:100%;max-width:380px;text-align:center;">
@@ -766,8 +845,9 @@ function renderUsers(users) {
       <td>${status}</td>
       <td style="${expStyle}">${expStr}</td>
       <td style="font-size:12px;color:var(--text3);">${lastSeen}</td>
-      <td style="display:flex;gap:6px;align-items:center;">
+      <td style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
         <button class="btn btn-secondary btn-sm" onclick='editUser(${JSON.stringify(u)})'>✏️ Edit</button>
+        <button class="btn btn-sm" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.3);color:#7c3aed;" onclick='openLoginUsersModal("${u.full_key || u.key}", "${(u.customer_name||'').replace(/"/g,"&quot;")}")'>👤 Login</button>
         <button class="btn btn-danger btn-sm" onclick='confirmDeleteUser("${u.full_key || u.key}", "${(u.customer_name||'').replace(/"/g,"&quot;")}")'>🗑️ Hapus</button>
       </td>
     </tr>`;
@@ -1130,6 +1210,157 @@ function toast(msg, type='info', dur=3000) {
   t.textContent = msg;
   c.appendChild(t);
   setTimeout(() => t.remove(), dur);
+}
+
+// ─── Kelola Login Users ───
+let __currentLicenseKey   = '';
+let __currentLicenseName  = '';
+let __changePinUsername   = '';
+
+async function openLoginUsersModal(licenseKey, customerName) {
+  __currentLicenseKey  = licenseKey;
+  __currentLicenseName = customerName;
+  document.getElementById('login-users-subtitle').textContent = licenseKey;
+  // Reset form tambah
+  document.getElementById('lu-username').value    = '';
+  document.getElementById('lu-display-name').value = '';
+  document.getElementById('lu-pin').value         = '';
+  document.getElementById('lu-role').value        = 'operator';
+  openModal('modal-login-users');
+  await loadLoginUsers();
+}
+
+async function loadLoginUsers() {
+  const listEl = document.getElementById('login-users-list');
+  listEl.innerHTML = '<div style="color:var(--text3);font-size:13px;">⏳ Memuat...</div>';
+  try {
+    const r = await fetch(`${SERVER}/api/admin-router?action=list-license-users&license_key=${encodeURIComponent(__currentLicenseKey)}&admin_key=${encodeURIComponent(ADMIN_KEY)}`);
+    const data = await r.json();
+    const users = data.users || [];
+    if (!users.length) {
+      listEl.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:12px 0;">Belum ada pengguna login. Tambahkan di bawah.</div>';
+      return;
+    }
+    listEl.innerHTML = users.map(u => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:var(--bg);">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#06b6d4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;flex-shrink:0;">
+            ${(u.display_name||u.username||'?')[0].toUpperCase()}
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:13px;">${u.display_name || u.username}</div>
+            <div style="font-size:11px;color:var(--text3);">@${u.username} · ${u.role === 'admin' ? '👑 Admin' : '👤 Operator'}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-secondary btn-sm" onclick="openChangePinModal('${u.username}', '${(u.display_name||u.username).replace(/'/g,"\\'")}')">🔑 PIN</button>
+          <button class="btn btn-danger btn-sm" onclick="deactivateLoginUser('${u.username}', '${(u.display_name||u.username).replace(/'/g,"\\'")}')">🚫</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    listEl.innerHTML = '<div style="color:#ef4444;font-size:13px;">❌ Gagal memuat data pengguna.</div>';
+  }
+}
+
+async function addLoginUser() {
+  const username    = document.getElementById('lu-username').value.trim();
+  const displayName = document.getElementById('lu-display-name').value.trim();
+  const pin         = document.getElementById('lu-pin').value.trim();
+  const role        = document.getElementById('lu-role').value;
+
+  if (!username) { toast('Username wajib diisi', 'error'); return; }
+  if (!/^\d{6}$/.test(pin)) { toast('PIN harus tepat 6 digit angka', 'error'); return; }
+
+  try {
+    const r = await fetch(`${SERVER}/api/admin-router?action=add-user`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        admin_key:    ADMIN_KEY,
+        license_key:  __currentLicenseKey,
+        username,
+        display_name: displayName || username,
+        pin,
+        role,
+      }),
+    });
+    const data = await r.json();
+    if (data.success) {
+      toast(`✅ Pengguna "${username}" berhasil ditambahkan!`, 'success');
+      document.getElementById('lu-username').value    = '';
+      document.getElementById('lu-display-name').value = '';
+      document.getElementById('lu-pin').value         = '';
+      document.getElementById('lu-role').value        = 'operator';
+      await loadLoginUsers();
+    } else {
+      toast('❌ ' + (data.error || 'Gagal menambahkan pengguna'), 'error');
+    }
+  } catch(e) {
+    toast('❌ Gagal terhubung ke server', 'error');
+  }
+}
+
+function openChangePinModal(username, displayName) {
+  __changePinUsername = username;
+  document.getElementById('change-pin-username-label').textContent = displayName || username;
+  document.getElementById('change-pin-new').value    = '';
+  document.getElementById('change-pin-confirm').value = '';
+  openModal('modal-change-pin');
+}
+
+async function saveChangePin() {
+  const newPin     = document.getElementById('change-pin-new').value.trim();
+  const confirmPin = document.getElementById('change-pin-confirm').value.trim();
+
+  if (!/^\d{6}$/.test(newPin)) { toast('PIN harus tepat 6 digit angka', 'error'); return; }
+  if (newPin !== confirmPin)    { toast('Konfirmasi PIN tidak cocok', 'error'); return; }
+
+  try {
+    const r = await fetch(`${SERVER}/api/admin-router?action=change-pin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        admin_key:   ADMIN_KEY,
+        license_key: __currentLicenseKey,
+        username:    __changePinUsername,
+        new_pin:     newPin,
+      }),
+    });
+    const data = await r.json();
+    if (data.success) {
+      toast(`✅ PIN untuk "${__changePinUsername}" berhasil diubah`, 'success');
+      closeModal('modal-change-pin');
+    } else {
+      toast('❌ ' + (data.error || 'Gagal ganti PIN'), 'error');
+    }
+  } catch(e) {
+    toast('❌ Gagal terhubung ke server', 'error');
+  }
+}
+
+async function deactivateLoginUser(username, displayName) {
+  if (!confirm(`Nonaktifkan pengguna "${displayName}"?\n\nUser ini tidak akan bisa login lagi.`)) return;
+  try {
+    const r = await fetch(`${SERVER}/api/admin-router?action=deactivate-user`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        admin_key:   ADMIN_KEY,
+        license_key: __currentLicenseKey,
+        username,
+      }),
+    });
+    const data = await r.json();
+    if (data.success) {
+      toast(`✅ Pengguna "${username}" dinonaktifkan`, 'success');
+      await loadLoginUsers();
+    } else {
+      toast('❌ ' + (data.error || 'Gagal nonaktifkan'), 'error');
+    }
+  } catch(e) {
+    toast('❌ Gagal terhubung ke server', 'error');
+  }
 }
 
 if (savedKey) init();
