@@ -11640,13 +11640,20 @@ function applyPlanRestrictions() {
  const cfg = __planConfig;
  if (!cfg) return;
 
- // 1. Badge paket di info bar
+ // 1. Badge paket di top bar
  const planInfo = PLAN_LABELS[cfg.plan] || PLAN_LABELS.trial;
  const planBadge = document.getElementById('plan-badge');
  if (planBadge) {
  planBadge.textContent = planInfo.label;
  planBadge.style.color = planInfo.color;
  planBadge.style.background = planInfo.bg;
+ }
+
+ // [FIX] Sinkronkan label paket di bottom bar (lic-info-bar) agar selalu sesuai top bar
+ const licInfoPlan = document.getElementById('lic-info-plan');
+ if (licInfoPlan) {
+ licInfoPlan.textContent = planInfo.label;
+ licInfoPlan.style.color = planInfo.color;
  }
 
  // 2. Expired banner
@@ -12183,6 +12190,14 @@ function licShowInfoBar(lic) {
  const bar = document.getElementById('lic-info-bar');
  if (!bar) return;
  bar.style.display = 'flex';
+ // [FIX] Sinkronkan label paket di bottom bar dengan paket aktif
+ const planInfoEl = document.getElementById('lic-info-plan');
+ if (planInfoEl) {
+ const planLabel = __planConfig?.plan_label || lic?.plan_label || lic?.plan || 'Trial';
+ const planInfo = PLAN_LABELS[(__planConfig?.plan || lic?.plan || 'trial')] || PLAN_LABELS.trial;
+ planInfoEl.textContent = planLabel;
+ planInfoEl.style.color = planInfo.color;
+ }
  document.getElementById('lic-info-key').textContent = lic.key.substring(0,5) + '-***-***-' + lic.key.slice(-5);
  const expEl = document.getElementById('lic-info-exp');
  if (lic.exp) {
