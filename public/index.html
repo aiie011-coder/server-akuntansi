@@ -570,7 +570,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
   />
   <div id="lic-msg" class="lic-err"></div>
   <button class="lic-btn" id="lic-btn" onclick="licActivate()">Aktivasi Sekarang</button>
-  <div class="lic-footer">Belum punya lisensi? Hubungi penjual untuk mendapatkan kode aktivasi.<br>
+  <div class="lic-footer">Belum punya lisensi? Hubungi pengembang untuk mendapatkan kode aktivasi.<br>
    <span style="font-family:monospace;">v1.0 — © 2026 ZeQui</span>
   </div>
  </div>
@@ -634,7 +634,8 @@ textarea.form-control { resize:vertical; min-height:80px; }
 </nav> <!-- MAIN -->
 <div id="main"> <!-- Mobile overlay for sidebar -->
 <div id="mobile-sidebar-overlay" onclick="closeMobileSidebar()"></div>
-<!-- HEADER --> <div id="header"> <div id="header-left"> <button id="mobile-menu-btn" onclick="toggleMobileSidebar()" style="display:none;background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--text2);font-size:20px;line-height:1;margin-right:4px;" aria-label="Menu"></button> <div id="company-switcher" onclick="openCompanySwitcher()"> <div> <div class="co-name" id="hdr-company-name">— Pilih Perusahaan —</div> <div class="co-period" id="hdr-company-period">2025-01-01 s/d 2025-12-31</div> </div> <span style="margin-left:auto; color:var(--text3);"></span> </div> </div> <div id="header-right"> <!-- Excel Dropdown --> <div style="position:relative;" id="excel-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('excel-dropdown')">Excel </button> <div id="excel-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Export ke Excel</div> <div class="dropdown-item" onclick="exportExcel('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="exportExcel('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="exportExcel('laba-rugi')"><span id="excel-label-laba-rugi">Laba Rugi</span></div> <div class="dropdown-item" onclick="exportExcel('neraca')"><span id="excel-label-neraca">Posisi Keuangan</span></div> <div class="dropdown-item" id="excel-item-lra" style="display:none;" onclick="exportExcel('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="excel-item-lsal" style="display:none;" onclick="exportExcel('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="excel-item-shu" style="display:none;" onclick="exportExcel('shu')">Lap. SHU (Koperasi)</div> <div class="dropdown-item" id="excel-item-lpd" style="display:none;" onclick="exportExcel('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="excel-item-pak" style="display:none;" onclick="exportExcel('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="exportExcel('hutang')">Hutang (AP)</div> <div class="dropdown-item" onclick="exportExcel('piutang')">Piutang (AR)</div> <div class="dropdown-item" onclick="exportExcel('persediaan')">Persediaan</div> <div class="dropdown-item" onclick="exportExcel('aset-tetap')">Aset Tetap</div> <div class="dropdown-item" onclick="exportExcel('buku-besar')">Buku Besar (Semua)</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="exportExcel('semua')" style="font-weight:700;color:var(--primary-light);">Export Semua (Multi-Sheet)</div> </div> </div> </div> <!-- Print Dropdown --> <div style="position:relative;" id="print-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('print-dropdown')">Print </button> <div id="print-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Cetak Laporan</div> <div class="dropdown-item" onclick="printReport('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="printReport('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="printReport('ns-penyesuaian')">NS Setelah Penyesuaian</div> <div class="dropdown-item" onclick="printReport('laba-rugi')"><span id="print-label-laba-rugi">Laporan Laba Rugi</span></div> <div class="dropdown-item" onclick="printReport('neraca')"><span id="print-label-neraca">Laporan Posisi Keuangan</span></div> <div class="dropdown-item" onclick="printReport('perubahan-ekuitas')"><span id="print-label-ekuitas">Perubahan Ekuitas</span></div> <div class="dropdown-item" onclick="printReport('arus-kas')"><span id="print-label-arus-kas">Arus Kas</span></div> <div class="dropdown-item" id="print-item-lra" style="display:none;" onclick="printReport('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="print-item-lsal" style="display:none;" onclick="printReport('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="print-item-shu" style="display:none;" onclick="printReport('shu')"><span id="print-label-shu">Lap. SHU (Koperasi)</span></div> <div class="dropdown-item" id="print-item-lpd" style="display:none;" onclick="printReport('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="print-item-pak" style="display:none;" onclick="printReport('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="printReport('jurnal-penutup')">Jurnal Penutup</div> <div class="dropdown-item" onclick="printBukuBesar()">Buku Besar</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="printReport('semua')" style="font-weight:700;color:var(--primary-light);">Cetak Semua Laporan</div> </div> </div> </div> <span id="save-indicator" style="font-size:11px;font-weight:600;color:#10b981;opacity:0;transition:opacity .5s;margin-right:4px;"></span> <button class="hdr-btn primary" onclick="saveToFile()">Backup File</button> </div> </div> <!-- CONTENT --> <div id="content"> <!-- DASHBOARD --> <div id="page-dashboard" class="page"> <div class="page-header"> <div><div class="page-title"> Dashboard</div><div class="page-subtitle" id="dash-subtitle">Pilih perusahaan untuk memulai</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="renderDashboard()" title="Refresh data dashboard"> Refresh</button> <button class="btn btn-secondary" onclick="printReport('dashboard')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua</button> </div> </div> <div class="stats-grid" id="dash-stats"> </div> <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;"> <div class="card"> <div class="card-header"><div class="card-title">Pendapatan vs Beban</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartRevenueExpense" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> <div class="card"> <div class="card-header"><div class="card-title">Distribusi Aset</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartAsset" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> </div> <div class="card"> <div class="card-header"><div class="card-title">Transaksi Terbaru</div></div> <div class="card-body" style="padding:0"><div class="table-wrap"><table id="dash-recent-table"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="dash-recent-tbody"></tbody></table></div></div> </div> </div> <!-- COMPANIES --> <div id="page-companies" class="page"> <div class="page-header"> <div><div class="page-title">Perusahaan</div><div class="page-subtitle">Kelola data perusahaan Anda</div></div> <div class="page-actions"> <span id="co-limit-badge" style="font-size:12px;color:var(--text3);margin-right:8px;"></span> <button class="btn btn-primary" onclick="openCompanyModal()">Tambah Perusahaan</button> </div> </div> <div id="company-cards" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div> </div> <!-- COA --> <div id="page-coa" class="page"> <div class="page-header"> <div><div class="page-title">Chart of Accounts</div><div class="page-subtitle">Daftar akun keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary btn-sm" onclick="loadDefaultCOA()">Muat CoA Default</button> <button class="btn btn-primary" onclick="resetCOAForm(); openModal('modal-coa')">Tambah Akun</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari akun..." oninput="filterTable('coa-tbody',this.value,[0,1,2])"></div> <select class="form-control" style="width:auto;padding:7px 12px;font-size:12px;" onchange="filterCoaType(this.value)"> <option value="">Semua Tipe</option> <option>Aset</option><option>Kewajiban</option><option>Ekuitas</option> <option>Pendapatan</option><option>Beban</option> </select> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('coa-tbody',0)">Kode ↕</th><th onclick="sortTable('coa-tbody',1)">Nama Akun ↕</th><th>Tipe</th><th>Saldo Normal</th><th>Header / Sub Header</th><th>Aksi</th></tr></thead><tbody id="coa-tbody"></tbody></table></div> </div> </div> <!-- TRANSACTIONS --> <div id="page-transactions" class="page"> <div class="page-header"> <div><div class="page-title">Transaksi</div><div class="page-subtitle">Input transaksi — jurnal dibuat otomatis</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openTransactionModal()">Transaksi Baru</button></div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari transaksi..." oninput="filterTable('trx-tbody',this.value,[1,2])"></div> <div style="display:flex;gap:8px;align-items:center;"> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-from"> <span style="font-size:12px;color:var(--text2);">s/d</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-to"> <button class="btn btn-secondary btn-sm" onclick="filterTrxDate()">Filter</button>
+<!-- HEADER --> <div id="header"> <div id="header-left"> <button id="mobile-menu-btn" onclick="toggleMobileSidebar()" style="display:none;background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--text2);font-size:20px;line-height:1;margin-right:4px;" aria-label="Menu"></button> <div id="company-switcher" onclick="openCompanySwitcher()"> <div> <div class="co-name" id="hdr-company-name">— Pilih Perusahaan —</div> <div class="co-period" id="hdr-company-period">2025-01-01 s/d 2025-12-31</div> </div> <span style="margin-left:auto; color:var(--text3);"></span> </div> </div> <div id="header-right"> <!-- Excel Dropdown --> <div style="position:relative;" id="excel-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('excel-dropdown')">Excel </button> <div id="excel-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Export ke Excel</div> <div class="dropdown-item" onclick="exportExcel('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="exportExcel('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="exportExcel('laba-rugi')"><span id="excel-label-laba-rugi">Laba Rugi</span></div> <div class="dropdown-item" onclick="exportExcel('neraca')"><span id="excel-label-neraca">Posisi Keuangan</span></div> <div class="dropdown-item" id="excel-item-lra" style="display:none;" onclick="exportExcel('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="excel-item-lsal" style="display:none;" onclick="exportExcel('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="excel-item-shu" style="display:none;" onclick="exportExcel('shu')">Lap. SHU (Koperasi)</div> <div class="dropdown-item" id="excel-item-lpd" style="display:none;" onclick="exportExcel('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="excel-item-pak" style="display:none;" onclick="exportExcel('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="exportExcel('hutang')">Hutang (AP)</div> <div class="dropdown-item" onclick="exportExcel('piutang')">Piutang (AR)</div> <div class="dropdown-item" onclick="exportExcel('persediaan')">Persediaan</div> <div class="dropdown-item" onclick="exportExcel('aset-tetap')">Aset Tetap</div> <div class="dropdown-item" onclick="exportExcel('buku-besar')">Buku Besar (Semua)</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="exportExcel('semua')" style="font-weight:700;color:var(--primary-light);">Export Semua (Multi-Sheet)</div> </div> </div> </div> <!-- Print Dropdown --> <div style="position:relative;" id="print-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('print-dropdown')">Print </button> <div id="print-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Cetak Laporan</div> <div class="dropdown-item" onclick="printReport('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="printReport('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="printReport('ns-penyesuaian')">NS Setelah Penyesuaian</div> <div class="dropdown-item" onclick="printReport('laba-rugi')"><span id="print-label-laba-rugi">Laporan Laba Rugi</span></div> <div class="dropdown-item" onclick="printReport('neraca')"><span id="print-label-neraca">Laporan Posisi Keuangan</span></div> <div class="dropdown-item" onclick="printReport('perubahan-ekuitas')"><span id="print-label-ekuitas">Perubahan Ekuitas</span></div> <div class="dropdown-item" onclick="printReport('arus-kas')"><span id="print-label-arus-kas">Arus Kas</span></div> <div class="dropdown-item" id="print-item-lra" style="display:none;" onclick="printReport('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="print-item-lsal" style="display:none;" onclick="printReport('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="print-item-shu" style="display:none;" onclick="printReport('shu')"><span id="print-label-shu">Lap. SHU (Koperasi)</span></div> <div class="dropdown-item" id="print-item-lpd" style="display:none;" onclick="printReport('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="print-item-pak" style="display:none;" onclick="printReport('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="printReport('jurnal-penutup')">Jurnal Penutup</div> <div class="dropdown-item" onclick="printBukuBesar()">Buku Besar</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="printReport('semua')" style="font-weight:700;color:var(--primary-light);">Cetak Semua Laporan</div> </div> </div> </div> <span id="save-indicator" style="font-size:11px;font-weight:600;color:#10b981;opacity:0;transition:opacity .5s;margin-right:4px;"></span> <button class="hdr-btn" onclick="openSyncModal()" title="Sinkronisasi data antar pengguna">🔄 Sinkron</button>
+ <button class="hdr-btn primary" onclick="saveToFile()">Backup File</button> </div> </div> <!-- CONTENT --> <div id="content"> <!-- DASHBOARD --> <div id="page-dashboard" class="page"> <div class="page-header"> <div><div class="page-title"> Dashboard</div><div class="page-subtitle" id="dash-subtitle">Pilih perusahaan untuk memulai</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="renderDashboard()" title="Refresh data dashboard"> Refresh</button> <button class="btn btn-secondary" onclick="printReport('dashboard')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua</button> </div> </div> <div class="stats-grid" id="dash-stats"> </div> <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;"> <div class="card"> <div class="card-header"><div class="card-title">Pendapatan vs Beban</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartRevenueExpense" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> <div class="card"> <div class="card-header"><div class="card-title">Distribusi Aset</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartAsset" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> </div> <div class="card"> <div class="card-header"><div class="card-title">Transaksi Terbaru</div></div> <div class="card-body" style="padding:0"><div class="table-wrap"><table id="dash-recent-table"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="dash-recent-tbody"></tbody></table></div></div> </div> </div> <!-- COMPANIES --> <div id="page-companies" class="page"> <div class="page-header"> <div><div class="page-title">Perusahaan</div><div class="page-subtitle">Kelola data perusahaan Anda</div></div> <div class="page-actions"> <span id="co-limit-badge" style="font-size:12px;color:var(--text3);margin-right:8px;"></span> <button class="btn btn-primary" onclick="openCompanyModal()">Tambah Perusahaan</button> </div> </div> <div id="company-cards" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div> </div> <!-- COA --> <div id="page-coa" class="page"> <div class="page-header"> <div><div class="page-title">Chart of Accounts</div><div class="page-subtitle">Daftar akun keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary btn-sm" onclick="loadDefaultCOA()">Muat CoA Default</button> <button class="btn btn-primary" onclick="resetCOAForm(); openModal('modal-coa')">Tambah Akun</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari akun..." oninput="filterTable('coa-tbody',this.value,[0,1,2])"></div> <select class="form-control" style="width:auto;padding:7px 12px;font-size:12px;" onchange="filterCoaType(this.value)"> <option value="">Semua Tipe</option> <option>Aset</option><option>Kewajiban</option><option>Ekuitas</option> <option>Pendapatan</option><option>Beban</option> </select> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('coa-tbody',0)">Kode ↕</th><th onclick="sortTable('coa-tbody',1)">Nama Akun ↕</th><th>Tipe</th><th>Saldo Normal</th><th>Header / Sub Header</th><th>Aksi</th></tr></thead><tbody id="coa-tbody"></tbody></table></div> </div> </div> <!-- TRANSACTIONS --> <div id="page-transactions" class="page"> <div class="page-header"> <div><div class="page-title">Transaksi</div><div class="page-subtitle">Input transaksi — jurnal dibuat otomatis</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openTransactionModal()">Transaksi Baru</button></div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari transaksi..." oninput="filterTable('trx-tbody',this.value,[1,2])"></div> <div style="display:flex;gap:8px;align-items:center;"> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-from"> <span style="font-size:12px;color:var(--text2);">s/d</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-to"> <button class="btn btn-secondary btn-sm" onclick="filterTrxDate()">Filter</button>
  <button class="btn btn-secondary btn-sm" onclick="document.getElementById('trx-from').value='';document.getElementById('trx-to').value='';renderTransactions();" title="Reset filter tanggal"> Reset</button> </div> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('trx-tbody',0)">Tanggal ↕</th><th>No. Jurnal</th><th onclick="sortTable('trx-tbody',2)">Keterangan ↕</th><th>Total Debit</th><th>Aksi</th></tr></thead><tbody id="trx-tbody"> </tbody></table></div> <div style="padding:12px 16px;display:flex;justify-content:flex-end;"><div id="trx-pagination" class="pagination"></div></div> </div> </div> <!-- JURNAL UMUM --> <div id="page-jurnal" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Umum</div><div class="page-subtitle">Detail debit-kredit setiap transaksi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('jurnal')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('jurnal')">Export</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari jurnal..." oninput="filterTable('jurnal-tbody',this.value,[0,2,3])"></div> </div> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Jurnal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jurnal-tbody"> </tbody></table></div> </div> </div> <!-- BUKU BESAR --> <div id="page-buku-besar" class="page"> <div class="page-header"> <div><div class="page-title">Buku Besar</div><div class="page-subtitle">Akumulasi per akun</div></div> </div> <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;"> <select class="form-control" style="max-width:300px;" id="bb-account-select" onchange="renderBukuBesar()"><option value="">— Pilih Akun —</option></select> <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;"> <input type="checkbox" id="bb-include-adj" checked onchange="renderBukuBesar()">Sertakan penyesuaian
  </label> <button class="btn btn-secondary btn-sm" onclick="renderBukuBesarSemua()">Tampilkan Semua Akun</button> <button class="btn btn-secondary btn-sm" onclick="printBukuBesar()">Cetak</button> <button class="btn btn-secondary btn-sm" onclick="exportBukuBesarExcel()">Export Excel</button> </div> <div id="bb-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih akun dari dropdown di atas atau klik "Tampilkan Semua Akun"</p></div> </div> </div> <!-- NERACA SALDO --> <div id="page-neraca-saldo" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo</div><div class="page-subtitle">Saldo akhir semua akun</div></div> </div> <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:12px;color:#92400e;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"> <span>ℹ <strong>Sebelum Penyesuaian</strong> — Neraca Saldo ini belum mencakup jurnal penyesuaian.</span> <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:600;"><input type="checkbox" id="ns-show-zero" onchange="renderNeracaSaldo()"> Tampilkan akun saldo nol</label>
  Lihat tab <strong>NS Setelah Penyesuaian</strong>untuk saldo yang sudah memperhitungkan penyesuaian akhir periode.
@@ -745,6 +746,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
  <div style="padding:10px 12px;background:rgba(16,185,129,.08);border-radius:8px;border-left:3px solid #10b981;font-size:11px;color:#065f46;line-height:1.6;">
  Data tersimpan otomatis di IndexedDB. Download backup file sebagai cadangan tambahan.
  </div>
+ <button class="btn btn-primary" onclick="openSyncModal()" style="background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;font-weight:700;">🔄 Sinkronisasi Data Multi-User</button>
  <button class="btn btn-primary" onclick="saveToFile()" style="background:linear-gradient(135deg,#2563eb,#06b6d4);border:none;font-weight:700;"> Download Backup File</button>
  <button class="btn btn-secondary" onclick="exportJSON()" style="font-weight:600;"> Export JSON (Backup)</button>
  <label class="btn btn-secondary" style="cursor:pointer;font-weight:600;text-align:center;"> Import JSON <input type="file" accept=".json" onchange="importJSON(this)" style="display:none"></label>
@@ -1201,7 +1203,238 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <div class="modal-overlay" id="modal-jual-persediaan"> <div class="modal" style="max-width:480px;"> <div class="modal-header"><div class="modal-title"> Jual Persediaan</div><button class="modal-close" onclick="closeModal('modal-jual-persediaan')"></button></div> <div class="modal-body"> <input type="hidden" id="jual-pers-id"> <!-- Info Barang --> <div id="jual-pers-info" style="padding:10px 14px;background:rgba(37,99,235,.07);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.7;"></div> <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;"> <div class="form-group"><label>Jumlah Dijual *</label><input class="form-control" type="number" id="jual-pers-qty" min="1" placeholder="1" oninput="updateJualPreview()"></div> <div class="form-group"><label>Harga Jual per Unit (Rp) *</label><input class="form-control" type="number" id="jual-pers-harga" min="0" oninput="updateJualPreview()"></div> <div class="form-group"><label>Tanggal Penjualan</label><input class="form-control" type="date" id="jual-pers-tanggal"></div> <div class="form-group"><label>Metode Penjualan</label> <select class="form-control" id="jual-pers-metode" onchange="updateJualPreview()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Piutang Usaha)</option> </select> </div> </div> <div class="form-group" style="margin-top:4px;"><label>Nama Pembeli</label><input class="form-control" id="jual-pers-pembeli" placeholder="Opsional"></div> <!-- HPP Preview Box --> <div id="jual-hpp-preview" style="margin-top:14px;padding:12px 14px;background:rgba(16,185,129,.07);border-radius:8px;border:1px solid rgba(16,185,129,.25);font-size:12px;display:none;"> <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--accent2);margin-bottom:8px;"> Simulasi Jurnal Otomatis</div> <div id="jual-hpp-jurnal" style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);"></div> <div id="jual-hpp-warning" style="margin-top:8px;font-size:11px;color:var(--warning);display:none;"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-jual-persediaan')">Batal</button> <button class="btn btn-success" onclick="processJualPersediaan()"> Jual & Catat Jurnal</button> </div> </div></div>
 <!-- MODAL RETUR PENJUALAN -->
 <div class="modal-overlay" id="modal-retur-penjualan"> <div class="modal" style="max-width:500px;"> <div class="modal-header"><div class="modal-title">Retur Penjualan</div><button class="modal-close" onclick="closeModal('modal-retur-penjualan')"></button></div> <div class="modal-body"> <input type="hidden" id="retur-pers-id"> <div id="retur-pers-info" style="padding:10px 14px;background:rgba(239,68,68,.07);border-radius:8px;border-left:4px solid var(--danger);font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.7;"></div> <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;"> <div class="form-group"><label>Jumlah Diretur *</label><input class="form-control" type="number" id="retur-qty" min="1" placeholder="1" oninput="updateReturPreview()"></div> <div class="form-group"><label>Harga Jual per Unit (Rp) *</label><input class="form-control" type="number" id="retur-harga-jual" min="0" placeholder="Harga saat penjualan" oninput="updateReturPreview()"></div> <div class="form-group"><label>Tanggal Retur</label><input class="form-control" type="date" id="retur-tanggal"></div> <div class="form-group"><label>Metode Pengembalian</label> <select class="form-control" id="retur-metode" onchange="updateReturPreview()"> <option value="tunai">Tunai (Kembalikan Kas/Bank)</option> <option value="piutang">Kurangi Piutang</option> </select> </div> </div> <div class="form-group" style="margin-top:4px;"><label>Nama Pembeli / Referensi</label><input class="form-control" id="retur-pembeli" placeholder="Nama pembeli atau no. invoice asal"></div> <div class="form-group"><label>Keterangan Retur</label><input class="form-control" id="retur-ket" placeholder="Alasan retur, kondisi barang, dll."></div> <div id="retur-preview-box" style="margin-top:14px;padding:12px 14px;background:rgba(239,68,68,.06);border-radius:8px;border:1px solid rgba(239,68,68,.2);font-size:12px;display:none;"> <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--danger);margin-bottom:8px;"> Simulasi Jurnal Retur</div> <div id="retur-jurnal-preview" style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-retur-penjualan')">Batal</button> <button class="btn btn-danger" onclick="processReturPenjualan()">Proses Retur & Catat Jurnal</button> </div> </div>
-</div> <!-- UPGRADE MODAL -->
+</div>
+
+<!-- MODAL BEBANKAN PERSEDIAAN -->
+<div class="modal-overlay" id="modal-bebankan-persediaan">
+ <div class="modal" style="max-width:500px;">
+  <div class="modal-header"><div class="modal-title">⬇ Bebankan Persediaan</div><button class="modal-close" onclick="closeModal('modal-bebankan-persediaan')"></button></div>
+  <div class="modal-body">
+   <input type="hidden" id="beban-pers-id">
+   <div style="padding:10px 14px;background:rgba(239,68,68,.07);border-radius:8px;border-left:4px solid var(--danger);font-size:12px;color:#991b1b;margin-bottom:14px;">
+    <strong>PSAK 14 — Persediaan:</strong> Gunakan fitur ini untuk mencatat persediaan yang dibebankan karena rusak, kadaluarsa, pemakaian internal, promosi, atau selisih stok. Stok fisik akan berkurang dan jurnal otomatis dicatat.
+   </div>
+   <div id="beban-pers-info" style="padding:10px 14px;background:rgba(37,99,235,.07);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.7;"></div>
+   <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+    <div class="form-group"><label>Jumlah Dibebankan *</label><input class="form-control" type="number" id="beban-pers-qty" min="1" placeholder="1" oninput="updateBebanPersPreview()"></div>
+    <div class="form-group"><label>Tanggal *</label><input class="form-control" type="date" id="beban-pers-tanggal"></div>
+    <div class="form-group" style="grid-column:1/-1;">
+     <label>Jenis Pembebanan *</label>
+     <select class="form-control" id="beban-pers-jenis" onchange="updateBebanPersPreview()">
+      <option value="rusak">Persediaan Rusak / Cacat</option>
+      <option value="kadaluarsa">Persediaan Kadaluarsa / Expired</option>
+      <option value="pemakaian">Pemakaian Internal / Operasional</option>
+      <option value="promosi">Sampel / Promosi / Donasi</option>
+      <option value="susut">Susut / Selisih Stok (Stock Opname)</option>
+      <option value="lainnya">Lainnya</option>
+     </select>
+    </div>
+    <div class="form-group" style="grid-column:1/-1;">
+     <label>Akun Beban <span style="font-size:11px;color:var(--text3);">(pilih dari CoA tipe Beban, atau kosongkan untuk otomatis)</span></label>
+     <select class="form-control" id="beban-pers-akun" onchange="updateBebanPersPreview()">
+      <option value="">— Otomatis sesuai jenis pembebanan —</option>
+     </select>
+    </div>
+    <div class="form-group" style="grid-column:1/-1;"><label>Keterangan</label><input class="form-control" id="beban-pers-ket" placeholder="Misal: Barang rusak saat pengiriman ke gudang..."></div>
+   </div>
+   <div id="beban-pers-preview" style="margin-top:14px;padding:12px 14px;background:rgba(239,68,68,.06);border-radius:8px;border:1px solid rgba(239,68,68,.2);font-size:12px;display:none;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--danger);margin-bottom:8px;">Rekomendasi Jurnal</div>
+    <div id="beban-pers-jurnal" style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);"></div>
+    <div id="beban-pers-warning" style="margin-top:8px;font-size:11px;color:var(--warning);display:none;"></div>
+   </div>
+  </div>
+  <div class="modal-footer">
+   <button class="btn btn-secondary" onclick="closeModal('modal-bebankan-persediaan')">Batal</button>
+   <button class="btn btn-danger" onclick="processBebankanPersediaan()">⬇ Bebankan & Catat Jurnal</button>
+  </div>
+ </div>
+</div>
+
+<!-- MODAL JUAL ASET TETAP -->
+<div class="modal-overlay" id="modal-jual-aset">
+ <div class="modal" style="max-width:520px;">
+  <div class="modal-header"><div class="modal-title">Jual Aset Tetap</div><button class="modal-close" onclick="closeModal('modal-jual-aset')"></button></div>
+  <div class="modal-body">
+   <input type="hidden" id="jual-aset-id">
+   <div style="padding:10px 14px;background:rgba(37,99,235,.07);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:#1e3a5f;margin-bottom:14px;">
+    <strong>PSAK 16 — Pelepasan Aset Tetap:</strong> Aset dikeluarkan dari buku. Selisih harga jual vs nilai buku dicatat sebagai <em>Laba/Rugi Pelepasan Aset</em>.
+   </div>
+   <div id="jual-aset-info" style="padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:4px solid var(--accent);font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.8;"></div>
+   <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+    <div class="form-group"><label>Harga Jual (Rp) *</label><input class="form-control" type="number" id="jual-aset-harga" min="0" placeholder="0" oninput="updateJualAsetPreview()"></div>
+    <div class="form-group"><label>Tanggal Penjualan *</label><input class="form-control" type="date" id="jual-aset-tanggal"></div>
+    <div class="form-group">
+     <label>Metode Penerimaan</label>
+     <select class="form-control" id="jual-aset-metode" onchange="updateJualAsetPreview()">
+      <option value="tunai">Tunai (Kas/Bank)</option>
+      <option value="kredit">Kredit (Piutang)</option>
+     </select>
+    </div>
+    <div class="form-group"><label>Nama Pembeli</label><input class="form-control" id="jual-aset-pembeli" placeholder="Opsional"></div>
+    <div class="form-group" style="grid-column:1/-1;"><label>Keterangan</label><input class="form-control" id="jual-aset-ket" placeholder="Misal: Dijual kepada CV Maju karena upgrade..."></div>
+   </div>
+   <div id="jual-aset-preview" style="margin-top:14px;padding:12px 14px;background:rgba(16,185,129,.06);border-radius:8px;border:1px solid rgba(16,185,129,.25);font-size:12px;display:none;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--accent2);margin-bottom:8px;">Rekomendasi Jurnal Otomatis</div>
+    <div id="jual-aset-jurnal" style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);"></div>
+    <div id="jual-aset-warning" style="margin-top:8px;font-size:11px;color:var(--warning);display:none;"></div>
+   </div>
+  </div>
+  <div class="modal-footer">
+   <button class="btn btn-secondary" onclick="closeModal('modal-jual-aset')">Batal</button>
+   <button class="btn btn-success" onclick="processJualAset()">Jual & Catat Jurnal</button>
+  </div>
+ </div>
+</div>
+
+<!-- MODAL WRITE-OFF / HAPUS ASET TETAP -->
+<div class="modal-overlay" id="modal-hapus-aset">
+ <div class="modal" style="max-width:500px;">
+  <div class="modal-header"><div class="modal-title">Write-off Aset Tetap</div><button class="modal-close" onclick="closeModal('modal-hapus-aset')"></button></div>
+  <div class="modal-body">
+   <input type="hidden" id="hapus-aset-id">
+   <div style="padding:10px 14px;background:rgba(239,68,68,.07);border-radius:8px;border-left:4px solid var(--danger);font-size:12px;color:#991b1b;margin-bottom:14px;">
+    <strong>PSAK 16 — Penghentian Pengakuan:</strong> Aset dihapus dari buku karena rusak total, tidak layak pakai, atau dihibahkan. Nilai buku yang tersisa diakui sebagai <em>Rugi Penghapusan Aset</em>.
+   </div>
+   <div id="hapus-aset-info" style="padding:10px 14px;background:rgba(239,68,68,.06);border-radius:8px;border-left:4px solid var(--danger);font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.8;"></div>
+   <div class="form-grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+    <div class="form-group">
+     <label>Alasan Penghapusan</label>
+     <select class="form-control" id="hapus-aset-alasan">
+      <option value="rusak">Rusak Total / Tidak Layak Pakai</option>
+      <option value="hilang">Hilang / Dicuri</option>
+      <option value="hibah">Dihibahkan / Disumbangkan</option>
+      <option value="lainnya">Lainnya</option>
+     </select>
+    </div>
+    <div class="form-group"><label>Tanggal Penghapusan *</label><input class="form-control" type="date" id="hapus-aset-tanggal"></div>
+    <div class="form-group" style="grid-column:1/-1;"><label>Keterangan</label><input class="form-control" id="hapus-aset-ket" placeholder="Misal: Mesin terbakar — tidak bisa diperbaiki..."></div>
+   </div>
+   <div id="hapus-aset-preview" style="margin-top:14px;padding:12px 14px;background:rgba(239,68,68,.06);border-radius:8px;border:1px solid rgba(239,68,68,.2);font-size:12px;">
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--danger);margin-bottom:8px;">Rekomendasi Jurnal Otomatis</div>
+    <div id="hapus-aset-jurnal" style="font-family:var(--mono);font-size:11px;line-height:2;color:var(--text2);"></div>
+    <div id="hapus-aset-warning" style="margin-top:8px;font-size:11px;color:var(--warning);display:none;"></div>
+   </div>
+  </div>
+  <div class="modal-footer">
+   <button class="btn btn-secondary" onclick="closeModal('modal-hapus-aset')">Batal</button>
+   <button class="btn btn-danger" onclick="processHapusAset()">Write-off & Catat Jurnal</button>
+  </div>
+ </div>
+</div>
+
+<!-- MODAL SINKRONISASI DATA -->
+<div class="modal-overlay" id="modal-sinkron">
+ <div class="modal" style="max-width:560px;">
+  <div class="modal-header">
+   <div class="modal-title">🔄 Sinkronisasi Data Multi-User</div>
+   <button class="modal-close" onclick="closeModal('modal-sinkron')"></button>
+  </div>
+  <div class="modal-body" style="padding:0;">
+
+   <!-- TAB NAVIGATION -->
+   <div style="display:flex;border-bottom:1px solid var(--border);background:var(--bg);">
+    <button id="stab-panduan" onclick="switchSyncTab('panduan')"
+     style="flex:1;padding:11px 8px;border:none;background:none;font-size:12px;font-weight:700;cursor:pointer;color:var(--primary-light);border-bottom:2px solid var(--primary-light);">
+     📖 Cara Pakai
+    </button>
+    <button id="stab-export" onclick="switchSyncTab('export')"
+     style="flex:1;padding:11px 8px;border:none;background:none;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;">
+     📤 Export Backup
+    </button>
+    <button id="stab-merge" onclick="switchSyncTab('merge')"
+     style="flex:1;padding:11px 8px;border:none;background:none;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;">
+     🔀 Merge Data
+    </button>
+   </div>
+
+   <!-- TAB: PANDUAN -->
+   <div id="stab-content-panduan" style="padding:20px;">
+    <div style="background:linear-gradient(135deg,rgba(37,99,235,.07),rgba(6,182,212,.05));border-radius:10px;padding:14px 16px;margin-bottom:16px;border:1px solid rgba(37,99,235,.15);">
+     <div style="font-size:13px;font-weight:800;color:var(--primary-light);margin-bottom:8px;">Cara Kerja Sinkronisasi</div>
+     <div style="font-size:12px;color:var(--text2);line-height:1.9;">
+      Aplikasi ini bekerja <strong>offline</strong> — data tersimpan di masing-masing komputer.<br>
+      Untuk berbagi data antar pengguna, gunakan file backup <strong>.zeqsync</strong>.
+     </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+     <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+      <div style="font-size:20px;flex-shrink:0;">1️⃣</div>
+      <div>
+       <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;">Sebelum mulai kerja</div>
+       <div style="font-size:11px;color:var(--text2);">Minta file <strong>.zeqsync</strong> terbaru dari rekan kerja → klik <strong>Merge Data</strong> → data Anda akan diperbarui</div>
+      </div>
+     </div>
+     <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+      <div style="font-size:20px;flex-shrink:0;">2️⃣</div>
+      <div>
+       <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px;">Setelah selesai kerja</div>
+       <div style="font-size:11px;color:var(--text2);">Klik <strong>Export Backup</strong> → kirim file <strong>.zeqsync</strong> ke rekan kerja via WhatsApp, email, atau Google Drive</div>
+      </div>
+     </div>
+     <div style="display:flex;gap:12px;align-items:flex-start;padding:12px;background:rgba(245,158,11,.06);border-radius:8px;border:1px solid rgba(245,158,11,.2);">
+      <div style="font-size:20px;flex-shrink:0;">⚠️</div>
+      <div>
+       <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:2px;">Penting diingat</div>
+       <div style="font-size:11px;color:#78350f;line-height:1.7;">
+        • Jika dua orang edit data yang <strong>sama persis</strong>, versi <strong>terbaru</strong> yang menang<br>
+        • Jika salah satu <strong>menghapus</strong> data, penghapusan akan diikuti sisi lain<br>
+        • Data <strong>baru</strong> dari keduanya selalu digabung otomatis
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+
+   <!-- TAB: EXPORT -->
+   <div id="stab-content-export" style="padding:20px;display:none;">
+    <div style="text-align:center;padding:10px 0 20px;">
+     <div style="font-size:48px;margin-bottom:12px;">📤</div>
+     <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px;">Export Backup Sinkronisasi</div>
+     <div style="font-size:12px;color:var(--text2);line-height:1.7;max-width:380px;margin:0 auto 20px;">
+      File <strong>.zeqsync</strong> berisi seluruh data Anda beserta informasi waktu perubahan.<br>
+      Kirim file ini ke rekan kerja untuk digabungkan (merge) dengan data mereka.
+     </div>
+     <div id="sync-export-info" style="padding:12px 16px;background:rgba(16,185,129,.07);border-radius:8px;border:1px solid rgba(16,185,129,.2);font-size:12px;color:#065f46;margin-bottom:20px;text-align:left;line-height:1.8;"></div>
+     <button onclick="exportSyncFile()" class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#2563eb,#06b6d4);border:none;">
+      📤 Download File Backup (.zeqsync)
+     </button>
+     <div style="margin-top:10px;font-size:11px;color:var(--text3);">File ini aman dibagikan — tidak berisi lisensi atau password</div>
+    </div>
+   </div>
+
+   <!-- TAB: MERGE -->
+   <div id="stab-content-merge" style="padding:20px;display:none;">
+    <div id="merge-step-1">
+     <div style="text-align:center;padding:10px 0 16px;">
+      <div style="font-size:48px;margin-bottom:12px;">🔀</div>
+      <div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px;">Merge Data dari Rekan</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:20px;">
+       Pilih file <strong>.zeqsync</strong> dari rekan kerja.<br>
+       Data baru akan digabungkan dengan data Anda secara otomatis.
+      </div>
+      <label class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;font-weight:700;cursor:pointer;display:block;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;">
+       📂 Pilih File .zeqsync
+       <input type="file" accept=".zeqsync,.json" onchange="loadSyncFile(this)" style="display:none">
+      </label>
+     </div>
+    </div>
+    <!-- Preview hasil merge (muncul setelah file dipilih) -->
+    <div id="merge-step-2" style="display:none;">
+     <div id="merge-preview" style="margin-bottom:16px;"></div>
+     <div style="display:flex;gap:8px;">
+      <button onclick="cancelMerge()" class="btn btn-secondary" style="flex:1;">Batal</button>
+      <button onclick="confirmMerge()" class="btn btn-primary" style="flex:1;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;font-weight:700;">
+       ✅ Konfirmasi Merge
+      </button>
+     </div>
+    </div>
+   </div>
+
+  </div>
+ </div>
+</div>
+
+<!-- UPGRADE MODAL -->
 <div class="modal-overlay" id="modal-upgrade"> <div class="modal" style="max-width:520px;"> <div class="modal-header"> <div class="modal-title">Upgrade Paket</div> <button class="modal-close" onclick="closeModal('modal-upgrade')"></button> </div> <div class="upgrade-modal-body"> <div class="upgrade-icon"></div> <div class="upgrade-title">Fitur Ini Memerlukan Upgrade</div> <div class="upgrade-desc"> <strong id="upgrade-modal-feature">Fitur Premium</strong>tidak tersedia di paket Anda saat ini.<br>Upgrade ke paket <strong id="upgrade-modal-plan">Pro</strong>untuk mengakses fitur ini dan banyak fitur lainnya.
  </div> <div class="current-plan-badge">Paket aktif Anda: <span id="upgrade-modal-current">Trial</span></div> <div class="upgrade-plans"> <div class="upgrade-plan-card"> <div class="plan-name" style="color:#3b82f6;">Starter</div> <div class="plan-price">Untuk UMKM &amp; pemula</div> <div class="plan-features"> 3 perusahaan<br>Export Excel<br>Print lengkap<br>Jurnal Penutup<br>Jurnal Pembalik
  </div> </div> <div class="upgrade-plan-card recommended"> <div class="plan-name">Pro </div> <div class="plan-price">Untuk bisnis berkembang</div> <div class="plan-features"> 10 perusahaan<br>Semua fitur Starter<br>Aset Tetap (2 metode)<br>Komparasi Multi-Tahun<br>Modul SAP (LRA/LSAL)
@@ -1393,6 +1626,90 @@ function migrateDB() {
  }
  // Pastikan _id_counter tidak lebih rendah dari ID tertinggi yang ada
  recalcIdCounter();
+ // Migrasi ID integer → UUID untuk data lama (sekali jalan)
+ _migrateIdsToUUID();
+ // Tambah _created_at/_updated_at ke record yang belum punya
+ _migrateTimestamps();
+}
+
+// Migrasi ID integer ke UUID — diperlukan agar merge antar device aman
+function _migrateIdsToUUID() {
+ if (DB._uuid_migrated) return; // sudah pernah dimigrasi
+ const needsMigration = rec => rec && rec.id && typeof rec.id === 'number';
+ const allArrays = ['companies','accounts','transactions','journal_entries','journal_details',
+  'penyesuaian','hutang','piutang','persediaan','retur_penjualan','perlengkapan',
+  'aset_tetap','penyusutan_log','audit_log','lra_data','templates','rekonsiliasi',
+  'integration_deltas','coa_headers','coa_subheaders'];
+ // Cek apakah masih ada ID integer
+ let hasIntId = false;
+ allArrays.forEach(k => {
+  if (Array.isArray(DB[k])) DB[k].forEach(r => { if (needsMigration(r)) hasIntId = true; });
+ });
+ if (!hasIntId) { DB._uuid_migrated = true; return; }
+
+ // Buat mapping: id_lama (int) → id_baru (uuid) per tabel
+ const maps = {};
+ allArrays.forEach(k => { maps[k] = {}; });
+
+ // Pass 1: generate UUID baru untuk setiap record
+ allArrays.forEach(k => {
+  if (!Array.isArray(DB[k])) return;
+  DB[k].forEach(r => {
+   if (needsMigration(r)) {
+    const newId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+     const rv = Math.random()*16|0;
+     return (c==='x' ? rv : (rv&0x3|0x8)).toString(16);
+    });
+    maps[k][r.id] = newId;
+    r.id = newId;
+   }
+  });
+ });
+
+ // Pass 2: update foreign keys yang merujuk ID lama
+ const remap = (val, mapName) => (maps[mapName] && maps[mapName][val]) ? maps[mapName][val] : val;
+ if (Array.isArray(DB.accounts)) DB.accounts.forEach(r => { r.company_id = remap(r.company_id,'companies'); });
+ if (Array.isArray(DB.transactions)) DB.transactions.forEach(r => { r.company_id = remap(r.company_id,'companies'); });
+ if (Array.isArray(DB.journal_entries)) DB.journal_entries.forEach(r => {
+  r.company_id = remap(r.company_id,'companies');
+  r.transaction_id = remap(r.transaction_id,'transactions');
+ });
+ if (Array.isArray(DB.journal_details)) DB.journal_details.forEach(r => {
+  r.journal_id = remap(r.journal_id,'journal_entries');
+  r.account_id = remap(r.account_id,'accounts');
+ });
+ ['penyesuaian','hutang','piutang','persediaan','retur_penjualan','perlengkapan','aset_tetap'].forEach(k => {
+  if (Array.isArray(DB[k])) DB[k].forEach(r => {
+   r.company_id = remap(r.company_id,'companies');
+   if (r.ref_journal_id) r.ref_journal_id = remap(r.ref_journal_id,'journal_entries');
+   if (r.account_id)     r.account_id     = remap(r.account_id,'accounts');
+  });
+ });
+ if (Array.isArray(DB.penyusutan_log)) DB.penyusutan_log.forEach(r => {
+  r.company_id = remap(r.company_id,'companies');
+  if (r.aset_id) r.aset_id = remap(r.aset_id,'aset_tetap');
+ });
+
+ // Update current_company_id
+ if (DB.current_company_id && maps.companies[DB.current_company_id])
+  DB.current_company_id = maps.companies[DB.current_company_id];
+
+ DB._uuid_migrated = true;
+ console.log('[ZeQui] ID migration selesai — semua ID kini UUID v4');
+}
+
+// Tambah _created_at dan _updated_at ke semua record yang belum punya
+function _migrateTimestamps() {
+ const now = new Date().toISOString();
+ const allArrays = ['companies','accounts','transactions','journal_entries','journal_details',
+  'penyesuaian','hutang','piutang','persediaan','retur_penjualan','perlengkapan','aset_tetap'];
+ allArrays.forEach(k => {
+  if (!Array.isArray(DB[k])) return;
+  DB[k].forEach(r => {
+   if (!r._created_at) r._created_at = now;
+   if (!r._updated_at) r._updated_at = now;
+  });
+ });
 }
 
 // AUDIT TRAIL: catat setiap operasi penting 
@@ -1486,8 +1803,14 @@ function escapeHtml(str) {
 }
 
 function genId() {
- return ++DB._id_counter;
+ // UUID v4 — aman untuk multi-user merge, tidak ada duplikasi lintas device
+ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+  const r = Math.random()*16|0;
+  return (c==='x' ? r : (r&0x3|0x8)).toString(16);
+ });
 }
+// Backward-compat: _id_counter tetap ada tapi tidak dipakai untuk ID baru
+function _genIdLegacy() { return ++DB._id_counter; }
 
 // [FITUR] Nomor jurnal sequential per perusahaan: JU-0001, JU-0002, dst
 // Format: JU-XXXX (bisa dikustomisasi prefix per perusahaan di masa depan)
@@ -1755,10 +2078,10 @@ function renderCompanies() {
  return;
  }
  c.innerHTML = DB.companies.map(co => `
- <div class="card" style="cursor:pointer;transition:.2s;${DB.current_company_id==co.id?'border-color:var(--primary-light);box-shadow:0 0 0 2px rgba(37,99,235,.15);':''}" onclick="selectCompany(${co.id})"> <div style="padding:20px;"> <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;"> <div style="font-size:32px;">${co.entity_mode==='nirlaba'?'':co.entity_mode==='koperasi'?'':co.entity_mode==='baznas'?'':''}</div> ${DB.current_company_id==co.id?'<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">AKTIF</span>':''}
+ <div class="card" style="cursor:pointer;transition:.2s;${DB.current_company_id==co.id?'border-color:var(--primary-light);box-shadow:0 0 0 2px rgba(37,99,235,.15);':''}" onclick="selectCompany('${co.id}')"> <div style="padding:20px;"> <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;"> <div style="font-size:32px;">${co.entity_mode==='nirlaba'?'':co.entity_mode==='koperasi'?'':co.entity_mode==='baznas'?'':''}</div> ${DB.current_company_id==co.id?'<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">AKTIF</span>':''}
  </div> <div style="font-weight:800;font-size:16px;margin-bottom:4px;">${co.name}</div> <div style="font-size:12px;color:var(--text2);">${co.standard} · ${co.type||'—'}</div>
  <div style="margin-top:4px;"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${co.entity_mode==='nirlaba'?'background:rgba(16,185,129,.12);color:#065f46;':co.entity_mode==='koperasi'?'background:rgba(245,158,11,.12);color:#92400e;':co.entity_mode==='baznas'?'background:rgba(22,163,74,.12);color:#15803d;':'background:rgba(37,99,235,.1);color:#1d4ed8;'}">${co.entity_mode==='nirlaba'?'Nirlaba (ISAK 35)':co.entity_mode==='koperasi'?'Koperasi (PSAK 27)':co.entity_mode==='baznas'?'BAZNAS/LAZ (PSAK 109)':'Komersial'}</span></div>
- <div style="font-size:11px;color:var(--text3);margin-top:4px;">${co.period_start||''} s/d ${co.period_end||''}</div> <div style="display:flex;gap:8px;margin-top:16px;"> <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();selectCompany(${co.id})">Buka</button> <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editCompany(${co.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCompany(${co.id})">Hapus</button> </div> </div> </div> `).join('');
+ <div style="font-size:11px;color:var(--text3);margin-top:4px;">${co.period_start||''} s/d ${co.period_end||''}</div> <div style="display:flex;gap:8px;margin-top:16px;"> <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();selectCompany('${co.id}')">Buka</button> <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editCompany('${co.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCompany('${co.id}')">Hapus</button> </div> </div> </div> `).join('');
  if (typeof applyRoleRestrictions === 'function') applyRoleRestrictions();
 }
 
@@ -1914,7 +2237,7 @@ function openCompanySwitcher() {
  c.innerHTML = '<p style="text-align:center;color:var(--text3);padding:20px;">Belum ada perusahaan.<br><a href="#" onclick="closeModal(\'modal-switcher\');openModal(\'modal-company\')">Buat sekarang</a></p>';
  } else {
  c.innerHTML = DB.companies.map(co=>`
- <div onclick="selectCompany(${co.id})" style="padding:12px 16px;border-radius:var(--radius2);border:1.5px solid ${DB.current_company_id==co.id?'var(--primary-light)':'var(--border)'};cursor:pointer;transition:.2s;background:${DB.current_company_id==co.id?'rgba(37,99,235,.05)':''};"> <div style="font-weight:700;font-size:14px;">${co.name}</div> <div style="font-size:12px;color:var(--text2);">${co.standard} · ${co.period_start||''} s/d ${co.period_end||''}</div> </div> `).join('');
+ <div onclick="selectCompany('${co.id}')" style="padding:12px 16px;border-radius:var(--radius2);border:1.5px solid ${DB.current_company_id==co.id?'var(--primary-light)':'var(--border)'};cursor:pointer;transition:.2s;background:${DB.current_company_id==co.id?'rgba(37,99,235,.05)':''};"> <div style="font-weight:700;font-size:14px;">${co.name}</div> <div style="font-size:12px;color:var(--text2);">${co.standard} · ${co.period_start||''} s/d ${co.period_end||''}</div> </div> `).join('');
  }
  openModal('modal-switcher');
 }
@@ -2121,7 +2444,7 @@ function renderCOA() {
  ? `<div style="font-size:12px;font-weight:600;color:var(--primary-light);">${hdr.name}</div>${sub?`<div style="font-size:10px;color:var(--text3);margin-top:1px;">↳ ${sub.name}</div>`:''}`
  : `<span style="color:var(--text3);font-size:12px;">—</span>`;
  return `
- <tr> <td class="td-mono">${a.code}</td> <td style="font-weight:600;">${a.name}</td> <td><span style="background:${typeColors[a.type]||'#f1f5f9'};color:${typeText[a.type]||'#334155'};padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;">${a.type}</span></td> <td style="font-size:12px;color:var(--text2);">${a.normal_balance}</td> <td>${groupCell}</td> <td> <button class="btn btn-secondary btn-sm" onclick="editCOA(${a.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteCOA(${a.id})">Hapus</button> </td> </tr> `}).join('');
+ <tr> <td class="td-mono">${a.code}</td> <td style="font-weight:600;">${a.name}</td> <td><span style="background:${typeColors[a.type]||'#f1f5f9'};color:${typeText[a.type]||'#334155'};padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;">${a.type}</span></td> <td style="font-size:12px;color:var(--text2);">${a.normal_balance}</td> <td>${groupCell}</td> <td> <button class="btn btn-secondary btn-sm" onclick="editCOA('${a.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteCOA('${a.id}')">Hapus</button> </td> </tr> `}).join('');
  if (typeof applyRoleRestrictions === 'function') applyRoleRestrictions();
 }
 
@@ -2435,7 +2758,7 @@ function renderCOAHeaderModal() {
  const hList = document.getElementById('coa-header-list');
  if (hList) {
  hList.innerHTML = headers.length ? headers.map(h=>`
- <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;"> <div> <span style="font-weight:600;">${h.name}</span> <span style="margin-left:8px;background:${typeColors[h.type]||'#f1f5f9'};color:${typeText[h.type]||'#334155'};padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;">${h.type}</span> </div> <button class="btn btn-danger btn-sm" onclick="deleteCOAHeader(${h.id})">Hapus</button> </div>`).join('')
+ <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;"> <div> <span style="font-weight:600;">${h.name}</span> <span style="margin-left:8px;background:${typeColors[h.type]||'#f1f5f9'};color:${typeText[h.type]||'#334155'};padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;">${h.type}</span> </div> <button class="btn btn-danger btn-sm" onclick="deleteCOAHeader('${h.id}')">Hapus</button> </div>`).join('')
  : '<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px;">Belum ada header</div>';
  }
 
@@ -2451,7 +2774,7 @@ function renderCOAHeaderModal() {
  const parent = headers.find(h=>h.id==s.header_id);
  return `
  <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;"> <div> <span style="font-weight:600;">${s.name}</span> ${parent?`<div style="font-size:10px;color:var(--text3);margin-top:2px;">↳ ${parent.name}</div>`:''}
- </div> <button class="btn btn-danger btn-sm" onclick="deleteCOASubHeader(${s.id})">Hapus</button> </div>`;
+ </div> <button class="btn btn-danger btn-sm" onclick="deleteCOASubHeader('${s.id}')">Hapus</button> </div>`;
  }).join('')
  : '<div style="padding:16px;text-align:center;color:var(--text3);font-size:13px;">Belum ada sub header</div>';
  }
@@ -3516,7 +3839,7 @@ function renderTransactions() {
  ? `<span style="display:inline-block;margin-left:6px;font-size:10px;padding:1px 6px;border-radius:20px;background:rgba(37,99,235,.1);color:var(--primary);font-weight:500;"> ${t.counterparty}</span>`
  : '';
  return `
- <tr data-date="${t.date}"> <td>${t.date}</td> <td class="td-mono" style="color:var(--text2);">${getJournalNo(DB.journal_entries.find(je=>je.transaction_id==t.id))}</td> <td style="font-weight:600;">${t.description}${cpTag}</td> <td class="td-mono">${fmtC(totD)}</td> <td> <button class="btn btn-secondary btn-sm" onclick="editTransaction(${t.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteTransaction(${t.id})">Hapus</button> </td> </tr> `;
+ <tr data-date="${t.date}"> <td>${t.date}</td> <td class="td-mono" style="color:var(--text2);">${getJournalNo(DB.journal_entries.find(je=>je.transaction_id==t.id))}</td> <td style="font-weight:600;">${t.description}${cpTag}</td> <td class="td-mono">${fmtC(totD)}</td> <td> <button class="btn btn-secondary btn-sm" onclick="editTransaction('${t.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteTransaction('${t.id}')">Hapus</button> </td> </tr> `;
  }).join('');
 }
 
@@ -3934,7 +4257,7 @@ function renderPenyesuaian() {
  tbody.innerHTML = pens.map(p=>{
  const da = DB.accounts.find(a=>a.id==p.debit_acc);
  const ka = DB.accounts.find(a=>a.id==p.kredit_acc);
- return `<tr> <td>${p.date}</td> <td style="font-weight:600;">${p.description}</td> <td>${da?da.name:'—'}</td> <td>${ka?ka.name:'—'}</td> <td class="td-mono">${fmtC(p.amount)}</td> <td> <button class="btn btn-secondary btn-sm" onclick="openPenyesuaianEdit(${p.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePenyesuaian(${p.id})">Hapus</button> </td> </tr>`;
+ return `<tr> <td>${p.date}</td> <td style="font-weight:600;">${p.description}</td> <td>${da?da.name:'—'}</td> <td>${ka?ka.name:'—'}</td> <td class="td-mono">${fmtC(p.amount)}</td> <td> <button class="btn btn-secondary btn-sm" onclick="openPenyesuaianEdit('${p.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePenyesuaian('${p.id}')">Hapus</button> </td> </tr>`;
  }).join('');
 }
 
@@ -4217,9 +4540,9 @@ function renderHutang() {
  <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${h.jatuh_tempo||'—'}${lewat?' ':dekat?' ⏰':''}</td>
  <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td>
  <td><span class="badge-status ${h.status=='Lunas'?'badge-lunas':h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td>
- <td><button class="btn btn-secondary btn-sm" onclick="openHutangEdit(${h.id})">Edit</button>
- ${h.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang',${h.id})">Bayar</button>`:''}
- <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang',${h.id})">Hapus</button></td>
+ <td><button class="btn btn-secondary btn-sm" onclick="openHutangEdit('${h.id}')">Edit</button>
+ ${h.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang','${h.id}')">Bayar</button>`:''}
+ <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang','${h.id}')">Hapus</button></td>
  </tr>`;
  }).join('');
 }
@@ -4377,9 +4700,9 @@ function renderPiutang() {
  <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${p.jatuh_tempo||'—'}${lewat?' ':dekat?' ⏰':''}</td>
  <td class="td-mono" style="font-weight:700;">${fmtC(p.sisa)}</td>
  <td><span class="badge-status ${p.status=='Lunas'?'badge-lunas':p.sisa<p.jumlah?'badge-partial':'badge-belum'}">${p.status}</span></td>
- <td><button class="btn btn-secondary btn-sm" onclick="openPiutangEdit(${p.id})">Edit</button>
- ${p.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang',${p.id})">Terima</button>`:''}
- <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang',${p.id})">Hapus</button></td>
+ <td><button class="btn btn-secondary btn-sm" onclick="openPiutangEdit('${p.id}')">Edit</button>
+ ${p.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang','${p.id}')">Terima</button>`:''}
+ <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang','${p.id}')">Hapus</button></td>
  </tr>`;
  }).join('');
 }
@@ -4677,7 +5000,7 @@ function renderPersediaan() {
  <div class="stat-card purple"><div class="stat-label">Beli Tunai</div><div class="stat-value">${tunai}</div><div class="stat-icon"></div></div>
  <div class="stat-card orange"><div class="stat-label">Beli Kredit</div><div class="stat-value">${kredit}</div><div class="stat-icon"></div></div>
  ${stokMenipis>0?`<div class="stat-card red"><div class="stat-label"> Stok Menipis</div><div class="stat-value">${stokMenipis} item</div><div class="stat-icon"></div></div>`:''}
- <div class="stat-card blue" style="cursor:pointer;border-top:3px solid #8b5cf6;" title="Ubah metode di Pengaturan Perusahaan" onclick="editCompany(${co()})"><div class="stat-label">Metode Penilaian</div><div class="stat-value" style="font-size:16px;">${(getCompany()?.metode_persediaan||'fifo').toUpperCase()}</div><div class="stat-sub">PSAK 14 — klik untuk ubah</div></div>
+ <div class="stat-card blue" style="cursor:pointer;border-top:3px solid #8b5cf6;" title="Ubah metode di Pengaturan Perusahaan" onclick="editCompany('${co()}')"><div class="stat-label">Metode Penilaian</div><div class="stat-value" style="font-size:16px;">${(getCompany()?.metode_persediaan||'fifo').toUpperCase()}</div><div class="stat-sub">PSAK 14 — klik untuk ubah</div></div>
  `;
 
  const tbody = document.getElementById('persediaan-tbody');
@@ -4708,11 +5031,12 @@ function renderPersediaan() {
  <td><span style="font-size:11px;color:${(p.stok_minimum||0)>0?'var(--text2)':'var(--text3)'};">${(p.stok_minimum||0)>0?p.stok_minimum+' unit':'—'}</span></td>
  <td><span class="badge-status ${p.metode==='kredit'?'badge-belum':'badge-lunas'}">${p.metode==='kredit'?'Kredit':'Tunai'}</span></td>
  <td>
- ${!needsQty?`<button class="btn btn-success btn-sm" onclick="openJualPersediaan(${p.id})" title="Catat penjualan">Jual</button>`:''}
- ${!needsQty?`<button class="btn btn-warning btn-sm" onclick="openReturPenjualan(${p.id})" title="Catat retur penjualan">Retur</button>`:''}
- ${!needsQty?`<button class="btn btn-sm" style="background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#7c3aed;font-size:11px;" onclick="openKonversiAset(${p.id})" title="Konversi persediaan menjadi aset tetap (PSAK 16)">→ Aset</button>`:''}
- <button class="btn ${needsQty?'btn-primary':'btn-secondary'} btn-sm" onclick="editPersediaan(${p.id})">${needsQty?'Isi Qty':'Edit'}</button>
- <button class="btn btn-danger btn-sm" onclick="deletePersediaan(${p.id})">Hapus</button>
+ ${!needsQty?`<button class="btn btn-success btn-sm" onclick="openJualPersediaan('${p.id}')" title="Catat penjualan">Jual</button>`:''}
+ ${!needsQty?`<button class="btn btn-warning btn-sm" onclick="openReturPenjualan('${p.id}')" title="Catat retur penjualan">Retur</button>`:''}
+ ${!needsQty?`<button class="btn btn-sm" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#dc2626;font-size:11px;" onclick="openBebankanPersediaan('${p.id}')" title="Bebankan persediaan (rusak/terpakai/susut)">⬇ Beban</button>`:''}
+ ${!needsQty?`<button class="btn btn-sm" style="background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#7c3aed;font-size:11px;" onclick="openKonversiAset('${p.id}')" title="Konversi persediaan menjadi aset tetap (PSAK 16)">→ Aset</button>`:''}
+ <button class="btn ${needsQty?'btn-primary':'btn-secondary'} btn-sm" onclick="editPersediaan('${p.id}')">${needsQty?'Isi Qty':'Edit'}</button>
+ <button class="btn btn-danger btn-sm" onclick="deletePersediaan('${p.id}')">Hapus</button>
  </td>
  </tr>`;
  }).join('');
@@ -5249,6 +5573,434 @@ function processReturPenjualan() {
 // 
 // LAPORAN HPP PER BARANG
 // 
+// ─── BEBANKAN PERSEDIAAN ──────────────────────────────────────────────────
+// Label default per jenis pembebanan
+const _bebanJenisLabel = {
+ rusak:     'Beban Kerugian Persediaan',
+ kadaluarsa:'Beban Kerugian Persediaan',
+ pemakaian: 'Beban Pemakaian Internal',
+ promosi:   'Beban Promosi / Sampel',
+ susut:     'Beban Susut Persediaan',
+ lainnya:   'Beban Lain-lain',
+};
+
+function openBebankanPersediaan(id) {
+ if (cekJurnalPenutupSudahPosting()) return;
+ const p = DB.persediaan.find(x => x.id == id);
+ if (!p) return;
+
+ document.getElementById('beban-pers-id').value = id;
+ document.getElementById('beban-pers-qty').value = '';
+ document.getElementById('beban-pers-qty').max = p.jumlah;
+ document.getElementById('beban-pers-tanggal').value = new Date().toISOString().split('T')[0];
+ document.getElementById('beban-pers-jenis').value = 'rusak';
+ document.getElementById('beban-pers-ket').value = '';
+ document.getElementById('beban-pers-preview').style.display = 'none';
+
+ // Isi dropdown akun beban dari CoA
+ const sel = document.getElementById('beban-pers-akun');
+ const akunBeban = coFilter(DB.accounts).filter(a => a.type === 'Beban');
+ sel.innerHTML = '<option value="">— Otomatis sesuai jenis pembebanan —</option>' +
+  akunBeban.map(a => `<option value="${a.id}">${a.code ? a.code+' — ' : ''}${a.name}</option>`).join('');
+
+ const totalStok = coFilter(DB.persediaan)
+  .filter(b => b.nama_barang === p.nama_barang)
+  .reduce((s, b) => s + (b.jumlah||0), 0);
+ const infoEl = document.getElementById('beban-pers-info');
+ if (infoEl) infoEl.innerHTML =
+  `<strong>${p.nama_barang}</strong> &nbsp;|&nbsp; Stok tersedia: <strong>${totalStok} unit</strong> &nbsp;|&nbsp; Nilai/unit: <strong>${fmtC(p.harga_satuan)}</strong>`;
+
+ openModal('modal-bebankan-persediaan');
+ updateBebanPersPreview();
+}
+
+function updateBebanPersPreview() {
+ const id  = parseInt(document.getElementById('beban-pers-id').value);
+ const qty = parseFloat(document.getElementById('beban-pers-qty').value)||0;
+ const p   = DB.persediaan.find(x => x.id == id);
+ const box = document.getElementById('beban-pers-preview');
+ const jurnalEl = document.getElementById('beban-pers-jurnal');
+ const warnEl   = document.getElementById('beban-pers-warning');
+ if (!p || !box) return;
+ if (!qty) { box.style.display = 'none'; return; }
+
+ const jenis   = document.getElementById('beban-pers-jenis').value;
+ const akunId  = document.getElementById('beban-pers-akun').value;
+ const accs    = coFilter(DB.accounts);
+
+ // Hitung nilai berdasarkan FIFO/average (sama seperti proses jual)
+ const metode = p.metode_penilaian || getCompany()?.metode_persediaan || 'fifo';
+ const batches = coFilter(DB.persediaan)
+  .filter(b => b.nama_barang === p.nama_barang && (b.jumlah||0) > 0)
+  .sort((a, b) => a.id - b.id);
+ let nilaiBeban = 0, sisa = qty;
+ if (metode === 'average') {
+  const totNilai = batches.reduce((s,b)=>s+(b.total_nilai||0),0);
+  const totQty   = batches.reduce((s,b)=>s+(b.jumlah||0),0);
+  nilaiBeban = totQty > 0 ? (totNilai/totQty)*qty : 0;
+ } else {
+  batches.forEach(b => {
+   if (sisa <= 0) return;
+   const ambil = Math.min(sisa, b.jumlah||0);
+   const hs = b.harga_satuan||0;
+   nilaiBeban += hs > 0 ? ambil*hs : (b.total_nilai||0)*(ambil/(b.jumlah||1));
+   sisa -= ambil;
+  });
+ }
+
+ // Tentukan akun beban
+ let bebanAcc = akunId ? accs.find(a => a.id == akunId) : null;
+ if (!bebanAcc) {
+  const label = (_bebanJenisLabel[jenis]||'Beban').toLowerCase();
+  bebanAcc = accs.find(a => a.type==='Beban' && a.name.toLowerCase().includes(label.split(' ')[1]||'beban'));
+ }
+ const persAcc = accs.find(a => a.type==='Aset' && a.name.toLowerCase().includes('persediaan'));
+
+ let html = '';
+ html += `<div style="color:var(--text3);font-size:10px;margin-bottom:6px;">Nilai persediaan (${metode.toUpperCase()}) = <strong>${fmtC(nilaiBeban)}</strong></div>`;
+ const ok1 = !!bebanAcc;
+ const ok2 = !!persAcc;
+ html += `<div style="display:flex;justify-content:space-between;${ok1?'':'opacity:.5'}">
+  <span>${ok1 ? bebanAcc.name : `[${_bebanJenisLabel[jenis]||'Akun Beban'}]`} &nbsp;<strong style="color:var(--danger)">(D)</strong></span>
+  <span style="color:var(--danger);">${fmtC(nilaiBeban)}</span></div>`;
+ html += `<div style="display:flex;justify-content:space-between;${ok2?'':'opacity:.5'}">
+  <span style="padding-left:16px;">${ok2 ? persAcc.name : '[Akun Persediaan]'} &nbsp;<strong style="color:var(--accent2)">(K)</strong></span>
+  <span style="color:var(--accent2);">${fmtC(nilaiBeban)}</span></div>`;
+
+ jurnalEl.innerHTML = html;
+ let warns = [];
+ if (!bebanAcc) warns.push(`Akun "${_bebanJenisLabel[jenis]}" tidak ditemukan di CoA — pilih manual dari dropdown atau tambahkan di CoA.`);
+ if (!persAcc)  warns.push('Akun Persediaan (tipe Aset) tidak ditemukan di CoA.');
+ warnEl.style.display = warns.length ? 'block' : 'none';
+ warnEl.innerHTML = warns.join('<br>');
+ box.style.display = 'block';
+}
+
+function processBebankanPersediaan() {
+ const id     = parseInt(document.getElementById('beban-pers-id').value);
+ const qty    = parseFloat(document.getElementById('beban-pers-qty').value)||0;
+ const tanggal= document.getElementById('beban-pers-tanggal').value || new Date().toISOString().split('T')[0];
+ const jenis  = document.getElementById('beban-pers-jenis').value;
+ const akunId = document.getElementById('beban-pers-akun').value;
+ const ket    = document.getElementById('beban-pers-ket').value.trim();
+ if (!qty) { toast('Jumlah harus diisi','error'); return; }
+
+ const p = DB.persediaan.find(x => x.id == id);
+ if (!p) return;
+
+ const batches = coFilter(DB.persediaan)
+  .filter(b => b.nama_barang === p.nama_barang && (b.jumlah||0) > 0)
+  .sort((a,b) => a.id - b.id);
+ const totalStok = batches.reduce((s,b) => s+(b.jumlah||0), 0);
+ if (qty > totalStok) { toast(`Stok tidak cukup — tersedia ${totalStok} unit`, 'error'); return; }
+
+ // Hitung nilai & kurangi stok (FIFO/average)
+ const metode = p.metode_penilaian || getCompany()?.metode_persediaan || 'fifo';
+ let nilaiBeban = 0, sisa = qty;
+ if (metode === 'average') {
+  const totNilai = batches.reduce((s,b)=>s+(b.total_nilai||0),0);
+  const totQty   = batches.reduce((s,b)=>s+(b.jumlah||0),0);
+  nilaiBeban = totQty > 0 ? (totNilai/totQty)*qty : 0;
+  batches.forEach(b => {
+   if (sisa <= 0) return;
+   const bIdx = DB.persediaan.findIndex(x => x.id === b.id);
+   const ambil = Math.min(sisa, DB.persediaan[bIdx].jumlah||0);
+   const proporsi = ambil / (DB.persediaan[bIdx].jumlah||1);
+   DB.persediaan[bIdx].total_nilai = Math.max(0, (DB.persediaan[bIdx].total_nilai||0)*(1-proporsi));
+   DB.persediaan[bIdx].jumlah -= ambil;
+   sisa -= ambil;
+  });
+ } else {
+  batches.forEach(b => {
+   if (sisa <= 0) return;
+   const bIdx = DB.persediaan.findIndex(x => x.id === b.id);
+   const ambil = Math.min(sisa, DB.persediaan[bIdx].jumlah||0);
+   const hs = DB.persediaan[bIdx].harga_satuan||0;
+   const nilaiAmbil = hs > 0 ? ambil*hs : (DB.persediaan[bIdx].total_nilai||0)*(ambil/(DB.persediaan[bIdx].jumlah||1));
+   nilaiBeban += nilaiAmbil;
+   DB.persediaan[bIdx].jumlah -= ambil;
+   DB.persediaan[bIdx].total_nilai = Math.max(0, (DB.persediaan[bIdx].total_nilai||0) - nilaiAmbil);
+   sisa -= ambil;
+  });
+ }
+
+ // Catat jurnal otomatis
+ const accs     = coFilter(DB.accounts);
+ let bebanAcc   = akunId ? accs.find(a => a.id == akunId) : null;
+ if (!bebanAcc) {
+  const label = (_bebanJenisLabel[jenis]||'Beban').toLowerCase();
+  bebanAcc = accs.find(a => a.type==='Beban' && a.name.toLowerCase().includes(label.split(' ')[1]||'beban'));
+ }
+ const persAcc  = accs.find(a => a.type==='Aset' && a.name.toLowerCase().includes('persediaan'));
+ const desc     = `${_bebanJenisLabel[jenis]||'Beban Persediaan'} — ${p.nama_barang} (${qty} unit)${ket ? ' — '+ket : ''}`;
+
+ if (bebanAcc && persAcc) {
+  const tid = genId(), jeid = genId();
+  DB.transactions.push({id:tid, company_id:co(), date:tanggal, description:desc, _source:'auto_module'});
+  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, _source:'auto_module'});
+  DB.journal_details.push({id:genId(), journal_id:jeid, account_id:bebanAcc.id, debit:nilaiBeban, kredit:0});
+  DB.journal_details.push({id:genId(), journal_id:jeid, account_id:persAcc.id,  debit:0, kredit:nilaiBeban});
+ } else {
+  toast(`⚠ Stok dikurangi tapi jurnal tidak otomatis — akun ${!bebanAcc?'"'+(_bebanJenisLabel[jenis]||'Beban')+'"':''} ${!persAcc?'Persediaan':''} tidak ditemukan di CoA`, 'warning', 6000);
+ }
+
+ autoSave();
+ closeModal('modal-bebankan-persediaan');
+ renderPersediaan();
+ const stokSisa = coFilter(DB.persediaan).filter(b=>b.nama_barang===p.nama_barang).reduce((s,b)=>s+(b.jumlah||0),0);
+ toast(`✅ ${qty} unit "${p.nama_barang}" dibebankan (${fmtC(nilaiBeban)}) | Stok sisa: ${stokSisa}${bebanAcc&&persAcc?' | Jurnal otomatis dicatat':' | Cek peringatan CoA'}`,
+  bebanAcc&&persAcc?'success':'warning', 6000);
+}
+
+// ─── JUAL ASET TETAP (PSAK 16) ───────────────────────────────────────────
+function openJualAset(id) {
+ if (cekJurnalPenutupSudahPosting()) return;
+ const a = DB.aset_tetap.find(x => x.id == id);
+ if (!a) return;
+ document.getElementById('jual-aset-id').value = id;
+ document.getElementById('jual-aset-harga').value = '';
+ document.getElementById('jual-aset-tanggal').value = new Date().toISOString().split('T')[0];
+ document.getElementById('jual-aset-metode').value = 'tunai';
+ document.getElementById('jual-aset-pembeli').value = '';
+ document.getElementById('jual-aset-ket').value = '';
+ document.getElementById('jual-aset-preview').style.display = 'none';
+
+ const nb = a.nilai_buku ?? a.harga_perolehan ?? 0;
+ const akum = a.akumulasi_penyusutan ?? 0;
+ document.getElementById('jual-aset-info').innerHTML =
+  `<strong>${a.nama_aset}</strong><br>
+   Harga Perolehan: <strong>${fmtC(a.harga_perolehan)}</strong> &nbsp;|&nbsp;
+   Akum. Penyusutan: <strong>${fmtC(akum)}</strong> &nbsp;|&nbsp;
+   <span style="color:var(--primary-light);font-weight:700;">Nilai Buku: ${fmtC(nb)}</span>`;
+
+ openModal('modal-jual-aset');
+ updateJualAsetPreview();
+}
+
+function updateJualAsetPreview() {
+ const id = parseInt(document.getElementById('jual-aset-id').value);
+ const a  = DB.aset_tetap.find(x => x.id == id);
+ const box = document.getElementById('jual-aset-preview');
+ if (!a || !box) return;
+ const hargaJual = parseFloat(document.getElementById('jual-aset-harga').value)||0;
+ if (!hargaJual) { box.style.display='none'; return; }
+
+ const metode  = document.getElementById('jual-aset-metode').value;
+ const nb      = a.nilai_buku ?? a.harga_perolehan ?? 0;
+ const akum    = a.akumulasi_penyusutan ?? 0;
+ const hp      = a.harga_perolehan ?? 0;
+ const selisih = hargaJual - nb;
+ const accs    = coFilter(DB.accounts);
+
+ const kasAcc   = accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank')));
+ const piuAcc   = accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('piutang'));
+ const asetAcc  = accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('aset tetap')||a.name.toLowerCase().includes('aktiva tetap')));
+ const akumAcc  = accs.find(a=>(a.type==='Aset'||a.type==='Kewajiban')&&a.name.toLowerCase().includes('akumulasi'));
+ const labaAcc  = accs.find(a=>a.type==='Pendapatan'&&(a.name.toLowerCase().includes('laba')||a.name.toLowerCase().includes('keuntungan')||a.name.toLowerCase().includes('pelepasan')));
+ const rugiAcc  = accs.find(a=>a.type==='Beban'&&(a.name.toLowerCase().includes('rugi')||a.name.toLowerCase().includes('pelepasan')||a.name.toLowerCase().includes('kerugian')));
+ const debitAcc = metode==='tunai' ? kasAcc : piuAcc;
+
+ const jurnalEl = document.getElementById('jual-aset-jurnal');
+ const warnEl   = document.getElementById('jual-aset-warning');
+ let html = '';
+
+ const fRow = (nama, debit, kredit, warn) =>
+  `<div style="display:flex;justify-content:space-between;${warn?'opacity:.5':''}">
+    <span>${warn?`[${nama}]`:nama} &nbsp;<strong style="color:${debit?'var(--danger)':'var(--accent2)'};">(${debit?'D':'K'})</strong></span>
+    <span style="color:${debit?'var(--danger)':'var(--accent2)'};">${fmtC(debit||kredit)}</span>
+   </div>`;
+
+ html += fRow(debitAcc?(debitAcc.name):(metode==='tunai'?'Kas/Bank':'Piutang'), hargaJual, 0, !debitAcc);
+ if (akum > 0) html += fRow(akumAcc?akumAcc.name:'Akum. Penyusutan', akum, 0, !akumAcc);
+ if (selisih < 0) html += fRow(rugiAcc?rugiAcc.name:'Rugi Pelepasan Aset', Math.abs(selisih), 0, !rugiAcc);
+ html += fRow(asetAcc?asetAcc.name:'Aset Tetap', 0, hp, !asetAcc);
+ if (selisih > 0) html += fRow(labaAcc?labaAcc.name:'Laba Pelepasan Aset', 0, selisih, !labaAcc);
+
+ html += `<div style="border-top:1px dashed var(--border);padding-top:6px;margin-top:4px;display:flex;justify-content:space-between;font-weight:700;">
+   <span>Laba / (Rugi) Pelepasan</span>
+   <span style="color:${selisih>=0?'var(--accent2)':'var(--danger)'};">${selisih<0?'(':'' }${fmtC(Math.abs(selisih))}${selisih<0?')':''}</span>
+  </div>`;
+
+ jurnalEl.innerHTML = html;
+
+ let warns = [];
+ if (!debitAcc) warns.push(`Akun ${metode==='tunai'?'Kas/Bank':'Piutang'} tidak ditemukan di CoA.`);
+ if (!asetAcc)  warns.push('Akun Aset Tetap tidak ditemukan di CoA.');
+ if (!akumAcc && akum > 0) warns.push('Akun Akumulasi Penyusutan tidak ditemukan di CoA.');
+ if (selisih > 0 && !labaAcc) warns.push('Akun Laba Pelepasan Aset tidak ditemukan — tambahkan akun tipe Pendapatan dengan kata "Laba" atau "Pelepasan".');
+ if (selisih < 0 && !rugiAcc) warns.push('Akun Rugi Pelepasan Aset tidak ditemukan — tambahkan akun tipe Beban dengan kata "Rugi" atau "Pelepasan".');
+ warnEl.style.display = warns.length ? 'block' : 'none';
+ warnEl.innerHTML = warns.join('<br>');
+ box.style.display = 'block';
+}
+
+function processJualAset() {
+ const id        = parseInt(document.getElementById('jual-aset-id').value);
+ const hargaJual = parseFloat(document.getElementById('jual-aset-harga').value)||0;
+ const tanggal   = document.getElementById('jual-aset-tanggal').value || new Date().toISOString().split('T')[0];
+ const metode    = document.getElementById('jual-aset-metode').value;
+ const pembeli   = document.getElementById('jual-aset-pembeli').value.trim()||'Pembeli';
+ const ket       = document.getElementById('jual-aset-ket').value.trim();
+ if (!hargaJual) { toast('Harga jual harus diisi','error'); return; }
+
+ const a = DB.aset_tetap.find(x => x.id == id);
+ if (!a) return;
+
+ const nb     = a.nilai_buku ?? a.harga_perolehan ?? 0;
+ const akum   = a.akumulasi_penyusutan ?? 0;
+ const hp     = a.harga_perolehan ?? 0;
+ const selisih= hargaJual - nb;
+ const accs   = coFilter(DB.accounts);
+
+ const kasAcc  = accs.find(x=>x.type==='Aset'&&(x.name.toLowerCase().includes('kas')||x.name.toLowerCase().includes('bank')));
+ const piuAcc  = accs.find(x=>x.type==='Aset'&&x.name.toLowerCase().includes('piutang'));
+ const asetAcc = accs.find(x=>x.type==='Aset'&&(x.name.toLowerCase().includes('aset tetap')||x.name.toLowerCase().includes('aktiva tetap')));
+ const akumAcc = accs.find(x=>(x.type==='Aset'||x.type==='Kewajiban')&&x.name.toLowerCase().includes('akumulasi'));
+ const labaAcc = accs.find(x=>x.type==='Pendapatan'&&(x.name.toLowerCase().includes('laba')||x.name.toLowerCase().includes('pelepasan')));
+ const rugiAcc = accs.find(x=>x.type==='Beban'&&(x.name.toLowerCase().includes('rugi')||x.name.toLowerCase().includes('pelepasan')||x.name.toLowerCase().includes('kerugian')));
+ const debitAcc= metode==='tunai' ? kasAcc : piuAcc;
+
+ const desc = `Pelepasan Aset — ${a.nama_aset} kpd ${pembeli}${ket?' — '+ket:''}`;
+
+ if (debitAcc && asetAcc) {
+  const tid = genId(), jeid = genId();
+  DB.transactions.push({id:tid, company_id:co(), date:tanggal, description:desc, _source:'auto_module'});
+  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, _source:'auto_module'});
+  // D: Kas/Piutang
+  DB.journal_details.push({id:genId(), journal_id:jeid, account_id:debitAcc.id, debit:hargaJual, kredit:0});
+  // D: Akumulasi Penyusutan
+  if (akumAcc && akum > 0)
+   DB.journal_details.push({id:genId(), journal_id:jeid, account_id:akumAcc.id, debit:akum, kredit:0});
+  // D: Rugi (jika rugi)
+  if (selisih < 0 && rugiAcc)
+   DB.journal_details.push({id:genId(), journal_id:jeid, account_id:rugiAcc.id, debit:Math.abs(selisih), kredit:0});
+  // K: Aset Tetap (harga perolehan)
+  DB.journal_details.push({id:genId(), journal_id:jeid, account_id:asetAcc.id, debit:0, kredit:hp});
+  // K: Laba (jika laba)
+  if (selisih > 0 && labaAcc)
+   DB.journal_details.push({id:genId(), journal_id:jeid, account_id:labaAcc.id, debit:0, kredit:selisih});
+
+  // Jika kredit, catat piutang
+  if (metode === 'kredit' && piuAcc)
+   DB.piutang.push({id:genId(), company_id:co(), nama_debitur:pembeli, jumlah:hargaJual,
+    tanggal, jatuh_tempo:'', sisa:hargaJual, status:'Belum Lunas', ref_journal_id:jeid});
+ }
+
+ // Hapus aset dari daftar (pelepasan = tidak diakui lagi)
+ if (a.ref_journal_id) {
+  const je = DB.journal_entries.find(e => e.id === a.ref_journal_id);
+  // Tidak hapus jurnal pembelian, hanya aset dari daftar
+ }
+ if (DB.penyusutan_log) DB.penyusutan_log = DB.penyusutan_log.filter(l => l.aset_id !== id);
+ DB.aset_tetap = DB.aset_tetap.filter(x => x.id != id);
+
+ autoSave();
+ closeModal('modal-jual-aset');
+ renderAsetTetap();
+ const labaRugiLabel = selisih >= 0 ? `Laba: ${fmtC(selisih)}` : `Rugi: (${fmtC(Math.abs(selisih))})`;
+ toast(`✅ Aset "${a.nama_aset}" dijual seharga ${fmtC(hargaJual)} | NB: ${fmtC(nb)} | ${labaRugiLabel}${debitAcc&&asetAcc?' | Jurnal otomatis dicatat':' | Cek CoA untuk akun yang hilang'}`,
+  'success', 7000);
+}
+
+// ─── WRITE-OFF / HAPUS ASET TETAP (PSAK 16) ─────────────────────────────
+function openHapusAset(id) {
+ if (cekJurnalPenutupSudahPosting()) return;
+ const a = DB.aset_tetap.find(x => x.id == id);
+ if (!a) return;
+ document.getElementById('hapus-aset-id').value = id;
+ document.getElementById('hapus-aset-alasan').value = 'rusak';
+ document.getElementById('hapus-aset-tanggal').value = new Date().toISOString().split('T')[0];
+ document.getElementById('hapus-aset-ket').value = '';
+
+ const nb   = a.nilai_buku ?? a.harga_perolehan ?? 0;
+ const akum = a.akumulasi_penyusutan ?? 0;
+ document.getElementById('hapus-aset-info').innerHTML =
+  `<strong>${a.nama_aset}</strong><br>
+   Harga Perolehan: <strong>${fmtC(a.harga_perolehan)}</strong> &nbsp;|&nbsp;
+   Akum. Penyusutan: <strong>${fmtC(akum)}</strong> &nbsp;|&nbsp;
+   <span style="color:var(--danger);font-weight:700;">Nilai Buku (akan dibebankan): ${fmtC(nb)}</span>`;
+
+ // Isi preview jurnal langsung
+ _updateHapusAsetPreview(a);
+ openModal('modal-hapus-aset');
+}
+
+function _updateHapusAsetPreview(a) {
+ const nb     = a.nilai_buku ?? a.harga_perolehan ?? 0;
+ const akum   = a.akumulasi_penyusutan ?? 0;
+ const hp     = a.harga_perolehan ?? 0;
+ const accs   = coFilter(DB.accounts);
+ const asetAcc= accs.find(x=>x.type==='Aset'&&(x.name.toLowerCase().includes('aset tetap')||x.name.toLowerCase().includes('aktiva tetap')));
+ const akumAcc= accs.find(x=>(x.type==='Aset'||x.type==='Kewajiban')&&x.name.toLowerCase().includes('akumulasi'));
+ const rugiAcc= accs.find(x=>x.type==='Beban'&&(x.name.toLowerCase().includes('rugi')||x.name.toLowerCase().includes('penghapusan')||x.name.toLowerCase().includes('kerugian')));
+
+ const jurnalEl = document.getElementById('hapus-aset-jurnal');
+ const warnEl   = document.getElementById('hapus-aset-warning');
+ let html = '';
+
+ const fRow = (nama, debit, kredit, warn) =>
+  `<div style="display:flex;justify-content:space-between;${warn?'opacity:.5':''}">
+    <span>${warn?`[${nama}]`:nama} &nbsp;<strong style="color:${debit?'var(--danger)':'var(--accent2)'};">(${debit?'D':'K'})</strong></span>
+    <span style="color:${debit?'var(--danger)':'var(--accent2)'};">${fmtC(debit||kredit)}</span>
+   </div>`;
+
+ if (akum > 0) html += fRow(akumAcc?akumAcc.name:'Akum. Penyusutan', akum, 0, !akumAcc);
+ if (nb > 0)   html += fRow(rugiAcc?rugiAcc.name:'Rugi Penghapusan Aset', nb, 0, !rugiAcc);
+ html += fRow(asetAcc?asetAcc.name:'Aset Tetap', 0, hp, !asetAcc);
+ html += `<div style="border-top:1px dashed var(--border);padding-top:6px;margin-top:4px;color:var(--text3);font-size:10px;">
+   Nilai buku sisa <strong>${fmtC(nb)}</strong> diakui sebagai Rugi Penghapusan Aset (beban periode berjalan).
+  </div>`;
+
+ jurnalEl.innerHTML = html;
+ let warns = [];
+ if (!asetAcc)            warns.push('Akun Aset Tetap tidak ditemukan di CoA.');
+ if (!akumAcc && akum>0)  warns.push('Akun Akumulasi Penyusutan tidak ditemukan di CoA.');
+ if (!rugiAcc && nb > 0)  warns.push('Akun Rugi Penghapusan Aset tidak ditemukan — tambahkan akun tipe Beban dengan kata "Rugi" atau "Penghapusan".');
+ warnEl.style.display = warns.length ? 'block' : 'none';
+ warnEl.innerHTML = warns.join('<br>');
+}
+
+function processHapusAset() {
+ const id     = parseInt(document.getElementById('hapus-aset-id').value);
+ const tanggal= document.getElementById('hapus-aset-tanggal').value || new Date().toISOString().split('T')[0];
+ const alasan = document.getElementById('hapus-aset-alasan').value;
+ const ket    = document.getElementById('hapus-aset-ket').value.trim();
+ const a = DB.aset_tetap.find(x => x.id == id);
+ if (!a) return;
+ if (!confirm(`Write-off aset "${a.nama_aset}"? Aset akan dihapus dari daftar dan jurnal penghapusan akan dicatat.`)) return;
+
+ const nb     = a.nilai_buku ?? a.harga_perolehan ?? 0;
+ const akum   = a.akumulasi_penyusutan ?? 0;
+ const hp     = a.harga_perolehan ?? 0;
+ const accs   = coFilter(DB.accounts);
+ const asetAcc= accs.find(x=>x.type==='Aset'&&(x.name.toLowerCase().includes('aset tetap')||x.name.toLowerCase().includes('aktiva tetap')));
+ const akumAcc= accs.find(x=>(x.type==='Aset'||x.type==='Kewajiban')&&x.name.toLowerCase().includes('akumulasi'));
+ const rugiAcc= accs.find(x=>x.type==='Beban'&&(x.name.toLowerCase().includes('rugi')||x.name.toLowerCase().includes('penghapusan')||x.name.toLowerCase().includes('kerugian')));
+
+ const alasanLabel = {rusak:'Rusak Total',hilang:'Hilang/Dicuri',hibah:'Dihibahkan',lainnya:'Penghapusan'}[alasan]||'Penghapusan';
+ const desc = `Write-off Aset — ${a.nama_aset} (${alasanLabel})${ket?' — '+ket:''}`;
+
+ if (asetAcc) {
+  const tid = genId(), jeid = genId();
+  DB.transactions.push({id:tid, company_id:co(), date:tanggal, description:desc, _source:'auto_module'});
+  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, _source:'auto_module'});
+  if (akumAcc && akum > 0)
+   DB.journal_details.push({id:genId(), journal_id:jeid, account_id:akumAcc.id, debit:akum, kredit:0});
+  if (rugiAcc && nb > 0)
+   DB.journal_details.push({id:genId(), journal_id:jeid, account_id:rugiAcc.id, debit:nb, kredit:0});
+  DB.journal_details.push({id:genId(), journal_id:jeid, account_id:asetAcc.id, debit:0, kredit:hp});
+ }
+
+ if (DB.penyusutan_log) DB.penyusutan_log = DB.penyusutan_log.filter(l => l.aset_id !== id);
+ DB.aset_tetap = DB.aset_tetap.filter(x => x.id != id);
+
+ autoSave();
+ closeModal('modal-hapus-aset');
+ renderAsetTetap();
+ toast(`✅ Aset "${a.nama_aset}" di-write off | Rugi penghapusan: ${fmtC(nb)}${asetAcc?' | Jurnal otomatis dicatat':' | Cek CoA untuk akun yang hilang'}`,
+  'success', 6000);
+}
+
 // ─── KONVERSI PERSEDIAAN → ASET TETAP (PSAK 16) ──────────────────────────
 function openKonversiAset(persId) {
  if (!requireAdmin('Konversi Persediaan ke Aset Tetap')) return;
@@ -5634,7 +6386,7 @@ function renderPerlengkapan() {
  const tbody = document.getElementById('perlengkapan-tbody');
  if (!ps.length) { tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada perlengkapan.</p></div></td></tr>`; return; }
  tbody.innerHTML = ps.map(p=>`
- <tr> <td style="font-weight:600;">${p.nama_item}</td> <td class="td-mono">${p.jumlah||0}</td> <td class="td-mono">${fmtC(p.nilai)}</td> <td>${p.tanggal||'—'}</td> <td><span class="badge-status ${p.metode==='kredit'?'badge-belum':'badge-lunas'}">${p.metode==='kredit'?'Kredit':'Tunai'}</span></td> <td> <button class="btn btn-warning btn-sm" onclick="openCatatPemakaian(${p.id})">Pakai</button> <button class="btn btn-secondary btn-sm" onclick="editPerlengkapan(${p.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePerlengkapan(${p.id})">Hapus</button> </td> </tr> `).join('');
+ <tr> <td style="font-weight:600;">${p.nama_item}</td> <td class="td-mono">${p.jumlah||0}</td> <td class="td-mono">${fmtC(p.nilai)}</td> <td>${p.tanggal||'—'}</td> <td><span class="badge-status ${p.metode==='kredit'?'badge-belum':'badge-lunas'}">${p.metode==='kredit'?'Kredit':'Tunai'}</span></td> <td> <button class="btn btn-warning btn-sm" onclick="openCatatPemakaian('${p.id}')">Pakai</button> <button class="btn btn-secondary btn-sm" onclick="editPerlengkapan('${p.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePerlengkapan('${p.id}')">Hapus</button> </td> </tr> `).join('');
 }
 
 function openPerlengkapanModal() {
@@ -5970,7 +6722,7 @@ function renderAsetTetap() {
  ? `<span class="badge-status" style="background:#fef3c7;color:#92400e;">Saldo Menurun${a.tarif_sm?` (${a.tarif_sm}%)`:''}</span>`
  : `<span class="badge-status" style="background:#dbeafe;color:#1e40af;">Garis Lurus</span>`;
  return `
- <tr> <td style="font-weight:600;">${a.nama_aset}</td> <td class="td-mono">${fmtC(a.harga_perolehan)}</td> <td>${a.tahun_perolehan||'—'}</td> <td>${a.masa_manfaat||'—'}</td> <td class="td-mono">${fmtC(a.akumulasi_penyusutan||0)}</td> <td class="td-mono" style="font-weight:700;">${fmtC(a.nilai_buku||a.harga_perolehan)}</td> <td class="td-mono">${fmtC(a.beban_penyusutan||0)}</td> <td class="td-mono">${isSM?(a.tarif_sm||'—')+'%':'—'}</td> <td>${a.tanggal||'—'}</td> <td>${metodeSusutLabel}</td> <td> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset(${a.id})" title="Lihat Jadwal Penyusutan">Jadwal</button> <button class="btn btn-secondary btn-sm" onclick="editAset(${a.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteAset(${a.id})">Hapus</button> </td> </tr>`;
+ <tr> <td style="font-weight:600;">${a.nama_aset}</td> <td class="td-mono">${fmtC(a.harga_perolehan)}</td> <td>${a.tahun_perolehan||'—'}</td> <td>${a.masa_manfaat||'—'}</td> <td class="td-mono">${fmtC(a.akumulasi_penyusutan||0)}</td> <td class="td-mono" style="font-weight:700;">${fmtC(a.nilai_buku||a.harga_perolehan)}</td> <td class="td-mono">${fmtC(a.beban_penyusutan||0)}</td> <td class="td-mono">${isSM?(a.tarif_sm||'—')+'%':'—'}</td> <td>${a.tanggal||'—'}</td> <td>${metodeSusutLabel}</td> <td> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset('${a.id}')" title="Lihat Jadwal Penyusutan">Jadwal</button> <button class="btn btn-success btn-sm" onclick="openJualAset('${a.id}')" title="Catat penjualan aset tetap">Jual</button> <button class="btn btn-sm" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#dc2626;font-size:11px;" onclick="openHapusAset('${a.id}')" title="Hapus/write-off aset tetap">Write-off</button> <button class="btn btn-secondary btn-sm" onclick="editAset('${a.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteAset('${a.id}')">Hapus</button> </td> </tr>`;
  }).join('');
 }
 
@@ -8679,6 +9431,279 @@ function saveToFile() {
 }
 
 // 
+// ─────────────────────────────────────────────────────────────────────────────
+// SINKRONISASI DATA MULTI-USER
+// ─────────────────────────────────────────────────────────────────────────────
+let _pendingMergeData = null; // data dari file rekan sebelum dikonfirmasi
+
+function openSyncModal() {
+ // Refresh info di tab export
+ const accs  = Array.isArray(DB.accounts) ? DB.accounts.length : 0;
+ const trxs  = Array.isArray(DB.transactions) ? DB.transactions.length : 0;
+ const pers  = Array.isArray(DB.persediaan) ? DB.persediaan.length : 0;
+ const asets = Array.isArray(DB.aset_tetap) ? DB.aset_tetap.length : 0;
+ const cos   = Array.isArray(DB.companies) ? DB.companies.length : 0;
+ const el = document.getElementById('sync-export-info');
+ if (el) el.innerHTML =
+  `<strong>Data yang akan diexport:</strong><br>
+   🏢 ${cos} perusahaan &nbsp;|&nbsp; 📒 ${accs} akun &nbsp;|&nbsp;
+   📝 ${trxs} transaksi<br>
+   📦 ${pers} persediaan &nbsp;|&nbsp; 🏗️ ${asets} aset tetap<br>
+   <span style="color:var(--text3);font-size:10px;margin-top:4px;display:block;">
+   Terakhir diperbarui: ${new Date().toLocaleString('id-ID')}</span>`;
+ // Reset merge step
+ document.getElementById('merge-step-1').style.display = '';
+ document.getElementById('merge-step-2').style.display = 'none';
+ _pendingMergeData = null;
+ switchSyncTab('panduan');
+ openModal('modal-sinkron');
+}
+
+function switchSyncTab(tab) {
+ ['panduan','export','merge'].forEach(t => {
+  const btn = document.getElementById('stab-'+t);
+  const con = document.getElementById('stab-content-'+t);
+  if (!btn || !con) return;
+  const active = t === tab;
+  btn.style.color        = active ? 'var(--primary-light)' : 'var(--text2)';
+  btn.style.fontWeight   = active ? '700' : '600';
+  btn.style.borderBottom = active ? '2px solid var(--primary-light)' : '2px solid transparent';
+  con.style.display      = active ? '' : 'none';
+ });
+}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
+function exportSyncFile() {
+ autoSave();
+ // Pastikan semua record punya timestamp
+ _migrateTimestamps();
+ const payload = {
+  _zeqsync_version: 2,
+  _exported_at: new Date().toISOString(),
+  _exported_by: (window.__currentUser?.role || 'user'),
+  data: JSON.parse(JSON.stringify(DB))
+ };
+ const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+ const url  = URL.createObjectURL(blob);
+ const a    = document.createElement('a');
+ const co_data = getCompany();
+ const slug = (co_data?.name || 'ZeQui').replace(/[^a-zA-Z0-9]/g,'_').slice(0,20);
+ const ts   = new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+ a.href     = url;
+ a.download = `zeqsync_${slug}_${ts}.zeqsync`;
+ a.click();
+ URL.revokeObjectURL(url);
+ toast('✅ File backup berhasil didownload — kirim ke rekan kerja Anda', 'success', 4000);
+}
+
+// ── LOAD FILE UNTUK PREVIEW ──────────────────────────────────────────────────
+function loadSyncFile(input) {
+ const file = input.files[0];
+ if (!file) return;
+ input.value = '';
+ const reader = new FileReader();
+ reader.onload = e => {
+  try {
+   const parsed = JSON.parse(e.target.result);
+   // Support file .zeqsync (v2) maupun raw JSON lama
+   const incomingDB = parsed._zeqsync_version ? parsed.data : parsed;
+   if (!incomingDB || !Array.isArray(incomingDB.companies)) {
+    toast('Format file tidak dikenali', 'error'); return;
+   }
+   // Preview merge sebelum dikonfirmasi
+   _pendingMergeData = incomingDB;
+   const preview = _previewMerge(DB, incomingDB);
+   _showMergePreview(preview, parsed._exported_at);
+  } catch(err) {
+   toast('File tidak valid atau rusak', 'error');
+   console.error(err);
+  }
+ };
+ reader.readAsText(file);
+}
+
+// ── PREVIEW MERGE (hitung tanpa commit) ──────────────────────────────────────
+function _previewMerge(local, incoming) {
+ // Tabel yang akan di-merge (append-only + conflict resolution)
+ const MERGE_TABLES = [
+  'companies','accounts','transactions','journal_entries','journal_details',
+  'penyesuaian','hutang','piutang','persediaan','retur_penjualan',
+  'perlengkapan','aset_tetap','penyusutan_log','templates','rekonsiliasi',
+  'coa_headers','coa_subheaders'
+ ];
+ let totalBaru = 0, totalKonflik = 0, totalSama = 0, totalHapus = 0;
+ const detail = [];
+
+ MERGE_TABLES.forEach(tbl => {
+  const localArr    = Array.isArray(local[tbl])    ? local[tbl]    : [];
+  const incomingArr = Array.isArray(incoming[tbl]) ? incoming[tbl] : [];
+  if (!incomingArr.length && !localArr.length) return;
+
+  const localMap    = new Map(localArr.map(r => [String(r.id), r]));
+  const incomingMap = new Map(incomingArr.map(r => [String(r.id), r]));
+
+  let baru = 0, konflik = 0, sama = 0;
+
+  // Record di incoming yang tidak ada di local → BARU
+  incomingArr.forEach(r => {
+   if (!localMap.has(String(r.id))) baru++;
+   else {
+    const loc = localMap.get(String(r.id));
+    const locTs = loc._updated_at || loc._created_at || '2000-01-01';
+    const incTs = r._updated_at   || r._created_at   || '2000-01-01';
+    if (JSON.stringify(loc) !== JSON.stringify(r)) {
+     if (incTs > locTs) konflik++; // incoming lebih baru → akan menang
+     else konflik++; // local lebih baru → local menang
+    } else sama++;
+   }
+  });
+
+  totalBaru    += baru;
+  totalKonflik += konflik;
+  totalSama    += sama;
+
+  if (baru > 0 || konflik > 0) {
+   const label = {
+    companies:'Perusahaan', accounts:'Akun (CoA)', transactions:'Transaksi',
+    journal_entries:'Jurnal', journal_details:'Detail Jurnal',
+    penyesuaian:'Penyesuaian', hutang:'Hutang', piutang:'Piutang',
+    persediaan:'Persediaan', retur_penjualan:'Retur Penjualan',
+    perlengkapan:'Perlengkapan', aset_tetap:'Aset Tetap',
+    penyusutan_log:'Log Penyusutan', templates:'Template', rekonsiliasi:'Rekonsiliasi',
+    coa_headers:'Header CoA', coa_subheaders:'Sub-Header CoA'
+   }[tbl] || tbl;
+   detail.push({ label, baru, konflik });
+  }
+ });
+
+ return { totalBaru, totalKonflik, totalSama, detail };
+}
+
+function _showMergePreview(preview, exportedAt) {
+ const exportedStr = exportedAt
+  ? new Date(exportedAt).toLocaleString('id-ID')
+  : 'tidak diketahui';
+
+ let html = `
+  <div style="padding:12px 14px;background:rgba(124,58,237,.07);border-radius:8px;border-left:4px solid #7c3aed;margin-bottom:14px;font-size:12px;line-height:1.8;">
+   <strong>File dari:</strong> ${exportedStr}<br>
+   <strong>Metode:</strong> Data baru digabung otomatis · Konflik diselesaikan berdasarkan waktu perubahan terbaru
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+   <div style="padding:10px;text-align:center;background:rgba(16,185,129,.07);border-radius:8px;border:1px solid rgba(16,185,129,.2);">
+    <div style="font-size:22px;font-weight:800;color:var(--accent2);">${preview.totalBaru}</div>
+    <div style="font-size:10px;color:var(--text2);font-weight:600;">Record Baru</div>
+   </div>
+   <div style="padding:10px;text-align:center;background:rgba(245,158,11,.07);border-radius:8px;border:1px solid rgba(245,158,11,.2);">
+    <div style="font-size:22px;font-weight:800;color:#d97706;">${preview.totalKonflik}</div>
+    <div style="font-size:10px;color:var(--text2);font-weight:600;">Konflik (auto)</div>
+   </div>
+   <div style="padding:10px;text-align:center;background:rgba(37,99,235,.07);border-radius:8px;border:1px solid rgba(37,99,235,.15);">
+    <div style="font-size:22px;font-weight:800;color:var(--primary-light);">${preview.totalSama}</div>
+    <div style="font-size:10px;color:var(--text2);font-weight:600;">Sama / Skip</div>
+   </div>
+  </div>`;
+
+ if (preview.detail.length) {
+  html += `<div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Detail per Modul</div>
+   <div style="display:flex;flex-direction:column;gap:4px;max-height:180px;overflow-y:auto;">`;
+  preview.detail.forEach(d => {
+   html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:var(--bg);border-radius:6px;font-size:12px;">
+    <span style="color:var(--text);font-weight:600;">${d.label}</span>
+    <span>
+     ${d.baru > 0 ? `<span style="color:var(--accent2);font-weight:700;">+${d.baru} baru</span>` : ''}
+     ${d.konflik > 0 ? `<span style="color:#d97706;font-weight:700;margin-left:6px;">${d.konflik} konflik</span>` : ''}
+    </span>
+   </div>`;
+  });
+  html += '</div>';
+ } else {
+  html += `<div style="text-align:center;padding:16px;color:var(--text3);font-size:12px;">
+   Tidak ada perubahan yang perlu digabungkan. Data sudah sinkron.
+  </div>`;
+ }
+
+ document.getElementById('merge-preview').innerHTML = html;
+ document.getElementById('merge-step-1').style.display = 'none';
+ document.getElementById('merge-step-2').style.display = '';
+}
+
+// ── EKSEKUSI MERGE ────────────────────────────────────────────────────────────
+async function confirmMerge() {
+ if (!_pendingMergeData) return;
+ const incoming = _pendingMergeData;
+ _pendingMergeData = null;
+
+ // Pastikan incoming sudah dimigrasi timestamps
+ const now = new Date().toISOString();
+ const MERGE_TABLES = [
+  'companies','accounts','transactions','journal_entries','journal_details',
+  'penyesuaian','hutang','piutang','persediaan','retur_penjualan',
+  'perlengkapan','aset_tetap','penyusutan_log','templates','rekonsiliasi',
+  'coa_headers','coa_subheaders'
+ ];
+
+ let totalBaru = 0, totalKonflik = 0;
+
+ MERGE_TABLES.forEach(tbl => {
+  if (!Array.isArray(incoming[tbl])) return;
+  if (!Array.isArray(DB[tbl])) DB[tbl] = [];
+
+  const localMap = new Map(DB[tbl].map(r => [String(r.id), r]));
+
+  incoming[tbl].forEach(incRec => {
+   if (!incRec._created_at) incRec._created_at = now;
+   if (!incRec._updated_at) incRec._updated_at = now;
+   const key = String(incRec.id);
+
+   if (!localMap.has(key)) {
+    // Record baru dari rekan → tambahkan
+    DB[tbl].push(incRec);
+    totalBaru++;
+   } else {
+    // Record ada di keduanya → bandingkan timestamp
+    const locRec = localMap.get(key);
+    const locTs  = locRec._updated_at || locRec._created_at || '2000-01-01';
+    const incTs  = incRec._updated_at || incRec._created_at || '2000-01-01';
+    if (incTs > locTs) {
+     // Incoming lebih baru → timpa local
+     const idx = DB[tbl].findIndex(r => String(r.id) === key);
+     if (idx >= 0) { DB[tbl][idx] = incRec; totalKonflik++; }
+    }
+    // Jika local lebih baru → pertahankan local (tidak ada aksi)
+   }
+  });
+ });
+
+ // Merge locked_periods (union)
+ if (incoming.locked_periods && typeof incoming.locked_periods === 'object') {
+  if (!DB.locked_periods) DB.locked_periods = {};
+  Object.assign(DB.locked_periods, incoming.locked_periods);
+ }
+
+ // Merge jurnal_penutup (incoming menang jika ada)
+ if (incoming.jurnal_penutup && typeof incoming.jurnal_penutup === 'object') {
+  Object.assign(DB.jurnal_penutup || {}, incoming.jurnal_penutup);
+ }
+
+ // Pastikan current_company_id tetap valid
+ if (!DB.companies.find(c => String(c.id) === String(DB.current_company_id))) {
+  DB.current_company_id = DB.companies[0]?.id || null;
+ }
+
+ await forceSave();
+ closeModal('modal-sinkron');
+ updateHeader();
+ navigate(currentPage);
+ toast(`✅ Merge selesai — ${totalBaru} record baru ditambahkan, ${totalKonflik} konflik diselesaikan otomatis`, 'success', 6000);
+}
+
+function cancelMerge() {
+ _pendingMergeData = null;
+ document.getElementById('merge-step-1').style.display = '';
+ document.getElementById('merge-step-2').style.display = 'none';
+}
+
 // EXPORT / IMPORT
 // 
 function exportJSON() {
@@ -8893,15 +9918,40 @@ function printReport(type) {
  }
 
  let revRows = revenues.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
- let expRows = expenses.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
+
+ // Pisahkan HPP dari Beban Operasional (sama seperti tampilan di aplikasi)
+ const isHPP_print = a => { const n=a.name.toLowerCase(); return n.includes('harga pokok')||n.includes('hpp')||n.includes('cost of good')||n.includes('biaya produksi')||n.includes('beban pokok'); };
+ const expHPP_print = expenses.filter(a=>isHPP_print(a));
+ const expOps_print = expenses.filter(a=>!isHPP_print(a));
+ const totHPP_print = expHPP_print.reduce((s,a)=>s+a.balance,0);
+ const totOps_print = expOps_print.reduce((s,a)=>s+a.balance,0);
+ const labaKotor_print = totRev - totHPP_print;
+ const hasHPP_print = expHPP_print.length > 0 && !isSAP;
+
+ let expRows = '';
+ if (hasHPP_print) {
+   // Tampilkan HPP terpisah, lalu Laba Kotor, lalu Beban Operasional
+   const hppRows = expHPP_print.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
+   const opsRows = expOps_print.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('') || '<tr><td style="padding-left:24px;color:#94a3b8">—</td><td></td></tr>';
+   expRows = `<tr><td colspan="2"><strong>HARGA POKOK PENJUALAN / PRODUKSI</strong></td></tr>${hppRows}
+ <tr class="subtotal-row"><td><strong>Total HPP</strong></td><td class="num"><strong>${fmtC(totHPP_print)}</strong></td></tr>
+ <tr class="subtotal-row" style="background:#f0fdf4"><td><strong>LABA KOTOR</strong></td><td class="num" style="color:${labaKotor_print>=0?'#15803d':'#dc2626'}"><strong>${fmtC(Math.abs(labaKotor_print))}</strong></td></tr>
+ <tr><td colspan="2" style="padding-top:12px"><strong>BEBAN OPERASIONAL</strong></td></tr>${opsRows}
+ <tr class="subtotal-row"><td><strong>Total Beban Operasional</strong></td><td class="num"><strong>${fmtC(totOps_print)}</strong></td></tr>`;
+ } else {
+   expRows = expenses.map(a=>`<tr><td style="padding-left:24px">${a.name}</td><td class="num">${fmtC(a.balance)}</td></tr>`).join('');
+ }
 
  const noteNirlaba = em_lr === 'nirlaba' ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">ISAK 35 / PSAK 45 — Laporan Aktivitas. Ekuitas disebut Aset Bersih.</p>' : '';
  const noteKoperasi = em_lr === 'koperasi' ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">PSAK 27 / SAK ETAP Koperasi — PHU (Perhitungan Hasil Usaha). Hasil akhir = SHU.</p>' : '';
  const noteBaznas = em_lr === 'baznas' ? '<p style="font-size:10px;color:#64748b;margin-bottom:8px;">PSAK 109 — Laporan Perubahan Dana (ringkasan). Untuk rincian per dana, cetak laporan LPD.</p>' : '';
 
+ const expHeaderRow = hasHPP_print ? '' : `<tr><td colspan="2" style="padding-top:12px"><strong>${lblBeban}</strong></td></tr>`;
+ const expTotalRow = hasHPP_print ? '' : `<tr class="subtotal-row"><td><strong>Total ${lblBeban}</strong></td><td class="num"><strong>${fmtC(totExp)}</strong></td></tr>`;
+
  body = `${noteNirlaba}${noteKoperasi}${noteBaznas}<table> <thead><tr><th>Keterangan</th><th class="num">Jumlah</th></tr></thead> <tbody> <tr><td colspan="2"><strong>${lblPend}</strong></td></tr>${revRows}
- <tr class="subtotal-row"><td><strong>Total ${lblPend}</strong></td><td class="num"><strong>${fmtC(totRev)}</strong></td></tr> <tr><td colspan="2" style="padding-top:12px"><strong>${lblBeban}</strong></td></tr>${expRows}
- <tr class="subtotal-row"><td><strong>Total ${lblBeban}</strong></td><td class="num"><strong>${fmtC(totExp)}</strong></td></tr> <tr class="total-row"><td><strong>${lblHasil}</strong></td><td class="num" style="color:${laba>=0?'#15803d':'#dc2626'}"><strong>${fmtC(Math.abs(laba))}</strong></td></tr> </tbody></table>`;
+ <tr class="subtotal-row"><td><strong>Total ${lblPend}</strong></td><td class="num"><strong>${fmtC(totRev)}</strong></td></tr> ${expHeaderRow}${expRows}${expTotalRow}
+ <tr class="total-row"><td><strong>${lblHasil}</strong></td><td class="num" style="color:${laba>=0?'#15803d':'#dc2626'}"><strong>${fmtC(Math.abs(laba))}</strong></td></tr> </tbody></table>`;
  }
 
  else if (type === 'neraca') {
@@ -11405,8 +12455,8 @@ function renderHutangKartu() {
  const hariSisa = h.jatuh_tempo ? Math.ceil((new Date(h.jatuh_tempo) - new Date()) / 86400000) : null;
  const warnColor = hariSisa !== null ? (hariSisa < 0 ? '#ef4444' : hariSisa < 7 ? '#f59e0b' : '#10b981') : 'var(--text3)';
  return `
- <div class="kartu-item"> <div class="kartu-header ${h.status==='Lunas'?'green':h.sisa<h.jumlah?'orange':'red'}"> <div> <div class="kartu-nama"> ${h.nama_kreditur}</div> <div class="kartu-kode">${h.tanggal||'—'}</div> </div> <span class="badge-status ${statusCls}">${h.status}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Jumlah Hutang</span><span class="value">${fmtC(h.jumlah)}</span></div> <div class="kartu-row"><span class="label">Sudah Dibayar</span><span class="value" style="color:var(--accent2);">${fmtC(h.jumlah - h.sisa)}</span></div> <div class="kartu-row"><span class="label">Sisa Hutang</span><span class="value" style="color:var(--danger);">${fmtC(h.sisa)}</span></div> <div class="kartu-row"><span class="label">Jatuh Tempo</span><span class="value" style="color:${warnColor}">${h.jatuh_tempo||'—'}${hariSisa!==null?` (${hariSisa<0?'Lewat '+Math.abs(hariSisa)+'hr':hariSisa+' hr lagi'})`:''}</span></div> <div class="saldo-bar"><div class="saldo-bar-fill" style="width:${persen}%;background:${h.status==='Lunas'?'#10b981':'#f59e0b'};"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${persen}% terbayar</div> </div> <div class="kartu-footer"> ${h.status!=='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang',${h.id})">Bayar</button>`:''}
- <button class="btn btn-secondary btn-sm" onclick="openHutangEdit(${h.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang',${h.id})">Hapus</button> </div> </div>`;
+ <div class="kartu-item"> <div class="kartu-header ${h.status==='Lunas'?'green':h.sisa<h.jumlah?'orange':'red'}"> <div> <div class="kartu-nama"> ${h.nama_kreditur}</div> <div class="kartu-kode">${h.tanggal||'—'}</div> </div> <span class="badge-status ${statusCls}">${h.status}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Jumlah Hutang</span><span class="value">${fmtC(h.jumlah)}</span></div> <div class="kartu-row"><span class="label">Sudah Dibayar</span><span class="value" style="color:var(--accent2);">${fmtC(h.jumlah - h.sisa)}</span></div> <div class="kartu-row"><span class="label">Sisa Hutang</span><span class="value" style="color:var(--danger);">${fmtC(h.sisa)}</span></div> <div class="kartu-row"><span class="label">Jatuh Tempo</span><span class="value" style="color:${warnColor}">${h.jatuh_tempo||'—'}${hariSisa!==null?` (${hariSisa<0?'Lewat '+Math.abs(hariSisa)+'hr':hariSisa+' hr lagi'})`:''}</span></div> <div class="saldo-bar"><div class="saldo-bar-fill" style="width:${persen}%;background:${h.status==='Lunas'?'#10b981':'#f59e0b'};"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${persen}% terbayar</div> </div> <div class="kartu-footer"> ${h.status!=='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang','${h.id}')">Bayar</button>`:''}
+ <button class="btn btn-secondary btn-sm" onclick="openHutangEdit('${h.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang','${h.id}')">Hapus</button> </div> </div>`;
  }).join('');
 }
 
@@ -11492,8 +12542,8 @@ function renderPiutangKartu() {
  const warnColor = hariSisa !== null ? (hariSisa < 0 ? '#ef4444' : hariSisa < 7 ? '#f59e0b' : '#10b981') : 'var(--text3)';
  return `
  <div class="kartu-item"> <div class="kartu-header ${p.status==='Lunas'?'green':p.sisa<p.jumlah?'blue':'orange'}"> <div> <div class="kartu-nama"> ${p.nama_debitur}</div> <div class="kartu-kode">${p.tanggal||'—'}</div> </div> <span class="badge-status ${statusCls}">${p.status}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Jumlah Piutang</span><span class="value">${fmtC(p.jumlah)}</span></div> <div class="kartu-row"><span class="label">Sudah Diterima</span><span class="value" style="color:var(--accent2);">${fmtC(p.jumlah - p.sisa)}</span></div> <div class="kartu-row"><span class="label">Sisa Piutang</span><span class="value" style="color:var(--warning);">${fmtC(p.sisa)}</span></div> <div class="kartu-row"><span class="label">Jatuh Tempo</span><span class="value" style="color:${warnColor}">${p.jatuh_tempo||'—'}${hariSisa!==null?` (${hariSisa<0?'Lewat '+Math.abs(hariSisa)+'hr':hariSisa+' hr lagi'})`:''}
- </span></div> <div class="saldo-bar"><div class="saldo-bar-fill" style="width:${persen}%;background:${p.status==='Lunas'?'#10b981':'#2563eb'};"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${persen}% diterima</div> </div> <div class="kartu-footer"> ${p.status!=='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang',${p.id})">Terima</button>`:''}
- <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang',${p.id})">Hapus</button> </div> </div>`;
+ </span></div> <div class="saldo-bar"><div class="saldo-bar-fill" style="width:${persen}%;background:${p.status==='Lunas'?'#10b981':'#2563eb'};"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${persen}% diterima</div> </div> <div class="kartu-footer"> ${p.status!=='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang','${p.id}')">Terima</button>`:''}
+ <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang','${p.id}')">Hapus</button> </div> </div>`;
  }).join('');
 }
 
@@ -11561,7 +12611,7 @@ function renderPersediaanKartu() {
  if (!ps.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Belum ada data persediaan</p></div>'; return; }
  const maxNilai = Math.max(...ps.map(p=>p.total_nilai||0), 1);
  grid.innerHTML = ps.map(p => `
- <div class="kartu-item"> <div class="kartu-header ${p.metode==='kredit'?'orange':'blue'}"> <div> <div class="kartu-nama"> ${p.nama_barang}</div> <div class="kartu-kode">${p.tanggal||'—'} · ${p.metode==='kredit'?'Kredit':'Tunai'}</div> </div> <span class="nilai-tag">${p.jumlah} unit</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Harga Satuan</span><span class="value">${fmtC(p.harga_satuan)}</span></div> <div class="kartu-row"><span class="label">Total Nilai</span><span class="value" style="color:var(--primary-light);">${fmtC(p.total_nilai)}</span></div> <div class="kartu-row"><span class="label">Keterangan</span><span class="value" style="font-family:var(--font);font-size:11px;">${p.keterangan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${Math.round((p.total_nilai/maxNilai)*100)}%;background:var(--primary-light);"></div></div> </div> <div class="kartu-footer"> <button class="btn btn-success btn-sm" onclick="openJualPersediaan(${p.id})">Jual</button> <button class="btn btn-secondary btn-sm" onclick="editPersediaan(${p.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePersediaan(${p.id})">Hapus</button> </div> </div>`).join('');
+ <div class="kartu-item"> <div class="kartu-header ${p.metode==='kredit'?'orange':'blue'}"> <div> <div class="kartu-nama"> ${p.nama_barang}</div> <div class="kartu-kode">${p.tanggal||'—'} · ${p.metode==='kredit'?'Kredit':'Tunai'}</div> </div> <span class="nilai-tag">${p.jumlah} unit</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Harga Satuan</span><span class="value">${fmtC(p.harga_satuan)}</span></div> <div class="kartu-row"><span class="label">Total Nilai</span><span class="value" style="color:var(--primary-light);">${fmtC(p.total_nilai)}</span></div> <div class="kartu-row"><span class="label">Keterangan</span><span class="value" style="font-family:var(--font);font-size:11px;">${p.keterangan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${Math.round((p.total_nilai/maxNilai)*100)}%;background:var(--primary-light);"></div></div> </div> <div class="kartu-footer"> <button class="btn btn-success btn-sm" onclick="openJualPersediaan('${p.id}')">Jual</button> <button class="btn btn-secondary btn-sm" onclick="editPersediaan('${p.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePersediaan('${p.id}')">Hapus</button> </div> </div>`).join('');
 }
 
 function renderPersediaanMutasi() {
@@ -11609,7 +12659,7 @@ function renderPerlengkapanKartu() {
  if (!ps.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Belum ada data perlengkapan</p></div>'; return; }
  const maxNilai = Math.max(...ps.map(p=>p.nilai||0),1);
  grid.innerHTML = ps.map(p => `
- <div class="kartu-item"> <div class="kartu-header ${p.metode==='kredit'?'orange':'purple'}"> <div> <div class="kartu-nama"> ${p.nama_item}</div> <div class="kartu-kode">${p.tanggal||'—'} · ${p.metode==='kredit'?'Kredit':'Tunai'}</div> </div> <span class="nilai-tag" style="background:#8b5cf6;">${p.jumlah||0} unit</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Nilai Perolehan</span><span class="value" style="color:#8b5cf6;">${fmtC(p.nilai)}</span></div> <div class="kartu-row"><span class="label">Keterangan</span><span class="value" style="font-family:var(--font);font-size:11px;">${p.keterangan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${Math.round((p.nilai/maxNilai)*100)}%;background:#8b5cf6;"></div></div> </div> <div class="kartu-footer"> <button class="btn btn-secondary btn-sm" onclick="editPerlengkapan(${p.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePerlengkapan(${p.id})">Hapus</button> </div> </div>`).join('');
+ <div class="kartu-item"> <div class="kartu-header ${p.metode==='kredit'?'orange':'purple'}"> <div> <div class="kartu-nama"> ${p.nama_item}</div> <div class="kartu-kode">${p.tanggal||'—'} · ${p.metode==='kredit'?'Kredit':'Tunai'}</div> </div> <span class="nilai-tag" style="background:#8b5cf6;">${p.jumlah||0} unit</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Nilai Perolehan</span><span class="value" style="color:#8b5cf6;">${fmtC(p.nilai)}</span></div> <div class="kartu-row"><span class="label">Keterangan</span><span class="value" style="font-family:var(--font);font-size:11px;">${p.keterangan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${Math.round((p.nilai/maxNilai)*100)}%;background:#8b5cf6;"></div></div> </div> <div class="kartu-footer"> <button class="btn btn-secondary btn-sm" onclick="editPerlengkapan('${p.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePerlengkapan('${p.id}')">Hapus</button> </div> </div>`).join('');
 }
 
 function renderPerlengkapanPemakaian() {
@@ -11647,7 +12697,7 @@ function renderAsetKartu() {
  const buku = a.nilai_buku||harga;
  const pctTerdepresiasi = harga > 0 ? Math.round(akum/harga*100) : 0;
  return `
- <div class="kartu-item"> <div class="kartu-header ${isSM?'orange':'blue'}"> <div> <div class="kartu-nama"> ${a.nama_aset}</div> <div class="kartu-kode">${a.tanggal||'—'} · ${isSM?'Saldo Menurun':'Garis Lurus'}</div> </div> <span class="nilai-tag ${isSM?'warning':''}">${isSM?(a.tarif_sm||0)+'%/thn':(a.masa_manfaat||'—')+' thn'}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Harga Perolehan</span><span class="value">${fmtC(harga)}</span></div> <div class="kartu-row"><span class="label">Akum. Penyusutan</span><span class="value" style="color:var(--danger);">(${fmtC(akum)})</span></div> <div class="kartu-row"><span class="label">Nilai Buku</span><span class="value" style="color:var(--accent2);">${fmtC(buku)}</span></div> <div class="kartu-row"><span class="label">Beban Susut/thn</span><span class="value">${fmtC(a.beban_penyusutan||0)}</span></div> <div class="kartu-row"><span class="label">Tahun Perolehan</span><span class="value" style="font-family:var(--font)">${a.tahun_perolehan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${pctTerdepresiasi}%;background:var(--danger);"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${pctTerdepresiasi}% terdepresiasi</div> </div> <div class="kartu-footer"> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset(${a.id})">Jadwal</button> <button class="btn btn-secondary btn-sm" onclick="editAset(${a.id})">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteAset(${a.id})">Hapus</button> </div> </div>`;
+ <div class="kartu-item"> <div class="kartu-header ${isSM?'orange':'blue'}"> <div> <div class="kartu-nama"> ${a.nama_aset}</div> <div class="kartu-kode">${a.tanggal||'—'} · ${isSM?'Saldo Menurun':'Garis Lurus'}</div> </div> <span class="nilai-tag ${isSM?'warning':''}">${isSM?(a.tarif_sm||0)+'%/thn':(a.masa_manfaat||'—')+' thn'}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Harga Perolehan</span><span class="value">${fmtC(harga)}</span></div> <div class="kartu-row"><span class="label">Akum. Penyusutan</span><span class="value" style="color:var(--danger);">(${fmtC(akum)})</span></div> <div class="kartu-row"><span class="label">Nilai Buku</span><span class="value" style="color:var(--accent2);">${fmtC(buku)}</span></div> <div class="kartu-row"><span class="label">Beban Susut/thn</span><span class="value">${fmtC(a.beban_penyusutan||0)}</span></div> <div class="kartu-row"><span class="label">Tahun Perolehan</span><span class="value" style="font-family:var(--font)">${a.tahun_perolehan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${pctTerdepresiasi}%;background:var(--danger);"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${pctTerdepresiasi}% terdepresiasi</div> </div> <div class="kartu-footer"> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset('${a.id}')">Jadwal</button> <button class="btn btn-secondary btn-sm" onclick="editAset('${a.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteAset('${a.id}')">Hapus</button> </div> </div>`;
  }).join('');
 }
 
@@ -11660,7 +12710,7 @@ function renderAsetPenyusutanAll() {
  const hargaEfektif = (a.harga_perolehan||0)+(a.tambahan_aset||0)-(a.pengurangan_aset||0);
  const isSM = a.metode_penyusutan === 'saldo-menurun';
  const rows = hitungJadwalPenyusutan(hargaEfektif, a.masa_manfaat||1, a.metode_penyusutan||'garis-lurus', a.tarif_sm||0, 0);
- html += `<div class="card" style="margin-bottom:16px;"> <div class="card-header" style="background:linear-gradient(135deg,rgba(30,58,95,.06),rgba(37,99,235,.04));"> <div> <div class="card-title"> ${a.nama_aset}</div> <div style="font-size:11px;color:var(--text3);margin-top:2px;">${isSM?'Saldo Menurun — Tarif '+( a.tarif_sm||0)+'%/thn':'Garis Lurus — '+( a.masa_manfaat||1)+' Tahun'} | Harga Perolehan: ${fmtC(hargaEfektif)}</div> </div> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset(${a.id})">Print Jadwal</button> </div> <div style="overflow-x:auto;"><table class="mutasi-table"> <thead><tr><th>Tahun ke-</th><th>Tahun</th><th>Nilai Buku Awal</th><th>Beban Penyusutan</th><th>Akum. Penyusutan</th><th>Nilai Buku Akhir</th></tr></thead> <tbody> ${rows.map(r=>`<tr style="background:${r.nilaiBuku<1?'rgba(16,185,129,.04)':''};"> <td style="font-weight:600;">Tahun ${r.thn}</td> <td style="color:var(--text2);">${(a.tahun_perolehan||new Date().getFullYear())+(r.thn-1)}</td> <td class="td-mono">${fmtC(Math.round(r.nilaiAwal))}</td> <td class="td-mono" style="color:var(--danger);">${fmtC(Math.round(r.beban))}</td> <td class="td-mono" style="color:var(--text2);">${fmtC(Math.round(r.akum))}</td> <td class="td-mono" style="font-weight:700;color:${r.nilaiBuku<1?'var(--text3)':'var(--accent2)'};">${fmtC(Math.round(r.nilaiBuku))}</td> </tr>`).join('')}
+ html += `<div class="card" style="margin-bottom:16px;"> <div class="card-header" style="background:linear-gradient(135deg,rgba(30,58,95,.06),rgba(37,99,235,.04));"> <div> <div class="card-title"> ${a.nama_aset}</div> <div style="font-size:11px;color:var(--text3);margin-top:2px;">${isSM?'Saldo Menurun — Tarif '+( a.tarif_sm||0)+'%/thn':'Garis Lurus — '+( a.masa_manfaat||1)+' Tahun'} | Harga Perolehan: ${fmtC(hargaEfektif)}</div> </div> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset('${a.id}')">Print Jadwal</button> </div> <div style="overflow-x:auto;"><table class="mutasi-table"> <thead><tr><th>Tahun ke-</th><th>Tahun</th><th>Nilai Buku Awal</th><th>Beban Penyusutan</th><th>Akum. Penyusutan</th><th>Nilai Buku Akhir</th></tr></thead> <tbody> ${rows.map(r=>`<tr style="background:${r.nilaiBuku<1?'rgba(16,185,129,.04)':''};"> <td style="font-weight:600;">Tahun ${r.thn}</td> <td style="color:var(--text2);">${(a.tahun_perolehan||new Date().getFullYear())+(r.thn-1)}</td> <td class="td-mono">${fmtC(Math.round(r.nilaiAwal))}</td> <td class="td-mono" style="color:var(--danger);">${fmtC(Math.round(r.beban))}</td> <td class="td-mono" style="color:var(--text2);">${fmtC(Math.round(r.akum))}</td> <td class="td-mono" style="font-weight:700;color:${r.nilaiBuku<1?'var(--text3)':'var(--accent2)'};">${fmtC(Math.round(r.nilaiBuku))}</td> </tr>`).join('')}
  </tbody> </table></div> </div>`;
  });
  el.innerHTML = html;
@@ -12475,8 +13525,8 @@ function renderRekonsiliasi() {
  <td class="td-mono">${fmtC(r.saldo_bank||0)}</td>
  <td class="td-mono" style="color:${Math.abs(selisih)<1?'var(--accent2)':'var(--danger)'};font-weight:700;">${fmtC(Math.abs(selisih))} ${Math.abs(selisih)<1?'':selisih>0?'(Bank lebih)':'(Buku lebih)'}</td>
  <td><span class="badge-status ${Math.abs(selisih)<1?'badge-lunas':'badge-belum'}">${Math.abs(selisih)<1?'Seimbang':'Selisih'}</span></td>
- <td><button class="btn btn-secondary btn-sm" onclick="editRekonsiliasi(${r.id})">Detail</button>
- <button class="btn btn-danger btn-sm" onclick="hapusRekonsiliasi(${r.id})">Hapus</button></td>
+ <td><button class="btn btn-secondary btn-sm" onclick="editRekonsiliasi('${r.id}')">Detail</button>
+ <button class="btn btn-danger btn-sm" onclick="hapusRekonsiliasi('${r.id}')">Hapus</button></td>
  </tr>`;
  }).join('')}</tbody></table></div></div>`
  }`;
@@ -12655,9 +13705,9 @@ function renderTemplateTransaksi() {
  <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">${t.keterangan||'—'}</div>
  <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">Terakhir digunakan: ${t.last_used||'Belum pernah'}</div>
  <div style="display:flex;gap:8px;flex-wrap:wrap;">
- <button class="btn btn-primary btn-sm" onclick="gunakanTemplate(${t.id})">Gunakan Sekarang</button>
- <button class="btn btn-secondary btn-sm" onclick="editTemplate(${t.id})">Edit</button>
- <button class="btn btn-danger btn-sm" onclick="hapusTemplate(${t.id})">Hapus</button>
+ <button class="btn btn-primary btn-sm" onclick="gunakanTemplate('${t.id}')">Gunakan Sekarang</button>
+ <button class="btn btn-secondary btn-sm" onclick="editTemplate('${t.id}')">Edit</button>
+ <button class="btn btn-danger btn-sm" onclick="hapusTemplate('${t.id}')">Hapus</button>
  </div>
  </div>
  </div>`;
