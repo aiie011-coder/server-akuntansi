@@ -3751,10 +3751,10 @@ function saveTransaction() {
  rows.forEach(r => {
  const sel = r.querySelector('select');
  const inps = r.querySelectorAll('input[type=number]');
- const acc = parseInt(sel?.value);
+ const acc = sel?.value;  // UUID atau angka — jangan parseInt
  const d = parseFloat(inps[0]?.value) || 0;
  const k = parseFloat(inps[1]?.value) || 0;
- if (acc && (d||k)) { details.push({account_id:acc, debit:d, kredit:k}); totD+=d; totK+=k; }
+ if (acc && acc !== '0' && acc !== '' && (d||k)) { details.push({account_id:acc, debit:d, kredit:k}); totD+=d; totK+=k; }
  });
  if (!details.length) { toast('Minimal satu baris detail','error'); return; }
  // Bulatkan ke 2 desimal untuk menghindari error floating point
@@ -4021,7 +4021,7 @@ function renderBukuBesar() {
  document.getElementById('bb-content').innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Pilih akun dari dropdown di atas atau klik "Tampilkan Semua Akun"</p></div>';
  return;
  }
- const accId = parseInt(sel.value);
+ const accId = sel.value;  // UUID-safe
  const includeAdj = document.getElementById('bb-include-adj')?.checked !== false;
  const data = getBukuBesarData(accId, includeAdj);
  if (!data) return;
@@ -4064,7 +4064,7 @@ function printBukuBesar() {
  const period = `${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}`;
  const includeAdj = document.getElementById('bb-include-adj')?.checked !== false;
 
- const selAccId = parseInt(document.getElementById('bb-account-select')?.value);
+ const selAccId = document.getElementById('bb-account-select')?.value || '';  // UUID-safe
  const accs = selAccId ? [DB.accounts.find(a=>a.id==selAccId)] : coFilter(DB.accounts).sort((a,b)=>a.code.localeCompare(b.code,'id',{numeric:true}));
 
  let body = '';
@@ -4341,7 +4341,7 @@ function savePenyesuaian() {
  }
 
  DB.penyesuaian[idx] = { ...oldPen, date, description: desc,
- debit_acc: parseInt(dAcc), kredit_acc: parseInt(kAcc), amount };
+ debit_acc: dAcc, kredit_acc: kAcc, amount };
 
  // FIX KRITIS #3 (edit): update journal_details & journal_entry terkait agar
  // Buku Besar konsisten. Jika ref_journal_id ada, update nilainya;
@@ -4356,16 +4356,16 @@ function savePenyesuaian() {
  if (adjTrx) { adjTrx.date = date; adjTrx.description = '[AJE] ' + desc; }
  }
  DB.journal_details.filter(jd => jd.journal_id === adjJeid).forEach(jd => {
- if (jd.debit > 0) { jd.account_id = parseInt(dAcc); jd.debit = amount; }
- if (jd.kredit > 0) { jd.account_id = parseInt(kAcc); jd.kredit = amount; }
+ if (jd.debit > 0) { jd.account_id = dAcc; jd.debit = amount; }
+ if (jd.kredit > 0) { jd.account_id = kAcc; jd.kredit = amount; }
  });
  } else {
  // Data lama — buat jurnal baru dan tautkan ke record penyesuaian
  const tidNew = genId(); const jeidNew = genId();
  DB.transactions.push({id:tidNew, company_id:co(), date, description:'[AJE] '+desc, _source:'penyesuaian'});
  DB.journal_entries.push({id:jeidNew, company_id:co(), transaction_id:tidNew, date, description:'[AJE] '+desc, _source:'penyesuaian'});
- DB.journal_details.push({id:genId(), journal_id:jeidNew, account_id:parseInt(dAcc), debit:amount, kredit:0});
- DB.journal_details.push({id:genId(), journal_id:jeidNew, account_id:parseInt(kAcc), debit:0, kredit:amount});
+ DB.journal_details.push({id:genId(), journal_id:jeidNew, account_id:dAcc, debit:amount, kredit:0});
+ DB.journal_details.push({id:genId(), journal_id:jeidNew, account_id:kAcc, debit:0, kredit:amount});
  DB.penyesuaian[idx].ref_journal_id = jeidNew;
  DB.penyesuaian[idx].ref_transaction_id = tidNew;
  }
@@ -4382,10 +4382,10 @@ function savePenyesuaian() {
  const jeidAdj = genId();
  DB.transactions.push({id:tidAdj, company_id:co(), date, description:'[AJE] '+desc, _source:'penyesuaian'});
  DB.journal_entries.push({id:jeidAdj, company_id:co(), transaction_id:tidAdj, date, description:'[AJE] '+desc, _source:'penyesuaian'});
- DB.journal_details.push({id:genId(), journal_id:jeidAdj, account_id:parseInt(dAcc), debit:amount, kredit:0});
- DB.journal_details.push({id:genId(), journal_id:jeidAdj, account_id:parseInt(kAcc), debit:0, kredit:amount});
+ DB.journal_details.push({id:genId(), journal_id:jeidAdj, account_id:dAcc, debit:amount, kredit:0});
+ DB.journal_details.push({id:genId(), journal_id:jeidAdj, account_id:kAcc, debit:0, kredit:amount});
  DB.penyesuaian.push({id:newId, company_id:co(), date, description:desc,
- debit_acc:parseInt(dAcc), kredit_acc:parseInt(kAcc), amount,
+ debit_acc:dAcc, kredit_acc:kAcc, amount,
  ref_journal_id:jeidAdj, ref_transaction_id:tidAdj});
  auditLog('CREATE', 'penyesuaian', newId, { desc, date, amount });
  toast('Penyesuaian disimpan & diposting ke Jurnal Umum','success');
@@ -13605,7 +13605,7 @@ function openRekonsiliasi(id) {
 }
 
 function _rekChangeAcc(accId) {
- _rekState.account_id = parseInt(accId);
+ _rekState.account_id = accId;  // UUID-safe
  _renderRekItems();
 }
 
@@ -13808,11 +13808,11 @@ function saveTemplate() {
  const rows = [...document.getElementById('tmpl-tbody').querySelectorAll('tr')];
  const details = rows.map(tr => {
  const idx = tr.id.replace('tmpl-row-','');
- const accId = parseInt(document.getElementById('tmpl-acc-'+idx)?.value)||0;
+ const accId = document.getElementById('tmpl-acc-'+idx)?.value || '';  // UUID-safe
  const debit = parseFloat(document.getElementById('tmpl-d-'+idx)?.value)||0;
  const kredit = parseFloat(document.getElementById('tmpl-k-'+idx)?.value)||0;
  return { account_id:accId, debit, kredit };
- }).filter(d=>d.account_id&&(d.debit||d.kredit));
+ }).filter(d=>d.account_id&&d.account_id!==''&&(d.debit||d.kredit));
 
  if (details.length<2) { toast('Minimal 2 baris detail jurnal','error'); return; }
  const totD=details.reduce((s,d)=>s+d.debit,0), totK=details.reduce((s,d)=>s+d.kredit,0);
