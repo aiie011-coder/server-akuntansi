@@ -2873,8 +2873,8 @@ function updateJournalBalance() {
  let totD=0, totK=0;
  rows.forEach(r => {
  const inps = r.querySelectorAll('input[type=number]');
- totD += parseFloat(inps[0]?.value||0);
- totK += parseFloat(inps[1]?.value||0);
+ const d = parseFloat(inps[0]?.value); totD += isNaN(d) ? 0 : d;
+ const k = parseFloat(inps[1]?.value); totK += isNaN(k) ? 0 : k;
  });
  // Bulatkan ke 2 desimal untuk menghindari error floating point
  totD = Math.round(totD * 100) / 100;
@@ -2883,7 +2883,7 @@ function updateJournalBalance() {
  document.getElementById('jd-total-kredit').textContent = fmt(totK);
  const msg = document.getElementById('jd-balance-msg');
  const selisih = Math.abs(totD - totK);
- if (selisih < 1 && totD > 0) {
+ if (selisih < 0.01 && totD > 0) {
  msg.innerHTML = `<span class="balance-ok">✓ Jurnal balance: Debit = Kredit = Rp ${fmt(totD)}</span>`;
  } else if (totD > 0 || totK > 0) {
  msg.innerHTML = `<span class="balance-err">✗ Tidak balance: Selisih Rp ${fmt(selisih)}</span>`;
@@ -3119,7 +3119,9 @@ function reverseIntegration(trxId) {
  } else if (delta.module === 'perlengkapan') {
  const idx = DB.perlengkapan.findIndex(p =>p.id === delta.record_id);
  if (idx >= 0) {
- DB.perlengkapan[idx].total_nilai = Math.max(0, (DB.perlengkapan[idx].total_nilai||0) - delta.amount);
+ // [FIX] Kurangi .nilai (field utama) DAN .total_nilai (field render kartu)
+ DB.perlengkapan[idx].nilai = Math.max(0, (DB.perlengkapan[idx].nilai||0) - delta.amount);
+ DB.perlengkapan[idx].total_nilai = DB.perlengkapan[idx].nilai;
  }
  }
  });
@@ -3417,6 +3419,7 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
  } else {
  const idx = DB.perlengkapan.findIndex(p =>p.id === existing.id);
  DB.perlengkapan[idx].nilai += d.debit;
+ DB.perlengkapan[idx].total_nilai = DB.perlengkapan[idx].nilai; // [FIX] sync total_nilai
  if (!DB.integration_deltas) DB.integration_deltas = [];
  DB.integration_deltas.push({ trx_id: trxId, module: 'perlengkapan', record_id: existing.id, amount: d.debit });
  }
@@ -3719,16 +3722,7 @@ function konfirmasiBukaPeriodeBaru() {
 function saveTransaction() {
  if (!co()) return;
  const date = document.getElementById('trx-date').value;
- // [FIX C1] Peringatan jika tanggal di luar periode perusahaan
- const _coC1 = getCompany();
- if (date && _coC1?.period_start && _coC1?.period_end) {
- if (date < _coC1.period_start || date > _coC1.period_end) {
-  if (!confirm(
-  'Peringatan: Tanggal transaksi (' + date + ') di luar periode aktif\n' +
-  '(' + _coC1.period_start + ' s/d ' + _coC1.period_end + ').\n\nLanjutkan?'
-  )) return;
- }
- }
+ // [FIX] Cek periode di luar → ditangani oleh blok Item 3 di bawah
  const desc = document.getElementById('trx-desc').value.trim();
  if (!date||!desc) { toast('Tanggal dan keterangan wajib diisi','error'); return; }
 
@@ -3758,15 +3752,15 @@ function saveTransaction() {
  const sel = r.querySelector('select');
  const inps = r.querySelectorAll('input[type=number]');
  const acc = parseInt(sel?.value);
- const d = parseFloat(inps[0]?.value||0);
- const k = parseFloat(inps[1]?.value||0);
+ const d = parseFloat(inps[0]?.value) || 0;
+ const k = parseFloat(inps[1]?.value) || 0;
  if (acc && (d||k)) { details.push({account_id:acc, debit:d, kredit:k}); totD+=d; totK+=k; }
  });
  if (!details.length) { toast('Minimal satu baris detail','error'); return; }
  // Bulatkan ke 2 desimal untuk menghindari error floating point
  totD = Math.round(totD * 100) / 100;
  totK = Math.round(totK * 100) / 100;
- if (Math.abs(totD - totK) >= 1) { toast('Jurnal tidak balance! Debit ≠ Kredit','error'); return; }
+ if (Math.abs(totD - totK) >= 0.01) { toast(`Jurnal tidak balance! Debit (${fmtC(totD)}) ≠ Kredit (${fmtC(totK)})`, 'error'); return; }
 
  // Item 5: Ambil nama pihak ketiga eksplisit dari field
  const counterparty = (document.getElementById('trx-counterparty')?.value || '').trim();
@@ -3825,7 +3819,7 @@ function saveTransaction() {
  if (p==='persediaan') renderPersediaan();
  if (p==='aset-tetap') renderAsetTetap();
  if (p==='perlengkapan') renderPerlengkapan();
- toast(' Transaksi disimpan & terintegrasi ke semua modul','success');
+ toast('✔ Transaksi berhasil disimpan','success');
 }
 
 function renderTransactions() {
