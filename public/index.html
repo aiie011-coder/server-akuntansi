@@ -2876,13 +2876,17 @@ function updateJournalBalance() {
  totD += parseFloat(inps[0]?.value||0);
  totK += parseFloat(inps[1]?.value||0);
  });
+ // Bulatkan ke 2 desimal untuk menghindari error floating point
+ totD = Math.round(totD * 100) / 100;
+ totK = Math.round(totK * 100) / 100;
  document.getElementById('jd-total-debit').textContent = fmt(totD);
  document.getElementById('jd-total-kredit').textContent = fmt(totK);
  const msg = document.getElementById('jd-balance-msg');
- if (totD===totK && totD>0) {
- msg.innerHTML = `<span class="balance-ok">Jurnal balance: Debit = Kredit = Rp ${fmt(totD)}</span>`;
- } else if (totD>0 || totK>0) {
- msg.innerHTML = `<span class="balance-err">Tidak balance: Selisih Rp ${fmt(Math.abs(totD-totK))}</span>`;
+ const selisih = Math.abs(totD - totK);
+ if (selisih < 1 && totD > 0) {
+ msg.innerHTML = `<span class="balance-ok">✓ Jurnal balance: Debit = Kredit = Rp ${fmt(totD)}</span>`;
+ } else if (totD > 0 || totK > 0) {
+ msg.innerHTML = `<span class="balance-err">✗ Tidak balance: Selisih Rp ${fmt(selisih)}</span>`;
  } else {
  msg.innerHTML = '';
  }
@@ -3759,7 +3763,10 @@ function saveTransaction() {
  if (acc && (d||k)) { details.push({account_id:acc, debit:d, kredit:k}); totD+=d; totK+=k; }
  });
  if (!details.length) { toast('Minimal satu baris detail','error'); return; }
- if (Math.abs(Math.round(totD) - Math.round(totK)) > 0) { toast('Jurnal tidak balance! Debit ≠ Kredit','error'); return; }
+ // Bulatkan ke 2 desimal untuk menghindari error floating point
+ totD = Math.round(totD * 100) / 100;
+ totK = Math.round(totK * 100) / 100;
+ if (Math.abs(totD - totK) >= 1) { toast('Jurnal tidak balance! Debit ≠ Kredit','error'); return; }
 
  // Item 5: Ambil nama pihak ketiga eksplisit dari field
  const counterparty = (document.getElementById('trx-counterparty')?.value || '').trim();
