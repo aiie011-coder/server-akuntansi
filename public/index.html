@@ -199,6 +199,48 @@ textarea.form-control { resize:vertical; min-height:80px; }
 .btn-icon { padding:7px; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius2); cursor:pointer; font-size:14px; transition:.2s; }
 .btn-icon:hover { border-color:var(--primary-lighter); }
 
+/* ACTION MENU — kolom Aksi tabel modul */
+.action-menu { position:relative; display:inline-block; }
+.action-menu-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:5px 10px; font-size:11px; font-weight:700; font-family:var(--font);
+  border:1.5px solid var(--border); border-radius:var(--radius2);
+  background:var(--card); color:var(--text2); cursor:pointer; transition:.2s;
+  white-space:nowrap; user-select:none;
+}
+.action-menu-btn:hover { border-color:var(--primary-lighter); color:var(--primary-light); background:rgba(37,99,235,.04); }
+.action-menu-btn .chevron { font-size:9px; opacity:.6; transition:transform .2s; }
+.action-menu.open .action-menu-btn { border-color:var(--primary-lighter); color:var(--primary-light); background:rgba(37,99,235,.06); }
+.action-menu.open .action-menu-btn .chevron { transform:rotate(180deg); }
+.action-dropdown {
+  display:none; position:fixed; z-index:2000;
+  background:var(--card); border:1.5px solid var(--border); border-radius:var(--radius2);
+  box-shadow:0 8px 24px rgba(0,0,0,.12); min-width:156px;
+  max-height:calc(100vh - 16px); overflow-y:auto; overflow-x:hidden;
+  animation:dropIn .15s ease;
+}
+@keyframes dropIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+.action-menu.open .action-dropdown { display:block; }
+.action-drop-item {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 14px; font-size:12px; font-weight:600; font-family:var(--font);
+  color:var(--text); cursor:pointer; transition:background .15s; border:none;
+  background:none; width:100%; text-align:left; white-space:nowrap;
+}
+.action-drop-item:hover { background:var(--bg); }
+.action-drop-item .drop-icon { font-size:13px; width:16px; text-align:center; flex-shrink:0; }
+.action-drop-item.item-primary { color:var(--primary-light); }
+.action-drop-item.item-primary:hover { background:rgba(37,99,235,.07); }
+.action-drop-item.item-success { color:#059669; }
+.action-drop-item.item-success:hover { background:rgba(16,185,129,.07); }
+.action-drop-item.item-warning { color:#d97706; }
+.action-drop-item.item-warning:hover { background:rgba(245,158,11,.07); }
+.action-drop-item.item-purple { color:#7c3aed; }
+.action-drop-item.item-purple:hover { background:rgba(124,58,237,.07); }
+.action-drop-item.item-danger { color:var(--danger); }
+.action-drop-item.item-danger:hover { background:rgba(239,68,68,.07); }
+.action-drop-divider { height:1px; background:var(--border); margin:3px 0; }
+
 /* SEARCH + PAGINATION */
 .table-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 16px; flex-wrap:wrap; }
 .search-box { display:flex; align-items:center; gap:8px; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--radius2); padding:7px 12px; flex:1; max-width:300px; }
@@ -1802,6 +1844,61 @@ function escapeHtml(str) {
  .replace(/'/g, '&#39;');
 }
 
+// ── ACTION MENU HELPER ──────────────────────────────────────────────
+function _closeAllActionMenus() {
+  document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+}
+
+function toggleActionMenu(btn, ev) {
+  // Terima event sebagai parameter agar stopPropagation bekerja di semua browser
+  if (ev) ev.stopPropagation();
+  else if (window.event) window.event.stopPropagation();
+
+  const menu = btn.closest('.action-menu');
+  const isOpen = menu.classList.contains('open');
+  _closeAllActionMenus();
+  if (isOpen) return;
+
+  menu.classList.add('open');
+  const dropdown = menu.querySelector('.action-dropdown');
+  const rect = btn.getBoundingClientRect();
+
+  Object.assign(dropdown.style, { top:'-9999px', left:'0px', right:'auto', bottom:'auto' });
+
+  requestAnimationFrame(() => {
+    const ddH = dropdown.offsetHeight || 220;
+    const ddW = dropdown.offsetWidth  || 168;
+    const vw  = window.innerWidth;
+    const vh  = window.innerHeight;
+    const GAP = 6;
+
+    const spaceBelow = vh - rect.bottom;
+    let topVal = (spaceBelow >= ddH + GAP)
+      ? rect.bottom + GAP
+      : rect.top - ddH - GAP;
+    topVal = Math.max(GAP, Math.min(topVal, vh - ddH - GAP));
+
+    let leftVal = rect.left;
+    if (leftVal + ddW > vw - GAP) leftVal = vw - ddW - GAP;
+    if (leftVal < GAP) leftVal = GAP;
+
+    Object.assign(dropdown.style, { top: topVal+'px', left: leftVal+'px', right:'auto' });
+  });
+}
+
+// runAction: tutup menu, lalu jalankan fungsi
+// Tidak pakai setTimeout agar fungsi target (openModal dll) langsung jalan
+// sebelum ada event lain yang mengganggu
+function runAction(fn) {
+  _closeAllActionMenus();
+  fn();
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.action-menu')) _closeAllActionMenus();
+});
+// ────────────────────────────────────────────────────────────────────
+
 function genId() {
  // UUID v4 — aman untuk multi-user merge, tidak ada duplikasi lintas device
  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -1826,8 +1923,12 @@ function genJournalNo(companyId) {
 // Ambil nomor jurnal dari journal_entry (sudah tersimpan) atau generate tampilan dari id lama
 function getJournalNo(je) {
  if (je && je.journal_no) return je.journal_no;
- // Fallback untuk data lama yang belum punya journal_no
- return 'JU-' + String(je?.id || 0).padStart(4, '0');
+ // Fallback untuk data lama atau auto_module yang belum punya journal_no
+ // Jika id adalah UUID, tampilkan sebagai AUTO-XXXX (4 karakter pertama)
+ const rawId = String(je?.id || '0');
+ const isUUID = rawId.includes('-');
+ if (isUUID) return 'AUTO-' + rawId.substring(0, 4).toUpperCase();
+ return 'JU-' + String(rawId).padStart(4, '0');
 }
 
 // Peringatkan pengguna jika menutup/refresh browser saat ada perubahan yang belum tersimpan
@@ -2547,7 +2648,8 @@ function syncCOACode() {
  if (num) {
  const dup = DB.accounts.find(a => {
  const editId = document.getElementById('coa-edit-id').value;
- return a.company_id == co() && a.code.toLowerCase() === full.toLowerCase() && (!editId || a.id != parseInt(editId));
+ // FIX: gunakan String() agar kompatibel dengan ID integer lama maupun UUID baru
+ return a.company_id == co() && a.code.toLowerCase() === full.toLowerCase() && (!editId || String(a.id) !== String(editId));
  });
  if (dup) {
  hint.textContent = ` Kode "${full}" sudah dipakai oleh "${dup.name}"`;
@@ -2610,9 +2712,11 @@ function saveCOA() {
  const id = document.getElementById('coa-edit-id').value;
 
  // Cek duplikat kode akun (exclude akun yang sedang diedit)
+ // FIX: gunakan perbandingan string (String(a.id) == String(id)) agar kompatibel
+ // dengan ID lama (integer) maupun ID baru (UUID string)
  const dupCode = DB.accounts.find(a =>a.company_id == co() &&
  a.code.toLowerCase() === code.toLowerCase() &&
- (!id || a.id != parseInt(id))
+ (!id || String(a.id) !== String(id))
  );
  if (dupCode) {
  toast(` Kode akun "${code}" sudah digunakan oleh "${dupCode.name}"`, 'error');
@@ -2623,9 +2727,10 @@ function saveCOA() {
  }
 
  // Cek duplikat nama akun (exclude akun yang sedang diedit)
+ // FIX: sama — gunakan String() agar UUID dan integer sama-sama bisa dibandingkan
  const dupName = DB.accounts.find(a =>a.company_id == co() &&
  a.name.toLowerCase() === name.toLowerCase() &&
- (!id || a.id != parseInt(id))
+ (!id || String(a.id) !== String(id))
  );
  if (dupName) {
  toast(` Nama akun "${name}" sudah digunakan (kode: ${dupName.code})`, 'error');
@@ -3039,7 +3144,7 @@ function _pushAutoJournal(date, desc, source, details) {
  }
  const tid = genId(), jeid = genId();
  DB.transactions.push({id:tid, company_id:co(), date, description:desc, _source:source});
- DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date, description:desc, _source:source});
+ DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date, description:desc, journal_no:genJournalNo(), _source:source});
  details.forEach(d => DB.journal_details.push({
  id:genId(), journal_id:jeid, account_id:d.account_id,
  debit: d.debit||0, kredit: d.kredit||0
@@ -3769,14 +3874,15 @@ function saveTransaction() {
  let trxId;
 
  if (editId) {
- trxId = parseInt(editId);
- const ti = DB.transactions.findIndex(t=>t.id==trxId);
+ // FIX: gunakan editId langsung sebagai string — jangan parseInt() karena ID baru berupa UUID
+ trxId = editId;
+ const ti = DB.transactions.findIndex(t=>String(t.id)==String(trxId));
  DB.transactions[ti] = {id:trxId, company_id:co(), date, description:desc, counterparty};
- const oldJE = DB.journal_entries.filter(je=>je.transaction_id==trxId);
+ const oldJE = DB.journal_entries.filter(je=>String(je.transaction_id)==String(trxId));
  // Pertahankan journal_no lama saat edit agar nomor tidak berubah
  const oldJournalNo = oldJE[0]?.journal_no || null;
- oldJE.forEach(je=>{ DB.journal_details = DB.journal_details.filter(jd=>jd.journal_id!=je.id); });
- DB.journal_entries = DB.journal_entries.filter(je=>je.transaction_id!=trxId);
+ oldJE.forEach(je=>{ DB.journal_details = DB.journal_details.filter(jd=>String(jd.journal_id)!=String(je.id)); });
+ DB.journal_entries = DB.journal_entries.filter(je=>String(je.transaction_id)!=String(trxId));
  const jeId = genId();
  DB.journal_entries.push({id:jeId, company_id:co(), transaction_id:trxId, date, description:desc,
  journal_no: oldJournalNo // pertahankan nomor lama
@@ -3784,7 +3890,7 @@ function saveTransaction() {
  details.forEach(d=>{
  DB.journal_details.push({id:genId(), journal_id:jeId, account_id:d.account_id, debit:d.debit, kredit:d.kredit});
  });
- if (editId) reverseIntegration(parseInt(editId));
+ if (editId) reverseIntegration(trxId);
  integrateTransaction(trxId, jeId, date, desc, details, counterparty);
  const accsForCheck = coFilter(DB.accounts);
  cekIsolasiSAP(details, accsForCheck);
@@ -4363,7 +4469,7 @@ function savePenyesuaian() {
  // Data lama — buat jurnal baru dan tautkan ke record penyesuaian
  const tidNew = genId(); const jeidNew = genId();
  DB.transactions.push({id:tidNew, company_id:co(), date, description:'[AJE] '+desc, _source:'penyesuaian'});
- DB.journal_entries.push({id:jeidNew, company_id:co(), transaction_id:tidNew, date, description:'[AJE] '+desc, _source:'penyesuaian'});
+ DB.journal_entries.push({id:jeidNew, company_id:co(), transaction_id:tidNew, date, description:'[AJE] '+desc, journal_no:genJournalNo(), _source:'penyesuaian'});
  DB.journal_details.push({id:genId(), journal_id:jeidNew, account_id:dAcc, debit:amount, kredit:0});
  DB.journal_details.push({id:genId(), journal_id:jeidNew, account_id:kAcc, debit:0, kredit:amount});
  DB.penyesuaian[idx].ref_journal_id = jeidNew;
@@ -4381,7 +4487,7 @@ function savePenyesuaian() {
  const tidAdj = genId();
  const jeidAdj = genId();
  DB.transactions.push({id:tidAdj, company_id:co(), date, description:'[AJE] '+desc, _source:'penyesuaian'});
- DB.journal_entries.push({id:jeidAdj, company_id:co(), transaction_id:tidAdj, date, description:'[AJE] '+desc, _source:'penyesuaian'});
+ DB.journal_entries.push({id:jeidAdj, company_id:co(), transaction_id:tidAdj, date, description:'[AJE] '+desc, journal_no:genJournalNo(), _source:'penyesuaian'});
  DB.journal_details.push({id:genId(), journal_id:jeidAdj, account_id:dAcc, debit:amount, kredit:0});
  DB.journal_details.push({id:genId(), journal_id:jeidAdj, account_id:kAcc, debit:0, kredit:amount});
  DB.penyesuaian.push({id:newId, company_id:co(), date, description:desc,
@@ -4541,9 +4647,17 @@ function renderHutang() {
  <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${h.jatuh_tempo||'—'}${lewat?' ':dekat?' ⏰':''}</td>
  <td class="td-mono" style="font-weight:700;">${fmtC(h.sisa)}</td>
  <td><span class="badge-status ${h.status=='Lunas'?'badge-lunas':h.sisa<h.jumlah?'badge-partial':'badge-belum'}">${h.status}</span></td>
- <td><button class="btn btn-secondary btn-sm" onclick="openHutangEdit('${h.id}')">Edit</button>
- ${h.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang','${h.id}')">Bayar</button>`:''}
- <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang','${h.id}')">Hapus</button></td>
+ <td>
+ <div class="action-menu">
+   <button class="action-menu-btn" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+   <div class="action-dropdown">
+     <button class="action-drop-item item-primary" onclick="runAction(()=>openHutangEdit('${h.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+     ${h.status!='Lunas'?`<button class="action-drop-item item-success" onclick="runAction(()=>openBayar('hutang','${h.id}'))"><span class="drop-icon">💳</span>Bayar</button>`:''}
+     <div class="action-drop-divider"></div>
+     <button class="action-drop-item item-danger" onclick="runAction(()=>deleteRecord('hutang','${h.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+   </div>
+ </div>
+ </td>
  </tr>`;
  }).join('');
 }
@@ -4591,13 +4705,13 @@ function saveHutang() {
  if (!confirm(`Selisih: Tanggal (${tanggal}) di luar periode aktif ${co_hut.period_start} s/d ${co_hut.period_end}.\nLanjutkan?`)) return;
  }
  }
- const oldRec_hut = id ? DB.hutang.find(h=>h.id==parseInt(id)) : null;
+ const oldRec_hut = id ? DB.hutang.find(h=>String(h.id)==String(id)) : null;
  const kategori=document.getElementById('hutang-kategori').value||'pembelian_kredit';
  const keterangan=document.getElementById('hutang-keterangan').value.trim();
- const obj={id:id?parseInt(id):genId(),company_id:co(),nama_kreditur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('hutang-jatuh').value,sisa:id?(oldRec_hut?.sisa??jumlah):jumlah,status:id?(oldRec_hut?.status||'Belum Lunas'):'Belum Lunas',kategori,keterangan};
+ const obj={id:id?id:genId(),company_id:co(),nama_kreditur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('hutang-jatuh').value,sisa:id?(oldRec_hut?.sisa??jumlah):jumlah,status:id?(oldRec_hut?.status||'Belum Lunas'):'Belum Lunas',kategori,keterangan};
  if (oldRec_hut?.ref_journal_id) obj.ref_journal_id=oldRec_hut.ref_journal_id;
  if (id) {
- const i=DB.hutang.findIndex(h=>h.id==parseInt(id));
+ const i=DB.hutang.findIndex(h=>String(h.id)==String(id));
  if (i>=0) DB.hutang[i]=obj;
  if (oldRec_hut?.ref_journal_id && oldRec_hut.jumlah !== jumlah) {
  DB.journal_details.filter(d=>d.journal_id===oldRec_hut.ref_journal_id).forEach(d=>{
@@ -4655,7 +4769,7 @@ function saveHutang() {
  if (debitAcc && kreditAcc) {
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:descJurnal,_source:"auto_module"});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:descJurnal,_source:"auto_module"});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:descJurnal,journal_no:genJournalNo(), _source:"auto_module"});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:debitAcc.id,debit:jumlah,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kreditAcc.id,debit:0,kredit:jumlah});
  DB.hutang[DB.hutang.length-1].ref_journal_id=jeid;
@@ -4701,9 +4815,17 @@ function renderPiutang() {
  <td style="color:${lewat?'var(--danger)':dekat?'#f59e0b':'inherit'};font-weight:${lewat||dekat?700:400};">${p.jatuh_tempo||'—'}${lewat?' ':dekat?' ⏰':''}</td>
  <td class="td-mono" style="font-weight:700;">${fmtC(p.sisa)}</td>
  <td><span class="badge-status ${p.status=='Lunas'?'badge-lunas':p.sisa<p.jumlah?'badge-partial':'badge-belum'}">${p.status}</span></td>
- <td><button class="btn btn-secondary btn-sm" onclick="openPiutangEdit('${p.id}')">Edit</button>
- ${p.status!='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang','${p.id}')">Terima</button>`:''}
- <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang','${p.id}')">Hapus</button></td>
+ <td>
+ <div class="action-menu">
+   <button class="action-menu-btn" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+   <div class="action-dropdown">
+     <button class="action-drop-item item-primary" onclick="runAction(()=>openPiutangEdit('${p.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+     ${p.status!='Lunas'?`<button class="action-drop-item item-success" onclick="runAction(()=>openBayar('piutang','${p.id}'))"><span class="drop-icon">💰</span>Terima</button>`:''}
+     <div class="action-drop-divider"></div>
+     <button class="action-drop-item item-danger" onclick="runAction(()=>deleteRecord('piutang','${p.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+   </div>
+ </div>
+ </td>
  </tr>`;
  }).join('');
 }
@@ -4751,13 +4873,13 @@ function savePiutang() {
  if (!confirm(`Selisih: Tanggal (${tanggal}) di luar periode aktif ${co_piu.period_start} s/d ${co_piu.period_end}.\nLanjutkan?`)) return;
  }
  }
- const oldRec_piu = id ? DB.piutang.find(p=>p.id==parseInt(id)) : null;
+ const oldRec_piu = id ? DB.piutang.find(p=>String(p.id)==String(id)) : null;
  const kategori_piu=document.getElementById('piutang-kategori').value||'penjualan_kredit';
  const keterangan_piu=document.getElementById('piutang-keterangan').value.trim();
- const obj={id:id?parseInt(id):genId(),company_id:co(),nama_debitur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('piutang-jatuh').value,sisa:id?(oldRec_piu?.sisa??jumlah):jumlah,status:id?(oldRec_piu?.status||'Belum Lunas'):'Belum Lunas',kategori:kategori_piu,keterangan:keterangan_piu};
+ const obj={id:id?id:genId(),company_id:co(),nama_debitur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('piutang-jatuh').value,sisa:id?(oldRec_piu?.sisa??jumlah):jumlah,status:id?(oldRec_piu?.status||'Belum Lunas'):'Belum Lunas',kategori:kategori_piu,keterangan:keterangan_piu};
  if (oldRec_piu?.ref_journal_id) obj.ref_journal_id=oldRec_piu.ref_journal_id;
  if (id) {
- const i=DB.piutang.findIndex(p=>p.id==parseInt(id));
+ const i=DB.piutang.findIndex(p=>String(p.id)==String(id));
  if (i>=0) DB.piutang[i]=obj;
  if (oldRec_piu?.ref_journal_id && oldRec_piu.jumlah !== jumlah) {
  DB.journal_details.filter(d=>d.journal_id===oldRec_piu.ref_journal_id).forEach(d=>{
@@ -4807,7 +4929,7 @@ function savePiutang() {
  if (debitAcc_piu && kreditAcc_piu) {
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:descJurnal_piu,_source:"auto_module"});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:descJurnal_piu,_source:"auto_module"});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:descJurnal_piu,journal_no:genJournalNo(), _source:"auto_module"});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:debitAcc_piu.id,debit:jumlah,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kreditAcc_piu.id,debit:0,kredit:jumlah});
  DB.piutang[DB.piutang.length-1].ref_journal_id=jeid;
@@ -4871,7 +4993,7 @@ function onBayarFakturChange() {
  document.getElementById('bayar-target-id').value = targetId;
  if (!targetId) {
  // FIFO mode — ambil sisa dari faktur terlama
- const origId = parseInt(document.getElementById('bayar-id').value);
+ const origId = document.getElementById('bayar-id').value;
  const rec = DB[type]?.find(x=>x.id==origId);
  if (rec) document.getElementById('bayar-amount').max = rec.sisa;
  return;
@@ -4888,8 +5010,8 @@ function processBayar() {
  const _tanggalB = document.getElementById('bayar-tanggal')?.value || new Date().toISOString().split('T')[0];
  if (cekPeriodeLock(_tanggalB)) return;
  const type = document.getElementById('bayar-type').value;
- const origId = parseInt(document.getElementById('bayar-id').value);
- const targetId = parseInt(document.getElementById('bayar-target-id').value) || origId;
+ const origId = document.getElementById('bayar-id').value;
+ const targetId = document.getElementById('bayar-target-id').value || origId;
  const amount = parseFloat(document.getElementById('bayar-amount').value) || 0;
  if (!amount || amount <= 0) { toast('Masukkan jumlah pembayaran yang valid','error'); return; }
  const arr = DB[type];
@@ -4920,7 +5042,7 @@ function processBayar() {
  // _source='bayar_modal' → integrateTransaction akan SKIP modul hutang/piutang
  // untuk mencegah double-counting (saldo sudah dikurangi di baris atas via arr[i].sisa)
  DB.transactions.push({id:tid,company_id:co(),date:today,description:desc,_source:'bayar_modal'});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,_source:'bayar_modal'});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,journal_no:genJournalNo(), _source:'bayar_modal'});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:bayar,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:bayar});
  toast(` Hutang dibayar Rp ${bayar.toLocaleString('id-ID')} + jurnal: ${hutAcc.name}(D)/${kasAcc.name}(K)`,'success',4000);
@@ -4936,7 +5058,7 @@ function processBayar() {
  const tid=genId(),jeid=genId();
  // _source='bayar_modal' → integrateTransaction akan SKIP modul hutang/piutang
  DB.transactions.push({id:tid,company_id:co(),date:today,description:desc,_source:'bayar_modal'});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,_source:'bayar_modal'});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:today,description:desc,journal_no:genJournalNo(), _source:'bayar_modal'});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:bayar,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:piuAcc.id,debit:0,kredit:bayar});
  toast(` Piutang diterima Rp ${bayar.toLocaleString('id-ID')} + jurnal: ${kasAcc.name}(D)/${piuAcc.name}(K)`,'success',4000);
@@ -5032,12 +5154,19 @@ function renderPersediaan() {
  <td><span style="font-size:11px;color:${(p.stok_minimum||0)>0?'var(--text2)':'var(--text3)'};">${(p.stok_minimum||0)>0?p.stok_minimum+' unit':'—'}</span></td>
  <td><span class="badge-status ${p.metode==='kredit'?'badge-belum':'badge-lunas'}">${p.metode==='kredit'?'Kredit':'Tunai'}</span></td>
  <td>
- ${!needsQty?`<button class="btn btn-success btn-sm" onclick="openJualPersediaan('${p.id}')" title="Catat penjualan">Jual</button>`:''}
- ${!needsQty?`<button class="btn btn-warning btn-sm" onclick="openReturPenjualan('${p.id}')" title="Catat retur penjualan">Retur</button>`:''}
- ${!needsQty?`<button class="btn btn-sm" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#dc2626;font-size:11px;" onclick="openBebankanPersediaan('${p.id}')" title="Bebankan persediaan (rusak/terpakai/susut)">⬇ Beban</button>`:''}
- ${!needsQty?`<button class="btn btn-sm" style="background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#7c3aed;font-size:11px;" onclick="openKonversiAset('${p.id}')" title="Konversi persediaan menjadi aset tetap (PSAK 16)">→ Aset</button>`:''}
- <button class="btn ${needsQty?'btn-primary':'btn-secondary'} btn-sm" onclick="editPersediaan('${p.id}')">${needsQty?'Isi Qty':'Edit'}</button>
- <button class="btn btn-danger btn-sm" onclick="deletePersediaan('${p.id}')">Hapus</button>
+ <div class="action-menu">
+   <button class="action-menu-btn" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+   <div class="action-dropdown">
+     ${!needsQty?`<button class="action-drop-item item-success" onclick="runAction(()=>openJualPersediaan('${p.id}'))"><span class="drop-icon">💵</span>Jual</button>`:''}
+     ${!needsQty?`<button class="action-drop-item item-warning" onclick="runAction(()=>openReturPenjualan('${p.id}'))"><span class="drop-icon">↩️</span>Retur Penjualan</button>`:''}
+     ${!needsQty?`<button class="action-drop-item item-danger" style="color:#dc2626;" onclick="runAction(()=>openBebankanPersediaan('${p.id}'))"><span class="drop-icon">⬇️</span>Bebankan</button>`:''}
+     ${!needsQty?`<button class="action-drop-item item-purple" onclick="runAction(()=>openKonversiAset('${p.id}'))"><span class="drop-icon">🔄</span>Konversi → Aset</button>`:''}
+     ${!needsQty?`<div class="action-drop-divider"></div>`:''}
+     <button class="action-drop-item item-primary" onclick="runAction(()=>editPersediaan('${p.id}'))"><span class="drop-icon">✏️</span>${needsQty?'Isi Qty':'Edit'}</button>
+     <div class="action-drop-divider"></div>
+     <button class="action-drop-item item-danger" onclick="runAction(()=>deletePersediaan('${p.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+   </div>
+ </div>
  </td>
  </tr>`;
  }).join('');
@@ -5102,10 +5231,10 @@ function savePersediaan() {
  }
  }
 
- const obj={id:id?parseInt(id):genId(),company_id:co(),nama_barang:nama,jumlah,harga_satuan:harga,total_nilai:jumlah*harga,tanggal,metode,metode_penilaian:metodePenilaian,stok_minimum:stokMin,keterangan:ket,nama_kreditur:kreditur,jatuh_tempo:jatuhTempo};
+ const obj={id:id?id:genId(),company_id:co(),nama_barang:nama,jumlah,harga_satuan:harga,total_nilai:jumlah*harga,tanggal,metode,metode_penilaian:metodePenilaian,stok_minimum:stokMin,keterangan:ket,nama_kreditur:kreditur,jatuh_tempo:jatuhTempo};
  if (id) {
- const oldRec=DB.persediaan.find(x=>x.id==parseInt(id));
- const i=DB.persediaan.findIndex(x=>x.id==parseInt(id));
+ const oldRec=DB.persediaan.find(x=>String(x.id)==String(id));
+ const i=DB.persediaan.findIndex(x=>String(x.id)==String(id));
  // Pertahankan ref_journal_id agar tidak putus
  if (oldRec?.ref_journal_id) obj.ref_journal_id=oldRec.ref_journal_id;
  DB.persediaan[i]=obj;
@@ -5153,7 +5282,7 @@ function savePersediaan() {
  const desc=ket||`Pembelian persediaan tunai: ${nama}`;
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,journal_no:genJournalNo(), _source:"auto_module"});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:persAcc.id,debit:nilai,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:nilai});
  DB.persediaan[DB.persediaan.length-1].ref_journal_id=jeid;
@@ -5162,7 +5291,7 @@ function savePersediaan() {
  const desc=ket||`Pembelian persediaan kredit: ${nama}`;
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,journal_no:genJournalNo(), _source:"auto_module"});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:persAcc.id,debit:nilai,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:nilai});
  // Otomatis catat di Hutang juga
@@ -5239,7 +5368,7 @@ function openJualPersediaan(id) {
 }
 
 function updateJualPreview() {
- const id=parseInt(document.getElementById('jual-pers-id').value);
+ const id=document.getElementById('jual-pers-id').value;
  const p=DB.persediaan.find(x=>x.id==id);
  if(!p) return;
  const qty=parseFloat(document.getElementById('jual-pers-qty').value)||0;
@@ -5301,7 +5430,7 @@ function updateJualPreview() {
 function processJualPersediaan() {
  // Modal membuka dengan id batch yang dipilih, tapi FIFO harus lintas semua batch
  // dengan nama barang yang sama di perusahaan ini.
- const id=parseInt(document.getElementById('jual-pers-id').value);
+ const id=document.getElementById('jual-pers-id').value;
  const qty=parseFloat(document.getElementById('jual-pers-qty').value)||0;
  const hargaJual=parseFloat(document.getElementById('jual-pers-harga').value)||0;
  const metode=document.getElementById('jual-pers-metode').value;
@@ -5390,7 +5519,7 @@ function processJualPersediaan() {
  const desc=`Penjualan ${namaBarang} (${qty} unit) kpd ${pembeli}`;
  const tid=genId(), jeid=genId();
  DB.transactions.push({id:tid, company_id:co(), date:tanggal, description:desc, _source:'auto_module'});
- DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, _source:'auto_module'});
+ DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, journal_no:genJournalNo(), _source:'auto_module'});
 
  // FIX BUG 2: Penjualan dan HPP dalam satu jurnal compound (bukan 2 transaksi terpisah)
  if (canJurnalJual) {
@@ -5461,7 +5590,7 @@ function openReturPenjualan(id) {
 }
 
 function updateReturPreview() {
- const id = parseInt(document.getElementById('retur-pers-id').value);
+ const id = document.getElementById('retur-pers-id').value;
  const qty = parseFloat(document.getElementById('retur-qty').value)||0;
  const hargaJual = parseFloat(document.getElementById('retur-harga-jual').value)||0;
  const metode = document.getElementById('retur-metode').value;
@@ -5500,7 +5629,7 @@ function processReturPenjualan() {
  // [FIX] Cek periode lock sebelum proses retur
  const _tanggalR = document.getElementById('retur-tanggal')?.value || new Date().toISOString().split('T')[0];
  if (cekPeriodeLock(_tanggalR)) return;
- const id = parseInt(document.getElementById('retur-pers-id').value);
+ const id = document.getElementById('retur-pers-id').value;
  const qty = parseFloat(document.getElementById('retur-qty').value)||0;
  const hargaJual = parseFloat(document.getElementById('retur-harga-jual').value)||0;
  const metode = document.getElementById('retur-metode').value;
@@ -5616,7 +5745,7 @@ function openBebankanPersediaan(id) {
 }
 
 function updateBebanPersPreview() {
- const id  = parseInt(document.getElementById('beban-pers-id').value);
+ const id  = document.getElementById('beban-pers-id').value;
  const qty = parseFloat(document.getElementById('beban-pers-qty').value)||0;
  const p   = DB.persediaan.find(x => x.id == id);
  const box = document.getElementById('beban-pers-preview');
@@ -5678,7 +5807,7 @@ function updateBebanPersPreview() {
 }
 
 function processBebankanPersediaan() {
- const id     = parseInt(document.getElementById('beban-pers-id').value);
+ const id     = document.getElementById('beban-pers-id').value;
  const qty    = parseFloat(document.getElementById('beban-pers-qty').value)||0;
  const tanggal= document.getElementById('beban-pers-tanggal').value || new Date().toISOString().split('T')[0];
  const jenis  = document.getElementById('beban-pers-jenis').value;
@@ -5738,7 +5867,7 @@ function processBebankanPersediaan() {
  if (bebanAcc && persAcc) {
   const tid = genId(), jeid = genId();
   DB.transactions.push({id:tid, company_id:co(), date:tanggal, description:desc, _source:'auto_module'});
-  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, _source:'auto_module'});
+  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, journal_no:genJournalNo(), _source:'auto_module'});
   DB.journal_details.push({id:genId(), journal_id:jeid, account_id:bebanAcc.id, debit:nilaiBeban, kredit:0});
   DB.journal_details.push({id:genId(), journal_id:jeid, account_id:persAcc.id,  debit:0, kredit:nilaiBeban});
  } else {
@@ -5779,7 +5908,7 @@ function openJualAset(id) {
 }
 
 function updateJualAsetPreview() {
- const id = parseInt(document.getElementById('jual-aset-id').value);
+ const id = document.getElementById('jual-aset-id').value;
  const a  = DB.aset_tetap.find(x => x.id == id);
  const box = document.getElementById('jual-aset-preview');
  if (!a || !box) return;
@@ -5836,7 +5965,7 @@ function updateJualAsetPreview() {
 }
 
 function processJualAset() {
- const id        = parseInt(document.getElementById('jual-aset-id').value);
+ const id        = document.getElementById('jual-aset-id').value;
  const hargaJual = parseFloat(document.getElementById('jual-aset-harga').value)||0;
  const tanggal   = document.getElementById('jual-aset-tanggal').value || new Date().toISOString().split('T')[0];
  const metode    = document.getElementById('jual-aset-metode').value;
@@ -5866,7 +5995,7 @@ function processJualAset() {
  if (debitAcc && asetAcc) {
   const tid = genId(), jeid = genId();
   DB.transactions.push({id:tid, company_id:co(), date:tanggal, description:desc, _source:'auto_module'});
-  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, _source:'auto_module'});
+  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, journal_no:genJournalNo(), _source:'auto_module'});
   // D: Kas/Piutang
   DB.journal_details.push({id:genId(), journal_id:jeid, account_id:debitAcc.id, debit:hargaJual, kredit:0});
   // D: Akumulasi Penyusutan
@@ -5962,7 +6091,7 @@ function _updateHapusAsetPreview(a) {
 }
 
 function processHapusAset() {
- const id     = parseInt(document.getElementById('hapus-aset-id').value);
+ const id     = document.getElementById('hapus-aset-id').value;
  const tanggal= document.getElementById('hapus-aset-tanggal').value || new Date().toISOString().split('T')[0];
  const alasan = document.getElementById('hapus-aset-alasan').value;
  const ket    = document.getElementById('hapus-aset-ket').value.trim();
@@ -5984,7 +6113,7 @@ function processHapusAset() {
  if (asetAcc) {
   const tid = genId(), jeid = genId();
   DB.transactions.push({id:tid, company_id:co(), date:tanggal, description:desc, _source:'auto_module'});
-  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, _source:'auto_module'});
+  DB.journal_entries.push({id:jeid, company_id:co(), transaction_id:tid, date:tanggal, description:desc, journal_no:genJournalNo(), _source:'auto_module'});
   if (akumAcc && akum > 0)
    DB.journal_details.push({id:genId(), journal_id:jeid, account_id:akumAcc.id, debit:akum, kredit:0});
   if (rugiAcc && nb > 0)
@@ -6099,7 +6228,7 @@ function updateKonversiPreview() {
 
 function processKonversiAset() {
  if (!requireAdmin('Konversi Persediaan ke Aset Tetap')) return;
- const persId = parseInt(document.getElementById('konversi-pers-id').value);
+ const persId = document.getElementById('konversi-pers-id').value;
  const p = DB.persediaan.find(x => x.id === persId);
  if (!p) return;
 
@@ -6205,7 +6334,7 @@ function processKonversiAset() {
  const desc = ket || `Konversi persediaan → aset tetap: ${namaAset} (${qty} unit, ${fmtC(nilaiKonversi)})`;
  const tid = genId(), jeid = genId();
  DB.transactions.push({ id: tid, company_id: co(), date: tanggal, description: desc, _source: 'auto_module' });
- DB.journal_entries.push({ id: jeid, company_id: co(), transaction_id: tid, date: tanggal, description: desc, _source: 'auto_module' });
+ DB.journal_entries.push({ id: jeid, company_id: co(), transaction_id: tid, date: tanggal, description: desc, journal_no:genJournalNo(), _source: 'auto_module' });
 
  if (asetAcc && persAcc) {
   DB.journal_details.push({ id: genId(), journal_id: jeid, account_id: asetAcc.id, debit: nilaiKonversi, kredit: 0 });
@@ -6387,7 +6516,19 @@ function renderPerlengkapan() {
  const tbody = document.getElementById('perlengkapan-tbody');
  if (!ps.length) { tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada perlengkapan.</p></div></td></tr>`; return; }
  tbody.innerHTML = ps.map(p=>`
- <tr> <td style="font-weight:600;">${p.nama_item}</td> <td class="td-mono">${p.jumlah||0}</td> <td class="td-mono">${fmtC(p.nilai)}</td> <td>${p.tanggal||'—'}</td> <td><span class="badge-status ${p.metode==='kredit'?'badge-belum':'badge-lunas'}">${p.metode==='kredit'?'Kredit':'Tunai'}</span></td> <td> <button class="btn btn-warning btn-sm" onclick="openCatatPemakaian('${p.id}')">Pakai</button> <button class="btn btn-secondary btn-sm" onclick="editPerlengkapan('${p.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePerlengkapan('${p.id}')">Hapus</button> </td> </tr> `).join('');
+ <tr> <td style="font-weight:600;">${p.nama_item}</td> <td class="td-mono">${p.jumlah||0}</td> <td class="td-mono">${fmtC(p.nilai)}</td> <td>${p.tanggal||'—'}</td> <td><span class="badge-status ${p.metode==='kredit'?'badge-belum':'badge-lunas'}">${p.metode==='kredit'?'Kredit':'Tunai'}</span></td>
+ <td>
+ <div class="action-menu">
+   <button class="action-menu-btn" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+   <div class="action-dropdown">
+     <button class="action-drop-item item-warning" onclick="runAction(()=>openCatatPemakaian('${p.id}'))"><span class="drop-icon">📦</span>Catat Pemakaian</button>
+     <div class="action-drop-divider"></div>
+     <button class="action-drop-item item-primary" onclick="runAction(()=>editPerlengkapan('${p.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+     <div class="action-drop-divider"></div>
+     <button class="action-drop-item item-danger" onclick="runAction(()=>deletePerlengkapan('${p.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+   </div>
+ </div>
+ </td> </tr> `).join('');
 }
 
 function openPerlengkapanModal() {
@@ -6405,7 +6546,7 @@ function openPerlengkapanModal() {
 function savePerlengkapan() {
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
  // [FIX] Cek periode lock
- const _tglPerl = document.getElementById('perlengkapan-tanggal')?.value || new Date().toISOString().split('T')[0];
+ const _tglPerl = document.getElementById('perl-tanggal')?.value || new Date().toISOString().split('T')[0];
  if (cekPeriodeLock(_tglPerl)) return;
  const nama=document.getElementById('perl-nama').value.trim();
  if (!nama) { toast('Nama item wajib','error'); return; }
@@ -6417,14 +6558,14 @@ function savePerlengkapan() {
   const jatuhTempo=(metode==='kredit'?(document.getElementById('perl-jatuh-tempo').value||''):'');
   const ket=document.getElementById('perl-ket').value.trim();
   const id=document.getElementById('perl-edit-id').value;
- const obj={id:id?parseInt(id):genId(),company_id:co(),nama_item:nama,jumlah,nilai,
+ const obj={id:id?id:genId(),company_id:co(),nama_item:nama,jumlah,nilai,
  // FIX BUG #5: Selalu inisialisasi total_nilai = nilai agar konsisten dengan field
  // yang digunakan di renderPerlengkapanKartu() dan simpanPemakaianPerlengkapan()
  total_nilai: nilai,
  tanggal,metode,keterangan:ket,nama_kreditur:kreditur,jatuh_tempo:jatuhTempo};
  if (id) {
- const oldRec=DB.perlengkapan.find(x=>x.id==parseInt(id));
- const i=DB.perlengkapan.findIndex(x=>x.id==parseInt(id));
+ const oldRec=DB.perlengkapan.find(x=>String(x.id)==String(id));
+ const i=DB.perlengkapan.findIndex(x=>String(x.id)==String(id));
  if (oldRec?.ref_journal_id) obj.ref_journal_id=oldRec.ref_journal_id;
  DB.perlengkapan[i]=obj;
  if (oldRec?.ref_journal_id) {
@@ -6456,7 +6597,7 @@ function savePerlengkapan() {
  const desc=ket||`Pembelian perlengkapan tunai: ${nama}`;
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,journal_no:genJournalNo(), _source:"auto_module"});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:perlAcc.id,debit:nilai,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:nilai});
  DB.perlengkapan[DB.perlengkapan.length-1].ref_journal_id=jeid;
@@ -6465,7 +6606,7 @@ function savePerlengkapan() {
  const desc=ket||`Pembelian perlengkapan kredit: ${nama}`;
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,journal_no:genJournalNo(), _source:"auto_module"});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:perlAcc.id,debit:nilai,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:nilai});
  DB.hutang.push({id:genId(),company_id:co(),nama_kreditur:kreditur||nama,jumlah:nilai,tanggal,jatuh_tempo:jatuhTempo,sisa:nilai,status:'Belum Lunas',kategori:'pembelian_kredit',keterangan:ket||'Pembelian perlengkapan kredit',ref_journal_id:jeid});
@@ -6546,7 +6687,7 @@ function openCatatPemakaian(id) {
 }
 
 function simpanPemakaianPerlengkapan() {
- const id = parseInt(document.getElementById('pakai-perl-id').value);
+ const id = document.getElementById('pakai-perl-id').value;
  const nilai = parseFloat(document.getElementById('pakai-perl-nilai').value)||0;
  const tanggal = document.getElementById('pakai-perl-tanggal').value||new Date().toISOString().split('T')[0];
  const ket = document.getElementById('pakai-perl-ket').value.trim();
@@ -6723,7 +6864,21 @@ function renderAsetTetap() {
  ? `<span class="badge-status" style="background:#fef3c7;color:#92400e;">Saldo Menurun${a.tarif_sm?` (${a.tarif_sm}%)`:''}</span>`
  : `<span class="badge-status" style="background:#dbeafe;color:#1e40af;">Garis Lurus</span>`;
  return `
- <tr> <td style="font-weight:600;">${a.nama_aset}</td> <td class="td-mono">${fmtC(a.harga_perolehan)}</td> <td>${a.tahun_perolehan||'—'}</td> <td>${a.masa_manfaat||'—'}</td> <td class="td-mono">${fmtC(a.akumulasi_penyusutan||0)}</td> <td class="td-mono" style="font-weight:700;">${fmtC(a.nilai_buku||a.harga_perolehan)}</td> <td class="td-mono">${fmtC(a.beban_penyusutan||0)}</td> <td class="td-mono">${isSM?(a.tarif_sm||'—')+'%':'—'}</td> <td>${a.tanggal||'—'}</td> <td>${metodeSusutLabel}</td> <td> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset('${a.id}')" title="Lihat Jadwal Penyusutan">Jadwal</button> <button class="btn btn-success btn-sm" onclick="openJualAset('${a.id}')" title="Catat penjualan aset tetap">Jual</button> <button class="btn btn-sm" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#dc2626;font-size:11px;" onclick="openHapusAset('${a.id}')" title="Hapus/write-off aset tetap">Write-off</button> <button class="btn btn-secondary btn-sm" onclick="editAset('${a.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteAset('${a.id}')">Hapus</button> </td> </tr>`;
+ <tr> <td style="font-weight:600;">${a.nama_aset}</td> <td class="td-mono">${fmtC(a.harga_perolehan)}</td> <td>${a.tahun_perolehan||'—'}</td> <td>${a.masa_manfaat||'—'}</td> <td class="td-mono">${fmtC(a.akumulasi_penyusutan||0)}</td> <td class="td-mono" style="font-weight:700;">${fmtC(a.nilai_buku||a.harga_perolehan)}</td> <td class="td-mono">${fmtC(a.beban_penyusutan||0)}</td> <td class="td-mono">${isSM?(a.tarif_sm||'—')+'%':'—'}</td> <td>${a.tanggal||'—'}</td> <td>${metodeSusutLabel}</td>
+ <td>
+ <div class="action-menu">
+   <button class="action-menu-btn" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+   <div class="action-dropdown">
+     <button class="action-drop-item item-primary" onclick="runAction(()=>lihatJadwalAset('${a.id}'))"><span class="drop-icon">📅</span>Jadwal Penyusutan</button>
+     <button class="action-drop-item item-success" onclick="runAction(()=>openJualAset('${a.id}'))"><span class="drop-icon">💵</span>Jual Aset</button>
+     <button class="action-drop-item item-danger" style="color:#dc2626;" onclick="runAction(()=>openHapusAset('${a.id}'))"><span class="drop-icon">📝</span>Write-off</button>
+     <div class="action-drop-divider"></div>
+     <button class="action-drop-item item-primary" onclick="runAction(()=>editAset('${a.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+     <div class="action-drop-divider"></div>
+     <button class="action-drop-item item-danger" onclick="runAction(()=>deleteAset('${a.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+   </div>
+ </div>
+ </td> </tr>`;
  }).join('');
 }
 
@@ -6771,7 +6926,7 @@ function saveAset() {
  const ket=document.getElementById('aset-ket').value.trim();
  const hargaEfektif=harga+tambah-kurang;
  const id=document.getElementById('aset-edit-id').value;
- const existingAkum = id?(DB.aset_tetap.find(x=>x.id==parseInt(id))?.akumulasi_penyusutan||0):0;
+ const existingAkum = id?(DB.aset_tetap.find(x=>String(x.id)==String(id))?.akumulasi_penyusutan||0):0;
  const nilaiBookAwal = hargaEfektif - existingAkum;
 
  // Hitung beban penyusutan tahun pertama sesuai metode
@@ -6785,7 +6940,7 @@ function saveAset() {
  }
 
  const obj={
- id:id?parseInt(id):genId(), company_id:co(), nama_aset:nama,
+ id:id?id:genId(), company_id:co(), nama_aset:nama,
  harga_perolehan:harga, tahun_perolehan:parseInt(document.getElementById('aset-tahun').value)||new Date().getFullYear(),
  masa_manfaat:masa, akumulasi_penyusutan:existingAkum,
  beban_penyusutan:beban, tambahan_aset:tambah, pengurangan_aset:kurang,
@@ -6796,8 +6951,8 @@ function saveAset() {
  nilai_residu: metodePenyusutan==='garis-lurus'?nilaiResidu:0
  };
  if (id) {
- const oldRec=DB.aset_tetap.find(x=>x.id==parseInt(id));
- const i=DB.aset_tetap.findIndex(x=>x.id==parseInt(id));
+ const oldRec=DB.aset_tetap.find(x=>String(x.id)==String(id));
+ const i=DB.aset_tetap.findIndex(x=>String(x.id)==String(id));
  if (oldRec?.ref_journal_id) obj.ref_journal_id=oldRec.ref_journal_id;
  DB.aset_tetap[i]=obj;
  if (oldRec?.ref_journal_id) {
@@ -6834,7 +6989,7 @@ function saveAset() {
  const desc=ket||`Pembelian aset tetap tunai: ${nama}`;
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,journal_no:genJournalNo(), _source:"auto_module"});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:asetAcc.id,debit:harga,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:kasAcc.id,debit:0,kredit:harga});
  DB.aset_tetap[DB.aset_tetap.length-1].ref_journal_id=jeid;
@@ -6843,7 +6998,7 @@ function saveAset() {
  const desc=ket||`Pembelian aset tetap kredit: ${nama}`;
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:desc,_source:"auto_module"});
- DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,_source:"auto_module"});
+ DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:desc,journal_no:genJournalNo(), _source:"auto_module"});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:asetAcc.id,debit:harga,kredit:0});
  DB.journal_details.push({id:genId(),journal_id:jeid,account_id:hutAcc.id,debit:0,kredit:harga});
  DB.hutang.push({id:genId(),company_id:co(),nama_kreditur:krediturAset||nama,jumlah:harga,tanggal,jatuh_tempo:jatuhTempoAset,sisa:harga,status:'Belum Lunas',kategori:'pembelian_kredit',keterangan:ket||'Pembelian aset tetap kredit',ref_journal_id:jeid});
@@ -8851,6 +9006,7 @@ function postingJurnalPenutup() {
  id: jeid, company_id: co(), transaction_id: tid,
  date: tanggal,
  description: `${MARKER} — ${desc}`,
+ journal_no: genJournalNo(),
  _source: 'jurnal_penutup'
  });
  details.forEach(d => {
@@ -10831,7 +10987,7 @@ function loadSampleData() {
  const tid = nid();
  DB.transactions.push({id:tid,company_id:c1,date,description:desc});
  const jeid = nid();
- DB.journal_entries.push({id:jeid,company_id:c1,transaction_id:tid,date,description:desc});
+ DB.journal_entries.push({id:jeid,company_id:c1,transaction_id:tid,date,description:desc, journal_no:genJournalNo()});
  details.forEach(d=>DB.journal_details.push({id:nid(),journal_id:jeid,account_id:d.acc,debit:d.debit,kredit:d.kredit}));
  }
 
@@ -10983,7 +11139,7 @@ function loadSampleData() {
  const tid = nid();
  DB.transactions.push({id:tid,company_id:c2,date,description:desc});
  const jeid = nid();
- DB.journal_entries.push({id:jeid,company_id:c2,transaction_id:tid,date,description:desc});
+ DB.journal_entries.push({id:jeid,company_id:c2,transaction_id:tid,date,description:desc, journal_no:genJournalNo()});
  details.forEach(d=>DB.journal_details.push({id:nid(),journal_id:jeid,account_id:d.acc,debit:d.debit,kredit:d.kredit}));
  }
 
@@ -11162,7 +11318,7 @@ function loadSampleData() {
 
  function trx3(date, desc, details) {
  const tid = nid(); DB.transactions.push({id:tid,company_id:c3,date,description:desc});
- const jeid = nid(); DB.journal_entries.push({id:jeid,company_id:c3,transaction_id:tid,date,description:desc});
+ const jeid = nid(); DB.journal_entries.push({id:jeid,company_id:c3,transaction_id:tid,date,description:desc, journal_no:genJournalNo()});
  details.forEach(d=>DB.journal_details.push({id:nid(),journal_id:jeid,account_id:d.acc,debit:d.debit,kredit:d.kredit}));
  }
 
@@ -11314,7 +11470,7 @@ function loadSampleData() {
 
  function trx4(date, desc, details) {
  const tid = nid(); DB.transactions.push({id:tid,company_id:c4,date,description:desc});
- const jeid = nid(); DB.journal_entries.push({id:jeid,company_id:c4,transaction_id:tid,date,description:desc});
+ const jeid = nid(); DB.journal_entries.push({id:jeid,company_id:c4,transaction_id:tid,date,description:desc, journal_no:genJournalNo()});
  details.forEach(d=>DB.journal_details.push({id:nid(),journal_id:jeid,account_id:d.acc,debit:d.debit,kredit:d.kredit}));
  }
 
@@ -12482,8 +12638,18 @@ function renderHutangKartu() {
  const hariSisa = h.jatuh_tempo ? Math.ceil((new Date(h.jatuh_tempo) - new Date()) / 86400000) : null;
  const warnColor = hariSisa !== null ? (hariSisa < 0 ? '#ef4444' : hariSisa < 7 ? '#f59e0b' : '#10b981') : 'var(--text3)';
  return `
- <div class="kartu-item"> <div class="kartu-header ${h.status==='Lunas'?'green':h.sisa<h.jumlah?'orange':'red'}"> <div> <div class="kartu-nama"> ${h.nama_kreditur}</div> <div class="kartu-kode">${h.tanggal||'—'}</div> </div> <span class="badge-status ${statusCls}">${h.status}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Jumlah Hutang</span><span class="value">${fmtC(h.jumlah)}</span></div> <div class="kartu-row"><span class="label">Sudah Dibayar</span><span class="value" style="color:var(--accent2);">${fmtC(h.jumlah - h.sisa)}</span></div> <div class="kartu-row"><span class="label">Sisa Hutang</span><span class="value" style="color:var(--danger);">${fmtC(h.sisa)}</span></div> <div class="kartu-row"><span class="label">Jatuh Tempo</span><span class="value" style="color:${warnColor}">${h.jatuh_tempo||'—'}${hariSisa!==null?` (${hariSisa<0?'Lewat '+Math.abs(hariSisa)+'hr':hariSisa+' hr lagi'})`:''}</span></div> <div class="saldo-bar"><div class="saldo-bar-fill" style="width:${persen}%;background:${h.status==='Lunas'?'#10b981':'#f59e0b'};"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${persen}% terbayar</div> </div> <div class="kartu-footer"> ${h.status!=='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('hutang','${h.id}')">Bayar</button>`:''}
- <button class="btn btn-secondary btn-sm" onclick="openHutangEdit('${h.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteRecord('hutang','${h.id}')">Hapus</button> </div> </div>`;
+ <div class="kartu-item"> <div class="kartu-header ${h.status==='Lunas'?'green':h.sisa<h.jumlah?'orange':'red'}"> <div> <div class="kartu-nama"> ${h.nama_kreditur}</div> <div class="kartu-kode">${h.tanggal||'—'}</div> </div> <span class="badge-status ${statusCls}">${h.status}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Jumlah Hutang</span><span class="value">${fmtC(h.jumlah)}</span></div> <div class="kartu-row"><span class="label">Sudah Dibayar</span><span class="value" style="color:var(--accent2);">${fmtC(h.jumlah - h.sisa)}</span></div> <div class="kartu-row"><span class="label">Sisa Hutang</span><span class="value" style="color:var(--danger);">${fmtC(h.sisa)}</span></div> <div class="kartu-row"><span class="label">Jatuh Tempo</span><span class="value" style="color:${warnColor}">${h.jatuh_tempo||'—'}${hariSisa!==null?` (${hariSisa<0?'Lewat '+Math.abs(hariSisa)+'hr':hariSisa+' hr lagi'})`:''}</span></div> <div class="saldo-bar"><div class="saldo-bar-fill" style="width:${persen}%;background:${h.status==='Lunas'?'#10b981':'#f59e0b'};"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${persen}% terbayar</div> </div> <div class="kartu-footer">
+   <div class="action-menu" style="width:100%;">
+     <button class="action-menu-btn" style="width:100%;justify-content:center;" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+     <div class="action-dropdown">
+       ${h.status!=='Lunas'?`<button class="action-drop-item item-success" onclick="runAction(()=>openBayar('hutang','${h.id}'))"><span class="drop-icon">💳</span>Bayar</button>`:''}
+       ${h.status!=='Lunas'?`<div class="action-drop-divider"></div>`:''}
+       <button class="action-drop-item item-primary" onclick="runAction(()=>openHutangEdit('${h.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+       <div class="action-drop-divider"></div>
+       <button class="action-drop-item item-danger" onclick="runAction(()=>deleteRecord('hutang','${h.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+     </div>
+   </div>
+ </div> </div>`;
  }).join('');
 }
 
@@ -12569,8 +12735,18 @@ function renderPiutangKartu() {
  const warnColor = hariSisa !== null ? (hariSisa < 0 ? '#ef4444' : hariSisa < 7 ? '#f59e0b' : '#10b981') : 'var(--text3)';
  return `
  <div class="kartu-item"> <div class="kartu-header ${p.status==='Lunas'?'green':p.sisa<p.jumlah?'blue':'orange'}"> <div> <div class="kartu-nama"> ${p.nama_debitur}</div> <div class="kartu-kode">${p.tanggal||'—'}</div> </div> <span class="badge-status ${statusCls}">${p.status}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Jumlah Piutang</span><span class="value">${fmtC(p.jumlah)}</span></div> <div class="kartu-row"><span class="label">Sudah Diterima</span><span class="value" style="color:var(--accent2);">${fmtC(p.jumlah - p.sisa)}</span></div> <div class="kartu-row"><span class="label">Sisa Piutang</span><span class="value" style="color:var(--warning);">${fmtC(p.sisa)}</span></div> <div class="kartu-row"><span class="label">Jatuh Tempo</span><span class="value" style="color:${warnColor}">${p.jatuh_tempo||'—'}${hariSisa!==null?` (${hariSisa<0?'Lewat '+Math.abs(hariSisa)+'hr':hariSisa+' hr lagi'})`:''}
- </span></div> <div class="saldo-bar"><div class="saldo-bar-fill" style="width:${persen}%;background:${p.status==='Lunas'?'#10b981':'#2563eb'};"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${persen}% diterima</div> </div> <div class="kartu-footer"> ${p.status!=='Lunas'?`<button class="btn btn-success btn-sm" onclick="openBayar('piutang','${p.id}')">Terima</button>`:''}
- <button class="btn btn-danger btn-sm" onclick="deleteRecord('piutang','${p.id}')">Hapus</button> </div> </div>`;
+ </span></div> <div class="saldo-bar"><div class="saldo-bar-fill" style="width:${persen}%;background:${p.status==='Lunas'?'#10b981':'#2563eb'};"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${persen}% diterima</div> </div>
+ <div class="kartu-footer">
+   <div class="action-menu" style="width:100%;">
+     <button class="action-menu-btn" style="width:100%;justify-content:center;" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+     <div class="action-dropdown">
+       ${p.status!=='Lunas'?`<button class="action-drop-item item-success" onclick="runAction(()=>openBayar('piutang','${p.id}'))"><span class="drop-icon">💰</span>Terima Pembayaran</button>`:''}
+       <button class="action-drop-item item-primary" onclick="runAction(()=>openPiutangEdit('${p.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+       <div class="action-drop-divider"></div>
+       <button class="action-drop-item item-danger" onclick="runAction(()=>deleteRecord('piutang','${p.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+     </div>
+   </div>
+ </div> </div>`;
  }).join('');
 }
 
@@ -12638,7 +12814,20 @@ function renderPersediaanKartu() {
  if (!ps.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Belum ada data persediaan</p></div>'; return; }
  const maxNilai = Math.max(...ps.map(p=>p.total_nilai||0), 1);
  grid.innerHTML = ps.map(p => `
- <div class="kartu-item"> <div class="kartu-header ${p.metode==='kredit'?'orange':'blue'}"> <div> <div class="kartu-nama"> ${p.nama_barang}</div> <div class="kartu-kode">${p.tanggal||'—'} · ${p.metode==='kredit'?'Kredit':'Tunai'}</div> </div> <span class="nilai-tag">${p.jumlah} unit</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Harga Satuan</span><span class="value">${fmtC(p.harga_satuan)}</span></div> <div class="kartu-row"><span class="label">Total Nilai</span><span class="value" style="color:var(--primary-light);">${fmtC(p.total_nilai)}</span></div> <div class="kartu-row"><span class="label">Keterangan</span><span class="value" style="font-family:var(--font);font-size:11px;">${p.keterangan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${Math.round((p.total_nilai/maxNilai)*100)}%;background:var(--primary-light);"></div></div> </div> <div class="kartu-footer"> <button class="btn btn-success btn-sm" onclick="openJualPersediaan('${p.id}')">Jual</button> <button class="btn btn-secondary btn-sm" onclick="editPersediaan('${p.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePersediaan('${p.id}')">Hapus</button> </div> </div>`).join('');
+ <div class="kartu-item"> <div class="kartu-header ${p.metode==='kredit'?'orange':'blue'}"> <div> <div class="kartu-nama"> ${p.nama_barang}</div> <div class="kartu-kode">${p.tanggal||'—'} · ${p.metode==='kredit'?'Kredit':'Tunai'}</div> </div> <span class="nilai-tag">${p.jumlah} unit</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Harga Satuan</span><span class="value">${fmtC(p.harga_satuan)}</span></div> <div class="kartu-row"><span class="label">Total Nilai</span><span class="value" style="color:var(--primary-light);">${fmtC(p.total_nilai)}</span></div> <div class="kartu-row"><span class="label">Keterangan</span><span class="value" style="font-family:var(--font);font-size:11px;">${p.keterangan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${Math.round((p.total_nilai/maxNilai)*100)}%;background:var(--primary-light);"></div></div> </div>
+ <div class="kartu-footer">
+   <div class="action-menu" style="width:100%;">
+     <button class="action-menu-btn" style="width:100%;justify-content:center;" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+     <div class="action-dropdown">
+       <button class="action-drop-item item-success" onclick="runAction(()=>openJualPersediaan('${p.id}'))"><span class="drop-icon">💵</span>Jual</button>
+       <button class="action-drop-item item-warning" onclick="runAction(()=>openReturPenjualan('${p.id}'))"><span class="drop-icon">↩️</span>Retur Penjualan</button>
+       <div class="action-drop-divider"></div>
+       <button class="action-drop-item item-primary" onclick="runAction(()=>editPersediaan('${p.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+       <div class="action-drop-divider"></div>
+       <button class="action-drop-item item-danger" onclick="runAction(()=>deletePersediaan('${p.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+     </div>
+   </div>
+ </div> </div>`).join('');
 }
 
 function renderPersediaanMutasi() {
@@ -12686,7 +12875,19 @@ function renderPerlengkapanKartu() {
  if (!ps.length) { grid.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Belum ada data perlengkapan</p></div>'; return; }
  const maxNilai = Math.max(...ps.map(p=>p.nilai||0),1);
  grid.innerHTML = ps.map(p => `
- <div class="kartu-item"> <div class="kartu-header ${p.metode==='kredit'?'orange':'purple'}"> <div> <div class="kartu-nama"> ${p.nama_item}</div> <div class="kartu-kode">${p.tanggal||'—'} · ${p.metode==='kredit'?'Kredit':'Tunai'}</div> </div> <span class="nilai-tag" style="background:#8b5cf6;">${p.jumlah||0} unit</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Nilai Perolehan</span><span class="value" style="color:#8b5cf6;">${fmtC(p.nilai)}</span></div> <div class="kartu-row"><span class="label">Keterangan</span><span class="value" style="font-family:var(--font);font-size:11px;">${p.keterangan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${Math.round((p.nilai/maxNilai)*100)}%;background:#8b5cf6;"></div></div> </div> <div class="kartu-footer"> <button class="btn btn-secondary btn-sm" onclick="editPerlengkapan('${p.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deletePerlengkapan('${p.id}')">Hapus</button> </div> </div>`).join('');
+ <div class="kartu-item"> <div class="kartu-header ${p.metode==='kredit'?'orange':'purple'}"> <div> <div class="kartu-nama"> ${p.nama_item}</div> <div class="kartu-kode">${p.tanggal||'—'} · ${p.metode==='kredit'?'Kredit':'Tunai'}</div> </div> <span class="nilai-tag" style="background:#8b5cf6;">${p.jumlah||0} unit</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Nilai Perolehan</span><span class="value" style="color:#8b5cf6;">${fmtC(p.nilai)}</span></div> <div class="kartu-row"><span class="label">Keterangan</span><span class="value" style="font-family:var(--font);font-size:11px;">${p.keterangan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${Math.round((p.nilai/maxNilai)*100)}%;background:#8b5cf6;"></div></div> </div>
+ <div class="kartu-footer">
+   <div class="action-menu" style="width:100%;">
+     <button class="action-menu-btn" style="width:100%;justify-content:center;" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+     <div class="action-dropdown">
+       <button class="action-drop-item item-warning" onclick="runAction(()=>openCatatPemakaian('${p.id}'))"><span class="drop-icon">📦</span>Catat Pemakaian</button>
+       <div class="action-drop-divider"></div>
+       <button class="action-drop-item item-primary" onclick="runAction(()=>editPerlengkapan('${p.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+       <div class="action-drop-divider"></div>
+       <button class="action-drop-item item-danger" onclick="runAction(()=>deletePerlengkapan('${p.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+     </div>
+   </div>
+ </div> </div>`).join('');
 }
 
 function renderPerlengkapanPemakaian() {
@@ -12724,7 +12925,21 @@ function renderAsetKartu() {
  const buku = a.nilai_buku||harga;
  const pctTerdepresiasi = harga > 0 ? Math.round(akum/harga*100) : 0;
  return `
- <div class="kartu-item"> <div class="kartu-header ${isSM?'orange':'blue'}"> <div> <div class="kartu-nama"> ${a.nama_aset}</div> <div class="kartu-kode">${a.tanggal||'—'} · ${isSM?'Saldo Menurun':'Garis Lurus'}</div> </div> <span class="nilai-tag ${isSM?'warning':''}">${isSM?(a.tarif_sm||0)+'%/thn':(a.masa_manfaat||'—')+' thn'}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Harga Perolehan</span><span class="value">${fmtC(harga)}</span></div> <div class="kartu-row"><span class="label">Akum. Penyusutan</span><span class="value" style="color:var(--danger);">(${fmtC(akum)})</span></div> <div class="kartu-row"><span class="label">Nilai Buku</span><span class="value" style="color:var(--accent2);">${fmtC(buku)}</span></div> <div class="kartu-row"><span class="label">Beban Susut/thn</span><span class="value">${fmtC(a.beban_penyusutan||0)}</span></div> <div class="kartu-row"><span class="label">Tahun Perolehan</span><span class="value" style="font-family:var(--font)">${a.tahun_perolehan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${pctTerdepresiasi}%;background:var(--danger);"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${pctTerdepresiasi}% terdepresiasi</div> </div> <div class="kartu-footer"> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset('${a.id}')">Jadwal</button> <button class="btn btn-secondary btn-sm" onclick="editAset('${a.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteAset('${a.id}')">Hapus</button> </div> </div>`;
+ <div class="kartu-item"> <div class="kartu-header ${isSM?'orange':'blue'}"> <div> <div class="kartu-nama"> ${a.nama_aset}</div> <div class="kartu-kode">${a.tanggal||'—'} · ${isSM?'Saldo Menurun':'Garis Lurus'}</div> </div> <span class="nilai-tag ${isSM?'warning':''}">${isSM?(a.tarif_sm||0)+'%/thn':(a.masa_manfaat||'—')+' thn'}</span> </div> <div class="kartu-body"> <div class="kartu-row"><span class="label">Harga Perolehan</span><span class="value">${fmtC(harga)}</span></div> <div class="kartu-row"><span class="label">Akum. Penyusutan</span><span class="value" style="color:var(--danger);">(${fmtC(akum)})</span></div> <div class="kartu-row"><span class="label">Nilai Buku</span><span class="value" style="color:var(--accent2);">${fmtC(buku)}</span></div> <div class="kartu-row"><span class="label">Beban Susut/thn</span><span class="value">${fmtC(a.beban_penyusutan||0)}</span></div> <div class="kartu-row"><span class="label">Tahun Perolehan</span><span class="value" style="font-family:var(--font)">${a.tahun_perolehan||'—'}</span></div> <div class="saldo-bar" style="margin-top:8px;"><div class="saldo-bar-fill" style="width:${pctTerdepresiasi}%;background:var(--danger);"></div></div> <div style="font-size:10px;color:var(--text3);margin-top:3px;text-align:right;">${pctTerdepresiasi}% terdepresiasi</div> </div>
+ <div class="kartu-footer">
+   <div class="action-menu" style="width:100%;">
+     <button class="action-menu-btn" style="width:100%;justify-content:center;" onclick="toggleActionMenu(this,event)">Aksi <span class="chevron">▼</span></button>
+     <div class="action-dropdown" style="min-width:180px;">
+       <button class="action-drop-item item-primary" onclick="runAction(()=>lihatJadwalAset('${a.id}'))"><span class="drop-icon">📅</span>Jadwal Penyusutan</button>
+       <button class="action-drop-item item-success" onclick="runAction(()=>openJualAset('${a.id}'))"><span class="drop-icon">💵</span>Jual Aset</button>
+       <button class="action-drop-item" style="color:#dc2626;" onclick="runAction(()=>openHapusAset('${a.id}'))"><span class="drop-icon">📝</span>Write-off</button>
+       <div class="action-drop-divider"></div>
+       <button class="action-drop-item item-primary" onclick="runAction(()=>editAset('${a.id}'))"><span class="drop-icon">✏️</span>Edit</button>
+       <div class="action-drop-divider"></div>
+       <button class="action-drop-item item-danger" onclick="runAction(()=>deleteAset('${a.id}'))"><span class="drop-icon">🗑️</span>Hapus</button>
+     </div>
+   </div>
+ </div> </div>`;
  }).join('');
 }
 
@@ -13830,7 +14045,7 @@ function saveTemplate() {
  if (Math.abs(Math.round(totD)-Math.round(totK))>1) { toast(`Debit (${fmtC(totD)}) ≠ Kredit (${fmtC(totK)}). Jurnal harus balance.`,'error'); return; }
 
  if (!DB.templates) DB.templates=[];
- const obj={id:id?parseInt(id):genId(), company_id:co(), nama, keterangan:ket, frekuensi:frek, details, last_used:id?(DB.templates.find(x=>x.id==parseInt(id))?.last_used||null):null};
+ const obj={id:id?id:genId(), company_id:co(), nama, keterangan:ket, frekuensi:frek, details, last_used:id?(DB.templates.find(x=>x.id==parseInt(id))?.last_used||null):null};
  const idx2=DB.templates.findIndex(x=>x.id==obj.id);
  if(idx2>=0) DB.templates[idx2]=obj; else DB.templates.push(obj);
  autoSave();
