@@ -677,7 +677,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <div id="main"> <!-- Mobile overlay for sidebar -->
 <div id="mobile-sidebar-overlay" onclick="closeMobileSidebar()"></div>
 <!-- HEADER --> <div id="header"> <div id="header-left"> <button id="mobile-menu-btn" onclick="toggleMobileSidebar()" style="display:none;background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--text2);font-size:20px;line-height:1;margin-right:4px;" aria-label="Menu"></button> <div id="company-switcher" onclick="openCompanySwitcher()"> <div> <div class="co-name" id="hdr-company-name">— Pilih Perusahaan —</div> <div class="co-period" id="hdr-company-period">2025-01-01 s/d 2025-12-31</div> </div> <span style="margin-left:auto; color:var(--text3);"></span> </div> </div> <div id="header-right"> <!-- Excel Dropdown --> <div style="position:relative;" id="excel-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('excel-dropdown')">Excel </button> <div id="excel-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Export ke Excel</div> <div class="dropdown-item" onclick="exportExcel('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="exportExcel('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="exportExcel('laba-rugi')"><span id="excel-label-laba-rugi">Laba Rugi</span></div> <div class="dropdown-item" onclick="exportExcel('neraca')"><span id="excel-label-neraca">Posisi Keuangan</span></div> <div class="dropdown-item" id="excel-item-lra" style="display:none;" onclick="exportExcel('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="excel-item-lsal" style="display:none;" onclick="exportExcel('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="excel-item-shu" style="display:none;" onclick="exportExcel('shu')">Lap. SHU (Koperasi)</div> <div class="dropdown-item" id="excel-item-lpd" style="display:none;" onclick="exportExcel('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="excel-item-pak" style="display:none;" onclick="exportExcel('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="exportExcel('hutang')">Hutang (AP)</div> <div class="dropdown-item" onclick="exportExcel('piutang')">Piutang (AR)</div> <div class="dropdown-item" onclick="exportExcel('persediaan')">Persediaan</div> <div class="dropdown-item" onclick="exportExcel('aset-tetap')">Aset Tetap</div> <div class="dropdown-item" onclick="exportExcel('buku-besar')">Buku Besar (Semua)</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="exportExcel('semua')" style="font-weight:700;color:var(--primary-light);">Export Semua (Multi-Sheet)</div> </div> </div> </div> <!-- Print Dropdown --> <div style="position:relative;" id="print-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('print-dropdown')">Print </button> <div id="print-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Cetak Laporan</div> <div class="dropdown-item" onclick="printReport('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="printReport('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="printReport('ns-penyesuaian')">NS Setelah Penyesuaian</div> <div class="dropdown-item" onclick="printReport('laba-rugi')"><span id="print-label-laba-rugi">Laporan Laba Rugi</span></div> <div class="dropdown-item" onclick="printReport('neraca')"><span id="print-label-neraca">Laporan Posisi Keuangan</span></div> <div class="dropdown-item" onclick="printReport('perubahan-ekuitas')"><span id="print-label-ekuitas">Perubahan Ekuitas</span></div> <div class="dropdown-item" onclick="printReport('arus-kas')"><span id="print-label-arus-kas">Arus Kas</span></div> <div class="dropdown-item" id="print-item-lra" style="display:none;" onclick="printReport('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="print-item-lsal" style="display:none;" onclick="printReport('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="print-item-shu" style="display:none;" onclick="printReport('shu')"><span id="print-label-shu">Lap. SHU (Koperasi)</span></div> <div class="dropdown-item" id="print-item-lpd" style="display:none;" onclick="printReport('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="print-item-pak" style="display:none;" onclick="printReport('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="printReport('jurnal-penutup')">Jurnal Penutup</div> <div class="dropdown-item" onclick="printBukuBesar()">Buku Besar</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="printReport('semua')" style="font-weight:700;color:var(--primary-light);">Cetak Semua Laporan</div> </div> </div> </div> <span id="save-indicator" style="font-size:11px;font-weight:600;color:#10b981;opacity:0;transition:opacity .5s;margin-right:4px;"></span> <button class="hdr-btn" onclick="openSyncModal()" title="Sinkronisasi data antar pengguna">🔄 Sinkron</button>
- <button class="hdr-btn primary" onclick="saveToFile()">Backup File</button> </div> </div> <!-- CONTENT --> <div id="content"> <!-- DASHBOARD --> <div id="page-dashboard" class="page"> <div class="page-header"> <div><div class="page-title"> Dashboard</div><div class="page-subtitle" id="dash-subtitle">Pilih perusahaan untuk memulai</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="renderDashboard()" title="Refresh data dashboard"> Refresh</button> <button class="btn btn-secondary" onclick="printReport('dashboard')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua</button> </div> </div> <div class="stats-grid" id="dash-stats"> </div> <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;"> <div class="card"> <div class="card-header"><div class="card-title">Pendapatan vs Beban</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartRevenueExpense" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> <div class="card"> <div class="card-header"><div class="card-title">Distribusi Aset</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartAsset" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> </div> <div class="card"> <div class="card-header"><div class="card-title">Transaksi Terbaru</div></div> <div class="card-body" style="padding:0"><div class="table-wrap"><table id="dash-recent-table"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="dash-recent-tbody"></tbody></table></div></div> </div> </div> <!-- COMPANIES --> <div id="page-companies" class="page"> <div class="page-header"> <div><div class="page-title">Perusahaan</div><div class="page-subtitle">Kelola data perusahaan Anda</div></div> <div class="page-actions"> <span id="co-limit-badge" style="font-size:12px;color:var(--text3);margin-right:8px;"></span> <button class="btn btn-primary" onclick="openCompanyModal()">Tambah Perusahaan</button> </div> </div> <div id="company-cards" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div> </div> <!-- COA --> <div id="page-coa" class="page"> <div class="page-header"> <div><div class="page-title">Chart of Accounts</div><div class="page-subtitle">Daftar akun keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary btn-sm" onclick="loadDefaultCOA()">Muat CoA Default</button> <button class="btn btn-primary" onclick="resetCOAForm(); openModal('modal-coa')">Tambah Akun</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari akun..." oninput="filterTable('coa-tbody',this.value,[0,1,2])"></div> <select class="form-control" style="width:auto;padding:7px 12px;font-size:12px;" onchange="filterCoaType(this.value)"> <option value="">Semua Tipe</option> <option>Aset</option><option>Kewajiban</option><option>Ekuitas</option> <option>Pendapatan</option><option>Beban</option> </select> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('coa-tbody',0)">Kode ↕</th><th onclick="sortTable('coa-tbody',1)">Nama Akun ↕</th><th>Tipe</th><th>Saldo Normal</th><th>Header / Sub Header</th><th>Aksi</th></tr></thead><tbody id="coa-tbody"></tbody></table></div> </div> </div> <!-- TRANSACTIONS --> <div id="page-transactions" class="page"> <div class="page-header"> <div><div class="page-title">Transaksi</div><div class="page-subtitle">Input transaksi — jurnal dibuat otomatis</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openTransactionModal()">Transaksi Baru</button></div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari transaksi..." oninput="filterTable('trx-tbody',this.value,[1,2])"></div> <div style="display:flex;gap:8px;align-items:center;"> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-from"> <span style="font-size:12px;color:var(--text2);">s/d</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-to"> <button class="btn btn-secondary btn-sm" onclick="filterTrxDate()">Filter</button>
+ </div> </div> <!-- CONTENT --> <div id="content"> <!-- DASHBOARD --> <div id="page-dashboard" class="page"> <div class="page-header"> <div><div class="page-title"> Dashboard</div><div class="page-subtitle" id="dash-subtitle">Pilih perusahaan untuk memulai</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="renderDashboard()" title="Refresh data dashboard"> Refresh</button> <button class="btn btn-secondary" onclick="printReport('dashboard')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua</button> </div> </div> <div class="stats-grid" id="dash-stats"> </div> <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;"> <div class="card"> <div class="card-header"><div class="card-title">Pendapatan vs Beban</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartRevenueExpense" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> <div class="card"> <div class="card-header"><div class="card-title">Distribusi Aset</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartAsset" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> </div> <div class="card"> <div class="card-header"><div class="card-title">Transaksi Terbaru</div></div> <div class="card-body" style="padding:0"><div class="table-wrap"><table id="dash-recent-table"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="dash-recent-tbody"></tbody></table></div></div> </div> </div> <!-- COMPANIES --> <div id="page-companies" class="page"> <div class="page-header"> <div><div class="page-title">Perusahaan</div><div class="page-subtitle">Kelola data perusahaan Anda</div></div> <div class="page-actions"> <span id="co-limit-badge" style="font-size:12px;color:var(--text3);margin-right:8px;"></span> <button class="btn btn-primary" onclick="openCompanyModal()">Tambah Perusahaan</button> </div> </div> <div id="company-cards" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div> </div> <!-- COA --> <div id="page-coa" class="page"> <div class="page-header"> <div><div class="page-title">Chart of Accounts</div><div class="page-subtitle">Daftar akun keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary btn-sm" onclick="loadDefaultCOA()">Muat CoA Default</button> <button class="btn btn-primary" onclick="resetCOAForm(); openModal('modal-coa')">Tambah Akun</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari akun..." oninput="filterTable('coa-tbody',this.value,[0,1,2])"></div> <select class="form-control" style="width:auto;padding:7px 12px;font-size:12px;" onchange="filterCoaType(this.value)"> <option value="">Semua Tipe</option> <option>Aset</option><option>Kewajiban</option><option>Ekuitas</option> <option>Pendapatan</option><option>Beban</option> </select> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('coa-tbody',0)">Kode ↕</th><th onclick="sortTable('coa-tbody',1)">Nama Akun ↕</th><th>Tipe</th><th>Saldo Normal</th><th>Header / Sub Header</th><th>Aksi</th></tr></thead><tbody id="coa-tbody"></tbody></table></div> </div> </div> <!-- TRANSACTIONS --> <div id="page-transactions" class="page"> <div class="page-header"> <div><div class="page-title">Transaksi</div><div class="page-subtitle">Input transaksi — jurnal dibuat otomatis</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openTransactionModal()">Transaksi Baru</button></div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari transaksi..." oninput="filterTable('trx-tbody',this.value,[1,2])"></div> <div style="display:flex;gap:8px;align-items:center;"> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-from"> <span style="font-size:12px;color:var(--text2);">s/d</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-to"> <button class="btn btn-secondary btn-sm" onclick="filterTrxDate()">Filter</button>
  <button class="btn btn-secondary btn-sm" onclick="document.getElementById('trx-from').value='';document.getElementById('trx-to').value='';renderTransactions();" title="Reset filter tanggal"> Reset</button> </div> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('trx-tbody',0)">Tanggal ↕</th><th>No. Jurnal</th><th onclick="sortTable('trx-tbody',2)">Keterangan ↕</th><th>Total Debit</th><th>Aksi</th></tr></thead><tbody id="trx-tbody"> </tbody></table></div> <div style="padding:12px 16px;display:flex;justify-content:flex-end;"><div id="trx-pagination" class="pagination"></div></div> </div> </div> <!-- JURNAL UMUM --> <div id="page-jurnal" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Umum</div><div class="page-subtitle">Detail debit-kredit setiap transaksi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('jurnal')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('jurnal')">Export</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari jurnal..." oninput="filterTable('jurnal-tbody',this.value,[0,2,3])"></div> </div> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Jurnal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jurnal-tbody"> </tbody></table></div> </div> </div> <!-- BUKU BESAR --> <div id="page-buku-besar" class="page"> <div class="page-header"> <div><div class="page-title">Buku Besar</div><div class="page-subtitle">Akumulasi per akun</div></div> </div> <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;"> <select class="form-control" style="max-width:300px;" id="bb-account-select" onchange="renderBukuBesar()"><option value="">— Pilih Akun —</option></select> <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;"> <input type="checkbox" id="bb-include-adj" checked onchange="renderBukuBesar()">Sertakan penyesuaian
  </label> <button class="btn btn-secondary btn-sm" onclick="renderBukuBesarSemua()">Tampilkan Semua Akun</button> <button class="btn btn-secondary btn-sm" onclick="printBukuBesar()">Cetak</button> <button class="btn btn-secondary btn-sm" onclick="exportBukuBesarExcel()">Export Excel</button> </div> <div id="bb-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih akun dari dropdown di atas atau klik "Tampilkan Semua Akun"</p></div> </div> </div> <!-- NERACA SALDO --> <div id="page-neraca-saldo" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo</div><div class="page-subtitle">Saldo akhir semua akun</div></div> </div> <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:12px;color:#92400e;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"> <span>ℹ <strong>Sebelum Penyesuaian</strong> — Neraca Saldo ini belum mencakup jurnal penyesuaian.</span> <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:600;"><input type="checkbox" id="ns-show-zero" onchange="renderNeracaSaldo()"> Tampilkan akun saldo nol</label>
  Lihat tab <strong>NS Setelah Penyesuaian</strong>untuk saldo yang sudah memperhitungkan penyesuaian akhir periode.
@@ -708,9 +708,9 @@ textarea.form-control { resize:vertical; min-height:80px; }
  <div style="font-size:22px;flex-shrink:0;margin-top:1px;">⏰</div>
  <div style="flex:1;">
  <div style="font-weight:700;font-size:13px;color:#92400e;margin-bottom:2px;">Sudah 7 Hari Sejak Backup Terakhir</div>
- <div style="font-size:12px;color:#a16207;line-height:1.5;">Disarankan melakukan backup file secara rutin untuk menghindari kehilangan data. Klik tombol di bawah untuk backup sekarang.</div>
+ <div style="font-size:12px;color:#a16207;line-height:1.5;">Disarankan melakukan backup data secara rutin. Gunakan <strong>Export JSON</strong> di menu Pengaturan untuk menyimpan salinan data Anda.</div>
  <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
- <button class="btn btn-primary btn-sm" onclick="saveToFile();dismissReminder('warn')" style="background:#d97706;border-color:#d97706;font-size:12px;"> Backup Sekarang</button>
+ <button class="btn btn-primary btn-sm" onclick="navigate('settings');dismissReminder('warn')" style="background:#d97706;border-color:#d97706;font-size:12px;"> Export JSON Sekarang</button>
  <button class="btn btn-secondary btn-sm" onclick="dismissReminder('warn')" style="font-size:12px;">Tutup</button>
  </div>
  </div>
@@ -721,9 +721,9 @@ textarea.form-control { resize:vertical; min-height:80px; }
  
  <div style="flex:1;">
  <div style="font-weight:700;font-size:13px;color:#991b1b;margin-bottom:2px;">Peringatan! Lebih dari 30 Hari Tanpa Backup</div>
- <div style="font-size:12px;color:#b91c1c;line-height:1.5;">Data Anda berisiko tinggi! Segera lakukan backup file untuk melindungi seluruh data keuangan Anda dari kehilangan akibat reset browser atau kerusakan komputer.</div>
+ <div style="font-size:12px;color:#b91c1c;line-height:1.5;">Data Anda berisiko tinggi! Segera lakukan <strong>Export JSON</strong> di menu Pengaturan untuk melindungi seluruh data keuangan Anda dari kehilangan akibat reset browser atau kerusakan komputer.</div>
  <div style="margin-top:10px;display:flex;gap:8px;align-items:center;">
- <button class="btn btn-primary btn-sm" onclick="saveToFile();dismissReminder('danger')" style="background:#dc2626;border-color:#dc2626;font-size:12px;"> Backup Sekarang</button>
+ <button class="btn btn-primary btn-sm" onclick="navigate('settings');dismissReminder('danger')" style="background:#dc2626;border-color:#dc2626;font-size:12px;"> Export JSON Sekarang</button>
  <button class="btn btn-secondary btn-sm" onclick="dismissReminder('danger')" style="font-size:12px;">Tutup</button>
  </div>
  </div>
@@ -770,14 +770,13 @@ textarea.form-control { resize:vertical; min-height:80px; }
  <div id="settings-last-saved" style="font-size:12px;font-weight:700;color:var(--text);">—</div>
  </div>
  <div style="padding:14px 16px;background:rgba(245,158,11,.06);border-radius:10px;border:1px solid rgba(245,158,11,.2);text-align:center;">
- <div style="font-size:10px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Backup File Terakhir</div>
+ <div style="font-size:10px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Export JSON Terakhir</div>
  <div id="settings-last-backup" style="font-size:12px;font-weight:700;color:#d97706;">—</div>
  </div>
  </div>
  <div style="font-size:12px;color:var(--text3);line-height:1.9;padding:12px 14px;background:var(--bg);border-radius:8px;border-left:3px solid var(--border);">
  <strong>IndexedDB</strong> menyimpan data otomatis setiap ada perubahan — kapasitas jauh lebih besar dari localStorage.<br>
- <strong>Download Backup File</strong> tetap disarankan secara berkala (mingguan) sebagai cadangan jika browser di-reset atau komputer rusak.<br>
- <strong>Export JSON</strong> berguna untuk pindah ke komputer lain atau backup arsip jangka panjang.
+ <strong>Export JSON</strong> disarankan secara berkala (mingguan) sebagai cadangan jika browser di-reset atau komputer rusak.
  </div>
  </div>
  </div>
@@ -792,10 +791,9 @@ textarea.form-control { resize:vertical; min-height:80px; }
  </div>
  <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
  <div style="padding:10px 12px;background:rgba(16,185,129,.08);border-radius:8px;border-left:3px solid #10b981;font-size:11px;color:#065f46;line-height:1.6;">
- Data tersimpan otomatis di IndexedDB. Download backup file sebagai cadangan tambahan.
+ Data tersimpan otomatis di IndexedDB. Gunakan Export JSON secara berkala sebagai cadangan data.
  </div>
  <button class="btn btn-primary" onclick="openSyncModal()" style="background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;font-weight:700;">🔄 Sinkronisasi Data Multi-User</button>
- <button class="btn btn-primary" onclick="saveToFile()" style="background:linear-gradient(135deg,#2563eb,#06b6d4);border:none;font-weight:700;"> Download Backup File</button>
  <button class="btn btn-secondary" onclick="exportJSON()" style="font-weight:600;"> Export JSON (Backup)</button>
  <label class="btn btn-secondary" style="cursor:pointer;font-weight:600;text-align:center;"> Import JSON <input type="file" accept=".json" onchange="importJSON(this)" style="display:none"></label>
  <div style="border-top:1px solid var(--border);margin:2px 0;"></div>
@@ -4570,6 +4568,17 @@ function saveHutang() {
  if (kreditDetH && selKreditIdH && String(kreditDetH.account_id)!==String(selKreditIdH)) {
  kreditDetH.account_id=selKreditIdH;
  }
+ // [FIX B1+B2] Sync tanggal & keterangan ke journal_entries dan transactions
+ const jeEditH=DB.journal_entries.find(e=>e.id===oldRec_hut.ref_journal_id);
+ if (jeEditH) {
+ jeEditH.date=tanggal;
+ // [FIX SYNC] Selalu update description dari nama kreditur terbaru, bukan hanya jika keterangan ada
+ const katLabel={pembelian_kredit:'Pembelian kredit dari',pinjaman_bank:'Pinjaman bank dari',pinjaman_pribadi:'Pinjaman pribadi dari',hutang_gaji:'Hutang gaji kepada',hutang_pajak:'Hutang pajak kepada'};
+ const descBaruH = keterangan || `${katLabel[kategori]||'Hutang kepada'} ${nama}`;
+ jeEditH.description = descBaruH;
+ const trxEditH=DB.transactions.find(t=>t.id===jeEditH.transaction_id);
+ if (trxEditH) { trxEditH.date=tanggal; trxEditH.description=descBaruH; }
+ }
  const perubahanH=[];
  if (oldRec_hut.jumlah !== jumlah) perubahanH.push(`nominal → ${fmtC(jumlah)}`);
  if (debitDetH && selDebitIdH) { const a=accsEditH.find(x=>String(x.id)===String(selDebitIdH)); if(a) perubahanH.push(`Debit → ${a.name}`); }
@@ -4777,6 +4786,17 @@ function savePiutang() {
  }
  if (kreditDetPiu && selKreditIdPiu && String(kreditDetPiu.account_id)!==String(selKreditIdPiu)) {
  kreditDetPiu.account_id=selKreditIdPiu;
+ }
+ // [FIX B1+B2] Sync tanggal & keterangan ke journal_entries dan transactions
+ const jeEditPiu=DB.journal_entries.find(e=>e.id===oldRec_piu.ref_journal_id);
+ if (jeEditPiu) {
+ jeEditPiu.date=tanggal;
+ // [FIX SYNC] Selalu update description dari nama debitur terbaru, bukan hanya jika keterangan ada
+ const katLabelPiu={penjualan_kredit:'Penjualan kredit kepada',piutang_karyawan:'Pinjaman/kasbon karyawan',piutang_pinjaman:'Pinjaman kepada',piutang_bunga:'Piutang bunga dari'};
+ const descBaruPiu = keterangan_piu || `${katLabelPiu[kategori_piu]||'Piutang lain-lain dari'} ${nama}`;
+ jeEditPiu.description = descBaruPiu;
+ const trxEditPiu=DB.transactions.find(t=>t.id===jeEditPiu.transaction_id);
+ if (trxEditPiu) { trxEditPiu.date=tanggal; trxEditPiu.description=descBaruPiu; }
  }
  const perubahanPiu=[];
  if (oldRec_piu.jumlah !== jumlah) perubahanPiu.push(`nominal → ${fmtC(jumlah)}`);
@@ -5271,10 +5291,21 @@ function savePersediaan() {
  kreditDet.account_id=selHutAccIdEdit;
  }
  }
- // Sinkronkan hutang terkait jika nominal berubah
+ // [FIX B1+B2] Sync tanggal & keterangan ke journal_entries dan transactions
+ const jeEdit=DB.journal_entries.find(e=>e.id===oldRec.ref_journal_id);
+ if (jeEdit) {
+ jeEdit.date=tanggal;
+ // [FIX SYNC] Selalu update description dari nama barang terbaru, bukan hanya jika ket ada
+ const descBaru = ket || `Pembelian persediaan ${metode==='kredit'?'kredit':'tunai'}: ${nama}`;
+ jeEdit.description = descBaru;
+ const trxEdit=DB.transactions.find(t=>t.id===jeEdit.transaction_id);
+ if (trxEdit) { trxEdit.date=tanggal; trxEdit.description=descBaru; }
+ }
+ // [FIX B3] Sinkronkan hutang terkait — nominal DAN field lainnya
  const hutangTerkait=DB.hutang.find(h=>h.ref_journal_id===oldRec.ref_journal_id);
- if (hutangTerkait && nilaiLama!==nilaiBaru) {
+ if (hutangTerkait) {
  const hIdx=DB.hutang.findIndex(h=>h.ref_journal_id===oldRec.ref_journal_id);
+ if (nilaiLama!==nilaiBaru) {
  const selisih=nilaiBaru-nilaiLama;
  DB.hutang[hIdx].jumlah=(DB.hutang[hIdx].jumlah||0)+selisih;
  if (DB.hutang[hIdx].status!=='Lunas') {
@@ -5282,11 +5313,17 @@ function savePersediaan() {
  if (DB.hutang[hIdx].sisa<=0.01) DB.hutang[hIdx].status='Lunas';
  }
  }
+ // Update nama kreditur, tanggal, jatuh tempo, keterangan di hutang
+ if (kreditur) DB.hutang[hIdx].nama_kreditur=kreditur;
+ DB.hutang[hIdx].tanggal=tanggal;
+ if (jatuhTempo) DB.hutang[hIdx].jatuh_tempo=jatuhTempo;
+ if (ket) DB.hutang[hIdx].keterangan=ket;
+ }
  const perubahan=[];
  if (nilaiLama!==nilaiBaru) perubahan.push(`nominal → ${fmtC(nilaiBaru)}`);
  if (debitDet && selPersAccIdEdit) { const a=accsEdit.find(x=>String(x.id)===String(selPersAccIdEdit)); if(a) perubahan.push(`Debit → ${a.name}`); }
  if (kreditDet) { const kId=metode==='tunai'?selKasAccIdEdit:selHutAccIdEdit; if(kId) { const a=accsEdit.find(x=>String(x.id)===String(kId)); if(a) perubahan.push(`Kredit → ${a.name}`); } }
- toast(`Persediaan + jurnal${hutangTerkait&&nilaiLama!==nilaiBaru?' + hutang':''} diperbarui${perubahan.length?': '+perubahan.join(', '):''}`,'success',4000);
+ toast(`Persediaan + jurnal${hutangTerkait?' + hutang':''} diperbarui${perubahan.length?': '+perubahan.join(', '):''}`,'success',4000);
  } else {
  toast('Persediaan diperbarui','success');
  }
@@ -6643,11 +6680,38 @@ function savePerlengkapan() {
  kreditDet.account_id=selHutAccIdEditP;
  }
  }
+ // [FIX B1+B2] Sync tanggal & keterangan ke journal_entries dan transactions
+ const jeEditP=DB.journal_entries.find(e=>e.id===oldRec.ref_journal_id);
+ if (jeEditP) {
+ jeEditP.date=tanggal;
+ // [FIX SYNC] Selalu update description dari nama item terbaru, bukan hanya jika ket ada
+ const descBaruP = ket || `Pembelian perlengkapan ${metode==='kredit'?'kredit':'tunai'}: ${nama}`;
+ jeEditP.description = descBaruP;
+ const trxEditP=DB.transactions.find(t=>t.id===jeEditP.transaction_id);
+ if (trxEditP) { trxEditP.date=tanggal; trxEditP.description=descBaruP; }
+ }
+ // [FIX B3] Sync hutang terkait — nominal DAN field lainnya
+ const hutangTerkaitP=DB.hutang.find(h=>h.ref_journal_id===oldRec.ref_journal_id);
+ if (hutangTerkaitP) {
+ const hIdxP=DB.hutang.findIndex(h=>h.ref_journal_id===oldRec.ref_journal_id);
+ if (nilaiLama!==nilaiBaru) {
+ const selisihP=nilaiBaru-nilaiLama;
+ DB.hutang[hIdxP].jumlah=(DB.hutang[hIdxP].jumlah||0)+selisihP;
+ if (DB.hutang[hIdxP].status!=='Lunas') {
+ DB.hutang[hIdxP].sisa=Math.max(0,(DB.hutang[hIdxP].sisa||0)+selisihP);
+ if (DB.hutang[hIdxP].sisa<=0.01) DB.hutang[hIdxP].status='Lunas';
+ }
+ }
+ if (kreditur) DB.hutang[hIdxP].nama_kreditur=kreditur;
+ DB.hutang[hIdxP].tanggal=tanggal;
+ if (jatuhTempo) DB.hutang[hIdxP].jatuh_tempo=jatuhTempo;
+ if (ket) DB.hutang[hIdxP].keterangan=ket;
+ }
  const perubahanP=[];
  if (nilaiLama!==nilaiBaru) perubahanP.push(`nominal → ${fmtC(nilaiBaru)}`);
  if (debitDet && selPerlAccIdEdit) { const a=accsEditP.find(x=>String(x.id)===String(selPerlAccIdEdit)); if(a) perubahanP.push(`Debit → ${a.name}`); }
  if (kreditDet) { const kId=metode==='tunai'?selKasAccIdEditP:selHutAccIdEditP; if(kId) { const a=accsEditP.find(x=>String(x.id)===String(kId)); if(a) perubahanP.push(`Kredit → ${a.name}`); } }
- toast(`Perlengkapan + jurnal diperbarui${perubahanP.length?': '+perubahanP.join(', '):''}`,'success',4000);
+ toast(`Perlengkapan + jurnal${hutangTerkaitP?' + hutang':''} diperbarui${perubahanP.length?': '+perubahanP.join(', '):''}`,'success',4000);
  } else {
  toast('Perlengkapan diperbarui','success');
  }
@@ -7076,10 +7140,21 @@ function saveAset() {
  kreditDetA.account_id=selHutAccIdEditA;
  }
  }
- // Sinkronkan hutang terkait aset jika nominal berubah
+ // [FIX B1+B2] Sync tanggal & keterangan ke journal_entries dan transactions
+ const jeEditA=DB.journal_entries.find(e=>e.id===oldRec.ref_journal_id);
+ if (jeEditA) {
+ jeEditA.date=tanggal;
+ // [FIX SYNC] Selalu update description dari nama aset terbaru, bukan hanya jika ket ada
+ const descBaruA = ket || `Pembelian aset tetap ${metode==='kredit'?'kredit':'tunai'}: ${nama}`;
+ jeEditA.description = descBaruA;
+ const trxEditA=DB.transactions.find(t=>t.id===jeEditA.transaction_id);
+ if (trxEditA) { trxEditA.date=tanggal; trxEditA.description=descBaruA; }
+ }
+ // [FIX B3] Sync hutang terkait aset — nominal DAN field lainnya
  const hutangAset=DB.hutang.find(h=>h.ref_journal_id===oldRec.ref_journal_id);
- if (hutangAset && hargaLama!==hargaBaru) {
+ if (hutangAset) {
  const hIdxA=DB.hutang.findIndex(h=>h.ref_journal_id===oldRec.ref_journal_id);
+ if (hargaLama!==hargaBaru) {
  const selisihA=hargaBaru-hargaLama;
  DB.hutang[hIdxA].jumlah=(DB.hutang[hIdxA].jumlah||0)+selisihA;
  if (DB.hutang[hIdxA].status!=='Lunas') {
@@ -7087,11 +7162,16 @@ function saveAset() {
  if (DB.hutang[hIdxA].sisa<=0.01) DB.hutang[hIdxA].status='Lunas';
  }
  }
+ if (krediturAset) DB.hutang[hIdxA].nama_kreditur=krediturAset;
+ DB.hutang[hIdxA].tanggal=tanggal;
+ if (jatuhTempoAset) DB.hutang[hIdxA].jatuh_tempo=jatuhTempoAset;
+ if (ket) DB.hutang[hIdxA].keterangan=ket;
+ }
  const perubahanA=[];
  if (hargaLama!==hargaBaru) perubahanA.push(`nominal → ${fmtC(hargaBaru)}`);
  if (debitDetA && selAsetAccIdEdit) { const a=accsEditA.find(x=>String(x.id)===String(selAsetAccIdEdit)); if(a) perubahanA.push(`Debit → ${a.name}`); }
  if (kreditDetA) { const kId=metode==='tunai'?selKasAccIdEditA:selHutAccIdEditA; if(kId) { const a=accsEditA.find(x=>String(x.id)===String(kId)); if(a) perubahanA.push(`Kredit → ${a.name}`); } }
- toast(`Aset tetap + jurnal${hutangAset&&hargaLama!==hargaBaru?' + hutang':''} diperbarui${perubahanA.length?': '+perubahanA.join(', '):''}`,'success',4000);
+ toast(`Aset tetap + jurnal${hutangAset?' + hutang':''} diperbarui${perubahanA.length?': '+perubahanA.join(', '):''}`,'success',4000);
  } else {
  toast('Aset tetap diperbarui','success');
  }
@@ -10029,6 +10109,12 @@ function exportJSON() {
  const a = document.createElement('a'); a.href=url; a.download=filename;
  document.body.appendChild(a); a.click(); document.body.removeChild(a);
  URL.revokeObjectURL(url);
+ // Update tanggal backup terakhir agar reminder & label sinkron
+ localStorage.setItem('zeQui_lastBackupDate', new Date().toISOString());
+ const lbEl = document.getElementById('settings-last-backup');
+ if (lbEl) { lbEl.textContent = 'Baru saja'; lbEl.style.color = '#10b981'; }
+ dismissReminder('warn');
+ dismissReminder('danger');
  toast(` Backup JSON "${filename}" diunduh`, 'success');
 }
 
@@ -12447,9 +12533,6 @@ function applyRoleRestrictions() {
  // Sembunyikan tombol Hapus & Edit di tabel COA (dirender dinamis — handle via renderCOA override)
  // Sembunyikan tombol Buka Periode Baru
  document.querySelectorAll('[onclick*="bukaPeriodeBaru"]').forEach(el => el.style.display = 'none');
-
- // Sembunyikan tombol Backup File di sidebar dan header
- document.querySelectorAll('[onclick*="saveToFile"]').forEach(el => el.style.display = 'none');
 
  // Sembunyikan tombol Hapus Semua Data di settings
  document.querySelectorAll('[onclick*="clearAllData"]').forEach(el => el.style.display = 'none');
