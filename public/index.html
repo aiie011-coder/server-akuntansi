@@ -681,7 +681,13 @@ textarea.form-control { resize:vertical; min-height:80px; }
  <button class="btn btn-secondary btn-sm" onclick="document.getElementById('trx-from').value='';document.getElementById('trx-to').value='';renderTransactions();" title="Reset filter tanggal"> Reset</button> </div> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('trx-tbody',0)">Tanggal ↕</th><th>No. Jurnal</th><th onclick="sortTable('trx-tbody',2)">Keterangan ↕</th><th>Total Debit</th><th>Aksi</th></tr></thead><tbody id="trx-tbody"> </tbody></table></div> <div style="padding:12px 16px;display:flex;justify-content:flex-end;"><div id="trx-pagination" class="pagination"></div></div> </div> </div> <!-- JURNAL UMUM --> <div id="page-jurnal" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Umum</div><div class="page-subtitle">Detail debit-kredit setiap transaksi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('jurnal')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('jurnal')">Export</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari jurnal..." oninput="filterTable('jurnal-tbody',this.value,[0,2,3])"></div> </div> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Jurnal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jurnal-tbody"> </tbody></table></div> </div> </div> <!-- BUKU BESAR --> <div id="page-buku-besar" class="page"> <div class="page-header"> <div><div class="page-title">Buku Besar</div><div class="page-subtitle">Akumulasi per akun</div></div> </div> <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;"> <select class="form-control" style="max-width:300px;" id="bb-account-select" onchange="renderBukuBesar()"><option value="">— Pilih Akun —</option></select> <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;"> <input type="checkbox" id="bb-include-adj" checked onchange="renderBukuBesar()">Sertakan penyesuaian
  </label> <button class="btn btn-secondary btn-sm" onclick="renderBukuBesarSemua()">Tampilkan Semua Akun</button> <button class="btn btn-secondary btn-sm" onclick="printBukuBesar()">Cetak</button> <button class="btn btn-secondary btn-sm" onclick="exportBukuBesarExcel()">Export Excel</button> </div> <div id="bb-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih akun dari dropdown di atas atau klik "Tampilkan Semua Akun"</p></div> </div> </div> <!-- NERACA SALDO --> <div id="page-neraca-saldo" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo</div><div class="page-subtitle">Saldo akhir semua akun</div></div> </div> <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:12px;color:#92400e;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"> <span>ℹ <strong>Sebelum Penyesuaian</strong> — Neraca Saldo ini belum mencakup jurnal penyesuaian.</span> <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:600;"><input type="checkbox" id="ns-show-zero" onchange="renderNeracaSaldo()"> Tampilkan akun saldo nol</label>
  Lihat tab <strong>NS Setelah Penyesuaian</strong>untuk saldo yang sudah memperhitungkan penyesuaian akhir periode.
- </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="ns-tbody"></tbody><tfoot id="ns-tfoot"></tfoot></table></div> </div> </div> <!-- JURNAL PENYESUAIAN --> <div id="page-penyesuaian" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Penyesuaian</div><div class="page-subtitle">Penyesuaian akhir periode</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openModal('modal-penyesuaian')">Tambah Penyesuaian</button></div> </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun Debit</th><th>Akun Kredit</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="penyesuaian-tbody"></tbody></table></div> </div> </div> <!-- NS SETELAH PENYESUAIAN --> <div id="page-ns-penyesuaian" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo Setelah Penyesuaian</div></div> </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="nspa-tbody"></tbody><tfoot id="nspa-tfoot"></tfoot></table></div> </div> </div> <!-- HUTANG --> <div id="page-hutang" class="page"> <div class="page-header"> <div><div class="page-title">Hutang (Accounts Payable)</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('hutang')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('hutang')">Export</button> <button class="btn btn-primary" onclick="openHutangModal()">Tambah Hutang</button> </div> </div> <div class="stats-grid" id="hutang-stats"> </div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('hutang','daftar',this)">Daftar Hutang</button> <button class="bp-tab" onclick="switchBpTab('hutang','kartu',this)">Kartu per Kreditur</button> <button class="bp-tab" onclick="switchBpTab('hutang','aging',this)">Aging Analysis</button> <button class="bp-tab" onclick="switchBpTab('hutang','mutasi',this)">Riwayat Mutasi</button> </div> <div class="bp-pane active" id="bp-hutang-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari kreditur..." oninput="filterTable('hutang-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Kreditur</th><th>Jumlah</th><th>Tanggal</th><th>Jatuh Tempo</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="hutang-tbody"> </tbody></table></div> </div> </div><!-- /bp-hutang-daftar --> <div class="bp-pane" id="bp-hutang-kartu"> <div class="kartu-grid" id="hutang-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data hutang</p></div> </div> </div> <div class="bp-pane" id="bp-hutang-aging"> <div class="card"> <div class="card-header"><div class="card-title">Aging Analysis Hutang</div></div> <div class="card-body" id="hutang-aging-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-hutang-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Mutasi Hutang</div></div> <div class="card-body" id="hutang-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- PIUTANG --> <div id="page-piutang" class="page"> <div class="page-header"> <div><div class="page-title">Piutang (Accounts Receivable)</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('piutang')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('piutang')">Export</button> <button class="btn btn-primary" onclick="openPiutangModal()">Tambah Piutang</button> </div> </div> <div class="stats-grid" id="piutang-stats"> </div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('piutang','daftar',this)">Daftar Piutang</button> <button class="bp-tab" onclick="switchBpTab('piutang','kartu',this)">Kartu per Debitur</button> <button class="bp-tab" onclick="switchBpTab('piutang','aging',this)">Aging Analysis</button> <button class="bp-tab" onclick="switchBpTab('piutang','mutasi',this)">Riwayat Mutasi</button> </div> <div class="bp-pane active" id="bp-piutang-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari debitur..." oninput="filterTable('piutang-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Debitur</th><th>Jumlah</th><th>Tanggal</th><th>Jatuh Tempo</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="piutang-tbody"> </tbody></table></div> </div> </div><!-- /bp-piutang-daftar --> <div class="bp-pane" id="bp-piutang-kartu"> <div class="kartu-grid" id="piutang-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data piutang</p></div> </div> </div> <div class="bp-pane" id="bp-piutang-aging"> <div class="card"> <div class="card-header"><div class="card-title">Aging Analysis Piutang</div></div> <div class="card-body" id="piutang-aging-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-piutang-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Penerimaan Piutang</div></div> <div class="card-body" id="piutang-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- PERSEDIAAN --> <div id="page-persediaan" class="page"> <div class="page-header"> <div><div class="page-title">Persediaan</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('persediaan')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('persediaan')">Export</button> <button class="btn btn-primary" onclick="openPersediaanModal()">Tambah Barang</button> </div> </div> <div class="stats-grid" id="persediaan-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('persediaan','daftar',this)">Daftar Barang</button> <button class="bp-tab" onclick="switchBpTab('persediaan','kartu',this)">Kartu Stok</button> <button class="bp-tab" onclick="switchBpTab('persediaan','mutasi',this)">Mutasi Persediaan</button> <button class="bp-tab" onclick="switchBpTab('persediaan','ringkasan',this)">Ringkasan Nilai</button> <button class="bp-tab" onclick="switchBpTab('persediaan','retur',this)">Retur Penjualan</button> <button class="bp-tab" onclick="switchBpTab('persediaan','hpp-report',this)"> Laporan HPP</button> </div> <div class="bp-pane active" id="bp-persediaan-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari barang..." oninput="filterTable('persediaan-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Barang</th><th>Stok</th><th>Harga Satuan</th><th>Total Nilai</th><th>Tanggal</th><th>Metode</th><th>Aksi</th></tr></thead><tbody id="persediaan-tbody"></tbody></table></div> </div> </div><!-- /bp-persediaan-daftar --> <div class="bp-pane" id="bp-persediaan-kartu"> <div class="kartu-grid" id="persediaan-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data persediaan</p></div> </div> </div> <div class="bp-pane" id="bp-persediaan-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Mutasi Persediaan</div></div> <div class="card-body" id="persediaan-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-persediaan-ringkasan"> <div class="card"> <div class="card-header"><div class="card-title">Ringkasan Nilai Persediaan</div></div> <div class="card-body" id="persediaan-ringkasan-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-persediaan-retur"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Retur Penjualan</div></div> <div class="card-body" id="persediaan-retur-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada retur penjualan yang dicatat.</p></div> </div> </div> </div> <div class="bp-pane" id="bp-persediaan-hpp-report"> <div class="card"> <div class="card-header"><div class="card-title">Laporan HPP per Barang</div></div> <div class="card-body" id="persediaan-hpp-report-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data penjualan untuk laporan HPP.</p></div> </div> </div> </div> </div> <!-- PERLENGKAPAN --> <div id="page-perlengkapan" class="page"> <div class="page-header"> <div><div class="page-title">Perlengkapan</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('perlengkapan')">Print</button> <button class="btn btn-primary" onclick="openPerlengkapanModal()">Tambah Item</button> </div> </div> <div class="stats-grid" id="perlengkapan-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('perlengkapan','daftar',this)">Daftar Item</button> <button class="bp-tab" onclick="switchBpTab('perlengkapan','kartu',this)">Kartu Item</button> <button class="bp-tab" onclick="switchBpTab('perlengkapan','pemakaian',this)">Riwayat Pemakaian</button> </div> <div class="bp-pane active" id="bp-perlengkapan-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari item..." oninput="filterTable('perlengkapan-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Item</th><th>Jumlah</th><th>Nilai</th><th>Tanggal</th><th>Metode</th><th>Aksi</th></tr></thead><tbody id="perlengkapan-tbody"></tbody></table></div> </div> </div> <div class="bp-pane" id="bp-perlengkapan-kartu"> <div class="kartu-grid" id="perlengkapan-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data perlengkapan</p></div> </div> </div> <div class="bp-pane" id="bp-perlengkapan-pemakaian"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Pemakaian Perlengkapan</div></div> <div class="card-body" id="perlengkapan-pemakaian-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data pemakaian</p></div> </div> </div> </div> </div> <!-- ASET TETAP --> <div id="page-aset-tetap" class="page"> <div class="page-header"> <div><div class="page-title">Aset Tetap</div><div class="page-subtitle">Terintegrasi dengan Jurnal Umum · Garis Lurus & Saldo Menurun</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('aset-tetap')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('aset-tetap')">Export</button> <button class="btn btn-secondary" onclick="hitung_penyusutan_all()">Hitung Penyusutan</button> <button class="btn btn-primary" onclick="openAsetModal()">Tambah Aset</button> </div> </div> <!-- Info banner metode penyusutan --> <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;"> <div style="flex:1;min-width:220px;padding:12px 16px;background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(6,182,212,.08));border:1px solid rgba(37,99,235,.2);border-radius:var(--radius2);display:flex;align-items:center;gap:10px;"> <div style="font-size:22px;"></div> <div> <div style="font-size:12px;font-weight:700;color:var(--primary-light);">GARIS LURUS (Straight-Line)</div> <div style="font-size:11px;color:var(--text2);margin-top:2px;">Beban = Harga Perolehan ÷ Masa Manfaat (tetap setiap tahun)</div> </div> </div> <div style="flex:1;min-width:220px;padding:12px 16px;background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.08));border:1px solid rgba(245,158,11,.3);border-radius:var(--radius2);display:flex;align-items:center;gap:10px;"> <div style="font-size:22px;"></div> <div> <div style="font-size:12px;font-weight:700;color:#92400e;">SALDO MENURUN (Declining Balance)</div> <div style="font-size:11px;color:var(--text2);margin-top:2px;">Beban = Tarif (%) × Nilai Buku Awal Periode (menurun setiap tahun)</div> </div> </div> </div> <div class="stats-grid" id="aset-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('aset','daftar',this)">Daftar Aset</button> <button class="bp-tab" onclick="switchBpTab('aset','kartu',this)">Kartu Aset</button> <button class="bp-tab" onclick="switchBpTab('aset','penyusutan',this)">Jadwal Penyusutan</button> <button class="bp-tab" onclick="switchBpTab('aset','rekapitulasi',this)">Rekapitulasi</button> </div> <div class="bp-pane active" id="bp-aset-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari aset..." oninput="filterTable('aset-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Aset</th><th>Harga Perolehan</th><th>Tahun</th><th>Masa (thn)</th><th>Akum. Penyusutan</th><th>Nilai Buku</th><th>Beban Susut/thn</th><th>Tarif SM (%)</th><th>Tanggal</th><th>Metode Susut</th><th>Aksi</th></tr></thead><tbody id="aset-tbody"></tbody></table></div> </div> </div> <div class="bp-pane" id="bp-aset-kartu"> <div class="kartu-grid" id="aset-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data aset tetap</p></div> </div> </div> <div class="bp-pane" id="bp-aset-penyusutan"> <div id="aset-penyusutan-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data aset</p></div> </div> </div> <div class="bp-pane" id="bp-aset-rekapitulasi"> <div class="card"> <div class="card-header"><div class="card-title">Rekapitulasi Aset Tetap</div></div> <div class="card-body" id="aset-rekap-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- LABA RUGI --> <div id="page-laba-rugi" class="page"> <div class="page-header"> <div><div class="page-title" id="title-laba-rugi">Laporan Laba Rugi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('laba-rugi')">Excel</button> <button class="btn btn-secondary" onclick="printReport('laba-rugi')">Print</button> </div> </div> <div class="card"><div class="card-body" id="laba-rugi-content"> </div></div> </div> <!-- NERACA --> <div id="page-neraca" class="page"> <div class="page-header"> <div><div class="page-title" id="title-neraca">Laporan Posisi Keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('neraca')">Excel</button> <button class="btn btn-secondary" onclick="printReport('neraca')">Print</button> </div> </div> <div class="card"><div class="card-body" id="neraca-content"> </div></div> </div> <!-- PERUBAHAN EKUITAS --> <div id="page-perubahan-ekuitas" class="page"> <div class="page-header"> <div><div class="page-title" id="title-ekuitas">Laporan Perubahan Ekuitas</div></div> </div> <div class="card"><div class="card-body" id="ekuitas-content"> </div></div> </div> <!-- ARUS KAS --> <div id="page-arus-kas" class="page"> <div class="page-header"> <div> <div class="page-title" id="title-arus-kas">Laporan Arus Kas</div> <div class="page-subtitle">Pilih metode penyajian</div> </div> <div class="page-actions"> <div style="display:flex;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius2);overflow:hidden;"> <button id="btn-metode-langsung" onclick="setMetodeArusKas('langsung')"
+ </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="ns-tbody"></tbody><tfoot id="ns-tfoot"></tfoot></table></div> </div> </div> <!-- JURNAL PENYESUAIAN --> <div id="page-penyesuaian" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Penyesuaian</div><div class="page-subtitle">Penyesuaian akhir periode</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openModal('modal-penyesuaian')">Tambah Penyesuaian</button></div> </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun Debit</th><th>Akun Kredit</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="penyesuaian-tbody"></tbody></table></div> </div> </div> <!-- NS SETELAH PENYESUAIAN --> <div id="page-ns-penyesuaian" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo Setelah Penyesuaian</div></div> </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="nspa-tbody"></tbody><tfoot id="nspa-tfoot"></tfoot></table></div> </div> </div> <!-- HUTANG --> <div id="page-hutang" class="page"> <div class="page-header"> <div><div class="page-title">Hutang (Accounts Payable)</div><div class="page-subtitle">Catat invoice di sini → jurnal otomatis dibuat. Pelunasan lewat tombol <strong>Bayar</strong>.</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('hutang')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('hutang')">Export</button> <button class="btn btn-primary" onclick="openHutangModal()">Tambah Hutang</button> </div> </div> <div style="margin-bottom:12px;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);">
+ℹ️ <strong>Alur Hutang:</strong> Tambah Hutang → jurnal otomatis (D: Aset/Beban / K: Hutang Usaha). Klik <strong>Bayar</strong> saat melunasi → jurnal pelunasan otomatis (D: Hutang Usaha / K: Kas). Input jurnal manual di menu Jurnal Umum <em>tidak</em> membuat record di sini.
+</div>
+<div class="stats-grid" id="hutang-stats"> </div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('hutang','daftar',this)">Daftar Hutang</button> <button class="bp-tab" onclick="switchBpTab('hutang','kartu',this)">Kartu per Kreditur</button> <button class="bp-tab" onclick="switchBpTab('hutang','aging',this)">Aging Analysis</button> <button class="bp-tab" onclick="switchBpTab('hutang','mutasi',this)">Riwayat Mutasi</button> </div> <div class="bp-pane active" id="bp-hutang-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari kreditur..." oninput="filterTable('hutang-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Kreditur</th><th>Jumlah</th><th>Tanggal</th><th>Jatuh Tempo</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="hutang-tbody"> </tbody></table></div> </div> </div><!-- /bp-hutang-daftar --> <div class="bp-pane" id="bp-hutang-kartu"> <div class="kartu-grid" id="hutang-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data hutang</p></div> </div> </div> <div class="bp-pane" id="bp-hutang-aging"> <div class="card"> <div class="card-header"><div class="card-title">Aging Analysis Hutang</div></div> <div class="card-body" id="hutang-aging-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-hutang-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Mutasi Hutang</div></div> <div class="card-body" id="hutang-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- PIUTANG --> <div id="page-piutang" class="page"> <div class="page-header"> <div><div class="page-title">Piutang (Accounts Receivable)</div><div class="page-subtitle">Catat invoice di sini → jurnal otomatis dibuat. Pelunasan lewat tombol <strong>Terima Bayar</strong>.</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('piutang')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('piutang')">Export</button> <button class="btn btn-primary" onclick="openPiutangModal()">Tambah Piutang</button> </div> </div> <div style="margin-bottom:12px;padding:10px 14px;background:rgba(16,185,129,.06);border-radius:8px;border-left:4px solid #10b981;font-size:12px;color:var(--text2);">
+ℹ️ <strong>Alur Piutang:</strong> Tambah Piutang → jurnal otomatis (D: Piutang Usaha / K: Pendapatan). Klik <strong>Terima Bayar</strong> saat menerima pembayaran → jurnal penerimaan otomatis (D: Kas / K: Piutang Usaha). Input jurnal manual di menu Jurnal Umum <em>tidak</em> membuat record di sini.
+</div>
+<div class="stats-grid" id="piutang-stats"> </div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('piutang','daftar',this)">Daftar Piutang</button> <button class="bp-tab" onclick="switchBpTab('piutang','kartu',this)">Kartu per Debitur</button> <button class="bp-tab" onclick="switchBpTab('piutang','aging',this)">Aging Analysis</button> <button class="bp-tab" onclick="switchBpTab('piutang','mutasi',this)">Riwayat Mutasi</button> </div> <div class="bp-pane active" id="bp-piutang-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari debitur..." oninput="filterTable('piutang-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Debitur</th><th>Jumlah</th><th>Tanggal</th><th>Jatuh Tempo</th><th>Sisa</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="piutang-tbody"> </tbody></table></div> </div> </div><!-- /bp-piutang-daftar --> <div class="bp-pane" id="bp-piutang-kartu"> <div class="kartu-grid" id="piutang-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data piutang</p></div> </div> </div> <div class="bp-pane" id="bp-piutang-aging"> <div class="card"> <div class="card-header"><div class="card-title">Aging Analysis Piutang</div></div> <div class="card-body" id="piutang-aging-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-piutang-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Penerimaan Piutang</div></div> <div class="card-body" id="piutang-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- PERSEDIAAN --> <div id="page-persediaan" class="page"> <div class="page-header"> <div><div class="page-title">Persediaan</div><div class="page-subtitle">Catat barang di sini → jurnal otomatis dibuat. Penjualan/keluar dicatat via transaksi dengan akun Persediaan.</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('persediaan')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('persediaan')">Export</button> <button class="btn btn-primary" onclick="openPersediaanModal()">Tambah Barang</button> </div> </div> <div class="stats-grid" id="persediaan-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('persediaan','daftar',this)">Daftar Barang</button> <button class="bp-tab" onclick="switchBpTab('persediaan','kartu',this)">Kartu Stok</button> <button class="bp-tab" onclick="switchBpTab('persediaan','mutasi',this)">Mutasi Persediaan</button> <button class="bp-tab" onclick="switchBpTab('persediaan','ringkasan',this)">Ringkasan Nilai</button> <button class="bp-tab" onclick="switchBpTab('persediaan','retur',this)">Retur Penjualan</button> <button class="bp-tab" onclick="switchBpTab('persediaan','hpp-report',this)"> Laporan HPP</button> </div> <div class="bp-pane active" id="bp-persediaan-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari barang..." oninput="filterTable('persediaan-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Barang</th><th>Stok</th><th>Harga Satuan</th><th>Total Nilai</th><th>Tanggal</th><th>Metode</th><th>Aksi</th></tr></thead><tbody id="persediaan-tbody"></tbody></table></div> </div> </div><!-- /bp-persediaan-daftar --> <div class="bp-pane" id="bp-persediaan-kartu"> <div class="kartu-grid" id="persediaan-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data persediaan</p></div> </div> </div> <div class="bp-pane" id="bp-persediaan-mutasi"> <div class="card"> <div class="card-header"><div class="card-title">Mutasi Persediaan</div></div> <div class="card-body" id="persediaan-mutasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-persediaan-ringkasan"> <div class="card"> <div class="card-header"><div class="card-title">Ringkasan Nilai Persediaan</div></div> <div class="card-body" id="persediaan-ringkasan-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> <div class="bp-pane" id="bp-persediaan-retur"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Retur Penjualan</div></div> <div class="card-body" id="persediaan-retur-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada retur penjualan yang dicatat.</p></div> </div> </div> </div> <div class="bp-pane" id="bp-persediaan-hpp-report"> <div class="card"> <div class="card-header"><div class="card-title">Laporan HPP per Barang</div></div> <div class="card-body" id="persediaan-hpp-report-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data penjualan untuk laporan HPP.</p></div> </div> </div> </div> </div> <!-- PERLENGKAPAN --> <div id="page-perlengkapan" class="page"> <div class="page-header"> <div><div class="page-title">Perlengkapan</div><div class="page-subtitle">Catat pembelian di sini → jurnal otomatis dibuat. Pemakaian dicatat via tombol Catat Pemakaian.</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('perlengkapan')">Print</button> <button class="btn btn-primary" onclick="openPerlengkapanModal()">Tambah Item</button> </div> </div> <div class="stats-grid" id="perlengkapan-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('perlengkapan','daftar',this)">Daftar Item</button> <button class="bp-tab" onclick="switchBpTab('perlengkapan','kartu',this)">Kartu Item</button> <button class="bp-tab" onclick="switchBpTab('perlengkapan','pemakaian',this)">Riwayat Pemakaian</button> </div> <div class="bp-pane active" id="bp-perlengkapan-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari item..." oninput="filterTable('perlengkapan-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Item</th><th>Jumlah</th><th>Nilai</th><th>Tanggal</th><th>Metode</th><th>Aksi</th></tr></thead><tbody id="perlengkapan-tbody"></tbody></table></div> </div> </div> <div class="bp-pane" id="bp-perlengkapan-kartu"> <div class="kartu-grid" id="perlengkapan-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data perlengkapan</p></div> </div> </div> <div class="bp-pane" id="bp-perlengkapan-pemakaian"> <div class="card"> <div class="card-header"><div class="card-title">Riwayat Pemakaian Perlengkapan</div></div> <div class="card-body" id="perlengkapan-pemakaian-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data pemakaian</p></div> </div> </div> </div> </div> <!-- ASET TETAP --> <div id="page-aset-tetap" class="page"> <div class="page-header"> <div><div class="page-title">Aset Tetap</div><div class="page-subtitle">Catat pembelian di sini → jurnal otomatis dibuat. Penyusutan via tombol Hitung Penyusutan. Metode: Garis Lurus & Saldo Menurun.</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('aset-tetap')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('aset-tetap')">Export</button> <button class="btn btn-secondary" onclick="hitung_penyusutan_all()">Hitung Penyusutan</button> <button class="btn btn-primary" onclick="openAsetModal()">Tambah Aset</button> </div> </div> <!-- Info banner metode penyusutan --> <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;"> <div style="flex:1;min-width:220px;padding:12px 16px;background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(6,182,212,.08));border:1px solid rgba(37,99,235,.2);border-radius:var(--radius2);display:flex;align-items:center;gap:10px;"> <div style="font-size:22px;"></div> <div> <div style="font-size:12px;font-weight:700;color:var(--primary-light);">GARIS LURUS (Straight-Line)</div> <div style="font-size:11px;color:var(--text2);margin-top:2px;">Beban = Harga Perolehan ÷ Masa Manfaat (tetap setiap tahun)</div> </div> </div> <div style="flex:1;min-width:220px;padding:12px 16px;background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(239,68,68,.08));border:1px solid rgba(245,158,11,.3);border-radius:var(--radius2);display:flex;align-items:center;gap:10px;"> <div style="font-size:22px;"></div> <div> <div style="font-size:12px;font-weight:700;color:#92400e;">SALDO MENURUN (Declining Balance)</div> <div style="font-size:11px;color:var(--text2);margin-top:2px;">Beban = Tarif (%) × Nilai Buku Awal Periode (menurun setiap tahun)</div> </div> </div> </div> <div class="stats-grid" id="aset-stats"></div> <!-- BUKU PEMBANTU TABS --> <div class="bp-tabs"> <button class="bp-tab active" onclick="switchBpTab('aset','daftar',this)">Daftar Aset</button> <button class="bp-tab" onclick="switchBpTab('aset','kartu',this)">Kartu Aset</button> <button class="bp-tab" onclick="switchBpTab('aset','penyusutan',this)">Jadwal Penyusutan</button> <button class="bp-tab" onclick="switchBpTab('aset','rekapitulasi',this)">Rekapitulasi</button> </div> <div class="bp-pane active" id="bp-aset-daftar"> <div class="card"> <div class="table-toolbar"><div class="search-box"> <input type="text" placeholder="Cari aset..." oninput="filterTable('aset-tbody',this.value,[0])"></div></div> <div class="table-wrap"><table><thead><tr><th>Nama Aset</th><th>Harga Perolehan</th><th>Tahun</th><th>Masa (thn)</th><th>Akum. Penyusutan</th><th>Nilai Buku</th><th>Beban Susut/thn</th><th>Tarif SM (%)</th><th>Tanggal</th><th>Metode Susut</th><th>Aksi</th></tr></thead><tbody id="aset-tbody"></tbody></table></div> </div> </div> <div class="bp-pane" id="bp-aset-kartu"> <div class="kartu-grid" id="aset-kartu-grid"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data aset tetap</p></div> </div> </div> <div class="bp-pane" id="bp-aset-penyusutan"> <div id="aset-penyusutan-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data aset</p></div> </div> </div> <div class="bp-pane" id="bp-aset-rekapitulasi"> <div class="card"> <div class="card-header"><div class="card-title">Rekapitulasi Aset Tetap</div></div> <div class="card-body" id="aset-rekap-content"> <div class="empty-state"><div class="empty-icon"></div><p>Belum ada data</p></div> </div> </div> </div> </div> <!-- LABA RUGI --> <div id="page-laba-rugi" class="page"> <div class="page-header"> <div><div class="page-title" id="title-laba-rugi">Laporan Laba Rugi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('laba-rugi')">Excel</button> <button class="btn btn-secondary" onclick="printReport('laba-rugi')">Print</button> </div> </div> <div class="card"><div class="card-body" id="laba-rugi-content"> </div></div> </div> <!-- NERACA --> <div id="page-neraca" class="page"> <div class="page-header"> <div><div class="page-title" id="title-neraca">Laporan Posisi Keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="exportExcel('neraca')">Excel</button> <button class="btn btn-secondary" onclick="printReport('neraca')">Print</button> </div> </div> <div class="card"><div class="card-body" id="neraca-content"> </div></div> </div> <!-- PERUBAHAN EKUITAS --> <div id="page-perubahan-ekuitas" class="page"> <div class="page-header"> <div><div class="page-title" id="title-ekuitas">Laporan Perubahan Ekuitas</div></div> </div> <div class="card"><div class="card-body" id="ekuitas-content"> </div></div> </div> <!-- ARUS KAS --> <div id="page-arus-kas" class="page"> <div class="page-header"> <div> <div class="page-title" id="title-arus-kas">Laporan Arus Kas</div> <div class="page-subtitle">Pilih metode penyajian</div> </div> <div class="page-actions"> <div style="display:flex;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius2);overflow:hidden;"> <button id="btn-metode-langsung" onclick="setMetodeArusKas('langsung')"
  style="padding:7px 16px;border:none;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;background:var(--primary-light);color:#fff;">Langsung
  </button> <button id="btn-metode-tidak-langsung" onclick="setMetodeArusKas('tidak-langsung')"
  style="padding:7px 16px;border:none;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:var(--text2);">Tidak Langsung
@@ -1129,7 +1135,8 @@ textarea.form-control { resize:vertical; min-height:80px; }
  <option value="perlengkapan">Perlengkapan / Supplies</option>
  <option value="aset_tetap">Aset Tetap (Peralatan, Kendaraan, dll)</option>
  <option value="akumulasi_penyusutan">Akumulasi Penyusutan (Contra-Asset)</option>
- <option value="modal_utama">Modal Utama / Laba Ditahan (Jurnal Penutup)</option>
+ <option value="modal_utama">Modal Utama / Modal Disetor (Jurnal Penutup — fallback)</option>
+ <option value="laba_ditahan">Laba Ditahan / Retained Earnings (Jurnal Penutup — PRIORITAS)</option>
  </select>
  <small style="font-size:10px;color:var(--text3);">Digunakan oleh integrasi otomatis agar tidak bergantung pada nama akun</small>
  </div>
@@ -1181,15 +1188,58 @@ textarea.form-control { resize:vertical; min-height:80px; }
 </div> <!-- Penyesuaian Modal -->
 <div class="modal-overlay" id="modal-penyesuaian"> <div class="modal"> <div class="modal-header"><div class="modal-title" id="pen-modal-title">Jurnal Penyesuaian</div><button class="modal-close" onclick="closeModal('modal-penyesuaian')"></button></div> <div class="modal-body"> <input type="hidden" id="pen-edit-id"> <div class="form-grid"> <div class="form-group"><label>Tanggal *</label><input class="form-control" type="date" id="pen-date" required=""></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan *</label><input class="form-control" id="pen-desc" required=""></div> <div class="form-group"><label>Akun Debit *</label><select class="form-control" id="pen-debit-acc"></select></div> <div class="form-group"><label>Akun Kredit *</label><select class="form-control" id="pen-kredit-acc"></select></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="pen-amount" min="0"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-penyesuaian')">Batal</button> <button class="btn btn-primary" onclick="savePenyesuaian()">Simpan</button> </div> </div>
 </div> <!-- Hutang Modal -->
-<div class="modal-overlay" id="modal-hutang"> <div class="modal"> <div class="modal-header"><div class="modal-title">Hutang</div><button class="modal-close" onclick="closeModal('modal-hutang')"></button></div> <div class="modal-body"> <input type="hidden" id="hutang-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Kategori Hutang *</label><select class="form-control" id="hutang-kategori"><option value="pembelian_kredit">Pembelian Kredit (Hutang Dagang)</option><option value="pinjaman_bank">Pinjaman Bank</option><option value="pinjaman_pribadi">Pinjaman Pribadi / Pemegang Saham</option><option value="hutang_gaji">Hutang Gaji / Upah</option><option value="hutang_pajak">Hutang Pajak</option><option value="lain_lain">Lain-lain</option></select></div> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="hutang-nama" required=""></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="hutang-jumlah" min="0" required=""></div> <div class="form-group"><label>Tanggal</label><input class="form-control" type="date" id="hutang-tanggal"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="hutang-jatuh"></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="hutang-keterangan" placeholder="Opsional — misal: no. kontrak, tujuan pinjaman..."></div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-hutang')">Batal</button> <button class="btn btn-primary" onclick="saveHutang()">Simpan</button> </div> </div>
+<div class="modal-overlay" id="modal-hutang"> <div class="modal"> <div class="modal-header"><div class="modal-title">Hutang</div><button class="modal-close" onclick="closeModal('modal-hutang')"></button></div> <div class="modal-body"> <input type="hidden" id="hutang-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Kategori Hutang *</label><select class="form-control" id="hutang-kategori"><option value="pembelian_kredit">Pembelian Kredit (Hutang Dagang)</option><option value="pinjaman_bank">Pinjaman Bank</option><option value="pinjaman_pribadi">Pinjaman Pribadi / Pemegang Saham</option><option value="hutang_gaji">Hutang Gaji / Upah</option><option value="hutang_pajak">Hutang Pajak</option><option value="lain_lain">Lain-lain</option></select></div> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="hutang-nama" required=""></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="hutang-jumlah" min="0" required=""></div> <div class="form-group"><label>Tanggal</label><input class="form-control" type="date" id="hutang-tanggal"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="hutang-jatuh"></div> <div class="form-group"><label>No. Faktur / Referensi *</label><input class="form-control" id="hutang-nomor-faktur" placeholder="Cth: INV-2024-001 atau PO-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="hutang-keterangan" placeholder="Opsional — misal: tujuan pinjaman, nama barang..."></div>
+ <div class="form-group" style="grid-column:1/-1;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:3px solid var(--primary-lighter);">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-light);margin-bottom:10px;">🔗 Akun Jurnal Otomatis <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);">— opsional, jika kosong sistem akan auto-deteksi dari CoA</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+   <div class="form-group"><label>Akun Debit</label><select class="form-control" id="hutang-acc-debit"><option value="">— Auto dari CoA —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Akun yang didebit (misal: Persediaan, Kas, Beban Gaji)</div></div>
+   <div class="form-group"><label>Akun Kredit (Hutang)</label><select class="form-control" id="hutang-acc-kredit"><option value="">— Auto dari CoA —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Akun hutang yang dikreditkan (misal: Hutang Usaha, Hutang Bank)</div></div>
+  </div>
+ </div>
+ </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-hutang')">Batal</button> <button class="btn btn-primary" onclick="saveHutang()">Simpan</button> </div> </div>
 </div> <!-- Piutang Modal -->
-<div class="modal-overlay" id="modal-piutang"> <div class="modal"> <div class="modal-header"><div class="modal-title">Piutang</div><button class="modal-close" onclick="closeModal('modal-piutang')"></button></div> <div class="modal-body"> <input type="hidden" id="piutang-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Kategori Piutang *</label><select class="form-control" id="piutang-kategori"><option value="penjualan_kredit">Penjualan Kredit (Piutang Dagang)</option><option value="piutang_karyawan">Piutang Karyawan</option><option value="piutang_pinjaman">Pinjaman ke Pihak Lain</option><option value="piutang_bunga">Piutang Bunga</option><option value="lain_lain">Lain-lain</option></select></div> <div class="form-group" style="grid-column:1/-1"><label>Nama Debitur *</label><input class="form-control" id="piutang-nama" required=""></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="piutang-jumlah" min="0" required=""></div> <div class="form-group"><label>Tanggal</label><input class="form-control" type="date" id="piutang-tanggal"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="piutang-jatuh"></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="piutang-keterangan" placeholder="Opsional — misal: no. invoice, tujuan pinjaman..."></div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-piutang')">Batal</button> <button class="btn btn-primary" onclick="savePiutang()">Simpan</button> </div> </div>
+<div class="modal-overlay" id="modal-piutang"> <div class="modal"> <div class="modal-header"><div class="modal-title">Piutang</div><button class="modal-close" onclick="closeModal('modal-piutang')"></button></div> <div class="modal-body"> <input type="hidden" id="piutang-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Kategori Piutang *</label><select class="form-control" id="piutang-kategori"><option value="penjualan_kredit">Penjualan Kredit (Piutang Dagang)</option><option value="piutang_karyawan">Piutang Karyawan</option><option value="piutang_pinjaman">Pinjaman ke Pihak Lain</option><option value="piutang_bunga">Piutang Bunga</option><option value="lain_lain">Lain-lain</option></select></div> <div class="form-group" style="grid-column:1/-1"><label>Nama Debitur *</label><input class="form-control" id="piutang-nama" required=""></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="piutang-jumlah" min="0" required=""></div> <div class="form-group"><label>Tanggal</label><input class="form-control" type="date" id="piutang-tanggal"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="piutang-jatuh"></div> <div class="form-group"><label>No. Faktur / Referensi *</label><input class="form-control" id="piutang-nomor-faktur" placeholder="Cth: INV-2024-001 atau SO-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="piutang-keterangan" placeholder="Opsional — misal: nama barang/jasa, tujuan pinjaman..."></div>
+ <div class="form-group" style="grid-column:1/-1;padding:10px 14px;background:rgba(16,185,129,.06);border-radius:8px;border-left:3px solid #10b981;">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#059669;margin-bottom:10px;">🔗 Akun Jurnal Otomatis <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3);">— opsional, jika kosong sistem akan auto-deteksi dari CoA</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+   <div class="form-group"><label>Akun Debit (Piutang)</label><select class="form-control" id="piutang-acc-debit"><option value="">— Auto dari CoA —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Akun piutang yang didebit (misal: Piutang Usaha, Piutang Karyawan)</div></div>
+   <div class="form-group"><label>Akun Kredit</label><select class="form-control" id="piutang-acc-kredit"><option value="">— Auto dari CoA —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Akun yang dikreditkan (misal: Pendapatan Penjualan, Kas)</div></div>
+  </div>
+ </div>
+ </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-piutang')">Batal</button> <button class="btn btn-primary" onclick="savePiutang()">Simpan</button> </div> </div>
 </div> <!-- Persediaan Modal -->
-<div class="modal-overlay" id="modal-persediaan"> <div class="modal"> <div class="modal-header"><div class="modal-title">Persediaan</div><button class="modal-close" onclick="closeModal('modal-persediaan')"></button></div> <div class="modal-body"> <input type="hidden" id="pers-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Barang *</label><input class="form-control" id="pers-nama" required=""></div> <div class="form-group"><label>Jumlah</label><input class="form-control" type="number" id="pers-jumlah" min="0"></div> <div class="form-group"><label>Harga Satuan (Rp)</label><input class="form-control" type="number" id="pers-harga" min="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="pers-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="pers-metode" onchange="toggleKrediturPers()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group"><label>Metode Penilaian Persediaan</label> <select class="form-control" id="pers-metode-penilaian"> <option value="">— Ikuti pengaturan perusahaan —</option> <option value="fifo">FIFO (First-In, First-Out)</option> <option value="average">Rata-Rata Tertimbang (Average)</option> </select> </div> <div class="form-group"><label>Stok Minimum (unit) <span style="font-size:11px;color:var(--text3);">— peringatan jika stok ≤ nilai ini</span></label><input class="form-control" type="number" id="pers-stok-min" min="0" placeholder="0 = tidak ada batas"></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="pers-ket" placeholder="Opsional"></div> </div> <div id="pers-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="pers-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="pers-jatuh-tempo"></div> </div> </div> <div id="pers-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-persediaan')">Batal</button> <button class="btn btn-primary" onclick="savePersediaan()">Simpan</button> </div> </div>
+<div class="modal-overlay" id="modal-persediaan"> <div class="modal"> <div class="modal-header"><div class="modal-title">Persediaan</div><button class="modal-close" onclick="closeModal('modal-persediaan')"></button></div> <div class="modal-body"> <input type="hidden" id="pers-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Barang *</label><input class="form-control" id="pers-nama" required=""></div> <div class="form-group"><label>Jumlah</label><input class="form-control" type="number" id="pers-jumlah" min="0"></div> <div class="form-group"><label>Harga Satuan (Rp)</label><input class="form-control" type="number" id="pers-harga" min="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="pers-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="pers-metode" onchange="toggleKrediturPers()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group"><label>Metode Penilaian Persediaan</label> <select class="form-control" id="pers-metode-penilaian"> <option value="">— Ikuti pengaturan perusahaan —</option> <option value="fifo">FIFO (First-In, First-Out)</option> <option value="average">Rata-Rata Tertimbang (Average)</option> </select> </div> <div class="form-group"><label>Stok Minimum (unit) <span style="font-size:11px;color:var(--text3);">— peringatan jika stok ≤ nilai ini</span></label><input class="form-control" type="number" id="pers-stok-min" min="0" placeholder="0 = tidak ada batas"></div> <div class="form-group"><label>No. Referensi / No. PO *</label><input class="form-control" id="pers-nomor-ref" placeholder="Cth: PO-2024-001 atau INV-BELI-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="pers-ket" placeholder="Opsional"></div>
+ <div class="form-group" style="grid-column:1/-1;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:3px solid var(--primary-lighter);">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-light);margin-bottom:10px;">🔗 Akun Jurnal Otomatis</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+   <div class="form-group"><label>Akun Persediaan (Debit) *</label><select class="form-control" id="pers-acc-persediaan"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Akun Aset pencatat nilai persediaan</div></div>
+   <div class="form-group"><label>Akun Kas/Bank <span style="font-weight:400;color:var(--text3);">(jika Tunai)</span></label><select class="form-control" id="pers-acc-kas"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Dikreditkan jika metode = Tunai</div></div>
+   <div class="form-group" style="grid-column:1/-1"><label>Akun Hutang <span style="font-weight:400;color:var(--text3);">(jika Kredit)</span></label><select class="form-control" id="pers-acc-hutang"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Dikreditkan jika metode = Kredit</div></div>
+  </div>
+ </div>
+ </div> <div id="pers-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="pers-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="pers-jatuh-tempo"></div> </div> </div> <div id="pers-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-persediaan')">Batal</button> <button class="btn btn-primary" onclick="savePersediaan()">Simpan</button> </div> </div>
 </div> <!-- Perlengkapan Modal -->
-<div class="modal-overlay" id="modal-perlengkapan"> <div class="modal"> <div class="modal-header"><div class="modal-title">Perlengkapan</div><button class="modal-close" onclick="closeModal('modal-perlengkapan')"></button></div> <div class="modal-body"> <input type="hidden" id="perl-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Item *</label><input class="form-control" id="perl-nama" required=""></div> <div class="form-group"><label>Jumlah</label><input class="form-control" type="number" id="perl-jumlah" min="0"></div> <div class="form-group"><label>Nilai (Rp)</label><input class="form-control" type="number" id="perl-nilai" min="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="perl-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="perl-metode" onchange="toggleKrediturPerl()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="perl-ket" placeholder="Opsional"></div> </div> <div id="perl-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="perl-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="perl-jatuh-tempo"></div> </div> </div> <div id="perl-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-perlengkapan')">Batal</button> <button class="btn btn-primary" onclick="savePerlengkapan()">Simpan</button> </div> </div>
+<div class="modal-overlay" id="modal-perlengkapan"> <div class="modal"> <div class="modal-header"><div class="modal-title">Perlengkapan</div><button class="modal-close" onclick="closeModal('modal-perlengkapan')"></button></div> <div class="modal-body"> <input type="hidden" id="perl-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Item *</label><input class="form-control" id="perl-nama" required=""></div> <div class="form-group"><label>Jumlah</label><input class="form-control" type="number" id="perl-jumlah" min="0"></div> <div class="form-group"><label>Nilai (Rp)</label><input class="form-control" type="number" id="perl-nilai" min="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="perl-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="perl-metode" onchange="toggleKrediturPerl()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group"><label>No. Referensi / No. Pembelian *</label><input class="form-control" id="perl-nomor-ref" placeholder="Cth: PERL-2024-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="perl-ket" placeholder="Opsional"></div>
+ <div class="form-group" style="grid-column:1/-1;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:3px solid var(--primary-lighter);">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-light);margin-bottom:10px;">🔗 Akun Jurnal Otomatis</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+   <div class="form-group"><label>Akun Perlengkapan (Debit) *</label><select class="form-control" id="perl-acc-perlengkapan"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Akun Aset pencatat nilai perlengkapan</div></div>
+   <div class="form-group"><label>Akun Kas/Bank <span style="font-weight:400;color:var(--text3);">(jika Tunai)</span></label><select class="form-control" id="perl-acc-kas"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Dikreditkan jika metode = Tunai</div></div>
+   <div class="form-group" style="grid-column:1/-1"><label>Akun Hutang <span style="font-weight:400;color:var(--text3);">(jika Kredit)</span></label><select class="form-control" id="perl-acc-hutang"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Dikreditkan jika metode = Kredit</div></div>
+  </div>
+ </div>
+ </div> <div id="perl-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="perl-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="perl-jatuh-tempo"></div> </div> </div> <div id="perl-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-perlengkapan')">Batal</button> <button class="btn btn-primary" onclick="savePerlengkapan()">Simpan</button> </div> </div>
 </div> <!-- Aset Tetap Modal -->
-<div class="modal-overlay" id="modal-aset"> <div class="modal"> <div class="modal-header"><div class="modal-title">Aset Tetap</div><button class="modal-close" onclick="closeModal('modal-aset')"></button></div> <div class="modal-body"> <input type="hidden" id="aset-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Aset *</label><input class="form-control" id="aset-nama" required=""></div> <div class="form-group"><label>Harga Perolehan *</label><input class="form-control" type="number" id="aset-harga" min="0" required=""></div> <div class="form-group"><label>Tahun Perolehan</label><input class="form-control" type="number" id="aset-tahun" placeholder="2023"></div> <div class="form-group"><label>Masa Manfaat (tahun)</label><input class="form-control" type="number" id="aset-masa" min="1" placeholder="5"></div> <div class="form-group"><label>Tambahan Aset</label><input class="form-control" type="number" id="aset-tambah" min="0" value="0"></div> <div class="form-group"><label>Pengurangan Aset</label><input class="form-control" type="number" id="aset-kurang" min="0" value="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="aset-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="aset-metode" onchange="toggleKrediturAset()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group" style="grid-column:1/-1"> <label>Metode Penyusutan</label> <select class="form-control" id="aset-metode-penyusutan" onchange="toggleTarifSaldoMenurun()"> <option value="garis-lurus">Garis Lurus (Straight-Line)</option> <option value="saldo-menurun">Saldo Menurun (Declining Balance)</option> </select> </div> <div class="form-group" id="tarif-sm-group" style="display:none;"> <label>Tarif Penyusutan (%) <span style="font-size:11px;color:var(--text3);">— untuk Saldo Menurun</span></label> <input class="form-control" type="number" id="aset-tarif-sm" min="1" max="100" placeholder="mis. 25 berarti 25%/tahun" step="0.01"> <div style="font-size:11px;color:var(--text3);margin-top:4px;">Beban = Tarif × Nilai Buku Awal Periode. Nilai buku tidak turun di bawah 0.</div> </div> <div class="form-group"> <label>Nilai Residu / Sisa (Rp) <span style="font-size:11px;color:var(--text3);">— untuk Garis Lurus</span></label> <input class="form-control" type="number" id="aset-residu" min="0" value="0" placeholder="0"> <div style="font-size:11px;color:var(--text3);margin-top:4px;">Nilai estimasi aset di akhir masa manfaat. Beban GL = (Harga − Residu) ÷ Masa Manfaat.</div> </div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="aset-ket" placeholder="Opsional"></div> </div> <!-- Depreciation Schedule Preview --> <div id="aset-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="aset-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="aset-jatuh-tempo"></div> </div> </div> <div id="aset-susut-preview" style="margin-top:16px;display:none;"> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Simulasi Jadwal Penyusutan</div> <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border);"> <table style="width:100%;border-collapse:collapse;font-size:12px;"> <thead> <tr style="background:var(--primary);color:#fff;"> <th style="padding:7px 10px;text-align:left;">Tahun ke-</th> <th style="padding:7px 10px;text-align:right;">Nilai Buku Awal</th> <th style="padding:7px 10px;text-align:right;">Beban Penyusutan</th> <th style="padding:7px 10px;text-align:right;">Akum. Penyusutan</th> <th style="padding:7px 10px;text-align:right;">Nilai Buku Akhir</th> </tr> </thead> <tbody id="aset-susut-tbody"></tbody> </table> </div> </div> <div id="aset-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-aset')">Batal</button> <button class="btn btn-secondary" onclick="previewJadwalPenyusutan()">Preview Jadwal</button> <button class="btn btn-primary" onclick="saveAset()">Simpan</button> </div> </div>
+<div class="modal-overlay" id="modal-aset"> <div class="modal"> <div class="modal-header"><div class="modal-title">Aset Tetap</div><button class="modal-close" onclick="closeModal('modal-aset')"></button></div> <div class="modal-body"> <input type="hidden" id="aset-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Aset *</label><input class="form-control" id="aset-nama" required=""></div> <div class="form-group"><label>Harga Perolehan *</label><input class="form-control" type="number" id="aset-harga" min="0" required=""></div> <div class="form-group"><label>Tahun Perolehan</label><input class="form-control" type="number" id="aset-tahun" placeholder="2023"></div> <div class="form-group"><label>Masa Manfaat (tahun)</label><input class="form-control" type="number" id="aset-masa" min="1" placeholder="5"></div> <div class="form-group"><label>Tambahan Aset</label><input class="form-control" type="number" id="aset-tambah" min="0" value="0"></div> <div class="form-group"><label>Pengurangan Aset</label><input class="form-control" type="number" id="aset-kurang" min="0" value="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="aset-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="aset-metode" onchange="toggleKrediturAset()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group" style="grid-column:1/-1"> <label>Metode Penyusutan</label> <select class="form-control" id="aset-metode-penyusutan" onchange="toggleTarifSaldoMenurun()"> <option value="garis-lurus">Garis Lurus (Straight-Line)</option> <option value="saldo-menurun">Saldo Menurun (Declining Balance)</option> </select> </div> <div class="form-group" id="tarif-sm-group" style="display:none;"> <label>Tarif Penyusutan (%) <span style="font-size:11px;color:var(--text3);">— untuk Saldo Menurun</span></label> <input class="form-control" type="number" id="aset-tarif-sm" min="1" max="100" placeholder="mis. 25 berarti 25%/tahun" step="0.01"> <div style="font-size:11px;color:var(--text3);margin-top:4px;">Beban = Tarif × Nilai Buku Awal Periode. Nilai buku tidak turun di bawah 0.</div> </div> <div class="form-group"> <label>Nilai Residu / Sisa (Rp) <span style="font-size:11px;color:var(--text3);">— untuk Garis Lurus</span></label> <input class="form-control" type="number" id="aset-residu" min="0" value="0" placeholder="0"> <div style="font-size:11px;color:var(--text3);margin-top:4px;">Nilai estimasi aset di akhir masa manfaat. Beban GL = (Harga − Residu) ÷ Masa Manfaat.</div> </div> <div class="form-group"><label>No. Referensi / No. Faktur *</label><input class="form-control" id="aset-nomor-ref" placeholder="Cth: FA-2024-001 atau INV-ASET-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="aset-ket" placeholder="Opsional"></div>
+ <div class="form-group" style="grid-column:1/-1;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:3px solid var(--primary-lighter);">
+  <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--primary-light);margin-bottom:10px;">🔗 Akun Jurnal Otomatis</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+   <div class="form-group"><label>Akun Aset Tetap (Debit) *</label><select class="form-control" id="aset-acc-aset"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Misal: Kendaraan, Mesin, Peralatan</div></div>
+   <div class="form-group"><label>Akun Kas/Bank <span style="font-weight:400;color:var(--text3);">(jika Tunai)</span></label><select class="form-control" id="aset-acc-kas"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Dikreditkan jika metode = Tunai</div></div>
+   <div class="form-group" style="grid-column:1/-1"><label>Akun Hutang <span style="font-weight:400;color:var(--text3);">(jika Kredit)</span></label><select class="form-control" id="aset-acc-hutang"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Dikreditkan jika metode = Kredit</div></div>
+  </div>
+ </div>
+ </div> <!-- Depreciation Schedule Preview --> <div id="aset-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="aset-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="aset-jatuh-tempo"></div> </div> </div> <div id="aset-susut-preview" style="margin-top:16px;display:none;"> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Simulasi Jadwal Penyusutan</div> <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border);"> <table style="width:100%;border-collapse:collapse;font-size:12px;"> <thead> <tr style="background:var(--primary);color:#fff;"> <th style="padding:7px 10px;text-align:left;">Tahun ke-</th> <th style="padding:7px 10px;text-align:right;">Nilai Buku Awal</th> <th style="padding:7px 10px;text-align:right;">Beban Penyusutan</th> <th style="padding:7px 10px;text-align:right;">Akum. Penyusutan</th> <th style="padding:7px 10px;text-align:right;">Nilai Buku Akhir</th> </tr> </thead> <tbody id="aset-susut-tbody"></tbody> </table> </div> </div> <div id="aset-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-aset')">Batal</button> <button class="btn btn-secondary" onclick="previewJadwalPenyusutan()">Preview Jadwal</button> <button class="btn btn-primary" onclick="saveAset()">Simpan</button> </div> </div>
 </div> <!-- Company Switcher Modal -->
 <div class="modal-overlay" id="modal-switcher"> <div class="modal" style="max-width:400px;"> <div class="modal-header"><div class="modal-title">Pilih Perusahaan Aktif</div><button class="modal-close" onclick="closeModal('modal-switcher')"></button></div> <div class="modal-body" id="switcher-list" style="display:flex;flex-direction:column;gap:8px;padding:16px;"></div> </div>
 </div> <!-- Bayar Modal -->
@@ -2219,7 +2269,7 @@ function saveCompany() {
  }
  }
  const obj = {
- id: id ? parseInt(id) : genId(),
+ id: id ? id : genId(),
  name, standard: document.getElementById('co-standard').value,
  entity_mode: document.getElementById('co-entity-mode').value || 'komersial',
  type: document.getElementById('co-type').value,
@@ -2227,7 +2277,7 @@ function saveCompany() {
  period_end: document.getElementById('co-end').value,
  metode_persediaan: document.getElementById('co-metode-persediaan')?.value || 'fifo',
  // [FITUR] Nomor jurnal sequential per perusahaan
- _journal_counter: id ? (DB.companies.find(c=>c.id==parseInt(id))?._journal_counter || 0) : 0
+ _journal_counter: id ? (DB.companies.find(c=>String(c.id)==String(id))?._journal_counter || 0) : 0
  };
  if (id) {
  const i = DB.companies.findIndex(c=>c.id==id);
@@ -2741,7 +2791,7 @@ function saveCOA() {
  }
 
  const obj = {
- id: id ? parseInt(id) : genId(),
+ id: id ? id : genId(),
  company_id: co(), code, name,
  type: document.getElementById('coa-type').value,
  normal_balance: document.getElementById('coa-normal').value,
@@ -3153,85 +3203,13 @@ function _pushAutoJournal(date, desc, source, details) {
 }
 
 function reverseIntegration(trxId) {
- // 1. Hapus record yang dibuat baru dari transaksi ini
- // FIX 2+3: Piutang, hutang, dan persediaan kini selalu dibuat sebagai record baru per transaksi
- // (per-invoice/per-batch), sehingga cukup di-filter berdasarkan ref_transaction_id.
- DB.hutang = DB.hutang.filter(h =>h.ref_transaction_id !== trxId);
- DB.piutang = DB.piutang.filter(p =>p.ref_transaction_id !== trxId);
- DB.persediaan = DB.persediaan.filter(p =>p.ref_transaction_id !== trxId);
- DB.aset_tetap = DB.aset_tetap.filter(a =>a.ref_transaction_id !== trxId);
- DB.perlengkapan = DB.perlengkapan.filter(p =>p.ref_transaction_id !== trxId);
-
- // 2. Balikkan delta yang ditambahkan ke record existing
- // Termasuk: piutang kredit (pembayaran yg sudah dikurangi dari sisa piutang),
- // hutang debit (pembayaran yg sudah dikurangi dari sisa hutang),
- // persediaan kredit (stok yg sudah dikurangi), aset tetap & perlengkapan.
+ // [DESAIN BARU] Semua modul (hutang, piutang, persediaan, aset tetap, perlengkapan)
+ // TIDAK lagi dikelola via integrasi dari Jurnal Umum.
+ // Setiap modul punya jalur input sendiri dengan jurnal otomatis (_source='auto_module').
+ // Reversal record dilakukan oleh deleteRecord di masing-masing modul.
+ // reverseIntegration sekarang hanya membersihkan integration_deltas lama (legacy).
  if (!DB.integration_deltas) DB.integration_deltas = [];
- DB.integration_deltas.filter(d =>d.trx_id === trxId).forEach(delta => {
- // PIUTANG KREDIT: kembalikan sisa piutang yg sudah dikurangi 
- if (delta.module === 'piutang' && delta.direction === 'kredit') {
- const idx = DB.piutang.findIndex(p => p.id === delta.record_id);
- if (idx >= 0) {
- DB.piutang[idx].sisa = Math.min(
- DB.piutang[idx].jumlah,
- (DB.piutang[idx].sisa || 0) + delta.amount
- );
- // Kembalikan status ke sebelum pembayaran
- if (DB.piutang[idx].sisa >= DB.piutang[idx].jumlah - 0.01)
- DB.piutang[idx].status = 'Belum Lunas';
- else
- DB.piutang[idx].status = 'Sebagian';
- }
- }
- // FIX BUG #3: HUTANG DEBIT: kembalikan sisa hutang yg sudah dikurangi 
- // (sebelumnya tidak ada penanganan reversal untuk hutang — delta pembayaran hutang hilang)
- if (delta.module === 'hutang' && delta.direction === 'debit') {
- const idx = DB.hutang.findIndex(h => h.id === delta.record_id);
- if (idx >= 0) {
- DB.hutang[idx].sisa = Math.min(
- DB.hutang[idx].jumlah,
- (DB.hutang[idx].sisa || 0) + delta.amount
- );
- // Kembalikan status ke sebelum pembayaran
- if (DB.hutang[idx].sisa >= DB.hutang[idx].jumlah - 0.01)
- DB.hutang[idx].status = 'Belum Lunas';
- else
- DB.hutang[idx].status = 'Sebagian';
- }
- }
- });
- DB.integration_deltas.filter(d =>d.trx_id === trxId).forEach(delta => {
- if (delta.module === 'persediaan') {
- const idx = DB.persediaan.findIndex(p =>p.id === delta.record_id);
- if (idx >= 0) {
- if (delta.direction === 'kredit') {
- // Reversal penjualan/pengeluaran: kembalikan nilai + qty ke batch asal
- DB.persediaan[idx].total_nilai = (DB.persediaan[idx].total_nilai || 0) + delta.amount;
- DB.persediaan[idx].jumlah = (DB.persediaan[idx].jumlah || 0) + (delta.qty || 0);
- // harga_satuan batch tidak berubah (FIFO)
- }
- // direction='debit' tidak lagi digunakan karena batch baru selalu dibuat per transaksi (FIX 2)
- }
- } else if (delta.module === 'aset_tetap') {
- const idx = DB.aset_tetap.findIndex(a =>a.id === delta.record_id);
- if (idx >= 0) {
- DB.aset_tetap[idx].harga_perolehan -= delta.amount;
- DB.aset_tetap[idx].tambahan_aset = (DB.aset_tetap[idx].tambahan_aset||0) - delta.amount;
- const hargaEf = DB.aset_tetap[idx].harga_perolehan + (DB.aset_tetap[idx].tambahan_aset||0) - (DB.aset_tetap[idx].pengurangan_aset||0);
- DB.aset_tetap[idx].nilai_buku = hargaEf - (DB.aset_tetap[idx].akumulasi_penyusutan||0);
- DB.aset_tetap[idx].beban_penyusutan = hargaEf / (DB.aset_tetap[idx].masa_manfaat||4);
- }
- } else if (delta.module === 'perlengkapan') {
- const idx = DB.perlengkapan.findIndex(p =>p.id === delta.record_id);
- if (idx >= 0) {
- // [FIX] Kurangi .nilai (field utama) DAN .total_nilai (field render kartu)
- DB.perlengkapan[idx].nilai = Math.max(0, (DB.perlengkapan[idx].nilai||0) - delta.amount);
- DB.perlengkapan[idx].total_nilai = DB.perlengkapan[idx].nilai;
- }
- }
- });
- // Bersihkan delta log untuk transaksi ini
- DB.integration_deltas = DB.integration_deltas.filter(d =>d.trx_id !== trxId);
+ DB.integration_deltas = DB.integration_deltas.filter(d => d.trx_id !== trxId);
 }
 
 // W5: Helper — cek peran akun eksplisit sebelum fallback ke keyword nama
@@ -3259,6 +3237,39 @@ function _accHasRole(acc, role) {
 function _findAccByRole(accs, role) {
  // Prioritas 1: account_role eksplisit; Prioritas 2: keyword fallback
  return accs.find(a=>a.account_role===role) || accs.find(a=>_accHasRole(a,role));
+}
+
+// [FIX EKUITAS] _findModalAcc — pilih akun tujuan penutupan laba secara akurat
+// Urutan prioritas (dari paling tepat ke paling longgar):
+//   1. account_role === 'modal_utama'           → pilihan eksplisit user di CoA
+//   2. account_role === 'laba_ditahan'           → alternatif eksplisit untuk Laba Ditahan
+//   3. nama mengandung 'laba ditahan'/'retained' → secara akuntansi paling tepat (PSAK)
+//   4. nama mengandung 'modal' (non-saham preferens/agio) → fallback umum
+//   5. ekuitas kredit-normal pertama             → last resort
+// Kenapa urutan ini? Laba periode berjalan seharusnya masuk Laba Ditahan / Retained Earnings,
+// bukan Modal Disetor atau Agio Saham. Jika user punya struktur ekuitas PT yang lengkap
+// (Modal Saham + Agio + Laba Ditahan), sistem harus menutup ke Laba Ditahan, bukan Modal Saham.
+function _findModalAcc(accs) {
+ const ek = accs.filter(a => a.type === 'Ekuitas' && a.normal_balance === 'Kredit');
+ // Prioritas 1 & 2: account_role eksplisit
+ const byRole = ek.find(a => a.account_role === 'modal_utama') ||
+                ek.find(a => a.account_role === 'laba_ditahan');
+ if (byRole) return byRole;
+ // Prioritas 3: nama mengandung 'laba ditahan' / 'retained' (paling tepat secara akuntansi)
+ const byLabaDitahan = ek.find(a => {
+   const n = a.name.toLowerCase();
+   return n.includes('laba ditahan') || n.includes('retained earning') || n.includes('saldo laba');
+ });
+ if (byLabaDitahan) return byLabaDitahan;
+ // Prioritas 4: nama mengandung 'modal' tapi BUKAN agio/tambahan/preferens/saham (hindari Modal Disetor)
+ const byModal = ek.find(a => {
+   const n = a.name.toLowerCase();
+   return n.includes('modal') && !n.includes('agio') && !n.includes('tambahan modal') &&
+          !n.includes('preferens') && !n.includes('saham preferen');
+ });
+ if (byModal) return byModal;
+ // Prioritas 5: last resort — ekuitas kredit-normal pertama
+ return ek[0] || null;
 }
 
 // [FIX BUG 5] Helper: peringatan jika jurnal penutup sudah diposting
@@ -3312,223 +3323,32 @@ function integrateTransaction(trxId, jeId, date, desc, details, counterparty='')
  const acc = getAcc(d.account_id);
  if (!acc) return;
 
- // PIUTANG: jika debit ke akun Piutang → tambah piutang baru 
- if (d.debit > 0 && _accHasRole(acc, 'piutang_usaha')) {
- const nama = resolveNama([
- /kepada\s+(.+?)(?:\s+atas|\s+untuk|$)/i,
- /debitur\s+(.+?)(?:\s+|$)/i,
- /dari\s+(.+?)(?:\s+atas|\s+untuk|$)/i
- ]);
- const nomorRef = `TRX-${String(trxId).padStart(6,'0')}`;
- DB.piutang.push({
- id: genId(), company_id: co(), nama_debitur: nama,
- jumlah: d.debit, sisa: d.debit, status: 'Belum Lunas',
- tanggal: date, jatuh_tempo: '',
- nomor_ref: nomorRef,
- ref_transaction_id: trxId, ref_journal_id: jeId
- });
- }
+ // [DESAIN BARU] HUTANG & PIUTANG — integrasi dari Jurnal Umum DINONAKTIFKAN.
+    // Sub-ledger hutang/piutang hanya dibuat & diubah melalui modul Hutang/Piutang.
+    // - saveHutang / savePiutang  → membuat invoice + jurnal otomatis (_source='auto_module')
+    // - processBayar              → mencatat pelunasan + jurnal (_source='bayar_modal')
+    // - deleteRecord              → menghapus invoice + jurnal terkait
+    // Keuntungan desain ini:
+    //   1. Tidak ada record duplikat (jurnal manual ≠ invoice baru di sub-ledger)
+    //   2. Saldo sub-ledger selalu konsisten dengan jurnal pembuat invoice
+    //   3. Tidak ada ambiguitas pihak ketiga (nama diisi eksplisit oleh user)
+    //   4. Reversal bersih saat hapus — tidak perlu integration_deltas untuk AP/AR
+    // Catatan: jurnal manual yang memakai akun Piutang/Hutang tetap VALID di buku
+    //   besar (mempengaruhi neraca saldo & laporan keuangan), namun TIDAK otomatis
+    //   membuat record di DB.piutang / DB.hutang. Jika perlu tracking per-debitur /
+    //   per-kreditur, user harus input manual di modul Hutang atau Piutang.
 
- // PIUTANG: jika kredit ke akun Piutang → kurangi sisa (penerimaan) 
- if (d.kredit > 0 && _accHasRole(acc, 'piutang_usaha')) {
- const targetNama = counterparty || null;
- let sisa = d.kredit;
- if (!DB.integration_deltas) DB.integration_deltas = [];
- coFilter(DB.piutang)
- .filter(p => p.status !== 'Lunas' && (!targetNama || p.nama_debitur === targetNama))
- .sort((a,b) => a.tanggal.localeCompare(b.tanggal))
- .forEach(p => {
- if (sisa <= 0) return;
- const idx = DB.piutang.findIndex(x => x.id === p.id);
- const bayar = Math.min(sisa, DB.piutang[idx].sisa);
- DB.piutang[idx].sisa -= bayar;
- sisa -= bayar;
- // Log delta agar reverseIntegration dapat mengembalikan sisa piutang saat edit/hapus
- DB.integration_deltas.push({
- trx_id: trxId, module: 'piutang', direction: 'kredit',
- record_id: DB.piutang[idx].id, amount: bayar
- });
- if (DB.piutang[idx].sisa <= 0.01) DB.piutang[idx].status = 'Lunas';
- else DB.piutang[idx].status = 'Sebagian';
- });
- }
-
- // HUTANG: jika kredit ke akun Hutang → tambah hutang 
- if (d.kredit > 0 && _accHasRole(acc, 'hutang_usaha')) {
- const nama = resolveNama([
- /dari\s+(.+?)(?:\s+atas|\s+untuk|$)/i,
- /kepada\s+(.+?)(?:\s+|$)/i,
- /pemasok\s+(.+?)(?:\s+|$)/i
- ]);
- const nomorRef = `TRX-${String(trxId).padStart(6,'0')}`;
- DB.hutang.push({
- id: genId(), company_id: co(), nama_kreditur: nama,
- jumlah: d.kredit, sisa: d.kredit, status: 'Belum Lunas',
- tanggal: date, jatuh_tempo: '',
- nomor_ref: nomorRef,
- ref_transaction_id: trxId, ref_journal_id: jeId
- });
- }
-
- // HUTANG: jika debit ke akun Hutang → bayar hutang 
- // FIX BUG #1: gunakan _accHasRole (mendukung 'utang usaha' / 'utang dagang' tanpa h)
- // isType() lama hanya cek keyword exact — gagal untuk varian ejaan seperti "Utang Usaha"
- if (d.debit > 0 && _accHasRole(acc, 'hutang_usaha')) {
- const targetNama = counterparty || null;
- let sisa = d.debit;
- if (!DB.integration_deltas) DB.integration_deltas = [];
- coFilter(DB.hutang)
- .filter(h =>h.status !== 'Lunas' && (!targetNama || h.nama_kreditur === targetNama))
- .sort((a,b) =>a.tanggal.localeCompare(b.tanggal))
- .forEach(h => {
- if (sisa <= 0) return;
- const idx = DB.hutang.findIndex(x =>x.id === h.id);
- const bayar = Math.min(sisa, DB.hutang[idx].sisa);
- DB.hutang[idx].sisa -= bayar;
- sisa -= bayar;
- // FIX BUG #3b: Log delta hutang agar reverseIntegration dapat mengembalikan
- // sisa hutang saat jurnal dihapus/diedit
- DB.integration_deltas.push({
- trx_id: trxId, module: 'hutang', direction: 'debit',
- record_id: DB.hutang[idx].id, amount: bayar
- });
- if (DB.hutang[idx].sisa <= 0.01) DB.hutang[idx].status = 'Lunas';
- else DB.hutang[idx].status = 'Sebagian';
- });
- }
-
- // PERSEDIAAN: jika debit → tambah stok (batch FIFO baru per transaksi) 
- if (d.debit > 0 && _accHasRole(acc, 'persediaan')) {
- const namaBarang = counterparty ? `Persediaan dari ${counterparty}` : acc.name;
- const batchExisting = coFilter(DB.persediaan).find(p => p.ref_transaction_id === trxId && p.nama_barang === namaBarang);
- if (!batchExisting) {
- // [FIX BUG 2] Batch dari jurnal: jumlah dan harga_satuan diisi 0 karena jurnal tidak
- // menyimpan kuantitas fisik. User HARUS mengisi kuantitas via modul Persediaan agar
- // FIFO akurat. Flag _dari_jurnal=true menandai batch ini perlu dilengkapi.
- DB.persediaan.push({
- id: genId(), company_id: co(), nama_barang: namaBarang,
- jumlah: 0, harga_satuan: 0, total_nilai: d.debit,
- tanggal_masuk: date, _dari_jurnal: true, ref_transaction_id: trxId,
- _perlu_qty: true // [FIX BUG 2] flag: batch ini belum ada qty fisik
- });
- } else {
- const idx = DB.persediaan.findIndex(p => p.id === batchExisting.id);
- DB.persediaan[idx].total_nilai = d.debit;
- if ((DB.persediaan[idx].jumlah || 0) > 0) {
- DB.persediaan[idx].harga_satuan = d.debit / DB.persediaan[idx].jumlah;
- }
- }
- }
-
- // PERSEDIAAN: jika kredit (HPP/keluar) → kurangi stok nilai + qty 
- if (d.kredit > 0 && _accHasRole(acc, 'persediaan')) {
- const pers = coFilter(DB.persediaan);
- if (pers.length > 0) {
- // FIFO: kurangi batch terlama lebih dulu (sort by id asc = urutan masuk)
- // Untuk tiap batch: kurangi nilai terlebih dulu, lalu hitung qty keluar
- // secara proporsional: qty_keluar = nilai_diambil / harga_satuan_batch
- let sisaNilai = d.kredit;
- pers.sort((a,b) =>(a.id - b.id)).forEach(p => {
- if (sisaNilai <= 0) return;
- const idx = DB.persediaan.findIndex(x =>x.id === p.id);
- const batchNilai = DB.persediaan[idx].total_nilai || 0;
- if (batchNilai <= 0) return;
-
- const nilaiDiambil = Math.min(sisaNilai, batchNilai);
- const hargaSatuan = DB.persediaan[idx].harga_satuan || 0;
-
- // Kurangi qty proporsional: qty_keluar = nilai_diambil / harga_satuan
- // Jika harga_satuan 0 (data lama), hitung proporsional dari total_nilai
- let qtyKeluar = 0;
- if (hargaSatuan > 0) {
- qtyKeluar = nilaiDiambil / hargaSatuan;
- } else if (batchNilai > 0) {
- // Fallback: proporsi nilai
- qtyKeluar = (nilaiDiambil / batchNilai) * (DB.persediaan[idx].jumlah || 0);
- }
-
- DB.persediaan[idx].total_nilai = Math.max(0, batchNilai - nilaiDiambil);
- DB.persediaan[idx].jumlah = Math.max(0, (DB.persediaan[idx].jumlah || 0) - qtyKeluar);
- // Pertahankan harga_satuan batch — tidak berubah karena ini FIFO
- // Log delta agar reverseIntegration dapat mengembalikan stok saat edit/hapus
- if (!DB.integration_deltas) DB.integration_deltas = [];
- DB.integration_deltas.push({
- trx_id: trxId, module: 'persediaan', direction: 'kredit',
- record_id: DB.persediaan[idx].id,
- amount: nilaiDiambil,
- qty: qtyKeluar,
- harga_satuan: DB.persediaan[idx].harga_satuan
- });
- sisaNilai -= nilaiDiambil;
- });
- }
- }
-
- // ASET TETAP: jika debit ke akun Aset Tetap → tambah aset 
- if (d.debit > 0 && _accHasRole(acc, 'aset_tetap')) {
- const namaAset = acc.name;
- // FIX BUG AT-1: Jangan cocokkan via nama_aset === acc.name — rentan jika user rename akun.
- // Prioritas 1: ref_transaction_id (exact match transaksi yang sama = edit)
- // Prioritas 2: account_id (akun yang sama = penambahan nilai aset yang sudah ada)
- // Prioritas 3: nama_aset (fallback lama, hanya jika tidak ada ref sama sekali)
- const existing = coFilter(DB.aset_tetap).find(a =>
- a.ref_transaction_id === trxId ||
- a._ref_account_id === acc.id
- ) || coFilter(DB.aset_tetap).find(a => a.nama_aset === namaAset);
- if (!existing) {
- const n = acc.name.toLowerCase();
- const masaManfaat = _accHasRole(acc,'kendaraan') || n.includes('kendaraan') ? 5
- : n.includes('gedung') || n.includes('bangunan') ? 20 : 4;
- DB.aset_tetap.push({
- id: genId(), company_id: co(), nama_aset: namaAset,
- harga_perolehan: d.debit,
- tahun_perolehan: new Date(date).getFullYear(),
- masa_manfaat: masaManfaat,
- akumulasi_penyusutan: 0,
- beban_penyusutan: d.debit / masaManfaat,
- tambahan_aset: 0, pengurangan_aset: 0,
- nilai_buku: d.debit,
- ref_transaction_id: trxId,
- _ref_account_id: acc.id // FIX BUG AT-1: simpan ID akun agar match stabil meski akun di-rename
- });
- } else {
- // FIX KRITIS #1: harga_perolehan adalah nilai perolehan awal — TIDAK ditambah di sini.
- // Penambahan nilai aset dicatat di tambahan_aset saja.
- // hargaEf = harga_perolehan (awal) + tambahan_aset (akumulasi) - pengurangan_aset
- const idx = DB.aset_tetap.findIndex(a =>a.id === existing.id);
- DB.aset_tetap[idx].tambahan_aset = (DB.aset_tetap[idx].tambahan_aset || 0) + d.debit;
- const hargaEf = DB.aset_tetap[idx].harga_perolehan + (DB.aset_tetap[idx].tambahan_aset||0) - (DB.aset_tetap[idx].pengurangan_aset||0);
- DB.aset_tetap[idx].nilai_buku = hargaEf - (DB.aset_tetap[idx].akumulasi_penyusutan || 0);
- DB.aset_tetap[idx].beban_penyusutan = hargaEf / (DB.aset_tetap[idx].masa_manfaat || 4);
- if (!DB.integration_deltas) DB.integration_deltas = [];
- DB.integration_deltas.push({ trx_id: trxId, module: 'aset_tetap', record_id: existing.id, amount: d.debit });
- }
- }
-
- // PERLENGKAPAN: jika debit ke akun Perlengkapan → tambah perlengkapan 
- if (d.debit > 0 && _accHasRole(acc, 'perlengkapan')) {
- const namaItem = desc.substring(0, 50);
- // FIX BUG PERL-1: Jangan cocokkan via nama_item === desc[:50] — deskripsi berbeda = duplikat.
- // Gunakan ref_transaction_id (edit) atau _ref_account_id (akun yang sama = update nilai)
- const existing = coFilter(DB.perlengkapan).find(p =>
- p.ref_transaction_id === trxId ||
- p._ref_account_id === acc.id
- ) || coFilter(DB.perlengkapan).find(p => p.nama_item === namaItem);
- if (!existing) {
- DB.perlengkapan.push({
- id: genId(), company_id: co(), nama_item: namaItem,
- jumlah: 1, nilai: d.debit,
- ref_transaction_id: trxId,
- _ref_account_id: acc.id // FIX BUG PERL-1: simpan ID akun agar match stabil
- });
- } else {
- const idx = DB.perlengkapan.findIndex(p =>p.id === existing.id);
- DB.perlengkapan[idx].nilai += d.debit;
- DB.perlengkapan[idx].total_nilai = DB.perlengkapan[idx].nilai; // [FIX] sync total_nilai
- if (!DB.integration_deltas) DB.integration_deltas = [];
- DB.integration_deltas.push({ trx_id: trxId, module: 'perlengkapan', record_id: existing.id, amount: d.debit });
- }
- }
+// [DESAIN BARU] PERSEDIAAN, ASET TETAP, PERLENGKAPAN — integrasi dari Jurnal Umum DINONAKTIFKAN.
+    // Ketiga modul hanya dibuat & diubah melalui modul masing-masing:
+    //   - savePersediaan   → jurnal otomatis (D: Persediaan / K: Kas atau Hutang)
+    //   - savePerlengkapan → jurnal otomatis (D: Perlengkapan / K: Kas atau Hutang)
+    //   - saveAset         → jurnal otomatis (D: Aset Tetap / K: Kas atau Hutang)
+    // Pengeluaran/pemakaian:
+    //   - simpanPemakaianPerlengkapan → jurnal (D: Beban Perlengkapan / K: Perlengkapan)
+    //   - hitung_penyusutan_all       → jurnal (D: Beban Penyusutan / K: Akum. Penyusutan)
+    //   - processJualAset / processHapusAset → jurnal pelepasan aset
+    // Input jurnal manual di menu Jurnal Umum dengan akun Persediaan/Aset/Perlengkapan
+    // tetap VALID di buku besar, tapi TIDAK otomatis membuat/mengubah record di modul.
  });
 }
 
@@ -4670,6 +4490,8 @@ function openHutangModal() {
  document.getElementById('hutang-tanggal').value = '';
  document.getElementById('hutang-jatuh').value = '';
  document.getElementById('hutang-keterangan').value = '';
+ if (document.getElementById('hutang-nomor-faktur')) document.getElementById('hutang-nomor-faktur').value = '';
+ populateHutangAccDropdowns();
  openModal('modal-hutang');
 }
 
@@ -4683,6 +4505,17 @@ function openHutangEdit(id) {
  document.getElementById('hutang-tanggal').value = h.tanggal || '';
  document.getElementById('hutang-jatuh').value = h.jatuh_tempo || '';
  document.getElementById('hutang-keterangan').value = h.keterangan || '';
+ if (document.getElementById('hutang-nomor-faktur')) document.getElementById('hutang-nomor-faktur').value = h.nomor_ref || '';
+ // Pre-select akun dari jurnal terkait
+ let htDebitId='', htKreditId='';
+ if (h.ref_journal_id) {
+  const details = DB.journal_details.filter(d=>d.journal_id===h.ref_journal_id);
+  const dd = details.find(d=>d.debit>0);
+  const dk = details.find(d=>d.kredit>0);
+  if (dd) htDebitId = dd.account_id;
+  if (dk) htKreditId = dk.account_id;
+ }
+ populateHutangAccDropdowns(htDebitId, htKreditId);
  openModal('modal-hutang');
 }
 
@@ -4708,17 +4541,40 @@ function saveHutang() {
  const oldRec_hut = id ? DB.hutang.find(h=>String(h.id)==String(id)) : null;
  const kategori=document.getElementById('hutang-kategori').value||'pembelian_kredit';
  const keterangan=document.getElementById('hutang-keterangan').value.trim();
- const obj={id:id?id:genId(),company_id:co(),nama_kreditur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('hutang-jatuh').value,sisa:id?(oldRec_hut?.sisa??jumlah):jumlah,status:id?(oldRec_hut?.status||'Belum Lunas'):'Belum Lunas',kategori,keterangan};
+ const nomorFaktur=(document.getElementById('hutang-nomor-faktur')?.value||'').trim();
+ if (!nomorFaktur) { toast('No. Faktur / Referensi wajib diisi','error'); return; }
+ if (!id) {
+   const duplikat = coFilter(DB.hutang).find(h => h.nomor_ref && h.nomor_ref.toLowerCase() === nomorFaktur.toLowerCase());
+   if (duplikat) { toast('No. Faktur "'+nomorFaktur+'" sudah ada ('+duplikat.nama_kreditur+', '+fmtC(duplikat.jumlah)+'). Gunakan nomor berbeda.','error',5000); return; }
+ }
+ const obj={id:id?id:genId(),company_id:co(),nama_kreditur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('hutang-jatuh').value,sisa:id?(oldRec_hut?.sisa??jumlah):jumlah,status:id?(oldRec_hut?.status||'Belum Lunas'):'Belum Lunas',kategori,keterangan,nomor_ref:nomorFaktur};
  if (oldRec_hut?.ref_journal_id) obj.ref_journal_id=oldRec_hut.ref_journal_id;
  if (id) {
  const i=DB.hutang.findIndex(h=>String(h.id)==String(id));
  if (i>=0) DB.hutang[i]=obj;
- if (oldRec_hut?.ref_journal_id && oldRec_hut.jumlah !== jumlah) {
- DB.journal_details.filter(d=>d.journal_id===oldRec_hut.ref_journal_id).forEach(d=>{
- if (d.debit>0) d.debit=jumlah;
- if (d.kredit>0) d.kredit=jumlah;
- });
- toast(` Hutang + jurnal diperbarui: nominal disesuaikan ke ${fmtC(jumlah)}`,'success',4000);
+ if (oldRec_hut?.ref_journal_id) {
+ const detailsH=DB.journal_details.filter(d=>d.journal_id===oldRec_hut.ref_journal_id);
+ const debitDetH=detailsH.find(d=>d.debit>0);
+ const kreditDetH=detailsH.find(d=>d.kredit>0);
+ // Update nominal jika berubah
+ if (oldRec_hut.jumlah !== jumlah) {
+ detailsH.forEach(d=>{ if(d.debit>0) d.debit=jumlah; if(d.kredit>0) d.kredit=jumlah; });
+ }
+ // [FIX] Update account_id dari dropdown jika akun berubah
+ const accsEditH=coFilter(DB.accounts);
+ const selDebitIdH=document.getElementById('hutang-acc-debit')?.value;
+ const selKreditIdH=document.getElementById('hutang-acc-kredit')?.value;
+ if (debitDetH && selDebitIdH && String(debitDetH.account_id)!==String(selDebitIdH)) {
+ debitDetH.account_id=selDebitIdH;
+ }
+ if (kreditDetH && selKreditIdH && String(kreditDetH.account_id)!==String(selKreditIdH)) {
+ kreditDetH.account_id=selKreditIdH;
+ }
+ const perubahanH=[];
+ if (oldRec_hut.jumlah !== jumlah) perubahanH.push(`nominal → ${fmtC(jumlah)}`);
+ if (debitDetH && selDebitIdH) { const a=accsEditH.find(x=>String(x.id)===String(selDebitIdH)); if(a) perubahanH.push(`Debit → ${a.name}`); }
+ if (kreditDetH && selKreditIdH) { const a=accsEditH.find(x=>String(x.id)===String(selKreditIdH)); if(a) perubahanH.push(`Kredit → ${a.name}`); }
+ toast(` Hutang + jurnal diperbarui${perubahanH.length?': '+perubahanH.join(', '):''}`,'success',4000);
  } else {
  toast('Hutang diperbarui','success');
  }
@@ -4767,6 +4623,11 @@ function saveHutang() {
  descJurnal=keterangan||`Hutang lain-lain kepada ${nama}`;
  }
  if (debitAcc && kreditAcc) {
+ // Override dengan pilihan manual dari dropdown jika ada
+ const selDebitId = document.getElementById('hutang-acc-debit')?.value;
+ const selKreditId = document.getElementById('hutang-acc-kredit')?.value;
+ if (selDebitId) { const overrideD = accs.find(a=>String(a.id)===String(selDebitId)); if (overrideD) debitAcc=overrideD; }
+ if (selKreditId) { const overrideK = accs.find(a=>String(a.id)===String(selKreditId)); if (overrideK) kreditAcc=overrideK; }
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:descJurnal,_source:"auto_module"});
  DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:descJurnal,journal_no:genJournalNo(), _source:"auto_module"});
@@ -4838,6 +4699,8 @@ function openPiutangModal() {
  document.getElementById('piutang-tanggal').value = '';
  document.getElementById('piutang-jatuh').value = '';
  document.getElementById('piutang-keterangan').value = '';
+ if (document.getElementById('piutang-nomor-faktur')) document.getElementById('piutang-nomor-faktur').value = '';
+ populatePiutangAccDropdowns();
  openModal('modal-piutang');
 }
 
@@ -4851,6 +4714,17 @@ function openPiutangEdit(id) {
  document.getElementById('piutang-tanggal').value = p.tanggal || '';
  document.getElementById('piutang-jatuh').value = p.jatuh_tempo || '';
  document.getElementById('piutang-keterangan').value = p.keterangan || '';
+ if (document.getElementById('piutang-nomor-faktur')) document.getElementById('piutang-nomor-faktur').value = p.nomor_ref || '';
+ // Pre-select akun dari jurnal terkait
+ let piuDebitId='', piuKreditId='';
+ if (p.ref_journal_id) {
+  const details = DB.journal_details.filter(d=>d.journal_id===p.ref_journal_id);
+  const dd = details.find(d=>d.debit>0);
+  const dk = details.find(d=>d.kredit>0);
+  if (dd) piuDebitId = dd.account_id;
+  if (dk) piuKreditId = dk.account_id;
+ }
+ populatePiutangAccDropdowns(piuDebitId, piuKreditId);
  openModal('modal-piutang');
 }
 
@@ -4874,19 +4748,41 @@ function savePiutang() {
  }
  }
  const oldRec_piu = id ? DB.piutang.find(p=>String(p.id)==String(id)) : null;
- const kategori_piu=document.getElementById('piutang-kategori').value||'penjualan_kredit';
+  const kategori_piu=document.getElementById('piutang-kategori').value||'penjualan_kredit';
  const keterangan_piu=document.getElementById('piutang-keterangan').value.trim();
- const obj={id:id?id:genId(),company_id:co(),nama_debitur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('piutang-jatuh').value,sisa:id?(oldRec_piu?.sisa??jumlah):jumlah,status:id?(oldRec_piu?.status||'Belum Lunas'):'Belum Lunas',kategori:kategori_piu,keterangan:keterangan_piu};
+ const nomorFakturPiu=(document.getElementById('piutang-nomor-faktur')?.value||'').trim();
+ if (!nomorFakturPiu) { toast('No. Faktur / Referensi wajib diisi','error'); return; }
+ if (!id) {
+   const duplikatPiu = coFilter(DB.piutang).find(p => p.nomor_ref && p.nomor_ref.toLowerCase() === nomorFakturPiu.toLowerCase());
+   if (duplikatPiu) { toast('No. Faktur "'+nomorFakturPiu+'" sudah ada ('+duplikatPiu.nama_debitur+', '+fmtC(duplikatPiu.jumlah)+'). Gunakan nomor berbeda.','error',5000); return; }
+ }
+ const obj={id:id?id:genId(),company_id:co(),nama_debitur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('piutang-jatuh').value,sisa:id?(oldRec_piu?.sisa??jumlah):jumlah,status:id?(oldRec_piu?.status||'Belum Lunas'):'Belum Lunas',kategori:kategori_piu,keterangan:keterangan_piu,nomor_ref:nomorFakturPiu};
  if (oldRec_piu?.ref_journal_id) obj.ref_journal_id=oldRec_piu.ref_journal_id;
  if (id) {
  const i=DB.piutang.findIndex(p=>String(p.id)==String(id));
  if (i>=0) DB.piutang[i]=obj;
- if (oldRec_piu?.ref_journal_id && oldRec_piu.jumlah !== jumlah) {
- DB.journal_details.filter(d=>d.journal_id===oldRec_piu.ref_journal_id).forEach(d=>{
- if (d.debit>0) d.debit=jumlah;
- if (d.kredit>0) d.kredit=jumlah;
- });
- toast(` Piutang + jurnal diperbarui: nominal disesuaikan ke ${fmtC(jumlah)}`,'success',4000);
+ if (oldRec_piu?.ref_journal_id) {
+ const detailsPiu=DB.journal_details.filter(d=>d.journal_id===oldRec_piu.ref_journal_id);
+ const debitDetPiu=detailsPiu.find(d=>d.debit>0);
+ const kreditDetPiu=detailsPiu.find(d=>d.kredit>0);
+ if (oldRec_piu.jumlah !== jumlah) {
+ detailsPiu.forEach(d=>{ if(d.debit>0) d.debit=jumlah; if(d.kredit>0) d.kredit=jumlah; });
+ }
+ // [FIX] Update account_id dari dropdown jika akun berubah
+ const accsEditPiu=coFilter(DB.accounts);
+ const selDebitIdPiu=document.getElementById('piutang-acc-debit')?.value;
+ const selKreditIdPiu=document.getElementById('piutang-acc-kredit')?.value;
+ if (debitDetPiu && selDebitIdPiu && String(debitDetPiu.account_id)!==String(selDebitIdPiu)) {
+ debitDetPiu.account_id=selDebitIdPiu;
+ }
+ if (kreditDetPiu && selKreditIdPiu && String(kreditDetPiu.account_id)!==String(selKreditIdPiu)) {
+ kreditDetPiu.account_id=selKreditIdPiu;
+ }
+ const perubahanPiu=[];
+ if (oldRec_piu.jumlah !== jumlah) perubahanPiu.push(`nominal → ${fmtC(jumlah)}`);
+ if (debitDetPiu && selDebitIdPiu) { const a=accsEditPiu.find(x=>String(x.id)===String(selDebitIdPiu)); if(a) perubahanPiu.push(`Debit → ${a.name}`); }
+ if (kreditDetPiu && selKreditIdPiu) { const a=accsEditPiu.find(x=>String(x.id)===String(selKreditIdPiu)); if(a) perubahanPiu.push(`Kredit → ${a.name}`); }
+ toast(` Piutang + jurnal diperbarui${perubahanPiu.length?': '+perubahanPiu.join(', '):''}`,'success',4000);
  } else {
  toast('Piutang diperbarui','success');
  }
@@ -4927,6 +4823,11 @@ function savePiutang() {
  descJurnal_piu=keterangan_piu||`Piutang lain-lain dari ${nama}`;
  }
  if (debitAcc_piu && kreditAcc_piu) {
+ // Override dengan pilihan manual dari dropdown jika ada
+ const selPiuDebitId  = document.getElementById('piutang-acc-debit')?.value;
+ const selPiuKreditId = document.getElementById('piutang-acc-kredit')?.value;
+ if (selPiuDebitId)  { const ov=accs.find(a=>String(a.id)===String(selPiuDebitId));  if (ov) debitAcc_piu=ov; }
+ if (selPiuKreditId) { const ov=accs.find(a=>String(a.id)===String(selPiuKreditId)); if (ov) kreditAcc_piu=ov; }
  const tid=genId(),jeid=genId();
  DB.transactions.push({id:tid,company_id:co(),date:tanggal,description:descJurnal_piu,_source:"auto_module"});
  DB.journal_entries.push({id:jeid,company_id:co(),transaction_id:tid,date:tanggal,description:descJurnal_piu,journal_no:genJournalNo(), _source:"auto_module"});
@@ -4998,7 +4899,7 @@ function onBayarFakturChange() {
  if (rec) document.getElementById('bayar-amount').max = rec.sisa;
  return;
  }
- const rec = DB[type]?.find(x=>x.id==parseInt(targetId));
+ const rec = DB[type]?.find(x=>String(x.id)==String(targetId));
  if (rec) {
  document.getElementById('bayar-amount').max = rec.sisa;
  document.getElementById('bayar-amount').value = rec.sisa; // auto-fill sisa faktur yang dipilih
@@ -5007,7 +4908,7 @@ function onBayarFakturChange() {
 
 function processBayar() {
  // [FIX] Cek periode lock berdasarkan tanggal bayar
- const _tanggalB = document.getElementById('bayar-tanggal')?.value || new Date().toISOString().split('T')[0];
+ const _tanggalB = new Date().toISOString().split('T')[0]; // bayar modal tidak punya field tanggal
  if (cekPeriodeLock(_tanggalB)) return;
  const type = document.getElementById('bayar-type').value;
  const origId = document.getElementById('bayar-id').value;
@@ -5178,6 +5079,105 @@ function renderPersediaan() {
  }
 }
 
+// =====================================================================
+// HELPER: Isi dropdown akun dari CoA berdasarkan filter tipe
+// filterFn: function(acc) → bool
+// selectedId: pre-select account id
+// =====================================================================
+function populateAccDropdown(selectId, filterFn, placeholder, selectedId) {
+ const sel = document.getElementById(selectId);
+ if (!sel) return;
+ const accs = coFilter(DB.accounts).filter(filterFn).sort((a,b)=>a.name.localeCompare(b.name));
+ sel.innerHTML = `<option value="">${placeholder || '— Pilih Akun —'}</option>`;
+ accs.forEach(a => {
+  const opt = document.createElement('option');
+  opt.value = a.id;
+  opt.textContent = (a.code ? a.code + ' — ' : '') + a.name;
+  if (selectedId && String(a.id) === String(selectedId)) opt.selected = true;
+  sel.appendChild(opt);
+ });
+}
+
+// Isi semua dropdown akun untuk modal Persediaan
+function populatePersediaanAccDropdowns(persAccId, kasAccId, hutAccId) {
+ populateAccDropdown('pers-acc-persediaan', a => a.type==='Aset' && a.normal_balance==='Debit', '— Pilih Akun Persediaan —', persAccId);
+ populateAccDropdown('pers-acc-kas', a => a.type==='Aset' && (a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank')), '— Pilih Akun Kas/Bank —', kasAccId);
+ populateAccDropdown('pers-acc-hutang', a => a.type==='Kewajiban' && a.normal_balance==='Kredit', '— Pilih Akun Hutang —', hutAccId);
+ // Auto-suggest: pilih akun paling relevan jika belum ada pilihan eksplisit
+ if (!persAccId) {
+  const accs = coFilter(DB.accounts);
+  const suggest = accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('persediaan')||a.name.toLowerCase().includes('stok')||a.name.toLowerCase().includes('inventory')));
+  if (suggest) document.getElementById('pers-acc-persediaan').value = suggest.id;
+ }
+ if (!kasAccId) {
+  const accs = coFilter(DB.accounts);
+  const suggest = accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank')));
+  if (suggest) document.getElementById('pers-acc-kas').value = suggest.id;
+ }
+ if (!hutAccId) {
+  const accs = coFilter(DB.accounts);
+  const suggest = accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')||a.name.toLowerCase().includes('utang usaha')));
+  if (suggest) document.getElementById('pers-acc-hutang').value = suggest.id;
+ }
+}
+
+// Isi semua dropdown akun untuk modal Perlengkapan
+function populatePerlengkapanAccDropdowns(perlAccId, kasAccId, hutAccId) {
+ populateAccDropdown('perl-acc-perlengkapan', a => a.type==='Aset' && a.normal_balance==='Debit', '— Pilih Akun Perlengkapan —', perlAccId);
+ populateAccDropdown('perl-acc-kas', a => a.type==='Aset' && (a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank')), '— Pilih Akun Kas/Bank —', kasAccId);
+ populateAccDropdown('perl-acc-hutang', a => a.type==='Kewajiban' && a.normal_balance==='Kredit', '— Pilih Akun Hutang —', hutAccId);
+ if (!perlAccId) {
+  const accs = coFilter(DB.accounts);
+  const suggest = accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('perlengkapan')||a.name.toLowerCase().includes('supplies')));
+  if (suggest) document.getElementById('perl-acc-perlengkapan').value = suggest.id;
+ }
+ if (!kasAccId) {
+  const accs = coFilter(DB.accounts);
+  const suggest = accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank')));
+  if (suggest) document.getElementById('perl-acc-kas').value = suggest.id;
+ }
+ if (!hutAccId) {
+  const accs = coFilter(DB.accounts);
+  const suggest = accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('utang usaha')));
+  if (suggest) document.getElementById('perl-acc-hutang').value = suggest.id;
+ }
+}
+
+// Isi semua dropdown akun untuk modal Aset Tetap
+function populateAsetAccDropdowns(asetAccId, kasAccId, hutAccId) {
+ populateAccDropdown('aset-acc-aset', a => a.type==='Aset' && a.normal_balance==='Debit' && !a.name.toLowerCase().includes('kas') && !a.name.toLowerCase().includes('bank') && !a.name.toLowerCase().includes('piutang') && !a.name.toLowerCase().includes('persediaan') && !a.name.toLowerCase().includes('perlengkapan'), '— Pilih Akun Aset Tetap —', asetAccId);
+ populateAccDropdown('aset-acc-kas', a => a.type==='Aset' && (a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank')), '— Pilih Akun Kas/Bank —', kasAccId);
+ populateAccDropdown('aset-acc-hutang', a => a.type==='Kewajiban' && a.normal_balance==='Kredit', '— Pilih Akun Hutang —', hutAccId);
+ if (!asetAccId) {
+  const accs = coFilter(DB.accounts);
+  const asetKeywords=['peralatan','kendaraan','gedung','bangunan','tanah','mesin','aset tetap','inventaris','furnitur'];
+  const suggest = accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&asetKeywords.some(kw=>a.name.toLowerCase().includes(kw)));
+  if (suggest) document.getElementById('aset-acc-aset').value = suggest.id;
+ }
+ if (!kasAccId) {
+  const accs = coFilter(DB.accounts);
+  const suggest = accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank')));
+  if (suggest) document.getElementById('aset-acc-kas').value = suggest.id;
+ }
+ if (!hutAccId) {
+  const accs = coFilter(DB.accounts);
+  const suggest = accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')||a.name.toLowerCase().includes('hutang jangka')||a.name.toLowerCase().includes('utang usaha')));
+  if (suggest) document.getElementById('aset-acc-hutang').value = suggest.id;
+ }
+}
+
+// Isi dropdown untuk modal Hutang (semua tipe akun, karena bergantung kategori)
+function populateHutangAccDropdowns(debitAccId, kreditAccId) {
+ populateAccDropdown('hutang-acc-debit', a => true, '— Auto dari CoA —', debitAccId);
+ populateAccDropdown('hutang-acc-kredit', a => a.type==='Kewajiban' && a.normal_balance==='Kredit', '— Auto dari CoA —', kreditAccId);
+}
+
+// Isi dropdown untuk modal Piutang
+function populatePiutangAccDropdowns(debitAccId, kreditAccId) {
+ populateAccDropdown('piutang-acc-debit', a => a.type==='Aset' && a.normal_balance==='Debit', '— Auto dari CoA —', debitAccId);
+ populateAccDropdown('piutang-acc-kredit', a => a.type==='Pendapatan' || (a.type==='Aset' && (a.name.toLowerCase().includes('kas')||a.name.toLowerCase().includes('bank'))), '— Auto dari CoA —', kreditAccId);
+}
+
 function openPersediaanModal() {
  document.getElementById('pers-edit-id').value='';
  document.getElementById('pers-nama').value='';
@@ -5187,7 +5187,9 @@ function openPersediaanModal() {
  document.getElementById('pers-metode').value='tunai';
  document.getElementById('pers-stok-min').value='';
  document.getElementById('pers-ket').value='';
+ if (document.getElementById('pers-nomor-ref')) document.getElementById('pers-nomor-ref').value='';
  document.getElementById('pers-jurnal-preview').style.display='none';
+ populatePersediaanAccDropdowns();
  openModal('modal-persediaan');
 }
 
@@ -5206,7 +5208,7 @@ function toggleKrediturAset() {
 function savePersediaan() {
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
  // [FIX] Cek periode lock
- const _tglPers = document.getElementById('persediaan-tanggal')?.value || new Date().toISOString().split('T')[0];
+ const _tglPers = document.getElementById('pers-tanggal')?.value || new Date().toISOString().split('T')[0];
  if (cekPeriodeLock(_tglPers)) return;
  if (cekJurnalPenutupSudahPosting()) return;
  const nama=document.getElementById('pers-nama').value.trim();
@@ -5221,61 +5223,87 @@ function savePersediaan() {
   const stokMin=parseFloat(document.getElementById('pers-stok-min').value)||0;
   const ket=document.getElementById('pers-ket').value.trim();
   const id=document.getElementById('pers-edit-id').value;
-
- // Validasi duplikasi nama barang (hanya untuk tambah baru)
+ const nomorRefPers=(document.getElementById('pers-nomor-ref')?.value||'').trim();
+ if (!nomorRefPers) { toast('No. Referensi / No. PO wajib diisi','error'); return; }
  if (!id) {
- const namaLower = nama.toLowerCase();
- const existing = coFilter(DB.persediaan).find(p => p.nama_barang.toLowerCase() === namaLower);
- if (existing) {
- if (!confirm(` Barang "${existing.nama_barang}" sudah ada di daftar persediaan (stok: ${existing.jumlah} unit).\n\nLanjutkan menambah batch baru? (Keduanya akan diperlakukan sebagai batch terpisah dalam FIFO)\n\nKlik Cancel untuk membatalkan.`)) return;
+   const dupRef = coFilter(DB.persediaan).find(p => p.nomor_ref && p.nomor_ref.toLowerCase() === nomorRefPers.toLowerCase());
+   if (dupRef) { toast('No. Referensi "'+nomorRefPers+'" sudah ada ('+dupRef.nama_barang+'). Gunakan nomor berbeda.','error',5000); return; }
  }
+ // Peringatan nama barang sama (tetap izinkan — bisa batch berbeda)
+ if (!id) {
+   const namaLower = nama.toLowerCase();
+   const existing = coFilter(DB.persediaan).find(p => p.nama_barang.toLowerCase() === namaLower);
+   if (existing) {
+     if (!confirm('Barang "'+existing.nama_barang+'" sudah ada (stok: '+existing.jumlah+' unit).\n\nLanjutkan menambah batch baru dengan No. Ref '+nomorRefPers+'?\n\nKlik Cancel untuk membatalkan.')) return;
+   }
  }
 
- const obj={id:id?id:genId(),company_id:co(),nama_barang:nama,jumlah,harga_satuan:harga,total_nilai:jumlah*harga,tanggal,metode,metode_penilaian:metodePenilaian,stok_minimum:stokMin,keterangan:ket,nama_kreditur:kreditur,jatuh_tempo:jatuhTempo};
+ const obj={id:id?id:genId(),company_id:co(),nama_barang:nama,jumlah,harga_satuan:harga,total_nilai:jumlah*harga,tanggal,metode,metode_penilaian:metodePenilaian,stok_minimum:stokMin,keterangan:ket,nama_kreditur:kreditur,jatuh_tempo:jatuhTempo,nomor_ref:nomorRefPers};
  if (id) {
  const oldRec=DB.persediaan.find(x=>String(x.id)==String(id));
  const i=DB.persediaan.findIndex(x=>String(x.id)==String(id));
  // Pertahankan ref_journal_id agar tidak putus
  if (oldRec?.ref_journal_id) obj.ref_journal_id=oldRec.ref_journal_id;
  DB.persediaan[i]=obj;
- // Sinkronkan nominal jurnal jika ada ref_journal_id
+ // [FIX] Sinkronkan nominal DAN akun jurnal jika ada ref_journal_id
  if (oldRec?.ref_journal_id) {
  const nilaiLama=oldRec.total_nilai||0;
  const nilaiBaru=jumlah*harga;
- if (nilaiLama!==nilaiBaru) {
  const details=DB.journal_details.filter(d=>d.journal_id===oldRec.ref_journal_id);
- details.forEach(d=>{
- if (d.debit>0) d.debit=nilaiBaru;
- if (d.kredit>0) d.kredit=nilaiBaru;
- });
- // [FIX BUG 3] Sinkronkan juga hutang terkait jika pembelian kredit
- // Bug lama: edit persediaan update jurnal tapi hutang tetap pakai nilai lama
- const hutangTerkait = DB.hutang.find(h => h.ref_journal_id === oldRec.ref_journal_id);
- if (hutangTerkait) {
- const hIdx = DB.hutang.findIndex(h => h.ref_journal_id === oldRec.ref_journal_id);
- const selisih = nilaiBaru - nilaiLama;
- DB.hutang[hIdx].jumlah = (DB.hutang[hIdx].jumlah || 0) + selisih;
- // Hanya update sisa jika hutang belum lunas sebagian
- if (DB.hutang[hIdx].status !== 'Lunas') {
- DB.hutang[hIdx].sisa = Math.max(0, (DB.hutang[hIdx].sisa || 0) + selisih);
- if (DB.hutang[hIdx].sisa <= 0.01) DB.hutang[hIdx].status = 'Lunas';
+ const debitDet=details.find(d=>d.debit>0);
+ const kreditDet=details.find(d=>d.kredit>0);
+ // Update nominal jika berubah
+ if (nilaiLama!==nilaiBaru) {
+ details.forEach(d=>{ if(d.debit>0) d.debit=nilaiBaru; if(d.kredit>0) d.kredit=nilaiBaru; });
+ }
+ // [FIX] Update account_id dari dropdown jika akun berubah
+ const accsEdit=coFilter(DB.accounts);
+ const selPersAccIdEdit=document.getElementById('pers-acc-persediaan')?.value;
+ const selKasAccIdEdit=document.getElementById('pers-acc-kas')?.value;
+ const selHutAccIdEdit=document.getElementById('pers-acc-hutang')?.value;
+ if (debitDet && selPersAccIdEdit && String(debitDet.account_id)!==String(selPersAccIdEdit)) {
+ debitDet.account_id=selPersAccIdEdit;
+ }
+ if (kreditDet) {
+ if (metode==='tunai' && selKasAccIdEdit && String(kreditDet.account_id)!==String(selKasAccIdEdit)) {
+ kreditDet.account_id=selKasAccIdEdit;
+ } else if (metode==='kredit' && selHutAccIdEdit && String(kreditDet.account_id)!==String(selHutAccIdEdit)) {
+ kreditDet.account_id=selHutAccIdEdit;
  }
  }
- toast(`Persediaan + jurnal${hutangTerkait?' + hutang':''} diperbarui: nominal disesuaikan ke ${fmtC(nilaiBaru)}`,'success',4000);
- } else {
- toast('Persediaan diperbarui','success');
+ // Sinkronkan hutang terkait jika nominal berubah
+ const hutangTerkait=DB.hutang.find(h=>h.ref_journal_id===oldRec.ref_journal_id);
+ if (hutangTerkait && nilaiLama!==nilaiBaru) {
+ const hIdx=DB.hutang.findIndex(h=>h.ref_journal_id===oldRec.ref_journal_id);
+ const selisih=nilaiBaru-nilaiLama;
+ DB.hutang[hIdx].jumlah=(DB.hutang[hIdx].jumlah||0)+selisih;
+ if (DB.hutang[hIdx].status!=='Lunas') {
+ DB.hutang[hIdx].sisa=Math.max(0,(DB.hutang[hIdx].sisa||0)+selisih);
+ if (DB.hutang[hIdx].sisa<=0.01) DB.hutang[hIdx].status='Lunas';
  }
+ }
+ const perubahan=[];
+ if (nilaiLama!==nilaiBaru) perubahan.push(`nominal → ${fmtC(nilaiBaru)}`);
+ if (debitDet && selPersAccIdEdit) { const a=accsEdit.find(x=>String(x.id)===String(selPersAccIdEdit)); if(a) perubahan.push(`Debit → ${a.name}`); }
+ if (kreditDet) { const kId=metode==='tunai'?selKasAccIdEdit:selHutAccIdEdit; if(kId) { const a=accsEdit.find(x=>String(x.id)===String(kId)); if(a) perubahan.push(`Kredit → ${a.name}`); } }
+ toast(`Persediaan + jurnal${hutangTerkait&&nilaiLama!==nilaiBaru?' + hutang':''} diperbarui${perubahan.length?': '+perubahan.join(', '):''}`,'success',4000);
  } else {
  toast('Persediaan diperbarui','success');
  }
  autoSave(); closeModal('modal-persediaan'); renderPersediaan();
  } else {
  DB.persediaan.push(obj);
- // AUTO JOURNAL
+ // AUTO JOURNAL — gunakan akun dari dropdown jika dipilih, fallback ke keyword search
  const accs=coFilter(DB.accounts);
- const persAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('persediaan')));
- const kasAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
- const hutAcc=accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')));
+ const selPersAccId = document.getElementById('pers-acc-persediaan')?.value;
+ const selKasAccId  = document.getElementById('pers-acc-kas')?.value;
+ const selHutAccId  = document.getElementById('pers-acc-hutang')?.value;
+ const persAcc = selPersAccId ? accs.find(a=>String(a.id)===String(selPersAccId))
+               : accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('persediaan')));
+ const kasAcc  = selKasAccId  ? accs.find(a=>String(a.id)===String(selKasAccId))
+               : accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
+ const hutAcc  = selHutAccId  ? accs.find(a=>String(a.id)===String(selHutAccId))
+               : accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')));
  const nilai=jumlah*harga;
  if (nilai>0) {
  if (metode==='tunai' && persAcc && kasAcc) {
@@ -5321,7 +5349,22 @@ function editPersediaan(id) {
  document.getElementById('pers-jatuh-tempo').value=p.jatuh_tempo||'';
  document.getElementById('pers-stok-min').value=p.stok_minimum||'';
  document.getElementById('pers-ket').value=p.keterangan||'';
+ if (document.getElementById('pers-nomor-ref')) document.getElementById('pers-nomor-ref').value=p.nomor_ref||'';
  toggleKrediturPers();
+ // Ambil akun dari jurnal terkait untuk pre-select dropdown
+ let persAccId='', kasAccId='', hutAccId='';
+ if (p.ref_journal_id) {
+  const details = DB.journal_details.filter(d=>d.journal_id===p.ref_journal_id);
+  const debitDet = details.find(d=>d.debit>0);
+  const kreditDet = details.find(d=>d.kredit>0);
+  if (debitDet) persAccId = debitDet.account_id;
+  if (kreditDet) {
+   const kAcc = coFilter(DB.accounts).find(a=>String(a.id)===String(kreditDet.account_id));
+   if (kAcc?.type==='Aset') kasAccId = kreditDet.account_id;
+   else hutAccId = kreditDet.account_id;
+  }
+ }
+ populatePersediaanAccDropdowns(persAccId, kasAccId, hutAccId);
  const prev=document.getElementById('pers-jurnal-preview');
  if (p.ref_journal_id) {
  prev.style.display='block';
@@ -6539,7 +6582,9 @@ function openPerlengkapanModal() {
  document.getElementById('perl-tanggal').value=new Date().toISOString().split('T')[0];
  document.getElementById('perl-metode').value='tunai';
  document.getElementById('perl-ket').value='';
+ if (document.getElementById('perl-nomor-ref')) document.getElementById('perl-nomor-ref').value='';
  document.getElementById('perl-jurnal-preview').style.display='none';
+ populatePerlengkapanAccDropdowns();
  openModal('modal-perlengkapan');
 }
 
@@ -6558,11 +6603,17 @@ function savePerlengkapan() {
   const jatuhTempo=(metode==='kredit'?(document.getElementById('perl-jatuh-tempo').value||''):'');
   const ket=document.getElementById('perl-ket').value.trim();
   const id=document.getElementById('perl-edit-id').value;
+ const nomorRefPerl=(document.getElementById('perl-nomor-ref')?.value||'').trim();
+ if (!nomorRefPerl) { toast('No. Referensi wajib diisi','error'); return; }
+ if (!id) {
+   const dupRefP = coFilter(DB.perlengkapan).find(p => p.nomor_ref && p.nomor_ref.toLowerCase() === nomorRefPerl.toLowerCase());
+   if (dupRefP) { toast('No. Referensi "'+nomorRefPerl+'" sudah ada ('+dupRefP.nama_item+'). Gunakan nomor berbeda.','error',5000); return; }
+ }
  const obj={id:id?id:genId(),company_id:co(),nama_item:nama,jumlah,nilai,
  // FIX BUG #5: Selalu inisialisasi total_nilai = nilai agar konsisten dengan field
  // yang digunakan di renderPerlengkapanKartu() dan simpanPemakaianPerlengkapan()
  total_nilai: nilai,
- tanggal,metode,keterangan:ket,nama_kreditur:kreditur,jatuh_tempo:jatuhTempo};
+ tanggal,metode,keterangan:ket,nama_kreditur:kreditur,jatuh_tempo:jatuhTempo,nomor_ref:nomorRefPerl};
  if (id) {
  const oldRec=DB.perlengkapan.find(x=>String(x.id)==String(id));
  const i=DB.perlengkapan.findIndex(x=>String(x.id)==String(id));
@@ -6571,27 +6622,49 @@ function savePerlengkapan() {
  if (oldRec?.ref_journal_id) {
  const nilaiLama=oldRec.nilai||0;
  const nilaiBaru=nilai;
- if (nilaiLama!==nilaiBaru) {
  const details=DB.journal_details.filter(d=>d.journal_id===oldRec.ref_journal_id);
- details.forEach(d=>{
- if (d.debit>0) d.debit=nilaiBaru;
- if (d.kredit>0) d.kredit=nilaiBaru;
- });
- toast(`Perlengkapan + jurnal diperbarui: nominal disesuaikan ke ${fmtC(nilaiBaru)}`,'success',4000);
- } else {
- toast('Perlengkapan diperbarui','success');
+ const debitDet=details.find(d=>d.debit>0);
+ const kreditDet=details.find(d=>d.kredit>0);
+ if (nilaiLama!==nilaiBaru) {
+ details.forEach(d=>{ if(d.debit>0) d.debit=nilaiBaru; if(d.kredit>0) d.kredit=nilaiBaru; });
  }
+ // [FIX] Update account_id dari dropdown jika akun berubah
+ const accsEditP=coFilter(DB.accounts);
+ const selPerlAccIdEdit=document.getElementById('perl-acc-perlengkapan')?.value;
+ const selKasAccIdEditP=document.getElementById('perl-acc-kas')?.value;
+ const selHutAccIdEditP=document.getElementById('perl-acc-hutang')?.value;
+ if (debitDet && selPerlAccIdEdit && String(debitDet.account_id)!==String(selPerlAccIdEdit)) {
+ debitDet.account_id=selPerlAccIdEdit;
+ }
+ if (kreditDet) {
+ if (metode==='tunai' && selKasAccIdEditP && String(kreditDet.account_id)!==String(selKasAccIdEditP)) {
+ kreditDet.account_id=selKasAccIdEditP;
+ } else if (metode==='kredit' && selHutAccIdEditP && String(kreditDet.account_id)!==String(selHutAccIdEditP)) {
+ kreditDet.account_id=selHutAccIdEditP;
+ }
+ }
+ const perubahanP=[];
+ if (nilaiLama!==nilaiBaru) perubahanP.push(`nominal → ${fmtC(nilaiBaru)}`);
+ if (debitDet && selPerlAccIdEdit) { const a=accsEditP.find(x=>String(x.id)===String(selPerlAccIdEdit)); if(a) perubahanP.push(`Debit → ${a.name}`); }
+ if (kreditDet) { const kId=metode==='tunai'?selKasAccIdEditP:selHutAccIdEditP; if(kId) { const a=accsEditP.find(x=>String(x.id)===String(kId)); if(a) perubahanP.push(`Kredit → ${a.name}`); } }
+ toast(`Perlengkapan + jurnal diperbarui${perubahanP.length?': '+perubahanP.join(', '):''}`,'success',4000);
  } else {
  toast('Perlengkapan diperbarui','success');
  }
  autoSave(); closeModal('modal-perlengkapan'); renderPerlengkapan();
  } else {
  DB.perlengkapan.push(obj);
- // AUTO JOURNAL
+ // AUTO JOURNAL — gunakan akun dari dropdown jika dipilih, fallback ke keyword search
  const accs=coFilter(DB.accounts);
- const perlAcc=accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('perlengkapan'));
- const kasAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
- const hutAcc=accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')));
+ const selPerlAccId = document.getElementById('perl-acc-perlengkapan')?.value;
+ const selKasAccId  = document.getElementById('perl-acc-kas')?.value;
+ const selHutAccId  = document.getElementById('perl-acc-hutang')?.value;
+ const perlAcc = selPerlAccId ? accs.find(a=>String(a.id)===String(selPerlAccId))
+               : accs.find(a=>a.type==='Aset'&&a.name.toLowerCase().includes('perlengkapan'));
+ const kasAcc  = selKasAccId  ? accs.find(a=>String(a.id)===String(selKasAccId))
+               : accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
+ const hutAcc  = selHutAccId  ? accs.find(a=>String(a.id)===String(selHutAccId))
+               : accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')));
  if (nilai>0) {
  if (metode==='tunai' && perlAcc && kasAcc) {
  const desc=ket||`Pembelian perlengkapan tunai: ${nama}`;
@@ -6633,7 +6706,22 @@ function editPerlengkapan(id) {
  document.getElementById('perl-kreditur').value=p.nama_kreditur||'';
  document.getElementById('perl-jatuh-tempo').value=p.jatuh_tempo||'';
  document.getElementById('perl-ket').value=p.keterangan||'';
+ if (document.getElementById('perl-nomor-ref')) document.getElementById('perl-nomor-ref').value=p.nomor_ref||'';
  toggleKrediturPerl();
+ // Ambil akun dari jurnal terkait untuk pre-select dropdown
+ let perlAccId='', kasAccId='', hutAccId='';
+ if (p.ref_journal_id) {
+  const details = DB.journal_details.filter(d=>d.journal_id===p.ref_journal_id);
+  const debitDet = details.find(d=>d.debit>0);
+  const kreditDet = details.find(d=>d.kredit>0);
+  if (debitDet) perlAccId = debitDet.account_id;
+  if (kreditDet) {
+   const kAcc = coFilter(DB.accounts).find(a=>String(a.id)===String(kreditDet.account_id));
+   if (kAcc?.type==='Aset') kasAccId = kreditDet.account_id;
+   else hutAccId = kreditDet.account_id;
+  }
+ }
+ populatePerlengkapanAccDropdowns(perlAccId, kasAccId, hutAccId);
  const prev=document.getElementById('perl-jurnal-preview');
  if (p.ref_journal_id) {
  prev.style.display='block';
@@ -6900,8 +6988,10 @@ function openAsetModal() {
  document.getElementById('aset-residu').value='0';
  document.getElementById('tarif-sm-group').style.display='none';
  document.getElementById('aset-ket').value='';
+ if (document.getElementById('aset-nomor-ref')) document.getElementById('aset-nomor-ref').value='';
  document.getElementById('aset-susut-preview').style.display='none';
  document.getElementById('aset-jurnal-preview').style.display='none';
+ populateAsetAccDropdowns();
  openModal('modal-aset');
 }
 
@@ -6926,6 +7016,12 @@ function saveAset() {
  const ket=document.getElementById('aset-ket').value.trim();
  const hargaEfektif=harga+tambah-kurang;
  const id=document.getElementById('aset-edit-id').value;
+ const nomorRefAset=(document.getElementById('aset-nomor-ref')?.value||'').trim();
+ if (!nomorRefAset) { toast('No. Referensi / No. Faktur wajib diisi','error'); return; }
+ if (!id) {
+   const dupRefA = coFilter(DB.aset_tetap).find(a => a.nomor_ref && a.nomor_ref.toLowerCase() === nomorRefAset.toLowerCase());
+   if (dupRefA) { toast('No. Referensi "'+nomorRefAset+'" sudah ada ('+dupRefA.nama_aset+'). Gunakan nomor berbeda.','error',5000); return; }
+ }
  const existingAkum = id?(DB.aset_tetap.find(x=>String(x.id)==String(id))?.akumulasi_penyusutan||0):0;
  const nilaiBookAwal = hargaEfektif - existingAkum;
 
@@ -6948,7 +7044,8 @@ function saveAset() {
  tanggal, metode, keterangan:ket, nama_kreditur:krediturAset, jatuh_tempo:jatuhTempoAset,
  metode_penyusutan: metodePenyusutan,
  tarif_sm: metodePenyusutan==='saldo-menurun'?tarifSM:null,
- nilai_residu: metodePenyusutan==='garis-lurus'?nilaiResidu:0
+ nilai_residu: metodePenyusutan==='garis-lurus'?nilaiResidu:0,
+ nomor_ref: nomorRefAset
  };
  if (id) {
  const oldRec=DB.aset_tetap.find(x=>String(x.id)==String(id));
@@ -6958,33 +7055,66 @@ function saveAset() {
  if (oldRec?.ref_journal_id) {
  const hargaLama=oldRec.harga_perolehan||0;
  const hargaBaru=harga;
- if (hargaLama!==hargaBaru) {
  const details=DB.journal_details.filter(d=>d.journal_id===oldRec.ref_journal_id);
- details.forEach(d=>{
- if (d.debit>0) d.debit=hargaBaru;
- if (d.kredit>0) d.kredit=hargaBaru;
- });
- toast(`Aset tetap + jurnal diperbarui: nominal disesuaikan ke ${fmtC(hargaBaru)}`,'success',4000);
- } else {
- toast('Aset tetap diperbarui','success');
+ const debitDetA=details.find(d=>d.debit>0);
+ const kreditDetA=details.find(d=>d.kredit>0);
+ if (hargaLama!==hargaBaru) {
+ details.forEach(d=>{ if(d.debit>0) d.debit=hargaBaru; if(d.kredit>0) d.kredit=hargaBaru; });
  }
+ // [FIX] Update account_id dari dropdown jika akun berubah
+ const accsEditA=coFilter(DB.accounts);
+ const selAsetAccIdEdit=document.getElementById('aset-acc-aset')?.value;
+ const selKasAccIdEditA=document.getElementById('aset-acc-kas')?.value;
+ const selHutAccIdEditA=document.getElementById('aset-acc-hutang')?.value;
+ if (debitDetA && selAsetAccIdEdit && String(debitDetA.account_id)!==String(selAsetAccIdEdit)) {
+ debitDetA.account_id=selAsetAccIdEdit;
+ }
+ if (kreditDetA) {
+ if (metode==='tunai' && selKasAccIdEditA && String(kreditDetA.account_id)!==String(selKasAccIdEditA)) {
+ kreditDetA.account_id=selKasAccIdEditA;
+ } else if (metode==='kredit' && selHutAccIdEditA && String(kreditDetA.account_id)!==String(selHutAccIdEditA)) {
+ kreditDetA.account_id=selHutAccIdEditA;
+ }
+ }
+ // Sinkronkan hutang terkait aset jika nominal berubah
+ const hutangAset=DB.hutang.find(h=>h.ref_journal_id===oldRec.ref_journal_id);
+ if (hutangAset && hargaLama!==hargaBaru) {
+ const hIdxA=DB.hutang.findIndex(h=>h.ref_journal_id===oldRec.ref_journal_id);
+ const selisihA=hargaBaru-hargaLama;
+ DB.hutang[hIdxA].jumlah=(DB.hutang[hIdxA].jumlah||0)+selisihA;
+ if (DB.hutang[hIdxA].status!=='Lunas') {
+ DB.hutang[hIdxA].sisa=Math.max(0,(DB.hutang[hIdxA].sisa||0)+selisihA);
+ if (DB.hutang[hIdxA].sisa<=0.01) DB.hutang[hIdxA].status='Lunas';
+ }
+ }
+ const perubahanA=[];
+ if (hargaLama!==hargaBaru) perubahanA.push(`nominal → ${fmtC(hargaBaru)}`);
+ if (debitDetA && selAsetAccIdEdit) { const a=accsEditA.find(x=>String(x.id)===String(selAsetAccIdEdit)); if(a) perubahanA.push(`Debit → ${a.name}`); }
+ if (kreditDetA) { const kId=metode==='tunai'?selKasAccIdEditA:selHutAccIdEditA; if(kId) { const a=accsEditA.find(x=>String(x.id)===String(kId)); if(a) perubahanA.push(`Kredit → ${a.name}`); } }
+ toast(`Aset tetap + jurnal${hutangAset&&hargaLama!==hargaBaru?' + hutang':''} diperbarui${perubahanA.length?': '+perubahanA.join(', '):''}`,'success',4000);
  } else {
  toast('Aset tetap diperbarui','success');
  }
  autoSave(); closeModal('modal-aset'); renderAsetTetap();
  } else {
  DB.aset_tetap.push(obj);
- // AUTO JOURNAL — cari akun aset tetap berdasarkan kecocokan nama, bukan filter negatif
+ // AUTO JOURNAL — gunakan akun dari dropdown jika dipilih, fallback ke keyword/nama-matching
  const accs=coFilter(DB.accounts);
- const namaCari=nama.toLowerCase();
- // 1. Cari akun yang namanya paling cocok dengan nama aset
- // 2. Fallback: akun Aset normal Debit yang bukan kas/bank/lancar
- const asetKeywords=['peralatan','kendaraan','gedung','bangunan','tanah','mesin','aset tetap','inventaris','furnitur'];
- let asetAcc = accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&namaCari.split(' ').some(w=>w.length>3&&a.name.toLowerCase().includes(w)));
- if (!asetAcc) asetAcc = accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&asetKeywords.some(kw=>a.name.toLowerCase().includes(kw)));
- if (!asetAcc) asetAcc = accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&a.name.toLowerCase().includes('aset'));
- const kasAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
- const hutAcc=accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')||a.name.toLowerCase().includes('hutang jangka')));
+ const selAsetAccId = document.getElementById('aset-acc-aset')?.value;
+ const selKasAccId  = document.getElementById('aset-acc-kas')?.value;
+ const selHutAccId  = document.getElementById('aset-acc-hutang')?.value;
+ let asetAcc = selAsetAccId ? accs.find(a=>String(a.id)===String(selAsetAccId)) : null;
+ if (!asetAcc) {
+  const namaCari=nama.toLowerCase();
+  const asetKeywords=['peralatan','kendaraan','gedung','bangunan','tanah','mesin','aset tetap','inventaris','furnitur'];
+  asetAcc = accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&namaCari.split(' ').some(w=>w.length>3&&a.name.toLowerCase().includes(w)));
+  if (!asetAcc) asetAcc = accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&asetKeywords.some(kw=>a.name.toLowerCase().includes(kw)));
+  if (!asetAcc) asetAcc = accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'&&a.name.toLowerCase().includes('aset'));
+ }
+ const kasAcc = selKasAccId ? accs.find(a=>String(a.id)===String(selKasAccId))
+              : accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas')));
+ const hutAcc = selHutAccId ? accs.find(a=>String(a.id)===String(selHutAccId))
+              : accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')||a.name.toLowerCase().includes('hutang jangka')));
  if (metode==='tunai' && asetAcc && kasAcc) {
  const desc=ket||`Pembelian aset tetap tunai: ${nama}`;
  const tid=genId(),jeid=genId();
@@ -7030,7 +7160,22 @@ function editAset(id) {
  document.getElementById('aset-residu').value=a.nilai_residu||0;
  document.getElementById('tarif-sm-group').style.display=(a.metode_penyusutan==='saldo-menurun')?'flex':'none';
  document.getElementById('aset-ket').value=a.keterangan||'';
+ if (document.getElementById('aset-nomor-ref')) document.getElementById('aset-nomor-ref').value=a.nomor_ref||'';
  document.getElementById('aset-susut-preview').style.display='none';
+ // Ambil akun dari jurnal terkait untuk pre-select dropdown
+ let asetAccId='', kasAccId='', hutAccId='';
+ if (a.ref_journal_id) {
+  const details = DB.journal_details.filter(d=>d.journal_id===a.ref_journal_id);
+  const debitDet = details.find(d=>d.debit>0);
+  const kreditDet = details.find(d=>d.kredit>0);
+  if (debitDet) asetAccId = debitDet.account_id;
+  if (kreditDet) {
+   const kAcc = coFilter(DB.accounts).find(acc=>String(acc.id)===String(kreditDet.account_id));
+   if (kAcc?.type==='Aset') kasAccId = kreditDet.account_id;
+   else hutAccId = kreditDet.account_id;
+  }
+ }
+ populateAsetAccDropdowns(asetAccId, kasAccId, hutAccId);
  const prev=document.getElementById('aset-jurnal-preview');
  if (a.ref_journal_id) {
  prev.style.display='block';
@@ -8820,10 +8965,10 @@ function buatJurnalPenutup() {
  const pendAcss = getAccsByType('Pendapatan').filter(a =>a.balance !== 0);
  const bebanAcss = getAccsByType('Beban').filter(a =>a.balance !== 0);
  const ekAcss = getAccsByType('Ekuitas');
- // Akun modal utama (normal Kredit, bukan Prive/Dividen)
- const modalAcc = ekAcss.find(a =>a.normal_balance === 'Kredit' &&
- (a.name.toLowerCase().includes('modal') || a.name.toLowerCase().includes('laba ditahan') ||
- a.name.toLowerCase().includes('retained') || a.name.toLowerCase().includes('ekuitas')));
+ // [FIX EKUITAS] Gunakan _findModalAcc — prioritaskan account_role='modal_utama'/'laba_ditahan',
+ // lalu Laba Ditahan by name, lalu Modal, lalu fallback. Mencegah laba masuk ke Modal Saham/Agio.
+ const allAccs = coFilter(DB.accounts);
+ const modalAcc = _findModalAcc(allAccs);
  // Akun Prive/Dividen (normal Debit)
  const priveAcss = ekAcss.filter(a =>a.normal_balance === 'Debit' && a.balance !== 0);
 
@@ -8976,11 +9121,11 @@ function postingJurnalPenutup() {
    : "Belum ada Preview Jurnal Penutup.\n\nDisarankan buka Preview lebih dulu.\n\nLanjutkan langsung?";
   if (!confirm(_msg)) return;
   const _ekAcss = getAccsByType("Ekuitas");
+  const _allAccsJP = coFilter(DB.accounts);
   pendAcss = getAccsByType("Pendapatan").filter(a => a.balance !== 0);
   bebanAcss = getAccsByType("Beban").filter(a => a.balance !== 0);
-  modalAcc = _ekAcss.find(a => a.normal_balance === "Kredit" &&
-   (a.name.toLowerCase().includes("modal") || a.name.toLowerCase().includes("laba ditahan") ||
-   a.name.toLowerCase().includes("retained") || a.name.toLowerCase().includes("ekuitas")));
+  // [FIX EKUITAS] Gunakan _findModalAcc — prioritaskan Laba Ditahan / account_role eksplisit
+  modalAcc = _findModalAcc(_allAccsJP);
   priveAcss = _ekAcss.filter(a => a.normal_balance === "Debit" && a.balance !== 0);
   totalPend = pendAcss.reduce((s,a) => s + a.balance, 0);
   totalBeban = bebanAcss.reduce((s,a) => s + a.balance, 0);
@@ -14045,7 +14190,7 @@ function saveTemplate() {
  if (Math.abs(Math.round(totD)-Math.round(totK))>1) { toast(`Debit (${fmtC(totD)}) ≠ Kredit (${fmtC(totK)}). Jurnal harus balance.`,'error'); return; }
 
  if (!DB.templates) DB.templates=[];
- const obj={id:id?id:genId(), company_id:co(), nama, keterangan:ket, frekuensi:frek, details, last_used:id?(DB.templates.find(x=>x.id==parseInt(id))?.last_used||null):null};
+ const obj={id:id?id:genId(), company_id:co(), nama, keterangan:ket, frekuensi:frek, details, last_used:id?(DB.templates.find(x=>String(x.id)==String(id))?.last_used||null):null};
  const idx2=DB.templates.findIndex(x=>x.id==obj.id);
  if(idx2>=0) DB.templates[idx2]=obj; else DB.templates.push(obj);
  autoSave();
