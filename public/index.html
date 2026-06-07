@@ -1182,7 +1182,47 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <div class="modal-overlay" id="modal-coa-header"> <div class="modal modal-lg" style="max-width:700px;"> <div class="modal-header"> <div class="modal-title">Kelola Header & Sub Header Akun</div> <button class="modal-close" onclick="closeModal('modal-coa-header')"></button> </div> <div class="modal-body"> <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;"> <!-- Panel Header --> <div> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Header</div> <div style="display:flex;gap:8px;margin-bottom:10px;"> <input class="form-control" id="new-coa-header-name" placeholder="Nama header baru..." style="flex:1;font-size:13px;"> <select class="form-control" id="new-coa-header-type" style="flex:0 0 120px;font-size:12px;"> <option value="Aset">Aset</option><option value="Kewajiban">Kewajiban</option> <option value="Ekuitas">Ekuitas</option><option value="Pendapatan">Pendapatan</option> <option value="Beban">Beban</option> </select> <button class="btn btn-primary btn-sm" onclick="addCOAHeader()">Tambah</button> </div> <div id="coa-header-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius2);"></div> </div> <!-- Panel Sub Header --> <div> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Sub Header</div> <div style="display:flex;gap:8px;margin-bottom:10px;"> <input class="form-control" id="new-coa-subheader-name" placeholder="Nama sub header..." style="flex:1;font-size:13px;"> <select class="form-control" id="new-coa-subheader-parent" style="flex:0 0 130px;font-size:12px;"> <option value="">Pilih Header</option> </select> <button class="btn btn-primary btn-sm" onclick="addCOASubHeader()">Tambah</button> </div> <div id="coa-subheader-list" style="max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius2);"></div> </div> </div> </div> <div class="modal-footer"> <button class="btn btn-primary" onclick="closeModal('modal-coa-header'); updateCOAHeaderOptions();">Selesai</button> </div> </div>
 </div> <!-- Transaction Modal -->
 <div class="modal-overlay" id="modal-transaction"> <div class="modal modal-lg" style="max-width:860px;"> <div class="modal-header"><div class="modal-title">Transaksi Baru</div><button class="modal-close" onclick="closeModal('modal-transaction')"></button></div> <div class="modal-body"> <input type="hidden" id="trx-edit-id" value=""> <!-- Smart Transaction Type --> <div style="margin-bottom:16px;padding:12px 16px;background:rgba(37,99,235,.06);border-radius:8px;border:1px solid rgba(37,99,235,.15);"> <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:8px;">Template Cepat (Terintegrasi Otomatis)</div> <div style="display:flex;flex-wrap:wrap;gap:6px;" id="trx-template-btns"> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('beli-persediaan-kredit')">Beli Persediaan Kredit</button> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('beli-persediaan-tunai')">Beli Persediaan Tunai</button> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('jual-kredit')">Penjualan Kredit</button> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('jual-tunai')">Penjualan Tunai</button> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('bayar-hutang')">Bayar Hutang</button> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('terima-piutang')">Terima Piutang</button> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('beli-aset-tunai')">Beli Aset Tunai</button> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('beli-aset-kredit')">Beli Aset Kredit</button> <button class="btn btn-secondary btn-sm" onclick="applyTrxTemplate('beli-perlengkapan')">Beli Perlengkapan</button> </div> </div> <div class="form-grid" style="margin-bottom:16px;"> <div class="form-group"><label>Tanggal *</label><input class="form-control" type="date" id="trx-date" required=""></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan *</label><input class="form-control" id="trx-desc" required="" placeholder="Deskripsi transaksi"></div> <div class="form-group" style="grid-column:1/-1;"> <label>Nama Pihak Ketiga
- <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Kreditur / Debitur / Pelanggan — opsional, untuk integrasi Hutang &amp; Piutang)</span> </label> <input class="form-control" id="trx-counterparty" placeholder="Contoh: PT Maju Sejahtera, Toko Berkah, dll" style="font-size:12px;"> </div> </div> <!-- Integration notice --> <div id="trx-integration-notice" style="display:none; margin-bottom: 12px; padding: 10px 14px; background: rgba(16, 185, 129, 0.08); border-radius: 8px; border-left: 4px solid var(--accent2); font-size: 12px; color: rgb(6, 95, 70);"></div> <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Detail Jurnal</div> <table class="jd-table"> <thead><tr><th style="width:35%">Akun</th><th>Keterangan</th><th style="width:18%">Debit</th><th style="width:18%">Kredit</th><th style="width:40px"></th></tr></thead> <tbody id="jd-tbody"></tbody> <tfoot> <tr class="balance-row"> <td colspan="2" style="text-align:right;font-size:12px;padding:8px 10px;">Total:</td> <td id="jd-total-debit" class="td-mono" style="padding:8px 10px;font-size:12px;">0</td> <td id="jd-total-kredit" class="td-mono" style="padding:8px 10px;font-size:12px;">0</td> <td></td> </tr> <tr><td colspan="5" style="padding:6px 10px;font-size:12px;" id="jd-balance-msg"></td></tr> </tfoot> </table> <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addJournalRow()">Tambah Baris</button> </div> <div class="modal-footer"> <div style="font-size:11px;color:var(--text3);margin-right:auto;">Transaksi akan otomatis terintegrasi ke Hutang/Piutang/Persediaan/Aset Tetap/Perlengkapan</div> <button class="btn btn-secondary" onclick="closeModal('modal-transaction')">Batal</button> <button class="btn btn-primary" onclick="saveTransaction()">Simpan Transaksi</button> </div> </div>
+ <span style="font-weight:400;font-size:10px;color:var(--text3);margin-left:4px;">(Kreditur / Debitur / Pelanggan — opsional, untuk integrasi Hutang &amp; Piutang)</span> </label> <input class="form-control" id="trx-counterparty" placeholder="Contoh: PT Maju Sejahtera, Toko Berkah, dll" style="font-size:12px;"> </div> </div> <!-- Integration notice --> <div id="trx-integration-notice" style="display:none; margin-bottom: 12px; padding: 10px 14px; background: rgba(16, 185, 129, 0.08); border-radius: 8px; border-left: 4px solid var(--accent2); font-size: 12px; color: rgb(6, 95, 70);"></div>
+
+ <!-- ═══ PANEL HPP OTOMATIS ═══ -->
+ <div id="hpp-panel" style="display:none;margin-bottom:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(6,182,212,.07),rgba(16,185,129,.05));border:1.5px solid rgba(6,182,212,.25);border-radius:10px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+   <div style="font-size:12px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;">⚡ HPP Otomatis dari Sub-Ledger Persediaan</div>
+   <button onclick="document.getElementById('hpp-panel').style.display='none';clearHPPPanel();" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;line-height:1;" title="Tutup panel">✕</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 160px 160px auto;gap:10px;align-items:end;">
+   <div class="form-group" style="margin:0;">
+    <label style="font-size:11px;">Pilih Barang *</label>
+    <select class="form-control" id="hpp-item-select" onchange="onHPPItemChange()" style="font-size:12px;">
+     <option value="">— Pilih item persediaan —</option>
+    </select>
+   </div>
+   <div class="form-group" style="margin:0;">
+    <label style="font-size:11px;">Qty Terjual *</label>
+    <input class="form-control" type="number" id="hpp-qty" min="1" value="" placeholder="0" oninput="hitungHPPOtomatis()" style="font-size:12px;">
+   </div>
+   <div class="form-group" style="margin:0;">
+    <label style="font-size:11px;">Harga Jual/unit *</label>
+    <input class="form-control" type="number" id="hpp-harga-jual" min="0" value="" placeholder="0" oninput="hitungHPPOtomatis()" style="font-size:12px;">
+   </div>
+   <div style="padding-bottom:2px;">
+    <button class="btn btn-primary btn-sm" onclick="terapkanHPPKeJurnal()" style="white-space:nowrap;background:linear-gradient(135deg,#06b6d4,#10b981);border:none;font-weight:700;">↓ Terapkan ke Jurnal</button>
+   </div>
+  </div>
+  <!-- Info stok + metode -->
+  <div id="hpp-stok-info" style="display:none;margin-top:10px;font-size:11px;color:var(--text2);padding:8px 12px;background:rgba(255,255,255,.6);border-radius:6px;display:flex;align-items:center;gap:16px;">
+  </div>
+  <!-- Preview jurnal HPP -->
+  <div id="hpp-preview" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.7);border-radius:6px;border:1px solid rgba(6,182,212,.2);">
+   <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text3);margin-bottom:8px;">Preview Jurnal (akan diterapkan ke baris di bawah)</div>
+   <div id="hpp-preview-rows" style="font-size:12px;font-family:var(--mono);line-height:2;"></div>
+   <div id="hpp-preview-laba" style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);font-size:12px;font-weight:700;"></div>
+   <div id="hpp-warning" style="display:none;margin-top:6px;font-size:11px;color:var(--warning);font-weight:600;"></div>
+  </div>
+ </div>
+ <!-- ═══ END PANEL HPP ═══ -->
+
+ <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Detail Jurnal</div> <table class="jd-table"> <thead><tr><th style="width:35%">Akun</th><th>Keterangan</th><th style="width:18%">Debit</th><th style="width:18%">Kredit</th><th style="width:40px"></th></tr></thead> <tbody id="jd-tbody"></tbody> <tfoot> <tr class="balance-row"> <td colspan="2" style="text-align:right;font-size:12px;padding:8px 10px;">Total:</td> <td id="jd-total-debit" class="td-mono" style="padding:8px 10px;font-size:12px;">0</td> <td id="jd-total-kredit" class="td-mono" style="padding:8px 10px;font-size:12px;">0</td> <td></td> </tr> <tr><td colspan="5" style="padding:6px 10px;font-size:12px;" id="jd-balance-msg"></td></tr> </tfoot> </table> <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addJournalRow()">Tambah Baris</button> </div> <div class="modal-footer"> <div style="font-size:11px;color:var(--text3);margin-right:auto;">Transaksi akan otomatis terintegrasi ke Hutang/Piutang/Persediaan/Aset Tetap/Perlengkapan</div> <button class="btn btn-secondary" onclick="closeModal('modal-transaction')">Batal</button> <button class="btn btn-primary" onclick="saveTransaction()">Simpan Transaksi</button> </div> </div>
 </div> <!-- Penyesuaian Modal -->
 <div class="modal-overlay" id="modal-penyesuaian"> <div class="modal"> <div class="modal-header"><div class="modal-title" id="pen-modal-title">Jurnal Penyesuaian</div><button class="modal-close" onclick="closeModal('modal-penyesuaian')"></button></div> <div class="modal-body"> <input type="hidden" id="pen-edit-id"> <div class="form-grid"> <div class="form-group"><label>Tanggal *</label><input class="form-control" type="date" id="pen-date" required=""></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan *</label><input class="form-control" id="pen-desc" required=""></div> <div class="form-group"><label>Akun Debit *</label><select class="form-control" id="pen-debit-acc"></select></div> <div class="form-group"><label>Akun Kredit *</label><select class="form-control" id="pen-kredit-acc"></select></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="pen-amount" min="0"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-penyesuaian')">Batal</button> <button class="btn btn-primary" onclick="savePenyesuaian()">Simpan</button> </div> </div>
 </div> <!-- Hutang Modal -->
@@ -3005,6 +3045,10 @@ function openTransactionModal() {
  // Reset modal title
  const modalTitle = document.querySelector('#modal-transaction .modal-title');
  if (modalTitle) modalTitle.textContent = 'Transaksi Baru';
+ // Reset panel HPP
+ const hppPanel = document.getElementById('hpp-panel');
+ if (hppPanel) hppPanel.style.display = 'none';
+ clearHPPPanel();
  // Init journal detail rows
  document.getElementById('jd-tbody').innerHTML = '';
  addJournalRow(); addJournalRow();
@@ -3167,6 +3211,251 @@ function applyTrxTemplate(type) {
  const notice = document.getElementById('trx-integration-notice');
  notice.style.display = 'block';
  notice.innerHTML = tpl.notice;
+
+ // Tampilkan panel HPP otomatis jika template adalah penjualan
+ const isJual = type === 'jual-kredit' || type === 'jual-tunai';
+ const hppPanel = document.getElementById('hpp-panel');
+ if (hppPanel) {
+  if (isJual) {
+   populateHPPItemDropdown();
+   hppPanel.style.display = 'block';
+  } else {
+   hppPanel.style.display = 'none';
+   clearHPPPanel();
+  }
+ }
+}
+
+// ═══════════════════════════════════════════════════
+// HPP OTOMATIS — fungsi pendukung panel
+// ═══════════════════════════════════════════════════
+
+function populateHPPItemDropdown() {
+ const sel = document.getElementById('hpp-item-select');
+ if (!sel) return;
+ // Kumpulkan nama barang unik yang masih punya stok
+ const persComp = coFilter(DB.persediaan);
+ const namaSet = {};
+ persComp.forEach(b => {
+  if ((b.jumlah || 0) > 0) {
+   if (!namaSet[b.nama_barang]) namaSet[b.nama_barang] = 0;
+   namaSet[b.nama_barang] += (b.jumlah || 0);
+  }
+ });
+ const items = Object.entries(namaSet).sort((a,b) => a[0].localeCompare(b[0]));
+ sel.innerHTML = '<option value="">— Pilih item persediaan —</option>' +
+  items.map(([nama, stok]) =>
+   `<option value="${escapeHtml(nama)}">${escapeHtml(nama)} (stok: ${stok} unit)</option>`
+  ).join('');
+ // Reset field lain
+ document.getElementById('hpp-qty').value = '';
+ document.getElementById('hpp-harga-jual').value = '';
+ document.getElementById('hpp-preview').style.display = 'none';
+ document.getElementById('hpp-stok-info').style.display = 'none';
+}
+
+function onHPPItemChange() {
+ const nama = document.getElementById('hpp-item-select').value;
+ const infoEl = document.getElementById('hpp-stok-info');
+ if (!nama) { infoEl.style.display = 'none'; hitungHPPOtomatis(); return; }
+
+ const batches = coFilter(DB.persediaan)
+  .filter(b => b.nama_barang === nama && (b.jumlah || 0) > 0)
+  .sort((a,b) => String(a.id).localeCompare(String(b.id)));
+
+ const totalStok = batches.reduce((s,b) => s + (b.jumlah||0), 0);
+ const totalNilai = batches.reduce((s,b) => s + (b.total_nilai||0), 0);
+ const co_data = getCompany();
+ const metodePenilaian = (batches[0]?.metode_penilaian || co_data?.metode_persediaan || 'fifo').toUpperCase();
+
+ // Harga rata-rata (untuk info, bukan FIFO)
+ const hargaRata = totalStok > 0 ? totalNilai / totalStok : 0;
+ // Harga satuan batch pertama (FIFO info)
+ const hargaFIFO = batches.length > 0 ? (batches[0].harga_satuan || (batches[0].total_nilai||0)/(batches[0].jumlah||1)) : 0;
+
+ infoEl.style.display = 'flex';
+ infoEl.innerHTML = `
+  <span>📦 <strong>Stok:</strong> ${totalStok} unit</span>
+  <span>📋 <strong>Metode:</strong> ${metodePenilaian}</span>
+  <span>💰 <strong>Nilai total:</strong> ${fmtC(totalNilai)}</span>
+  ${metodePenilaian === 'AVERAGE'
+   ? `<span>📊 <strong>HPP/unit (avg):</strong> ${fmtC(hargaRata)}</span>`
+   : `<span>📊 <strong>HPP/unit (batch terlama):</strong> ${fmtC(hargaFIFO)}</span>`}
+  <span style="color:var(--text3);">${batches.length} batch</span>`;
+
+ // Auto-set qty max
+ document.getElementById('hpp-qty').max = totalStok;
+
+ hitungHPPOtomatis();
+}
+
+function hitungHPPOtomatis() {
+ const nama = document.getElementById('hpp-item-select').value;
+ const qty = parseFloat(document.getElementById('hpp-qty').value) || 0;
+ const hargaJual = parseFloat(document.getElementById('hpp-harga-jual').value) || 0;
+ const previewEl = document.getElementById('hpp-preview');
+ const rowsEl = document.getElementById('hpp-preview-rows');
+ const labaEl = document.getElementById('hpp-preview-laba');
+ const warnEl = document.getElementById('hpp-warning');
+
+ if (!nama || !qty || !hargaJual) { previewEl.style.display = 'none'; return; }
+
+ const batches = coFilter(DB.persediaan)
+  .filter(b => b.nama_barang === nama && (b.jumlah || 0) > 0)
+  .sort((a,b) => String(a.id).localeCompare(String(b.id)));
+
+ const totalStok = batches.reduce((s,b) => s + (b.jumlah||0), 0);
+ const co_data = getCompany();
+ const metode = batches[0]?.metode_penilaian || co_data?.metode_persediaan || 'fifo';
+
+ // Validasi stok
+ const warnings = [];
+ if (qty > totalStok) {
+  warnings.push(`⚠ Stok tidak cukup! Tersedia ${totalStok} unit, diminta ${qty} unit.`);
+ }
+
+ // Simulasi HPP (tidak mengubah DB — hanya kalkulasi)
+ let totalHPP = 0;
+ if (metode === 'average') {
+  const totalNilai = batches.reduce((s,b) => s + (b.total_nilai||0), 0);
+  const totalQty = batches.reduce((s,b) => s + (b.jumlah||0), 0);
+  const hargaRata = totalQty > 0 ? totalNilai / totalQty : 0;
+  totalHPP = hargaRata * qty;
+ } else {
+  // FIFO simulasi
+  let sisaQty = qty;
+  batches.forEach(b => {
+   if (sisaQty <= 0) return;
+   const ambil = Math.min(sisaQty, b.jumlah || 0);
+   const hs = b.harga_satuan || 0;
+   const nilaiAmbil = hs > 0
+    ? ambil * hs
+    : (b.total_nilai || 0) * (ambil / (b.jumlah || 1));
+   totalHPP += nilaiAmbil;
+   sisaQty -= ambil;
+  });
+ }
+
+ const totalPenjualan = hargaJual * qty;
+ const labaKotor = totalPenjualan - totalHPP;
+ const metodeLbl = metode === 'average' ? 'Weighted Average' : 'FIFO';
+
+ // Cari akun
+ const accs = coFilter(DB.accounts);
+ const hppAcc = accs.find(a => a.type==='Beban' && (
+  a.name.toLowerCase().includes('hpp') ||
+  a.name.toLowerCase().includes('harga pokok') ||
+  a.name.toLowerCase().includes('beban pokok') ||
+  a.name.toLowerCase().includes('cost of goods')
+ ));
+ const persAcc = _findAccByRole(accs, 'persediaan');
+ const kasAcc = _findAccByRole(accs, 'kas_bank');
+ const piuAcc = _findAccByRole(accs, 'piutang_usaha');
+ const pendAcc = accs.find(a => a.type==='Pendapatan' && (
+  a.name.toLowerCase().includes('penjualan') ||
+  a.name.toLowerCase().includes('pendapatan usaha') ||
+  a.name.toLowerCase().includes('pendapatan jasa')
+ )) || accs.find(a => a.type==='Pendapatan');
+
+ // Deteksi metode bayar dari template yang aktif
+ const trxDesc = (document.getElementById('trx-desc').value || '').toLowerCase();
+ const isKredit = trxDesc.includes('kredit') ||
+  document.querySelector('#trx-template-btns .btn-primary')?.textContent?.includes('Kredit');
+ const debitAcc = isKredit ? piuAcc : kasAcc;
+
+ // Bangun preview HTML
+ const accName = (a, fallback) => a ? `<span style="color:var(--text);">${escapeHtml(a.name)}</span>` : `<span style="color:var(--danger);">[${fallback} — belum ada di CoA]</span>`;
+
+ rowsEl.innerHTML = `
+  <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+   <span>${accName(debitAcc, isKredit?'Piutang Usaha':'Kas/Bank')} (D)</span>
+   <span style="color:var(--primary-light);font-weight:600;">${fmtC(totalPenjualan)}</span>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-bottom:2px;">
+   <span>${accName(hppAcc, 'HPP / Beban Pokok')} (D)</span>
+   <span style="color:var(--danger);font-weight:600;">${fmtC(totalHPP)}</span>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-bottom:2px;padding-left:16px;">
+   <span>${accName(pendAcc, 'Pendapatan Penjualan')} (K)</span>
+   <span style="color:var(--accent2);font-weight:600;">${fmtC(totalPenjualan)}</span>
+  </div>
+  <div style="display:flex;justify-content:space-between;padding-left:16px;">
+   <span>${accName(persAcc, 'Persediaan Barang')} (K)</span>
+   <span style="color:var(--accent2);font-weight:600;">${fmtC(totalHPP)}</span>
+  </div>`;
+
+ labaEl.innerHTML = `
+  <span style="color:var(--text2);">Laba Kotor <span style="font-weight:400;font-size:10px;">(${metodeLbl})</span>:</span>
+  <span style="color:${labaKotor >= 0 ? 'var(--accent2)' : 'var(--danger)'};margin-left:12px;">
+   ${labaKotor < 0 ? '(' : ''}${fmtC(Math.abs(labaKotor))}${labaKotor < 0 ? ')' : ''}
+   <span style="font-weight:400;font-size:10px;">${labaKotor < 0 ? ' Rugi Kotor!' : ''}</span>
+  </span>`;
+
+ // Simpan data kalkulasi untuk dipakai oleh terapkanHPPKeJurnal
+ window._hppCalc = {
+  nama, qty, hargaJual, totalPenjualan, totalHPP, labaKotor, metode,
+  debitAccId: debitAcc?.id, pendAccId: pendAcc?.id,
+  hppAccId: hppAcc?.id, persAccId: persAcc?.id,
+  isKredit
+ };
+
+ if (warnings.length) {
+  warnEl.style.display = 'block';
+  warnEl.textContent = warnings.join(' ');
+ } else {
+  warnEl.style.display = 'none';
+ }
+ previewEl.style.display = 'block';
+}
+
+function terapkanHPPKeJurnal() {
+ const c = window._hppCalc;
+ if (!c) { toast('Hitung HPP dulu — pilih barang, isi qty dan harga jual.', 'error'); return; }
+ if (!c.debitAccId) { toast('Akun Kas/Piutang belum ditemukan di CoA.', 'error'); return; }
+ if (!c.pendAccId) { toast('Akun Pendapatan belum ditemukan di CoA.', 'error'); return; }
+
+ // Cek stok
+ const batches = coFilter(DB.persediaan)
+  .filter(b => b.nama_barang === c.nama && (b.jumlah || 0) > 0);
+ const totalStok = batches.reduce((s,b) => s + (b.jumlah||0), 0);
+ if (c.qty > totalStok) {
+  toast(`Stok tidak cukup — tersedia ${totalStok} unit.`, 'error'); return;
+ }
+
+ // Isi keterangan transaksi otomatis
+ const descEl = document.getElementById('trx-desc');
+ if (!descEl.value || descEl.value.includes('secara kredit') || descEl.value.includes('secara tunai')) {
+  descEl.value = `Penjualan ${c.nama} (${c.qty} unit) @ ${fmtC(c.hargaJual)}`;
+ }
+
+ // Bersihkan baris jurnal lama, isi dengan 4 baris compound
+ document.getElementById('jd-tbody').innerHTML = '';
+ addJournalRow(c.debitAccId, `Penjualan ${c.nama}`, c.totalPenjualan, 0);
+ if (c.hppAccId && c.persAccId) {
+  addJournalRow(c.hppAccId, `HPP — ${c.nama} (${c.qty} unit, ${c.metode.toUpperCase()})`, c.totalHPP, 0);
+  addJournalRow(c.pendAccId, `Pendapatan penjualan ${c.nama}`, 0, c.totalPenjualan);
+  addJournalRow(c.persAccId, `Pengurangan persediaan — ${c.nama}`, 0, c.totalHPP);
+ } else {
+  addJournalRow(c.pendAccId, `Pendapatan penjualan ${c.nama}`, 0, c.totalPenjualan);
+  if (!c.hppAccId) toast('⚠ Akun HPP belum ada di CoA — baris HPP & Persediaan tidak ditambahkan. Tambah akun "Harga Pokok Penjualan" (tipe Beban).', 'warning', 6000);
+ }
+ updateJournalBalance();
+
+ // Simpan data HPP untuk dieksekusi saat saveTransaction
+ window._hppPending = { ...c };
+
+ toast(`✓ Jurnal diisi: ${fmtC(c.totalPenjualan)} penjualan | HPP ${fmtC(c.totalHPP)} (${c.metode.toUpperCase()})`, 'success', 4000);
+}
+
+function clearHPPPanel() {
+ window._hppCalc = null;
+ window._hppPending = null;
+ const sel = document.getElementById('hpp-item-select');
+ if (sel) sel.innerHTML = '<option value="">— Pilih item persediaan —</option>';
+ const previewEl = document.getElementById('hpp-preview');
+ if (previewEl) previewEl.style.display = 'none';
+ const infoEl = document.getElementById('hpp-stok-info');
+ if (infoEl) infoEl.style.display = 'none';
 }
 
 // 
@@ -3734,6 +4023,67 @@ function saveTransaction() {
  desc, date, counterparty,
  debit: details.reduce((s,d)=>s+d.debit,0)
  });
+
+ // ── EKSEKUSI STOK PERSEDIAAN dari Panel HPP Otomatis ──────────────────────
+ // _hppPending diset oleh terapkanHPPKeJurnal() saat user klik "Terapkan ke Jurnal"
+ // Hanya dieksekusi untuk transaksi BARU (bukan edit) agar tidak double-kurang stok
+ if (window._hppPending && !editId) {
+  const hp = window._hppPending;
+  const batches = coFilter(DB.persediaan)
+   .filter(b => b.nama_barang === hp.nama && (b.jumlah || 0) > 0)
+   .sort((a,b) => String(a.id).localeCompare(String(b.id)));
+  const totalStokCheck = batches.reduce((s,b) => s + (b.jumlah||0), 0);
+
+  if (hp.qty <= totalStokCheck) {
+   let sisaQty = hp.qty;
+   if (hp.metode === 'average') {
+    // Average: kurangi stok proporsional
+    batches.forEach(b => {
+     if (sisaQty <= 0) return;
+     const bIdx = DB.persediaan.findIndex(x => x.id === b.id);
+     if (bIdx < 0) return;
+     const ambil = Math.min(sisaQty, DB.persediaan[bIdx].jumlah || 0);
+     const proporsi = ambil / (DB.persediaan[bIdx].jumlah || 1);
+     DB.persediaan[bIdx].total_nilai = Math.max(0, (DB.persediaan[bIdx].total_nilai||0) * (1 - proporsi));
+     DB.persediaan[bIdx].jumlah -= ambil;
+     sisaQty -= ambil;
+    });
+   } else {
+    // FIFO: kurangi dari batch terlama dulu
+    batches.forEach(b => {
+     if (sisaQty <= 0) return;
+     const bIdx = DB.persediaan.findIndex(x => x.id === b.id);
+     if (bIdx < 0) return;
+     const ambil = Math.min(sisaQty, DB.persediaan[bIdx].jumlah || 0);
+     const hs = DB.persediaan[bIdx].harga_satuan || 0;
+     const nilaiAmbil = hs > 0
+      ? ambil * hs
+      : (DB.persediaan[bIdx].total_nilai || 0) * (ambil / (DB.persediaan[bIdx].jumlah || 1));
+     DB.persediaan[bIdx].jumlah -= ambil;
+     DB.persediaan[bIdx].total_nilai = Math.max(0, (DB.persediaan[bIdx].total_nilai||0) - nilaiAmbil);
+     sisaQty -= ambil;
+    });
+   }
+   // Tandai transaksi ini terkait HPP untuk keperluan reversal jika dihapus
+   const trxIdx = DB.transactions.findIndex(t => t.id === trxId);
+   if (trxIdx >= 0) {
+    DB.transactions[trxIdx]._hpp_nama = hp.nama;
+    DB.transactions[trxIdx]._hpp_qty = hp.qty;
+    DB.transactions[trxIdx]._hpp_metode = hp.metode;
+    DB.transactions[trxIdx]._hpp_details = batches.slice(0, 20).map(b => ({
+     id: b.id, ambil: Math.min(hp.qty, b.jumlah + (b._ambil_tmp||0)),
+     harga_satuan: b.harga_satuan || 0, total_nilai_sebelum: b.total_nilai || 0
+    }));
+   }
+   toast(`✔ Stok "${hp.nama}" berkurang ${hp.qty} unit (${hp.metode.toUpperCase()}) | HPP: ${fmtC(hp.totalHPP)}`, 'success', 5000);
+  } else {
+   toast(`⚠ Jurnal tersimpan tapi stok tidak berkurang — stok "${hp.nama}" tidak cukup (tersedia: ${totalStokCheck} unit). Kurangi stok manual di modul Persediaan.`, 'warning', 7000);
+  }
+  // Reset pending agar tidak dieksekusi lagi
+  window._hppPending = null;
+  window._hppCalc = null;
+ }
+ // ─────────────────────────────────────────────────────────────────────────────
 
  autoSave(); closeModal('modal-transaction'); renderTransactions();
  // Refresh semua render yang terpengaruh
@@ -4441,6 +4791,8 @@ function renderHutang() {
  const lunas = hs.filter(h=>h.status=='Lunas').length;
  document.getElementById('hutang-stats').innerHTML = `
  <div class="stat-card red"><div class="stat-label">Total Hutang</div><div class="stat-value">${fmtC(total)}</div><div class="stat-icon"></div></div> <div class="stat-card orange"><div class="stat-label">Sisa Hutang</div><div class="stat-value">${fmtC(sisa)}</div><div class="stat-icon"></div></div> <div class="stat-card green"><div class="stat-label">Lunas</div><div class="stat-value">${lunas}</div><div class="stat-icon"></div></div> <div class="stat-card blue"><div class="stat-label">Belum Lunas</div><div class="stat-value">${hs.length-lunas}</div><div class="stat-icon">⏳</div></div> `;
+ // ── Rekonsiliasi sub-ledger vs GL ──
+ _injectRekonsiliasiToPage('hutang');
  const tbody = document.getElementById('hutang-tbody');
  // Banner jatuh tempo
  if (!document.getElementById('hutang-jatuh-banner')) {
@@ -4661,6 +5013,8 @@ function renderPiutang() {
  const lunas = ps.filter(p=>p.status=='Lunas').length;
  document.getElementById('piutang-stats').innerHTML = `
  <div class="stat-card green"><div class="stat-label">Total Piutang</div><div class="stat-value">${fmtC(total)}</div><div class="stat-icon"></div></div> <div class="stat-card blue"><div class="stat-label">Sisa Piutang</div><div class="stat-value">${fmtC(sisa)}</div><div class="stat-icon">⏳</div></div> <div class="stat-card green"><div class="stat-label">Lunas</div><div class="stat-value">${lunas}</div><div class="stat-icon"></div></div> <div class="stat-card orange"><div class="stat-label">Belum Lunas</div><div class="stat-value">${ps.length-lunas}</div><div class="stat-icon"></div></div> `;
+ // ── Rekonsiliasi sub-ledger vs GL ──
+ _injectRekonsiliasiToPage('piutang');
  const tbody = document.getElementById('piutang-tbody');
  // Banner jatuh tempo
  if (!document.getElementById('piutang-jatuh-banner')) {
@@ -5046,6 +5400,9 @@ function renderPersediaan() {
  ${stokMenipis>0?`<div class="stat-card red"><div class="stat-label"> Stok Menipis</div><div class="stat-value">${stokMenipis} item</div><div class="stat-icon"></div></div>`:''}
  <div class="stat-card blue" style="cursor:pointer;border-top:3px solid #8b5cf6;" title="Ubah metode di Pengaturan Perusahaan" onclick="editCompany('${co()}')"><div class="stat-label">Metode Penilaian</div><div class="stat-value" style="font-size:16px;">${(getCompany()?.metode_persediaan||'fifo').toUpperCase()}</div><div class="stat-sub">PSAK 14 — klik untuk ubah</div></div>
  `;
+
+ // ── Rekonsiliasi sub-ledger vs GL ──
+ _injectRekonsiliasiToPage('persediaan');
 
  const tbody = document.getElementById('persediaan-tbody');
  if (!ps.length) { tbody.innerHTML=`<tr><td colspan="8"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada persediaan.</p></div></td></tr>`; return; }
@@ -8715,111 +9072,190 @@ function setMetodeArusKas(metode) {
  renderArusKas();
 }
 
-// Metode Tidak Langsung 
+// ═══════════════════════════════════════════════════════════════════
+// ISU KRITIS #4 — ARUS KAS TIDAK LANGSUNG: PERUBAHAN MODAL KERJA
+// Perbaikan:
+// (A) Saldo awal otomatis diambil dari saldo akhir periode sebelumnya
+//     jika user menggunakan fitur multi-tahun (beberapa perusahaan/periode).
+// (B) Banner peringatan eksplisit jika ada akun modal kerja tanpa saldo awal.
+// (C) Tombol "Sync dari Periode Sebelumnya" di halaman Arus Kas.
+// ═══════════════════════════════════════════════════════════════════
+
+// Helper: cari periode sebelumnya (perusahaan dengan period_end terbaru sebelum period_start kita)
+function _getPreviousPeriodCompany() {
+ const current = getCompany();
+ if (!current?.period_start) return null;
+ const periodeKita = current.period_start;
+ // Cari semua perusahaan lain dengan period_end < period_start kita, ambil yang terbaru
+ const kandidat = DB.companies
+  .filter(c => c.id !== current.id && c.period_end && c.period_end < periodeKita)
+  .sort((a, b) => b.period_end.localeCompare(a.period_end));
+ return kandidat[0] || null;
+}
+
+// Helper: ambil saldo akhir akun dari perusahaan lain (periode sebelumnya)
+// Ini dipakai sebagai saldo awal periode saat ini jika user belum mengisi manual.
+function _getSaldoAkhirPeriodeSebelumnya(accName, prevCoId) {
+ if (!prevCoId) return null;
+ // Cari akun di periode sebelumnya dengan nama yang sama (case-insensitive)
+ const prevAcc = DB.accounts.find(a =>
+  a.company_id === prevCoId &&
+  a.name.toLowerCase().trim() === accName.toLowerCase().trim()
+ );
+ if (!prevAcc) return null;
+
+ // Hitung saldo akhir di periode sebelumnya
+ const prevJEids = DB.journal_entries.filter(je => je.company_id === prevCoId).map(je => je.id);
+ let totD = prevAcc.saldo_awal || 0;
+ let totK = 0;
+ if (prevAcc.normal_balance === 'Kredit') { totK = prevAcc.saldo_awal || 0; totD = 0; }
+ DB.journal_details
+  .filter(d => prevJEids.includes(d.journal_id) && d.account_id == prevAcc.id)
+  .forEach(d => { totD += d.debit; totK += d.kredit; });
+ return prevAcc.normal_balance === 'Debit' ? totD - totK : totK - totD;
+}
+
+// Fungsi utama untuk sync saldo awal dari periode sebelumnya (dipanggil dari tombol UI)
+function syncSaldoAwalDariPeriodeSebelumnya() {
+ const prevCo = _getPreviousPeriodCompany();
+ if (!prevCo) {
+  toast('Tidak ditemukan periode sebelumnya. Pastikan ada perusahaan lain dengan period_end sebelum periode ini.', 'warning', 5000);
+  return;
+ }
+ const accs = coFilter(DB.accounts).filter(a => a.type === 'Aset' || a.type === 'Kewajiban');
+ let updated = 0;
+ accs.forEach(a => {
+  const saldoSebelumnya = _getSaldoAkhirPeriodeSebelumnya(a.name, prevCo.id);
+  if (saldoSebelumnya !== null && saldoSebelumnya !== 0 && !a.saldo_awal) {
+   const idx = DB.accounts.findIndex(x => x.id === a.id);
+   if (idx >= 0) {
+    DB.accounts[idx].saldo_awal = saldoSebelumnya;
+    updated++;
+   }
+  }
+ });
+ if (updated > 0) {
+  autoSave();
+  toast(`✓ ${updated} akun diperbarui saldo awalnya dari periode "${prevCo.name}" (${prevCo.period_end}).`, 'success', 5000);
+  renderArusKas();
+ } else {
+  toast(`Tidak ada akun baru yang perlu diperbarui dari periode "${prevCo.name}". Saldo awal sudah terisi atau nama akun tidak cocok.`, 'info', 5000);
+ }
+}
+
+// Metode Tidak Langsung (PSAK 2)
 // Mulai dari Laba Bersih, lalu koreksi item non-kas & perubahan modal kerja
 function calcArusKasTidakLangsung() {
  const labaBersih = calcLabaBersih();
+ const prevCo = _getPreviousPeriodCompany(); // untuk fallback saldo awal otomatis
 
- // 1. Koreksi beban non-kas
- // [FIX SEDANG #6] Tambah koreksi: amortisasi, kerugian/keuntungan pelepasan aset,
- // cadangan piutang ragu, dan item non-kas lain sesuai PSAK 2.
+ // 1. Koreksi beban non-kas (PSAK 2)
  const isNonKasAcc = a => {
- const n = a.name.toLowerCase();
- return n.includes('penyusutan') || n.includes('depresiasi') ||
- n.includes('amortisasi') || n.includes('cadangan piutang') ||
- n.includes('piutang ragu') || n.includes('bad debt') ||
- n.includes('provisi') || n.includes('impairment') ||
- n.includes('penurunan nilai');
+  const n = a.name.toLowerCase();
+  return n.includes('penyusutan') || n.includes('depresiasi') ||
+   n.includes('amortisasi') || n.includes('cadangan piutang') ||
+   n.includes('piutang ragu') || n.includes('bad debt') ||
+   n.includes('provisi') || n.includes('impairment') ||
+   n.includes('penurunan nilai');
  };
  const nonKasAcc = coFilter(DB.accounts).filter(a => a.type === 'Beban' && isNonKasAcc(a));
- const totalPenyusutan = nonKasAcc.reduce((s,a) =>s + getAccountBalance(a.id, true), 0);
- // Label detail untuk tampilan: pisahkan penyusutan dari amortisasi/lainnya
+ const totalPenyusutan = nonKasAcc.reduce((s,a) => s + getAccountBalance(a.id, true), 0);
  const penyusutanSaja = nonKasAcc.filter(a => a.name.toLowerCase().includes('penyusutan') || a.name.toLowerCase().includes('depresiasi')).reduce((s,a)=>s+getAccountBalance(a.id,true),0);
  const amortisasiSaja = nonKasAcc.filter(a => a.name.toLowerCase().includes('amortisasi')).reduce((s,a)=>s+getAccountBalance(a.id,true),0);
  const provisiSaja = nonKasAcc.filter(a => !a.name.toLowerCase().includes('penyusutan') && !a.name.toLowerCase().includes('depresiasi') && !a.name.toLowerCase().includes('amortisasi')).reduce((s,a)=>s+getAccountBalance(a.id,true),0);
 
- // 2. Perubahan modal kerja: DELTA = saldo akhir − saldo awal periode
- // Saldo awal periode = saldo_awal yang diinput di CoA (opening balance)
- // Jika saldo_awal belum diisi user, delta = saldo akhir (asumsi periode pertama)
- //
- // Naik aset lancar (selain kas) = penggunaan kas → negatif thd kas
- // Naik kewajiban lancar = sumber kas → positif thd kas
- const kasIds = coFilter(DB.accounts)
- .filter(a =>_accHasRole(a,'kas_bank'))
- .map(a =>a.id);
+ // 2. Perubahan modal kerja
+ // Prioritas saldo awal:
+ //   (1) Diisi manual di CoA (paling akurat)
+ //   (2) Saldo akhir periode sebelumnya (multi-tahun, otomatis)
+ //   (3) Hanya mutasi periode ini (periode pertama / tidak ada data sebelumnya)
+ const kasIds = coFilter(DB.accounts).filter(a => _accHasRole(a,'kas_bank')).map(a => a.id);
 
- // Aset lancar non-kas: prioritas account_role eksplisit (current_asset), lalu keyword
  const asetLancarAcss = coFilter(DB.accounts).filter(a => {
- if (kasIds.includes(a.id)) return false;
- if (a.type !== 'Aset' || a.normal_balance !== 'Debit') return false;
- if (a.account_role === 'current_asset') return true;
- // Fallback keyword — modal kerja umum
- const n = a.name.toLowerCase();
- return n.includes('piutang') || n.includes('persediaan') ||
- n.includes('perlengkapan') || n.includes('biaya dibayar') ||
- n.includes('aset lancar') || n.includes('uang muka');
+  if (kasIds.includes(a.id)) return false;
+  if (a.type !== 'Aset' || a.normal_balance !== 'Debit') return false;
+  if (a.account_role === 'current_asset') return true;
+  const n = a.name.toLowerCase();
+  return n.includes('piutang') || n.includes('persediaan') ||
+   n.includes('perlengkapan') || n.includes('biaya dibayar') ||
+   n.includes('aset lancar') || n.includes('uang muka');
  });
 
- // Kewajiban lancar: prioritas account_role eksplisit (current_liability), lalu keyword
  const kewLancarAcss = coFilter(DB.accounts).filter(a => {
- if (a.type !== 'Kewajiban') return false;
- if (a.account_role === 'current_liability') return true;
- if (a.account_role === 'long_term_liability') return false; // eksplisit jangka panjang → skip
- // Fallback keyword — kecualikan jangka panjang
- const n = a.name.toLowerCase();
- return !n.includes('jangka panjang') && !n.includes('obligasi') && !n.includes('pinjaman bank');
+  if (a.type !== 'Kewajiban') return false;
+  if (a.account_role === 'current_liability') return true;
+  if (a.account_role === 'long_term_liability') return false;
+  const n = a.name.toLowerCase();
+  return !n.includes('jangka panjang') && !n.includes('obligasi') && !n.includes('pinjaman bank');
  });
 
- // Hitung delta: saldo akhir (termasuk penyesuaian) dikurangi saldo awal periode (opening balance CoA)
- // [FIX BUG 1] Jika saldo_awal belum diisi (null/undefined/0) tapi ada mutasi jurnal di periode ini,
- // gunakan HANYA mutasi periode (saldo akhir dari jurnal saja, tanpa saldo_awal) sebagai delta.
- // Ini mencegah over-statement perubahan modal kerja saat saldo_awal kosong.
- // Akun dengan saldo_awal > 0 menggunakan delta normal: saldo_akhir - saldo_awal.
  const _getMutasiSaja = (accId) => {
- // Hitung mutasi dari jurnal periode saja (tanpa saldo_awal)
- let totD=0, totK=0;
- const JEids = coFilter(DB.journal_entries).map(je=>je.id);
- DB.journal_details.filter(d=>JEids.includes(d.journal_id)&&d.account_id==accId).forEach(d=>{totD+=d.debit; totK+=d.kredit;});
- coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId && !p.ref_journal_id).forEach(p=>totD+=p.amount);
- coFilter(DB.penyesuaian).filter(p=>p.kredit_acc==accId && !p.ref_journal_id).forEach(p=>totK+=p.amount);
- const acc = DB.accounts.find(a=>a.id==accId);
- if (!acc) return 0;
- return acc.normal_balance==='Debit' ? totD-totK : totK-totD;
+  let totD=0, totK=0;
+  const JEids = coFilter(DB.journal_entries).map(je=>je.id);
+  DB.journal_details.filter(d=>JEids.includes(d.journal_id)&&d.account_id==accId).forEach(d=>{totD+=d.debit; totK+=d.kredit;});
+  coFilter(DB.penyesuaian).filter(p=>p.debit_acc==accId && !p.ref_journal_id).forEach(p=>totD+=p.amount);
+  coFilter(DB.penyesuaian).filter(p=>p.kredit_acc==accId && !p.ref_journal_id).forEach(p=>totK+=p.amount);
+  const acc = DB.accounts.find(a=>a.id==accId);
+  if (!acc) return 0;
+  return acc.normal_balance==='Debit' ? totD-totK : totK-totD;
+ };
+
+ // Tentukan sumber saldo awal dan resolusi untuk setiap akun
+ const _resolveSaldoAwal = (a) => {
+  // Prioritas 1: manual di CoA
+  if (a.saldo_awal != null && a.saldo_awal !== 0) {
+   return { saldoAwal: a.saldo_awal, sumber: 'manual' };
+  }
+  // Prioritas 2: saldo akhir periode sebelumnya
+  if (prevCo) {
+   const saldoSebelumnya = _getSaldoAkhirPeriodeSebelumnya(a.name, prevCo.id);
+   if (saldoSebelumnya !== null && saldoSebelumnya !== 0) {
+    return { saldoAwal: saldoSebelumnya, sumber: 'periode_sebelumnya', prevCoName: prevCo.name };
+   }
+  }
+  // Prioritas 3: hanya mutasi periode (periode pertama)
+  return { saldoAwal: null, sumber: 'mutasi_saja' };
  };
 
  const perubahanAsetLancar = asetLancarAcss.map(a => {
- const saldoAkhir = getAccountBalance(a.id, true);
- const hasSaldoAwal = a.saldo_awal != null && a.saldo_awal !== 0;
- const saldoAwal = hasSaldoAwal ? (a.saldo_awal || 0) : 0;
- // [FIX BUG 1] Jika saldo_awal kosong: delta = mutasi periode saja (bukan full saldo akhir)
- // agar tidak over-count jika akun memiliki opening balance yang belum diisi
- const delta = hasSaldoAwal ? (saldoAkhir - saldoAwal) : _getMutasiSaja(a.id);
- const noSaldoAwal = !hasSaldoAwal && saldoAkhir !== 0;
- return { name: a.name, nilai: -delta, noSaldoAwal }; // naik aset lancar = negatif thd kas
- }).filter(x =>x.nilai !== 0);
+  const saldoAkhir = getAccountBalance(a.id, true);
+  const { saldoAwal, sumber, prevCoName } = _resolveSaldoAwal(a);
+  const delta = saldoAwal !== null ? (saldoAkhir - saldoAwal) : _getMutasiSaja(a.id);
+  const noSaldoAwal = sumber === 'mutasi_saja' && saldoAkhir !== 0;
+  return { name: a.name, nilai: -delta, noSaldoAwal, sumber, prevCoName };
+ }).filter(x => x.nilai !== 0);
 
  const perubahanKewLancar = kewLancarAcss.map(a => {
- const saldoAkhir = getAccountBalance(a.id, true);
- const hasSaldoAwal = a.saldo_awal != null && a.saldo_awal !== 0;
- const saldoAwal = hasSaldoAwal ? (a.saldo_awal || 0) : 0;
- // [FIX BUG 1] Sama: jika saldo_awal kosong, gunakan mutasi periode saja
- const delta = hasSaldoAwal ? (saldoAkhir - saldoAwal) : _getMutasiSaja(a.id);
- const noSaldoAwal = !hasSaldoAwal && saldoAkhir !== 0;
- return { name: a.name, nilai: delta, noSaldoAwal }; // naik kewajiban = positif thd kas
- }).filter(x =>x.nilai !== 0);
+  const saldoAkhir = getAccountBalance(a.id, true);
+  const { saldoAwal, sumber, prevCoName } = _resolveSaldoAwal(a);
+  const delta = saldoAwal !== null ? (saldoAkhir - saldoAwal) : _getMutasiSaja(a.id);
+  const noSaldoAwal = sumber === 'mutasi_saja' && saldoAkhir !== 0;
+  return { name: a.name, nilai: delta, noSaldoAwal, sumber, prevCoName };
+ }).filter(x => x.nilai !== 0);
 
  const totalPerubahanMK =
- perubahanAsetLancar.reduce((s,x) =>s + x.nilai, 0) +
- perubahanKewLancar.reduce((s,x) =>s + x.nilai, 0);
+  perubahanAsetLancar.reduce((s,x) => s + x.nilai, 0) +
+  perubahanKewLancar.reduce((s,x) => s + x.nilai, 0);
 
  const kasOperasi = labaBersih + totalPenyusutan + totalPerubahanMK;
-
- // Investasi & Pendanaan tetap pakai metode langsung (sama hasilnya)
  const { kasInvestasi, kasPendanaan } = calcArusKas();
 
+ // Metadata untuk banner peringatan di UI
+ const akunTanpaSaldoAwal = [
+  ...perubahanAsetLancar.filter(x => x.noSaldoAwal),
+  ...perubahanKewLancar.filter(x => x.noSaldoAwal)
+ ];
+ const akunDariPrevPeriod = [
+  ...perubahanAsetLancar.filter(x => x.sumber === 'periode_sebelumnya'),
+  ...perubahanKewLancar.filter(x => x.sumber === 'periode_sebelumnya')
+ ];
+ const hasPrevCo = !!prevCo;
+
  return {
- labaBersih, totalPenyusutan, perubahanAsetLancar, perubahanKewLancar,
- totalPerubahanMK, kasOperasi, kasInvestasi, kasPendanaan
+  labaBersih, totalPenyusutan, penyusutanSaja, amortisasiSaja, provisiSaja,
+  perubahanAsetLancar, perubahanKewLancar, totalPerubahanMK,
+  kasOperasi, kasInvestasi, kasPendanaan,
+  akunTanpaSaldoAwal, akunDariPrevPeriod, hasPrevCo, prevCo
  };
 }
 
@@ -8895,8 +9331,10 @@ function renderArusKas() {
 
  if (_metodeArusKas === 'tidak-langsung') {
  const {
- labaBersih, totalPenyusutan, perubahanAsetLancar, perubahanKewLancar,
- totalPerubahanMK, kasOperasi, kasInvestasi, kasPendanaan
+  labaBersih, totalPenyusutan, penyusutanSaja, amortisasiSaja, provisiSaja,
+  perubahanAsetLancar, perubahanKewLancar,
+  totalPerubahanMK, kasOperasi, kasInvestasi, kasPendanaan,
+  akunTanpaSaldoAwal, akunDariPrevPeriod, hasPrevCo, prevCo
  } = calcArusKasTidakLangsung();
 
  const kasAwalPeriode = calcKasAwal();
@@ -8904,31 +9342,81 @@ function renderArusKas() {
  const selisih = Math.abs(kasAkhir - kasAkhirNeraca);
  const balance = selisih < 1;
  const fmtK = (v) => `${v<0?'(':''}${fmtC(Math.abs(v))}${v<0?')':''}`;
- const clr = (v) =>v >= 0 ? 'var(--accent2)' : 'var(--danger)';
+ const clr = (v) => v >= 0 ? 'var(--accent2)' : 'var(--danger)';
+
+ // ── Banner peringatan saldo awal modal kerja ──────────────────────
+ let mkWarningBanner = '';
+ if (akunTanpaSaldoAwal.length > 0) {
+  const namaAkun = akunTanpaSaldoAwal.map(x => `<strong>${x.name}</strong>`).join(', ');
+  const prevCoInfo = hasPrevCo
+   ? ` <button onclick="syncSaldoAwalDariPeriodeSebelumnya()" 
+       style="margin-left:8px;padding:3px 10px;background:var(--warning);color:#fff;
+       border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:700;">
+       ↗ Sync dari "${prevCo.name}"
+      </button>`
+   : '';
+  mkWarningBanner = `
+   <div style="margin-bottom:12px;padding:11px 16px;background:rgba(245,158,11,.1);border-radius:8px;
+    border-left:4px solid var(--warning);font-size:12px;color:#92400e;">
+    <div style="font-weight:700;margin-bottom:4px;">
+     ⚠ ${akunTanpaSaldoAwal.length} akun modal kerja belum memiliki saldo awal
+     ${prevCoInfo}
+    </div>
+    <div style="color:#78350f;line-height:1.6;">
+     Akun: ${namaAkun}<br>
+     Delta dihitung dari <em>mutasi periode ini saja</em> (bukan selisih akhir−awal) 
+     — hasilnya mungkin tidak mencerminkan perubahan modal kerja yang sesungguhnya.<br>
+     ${hasPrevCo
+      ? `Klik tombol di atas untuk mengisi saldo awal otomatis dari periode "${prevCo.name}" (${prevCo.period_end}), atau isi manual di <strong>Chart of Accounts → Edit Akun → Saldo Awal</strong>.`
+      : `Isi saldo awal manual di <strong>Chart of Accounts → Edit Akun → Saldo Awal</strong>.`}
+    </div>
+   </div>`;
+ } else if (akunDariPrevPeriod.length > 0) {
+  mkWarningBanner = `
+   <div style="margin-bottom:12px;padding:9px 14px;background:rgba(16,185,129,.07);border-radius:8px;
+    border-left:4px solid var(--accent2);font-size:12px;color:#065f46;">
+    ✅ Saldo awal ${akunDariPrevPeriod.length} akun modal kerja diambil otomatis dari 
+    periode sebelumnya (<strong>${prevCo?.name}</strong>).
+    Perubahan modal kerja dihitung akurat.
+   </div>`;
+ }
+
+ // ── Label sumber data per baris ───────────────────────────────────
+ const sumberLabel = (x) => {
+  if (x.sumber === 'periode_sebelumnya') return ` <span style="font-size:10px;color:var(--accent2);font-weight:600;" title="Saldo awal diambil dari periode sebelumnya: ${x.prevCoName}">↗ auto</span>`;
+  if (x.noSaldoAwal) return ` <span title="Saldo awal nol — delta = saldo akhir penuh. Isi saldo_awal di CoA untuk hasil akurat." style="color:var(--warning);cursor:help;font-size:10px;">⚠ no-OB</span>`;
+  return ` <span style="font-size:10px;color:var(--text3);" title="Saldo awal diisi manual di CoA">✎ manual</span>`;
+ };
 
  const rowsAL = perubahanAsetLancar.map(x => `
- <div class="report-row indent"> <span style="font-size:12px;">Perubahan ${x.name}${x.noSaldoAwal?' <span title="Saldo awal nol — delta = saldo akhir penuh. Isi saldo_awal di CoA untuk hasil akurat." style="color:var(--warning);cursor:help;font-size:10px;"></span>':''}</span> <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span> </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
+  <div class="report-row indent">
+   <span style="font-size:12px;">Perubahan ${x.name}${sumberLabel(x)}</span>
+   <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span>
+  </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
 
  const rowsKL = perubahanKewLancar.map(x => `
- <div class="report-row indent"> <span style="font-size:12px;">Perubahan ${x.name}${x.noSaldoAwal?' <span title="Saldo awal nol — delta = saldo akhir penuh. Isi saldo_awal di CoA untuk hasil akurat." style="color:var(--warning);cursor:help;font-size:10px;"></span>':''}</span> <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span> </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
+  <div class="report-row indent">
+   <span style="font-size:12px;">Perubahan ${x.name}${sumberLabel(x)}</span>
+   <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span>
+  </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
 
- _origInner(`
- <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Tidak Langsung</div> </div> <div>
- <div class="report-section-title">I. AKTIVITAS OPERASI</div> <div class="report-row indent"> <span style="font-weight:700;">Laba Bersih Periode</span> <span class="report-amount" style="font-weight:700;color:${clr(labaBersih)};">${fmtK(labaBersih)}</span> </div> <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">
-Koreksi beban non-kas (PSAK 2)</div> ${totalPenyusutan ? `<div class="report-row indent"> <span style="font-size:12px;">Beban penyusutan/depresiasi</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(penyusutanSaja)}</span> </div>${amortisasiSaja ? `<div class="report-row indent"> <span style="font-size:12px;">Amortisasi</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(amortisasiSaja)}</span> </div>` : ''}${provisiSaja ? `<div class="report-row indent"> <span style="font-size:12px;">Provisi/cadangan piutang ragu</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(provisiSaja)}</span> </div>` : ''}` : '<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>Tidak ada beban non-kas</span></div>'}
+ _origInner(mkWarningBanner + `
+  <div style="text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid var(--border);"> <div style="font-size:18px;font-weight:800;">${co_data?.name||'—'}</div> <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">${getLaporanNames(co_data?.standard).arusKas.toUpperCase()}</div> <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | Metode Tidak Langsung</div> </div> <div>
+  <div class="report-section-title">I. AKTIVITAS OPERASI</div> <div class="report-row indent"> <span style="font-weight:700;">Laba Bersih Periode</span> <span class="report-amount" style="font-weight:700;color:${clr(labaBersih)};">${fmtK(labaBersih)}</span> </div> <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">
+ Koreksi beban non-kas (PSAK 2)</div> ${totalPenyusutan ? `<div class="report-row indent"> <span style="font-size:12px;">Beban penyusutan/depresiasi</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(penyusutanSaja)}</span> </div>${amortisasiSaja ? `<div class="report-row indent"> <span style="font-size:12px;">Amortisasi</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(amortisasiSaja)}</span> </div>` : ''}${provisiSaja ? `<div class="report-row indent"> <span style="font-size:12px;">Provisi/cadangan piutang ragu</span> <span class="report-amount" style="color:var(--accent2);">+${fmtC(provisiSaja)}</span> </div>` : ''}` : '<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>Tidak ada beban non-kas</span></div>'}
 
- <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Perubahan aset lancar (non-kas)</div> ${rowsAL}
+  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Perubahan aset lancar (non-kas)</div> ${rowsAL}
 
- <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Perubahan kewajiban lancar</div> ${rowsKL}
+  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 0 4px;">Perubahan kewajiban lancar</div> ${rowsKL}
 
- <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Operasi</strong></span> <span class="report-amount" style="color:${clr(kasOperasi)};"><strong>${fmtK(kasOperasi)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">II. AKTIVITAS INVESTASI</div> ${buildArusKasDetail('investasi')}
- <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Investasi</strong></span> <span class="report-amount" style="color:${clr(kasInvestasi)};"><strong>${fmtK(kasInvestasi)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">III. AKTIVITAS PENDANAAN</div> ${buildArusKasDetail('pendanaan')}
- <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Pendanaan</strong></span> <span class="report-amount" style="color:${clr(kasPendanaan)};"><strong>${fmtK(kasPendanaan)}</strong></span> </div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">
-${fmtC(kasAwalPeriode)}${kasAwalPeriode===0?'&nbsp;<span style="font-size:10px;color:var(--warning);font-weight:700;"> nol — isi saldo_awal di CoA</span>':''}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhir)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${balance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${balance?'var(--accent2)':'var(--danger)'};">
- <div style="font-size:12px;font-weight:700;color:${balance?'#065f46':'#991b1b'};"> 
-${balance ? ('\u2705 Rekonsiliasi OK: Kas Akhir Arus Kas (' + fmtC(kasAkhir) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : ('\u26a0 Selisih rekonsiliasi ' + fmtC(selisih) + ' \u2014 Kas Akhir Arus Kas (' + fmtC(kasAkhir) + ') \u2260 Kas di Neraca (' + fmtC(kasAkhirNeraca) + '). Periksa saldo_awal akun kas di CoA.')}
- </div> </div> <div style="margin-top:10px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);"> <strong>Metode Tidak Langsung (PSAK 2):</strong> Kas Awal + Net Cash (Operasi+Investasi+Pendanaan) = Kas Akhir. Kas Awal diambil dari kolom <em>saldo_awal</em> akun kas/bank di Chart of Accounts.
- </div> </div> `);
+  <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Operasi</strong></span> <span class="report-amount" style="color:${clr(kasOperasi)};"><strong>${fmtK(kasOperasi)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">II. AKTIVITAS INVESTASI</div> ${buildArusKasDetail('investasi')}
+  <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Investasi</strong></span> <span class="report-amount" style="color:${clr(kasInvestasi)};"><strong>${fmtK(kasInvestasi)}</strong></span> </div> <div class="report-section-title" style="margin-top:20px;">III. AKTIVITAS PENDANAAN</div> ${buildArusKasDetail('pendanaan')}
+  <div class="report-row subtotal"> <span><strong>Arus Kas Bersih dari Pendanaan</strong></span> <span class="report-amount" style="color:${clr(kasPendanaan)};"><strong>${fmtK(kasPendanaan)}</strong></span> </div> <div class="report-row" style="margin-top:12px;padding-top:8px;border-top:1px solid var(--border);"> <span style="font-size:13px;">Kas dan Setara Kas Awal Periode</span> <span class="report-amount">
+ ${fmtC(kasAwalPeriode)}${kasAwalPeriode===0?'&nbsp;<span style="font-size:10px;color:var(--warning);font-weight:700;"> nol — isi saldo_awal di CoA</span>':''}</span> </div> <div class="report-row total" style="margin-top:4px;padding:14px 0;"> <span style="font-size:15px;font-weight:800;">KAS DAN SETARA KAS AKHIR</span> <span class="report-amount" style="font-size:16px;font-weight:800;">${fmtC(kasAkhir)}</span> </div> <div style="margin-top:12px;padding:12px 16px;background:${balance?'rgba(16,185,129,.08)':'rgba(239,68,68,.08)'};border-radius:var(--radius2);border-left:4px solid ${balance?'var(--accent2)':'var(--danger)'};">
+  <div style="font-size:12px;font-weight:700;color:${balance?'#065f46':'#991b1b'};"> 
+ ${balance ? ('✅ Rekonsiliasi OK: Kas Akhir Arus Kas (' + fmtC(kasAkhir) + ') = Kas & Setara Kas di Neraca (' + fmtC(kasAkhirNeraca) + ')') : ('⚠ Selisih rekonsiliasi ' + fmtC(selisih) + ' — Kas Akhir Arus Kas (' + fmtC(kasAkhir) + ') ≠ Kas di Neraca (' + fmtC(kasAkhirNeraca) + '). Periksa saldo_awal akun kas di CoA.')}
+  </div> </div> <div style="margin-top:10px;padding:10px 14px;background:rgba(37,99,235,.05);border-radius:var(--radius2);font-size:12px;color:var(--text2);"> <strong>Metode Tidak Langsung (PSAK 2):</strong> Kas Awal + Net Cash (Operasi+Investasi+Pendanaan) = Kas Akhir. Saldo awal modal kerja diambil dari: (1) input manual di CoA, (2) otomatis dari periode sebelumnya, atau (3) mutasi periode ini jika tidak ada data awal.
+  </div> </div> `);
  return;
  }
 
@@ -10237,7 +10725,295 @@ document.addEventListener('click', e => {
 // 
 // PRINT — buka jendela cetak khusus
 // 
+// ═══════════════════════════════════════════════════════════════════
+// ISU KRITIS #2 — REKONSILIASI SUB-LEDGER VS BUKU BESAR
+// Fungsi ini membandingkan saldo akun GL (dari journal_details)
+// dengan total saldo di sub-ledger (hutang/piutang/persediaan).
+// Dipanggil otomatis saat render halaman masing-masing modul,
+// dan bisa dipanggil manual dari tombol di halaman Settings.
+// ═══════════════════════════════════════════════════════════════════
+
+function cekRekonsiliasi(modul) {
+ // modul: 'hutang' | 'piutang' | 'persediaan'
+ const accs = coFilter(DB.accounts);
+ const hasil = { modul, ok: true, items: [] };
+
+ if (modul === 'hutang') {
+  // GL: saldo akun Kewajiban yang mengandung keyword hutang usaha/dagang
+  const glAccs = accs.filter(a =>
+   a.type === 'Kewajiban' && (
+    a.name.toLowerCase().includes('hutang usaha') ||
+    a.name.toLowerCase().includes('hutang dagang') ||
+    a.name.toLowerCase().includes('utang usaha') ||
+    a.name.toLowerCase().includes('utang dagang') ||
+    a.account_role === 'hutang_usaha'
+   )
+  );
+  const glTotal = glAccs.reduce((s, a) => s + getAccountBalance(a.id, true), 0);
+
+  // Sub-ledger: total sisa hutang yang belum lunas
+  const slTotal = coFilter(DB.hutang).reduce((s, h) => s + (h.sisa || 0), 0);
+  const selisih = Math.abs(glTotal - slTotal);
+
+  hasil.glTotal = glTotal;
+  hasil.slTotal = slTotal;
+  hasil.selisih = selisih;
+  hasil.ok = selisih < 1;
+  hasil.glAccs = glAccs;
+
+  if (!hasil.ok) {
+   hasil.items.push({
+    label: 'Hutang Usaha (GL)',
+    nilai: glTotal,
+    warna: 'var(--danger)'
+   });
+   hasil.items.push({
+    label: 'Total Sisa Hutang (Sub-Ledger)',
+    nilai: slTotal,
+    warna: 'var(--warning)'
+   });
+  }
+
+ } else if (modul === 'piutang') {
+  const glAccs = accs.filter(a =>
+   a.type === 'Aset' && (
+    a.name.toLowerCase().includes('piutang usaha') ||
+    a.name.toLowerCase().includes('piutang dagang') ||
+    a.name.toLowerCase().includes('tagihan pelanggan') ||
+    a.account_role === 'piutang_usaha'
+   )
+  );
+  const glTotal = glAccs.reduce((s, a) => s + getAccountBalance(a.id, true), 0);
+  const slTotal = coFilter(DB.piutang).reduce((s, p) => s + (p.sisa || 0), 0);
+  const selisih = Math.abs(glTotal - slTotal);
+
+  hasil.glTotal = glTotal;
+  hasil.slTotal = slTotal;
+  hasil.selisih = selisih;
+  hasil.ok = selisih < 1;
+  hasil.glAccs = glAccs;
+
+  if (!hasil.ok) {
+   hasil.items.push({ label: 'Piutang Usaha (GL)', nilai: glTotal, warna: 'var(--danger)' });
+   hasil.items.push({ label: 'Total Sisa Piutang (Sub-Ledger)', nilai: slTotal, warna: 'var(--warning)' });
+  }
+
+ } else if (modul === 'persediaan') {
+  const glAccs = accs.filter(a =>
+   a.type === 'Aset' && (
+    a.name.toLowerCase().includes('persediaan') ||
+    a.name.toLowerCase().includes('inventory') ||
+    a.name.toLowerCase().includes('stok barang') ||
+    a.account_role === 'persediaan'
+   )
+  );
+  const glTotal = glAccs.reduce((s, a) => s + getAccountBalance(a.id, true), 0);
+  const slTotal = coFilter(DB.persediaan).reduce((s, p) => s + (p.total_nilai || 0), 0);
+  const selisih = Math.abs(glTotal - slTotal);
+
+  hasil.glTotal = glTotal;
+  hasil.slTotal = slTotal;
+  hasil.selisih = selisih;
+  hasil.ok = selisih < 1;
+  hasil.glAccs = glAccs;
+
+  if (!hasil.ok) {
+   hasil.items.push({ label: 'Persediaan Barang (GL)', nilai: glTotal, warna: 'var(--danger)' });
+   hasil.items.push({ label: 'Total Nilai Sub-Ledger', nilai: slTotal, warna: 'var(--warning)' });
+  }
+ }
+
+ return hasil;
+}
+
+function renderRekonsiliasiPesan(containerId, modul) {
+ const el = document.getElementById(containerId);
+ if (!el) return;
+
+ const r = cekRekonsiliasi(modul);
+
+ // Tidak ada akun GL yang cocok → tidak bisa rekon, tampilkan info netral
+ if (!r.glAccs || r.glAccs.length === 0) {
+  el.innerHTML = `
+   <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;
+    border-left:3px solid var(--warning);font-size:12px;color:#92400e;display:flex;align-items:center;gap:10px;">
+    <span>⚠</span>
+    <span><strong>Rekonsiliasi tidak dapat dilakukan</strong> — belum ada akun 
+    <em>${modul === 'hutang' ? 'Hutang Usaha' : modul === 'piutang' ? 'Piutang Usaha' : 'Persediaan'}</em>
+    di Chart of Accounts. Tambahkan akun tersebut agar rekonsiliasi GL vs sub-ledger bisa dijalankan.</span>
+   </div>`;
+  return;
+ }
+
+ if (r.ok) {
+  el.innerHTML = `
+   <div style="margin-bottom:10px;padding:9px 14px;background:rgba(16,185,129,.08);border-radius:8px;
+    border-left:3px solid var(--accent2);font-size:12px;color:#065f46;display:flex;align-items:center;gap:10px;">
+    <span>✅</span>
+    <span><strong>Rekonsiliasi OK</strong> — Saldo GL 
+    <strong>${r.glAccs.map(a=>a.name).join(', ')}</strong> 
+    (${fmtC(r.glTotal)}) sesuai dengan total sub-ledger (${fmtC(r.slTotal)}).</span>
+   </div>`;
+ } else {
+  const penyebab = _analisaPenyebabSelisih(modul, r);
+  el.innerHTML = `
+   <div style="margin-bottom:10px;padding:12px 16px;background:rgba(239,68,68,.07);border-radius:10px;
+    border-left:4px solid var(--danger);font-size:12px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+     <span style="font-weight:800;color:#991b1b;font-size:13px;">⚠ Selisih Rekonsiliasi Ditemukan!</span>
+     <button onclick="this.closest('div[style]').querySelector('.rekon-detail').style.display = this.closest('div[style]').querySelector('.rekon-detail').style.display==='none'?'block':'none'; this.textContent = this.textContent.includes('Detail')?'▲ Tutup':'▼ Lihat Detail';" 
+      style="background:none;border:1px solid var(--danger);border-radius:4px;padding:3px 8px;cursor:pointer;font-size:11px;color:#991b1b;font-weight:700;">
+      ▼ Lihat Detail
+     </button>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:8px;">
+     <span>📊 <strong>GL:</strong> <span style="font-family:var(--mono);color:var(--danger);font-weight:700;">${fmtC(r.glTotal)}</span></span>
+     <span>📋 <strong>Sub-Ledger:</strong> <span style="font-family:var(--mono);color:var(--warning);font-weight:700;">${fmtC(r.slTotal)}</span></span>
+     <span>📐 <strong>Selisih:</strong> <span style="font-family:var(--mono);color:var(--danger);font-weight:800;">${fmtC(r.selisih)}</span></span>
+    </div>
+    <div class="rekon-detail" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.6);border-radius:6px;">
+     <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Kemungkinan Penyebab</div>
+     ${penyebab.map(p => `<div style="padding:4px 0;font-size:12px;color:var(--text2);">• ${p}</div>`).join('')}
+     <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);">
+      Akun GL yang diperiksa: <strong>${r.glAccs.map(a => a.code + ' ' + a.name).join(', ')}</strong>
+     </div>
+    </div>
+   </div>`;
+ }
+}
+
+function _analisaPenyebabSelisih(modul, r) {
+ const sebab = [];
+ if (r.glTotal > r.slTotal) {
+  sebab.push(`Jurnal manual di Jurnal Umum menggunakan akun ${modul === 'hutang' ? 'Hutang Usaha' : modul === 'piutang' ? 'Piutang Usaha' : 'Persediaan'} tanpa mencatat di modul sub-ledger.`);
+  sebab.push('Pembayaran/pelunasan dicatat di jurnal manual tanpa melalui tombol Bayar/Terima Bayar.');
+ } else {
+  sebab.push(`Record di sub-ledger lebih besar dari GL — kemungkinan ada entri di modul ${modul} yang jurnalnya dihapus manual dari Jurnal Umum.`);
+  sebab.push('Import data atau migrasi dari sistem lama dengan mapping akun tidak konsisten.');
+ }
+ sebab.push('Saldo awal akun GL (field saldo_awal di CoA) tidak sesuai dengan saldo awal sub-ledger.');
+ if (modul === 'persediaan') {
+  sebab.push('Pengurangan stok dari panel HPP Otomatis (versi baru) belum memperbarui total_nilai sub-ledger secara proporsional.');
+ }
+ return sebab;
+}
+
+// Panggil rekonsiliasi di setiap render halaman modul
+function _injectRekonsiliasiToPage(modul) {
+ const containerId = `rekon-banner-${modul}`;
+ // Cek apakah banner container sudah ada; kalau belum, buat dan inject sebelum stats-grid
+ const statsId = `${modul === 'aset-tetap' ? 'aset' : modul}-stats`;
+ const statsEl = document.getElementById(statsId);
+ if (!statsEl) return;
+ let container = document.getElementById(containerId);
+ if (!container) {
+  container = document.createElement('div');
+  container.id = containerId;
+  statsEl.parentNode.insertBefore(container, statsEl);
+ }
+ renderRekonsiliasiPesan(containerId, modul);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ISU KRITIS #3 — VALIDASI NERACA SEBELUM CETAK / EKSPOR
+// Intercept printReport('neraca') dan exportExcel('neraca') / exportExcel('semua')
+// Jika neraca tidak balance → tampilkan modal konfirmasi sebelum lanjut.
+// ═══════════════════════════════════════════════════════════════════
+
+function cekBalanceNeraca() {
+ // Hitung ulang komponen neraca (sama persis dengan renderNeraca)
+ const semuaAset = getAccsByType('Aset');
+ const asetNormal = semuaAset.filter(a => a.normal_balance === 'Debit');
+ const contraAset = semuaAset.filter(a => a.normal_balance === 'Kredit');
+
+ const totAset = asetNormal.reduce((s, a) => s + (a.balance || 0), 0)
+              - contraAset.reduce((s, a) => s + (a.balance || 0), 0);
+
+ const kewAcss = getAccsByType('Kewajiban');
+ const totKew = kewAcss.reduce((s, a) => s + (a.balance || 0), 0);
+
+ const ekuitasAkhir = calcEkuitasAkhir();
+ const totKewEk = totKew + ekuitasAkhir;
+ const selisih = Math.abs(totAset - totKewEk);
+ const isBalance = selisih < 1;
+
+ return { isBalance, totAset, totKew, ekuitasAkhir, totKewEk, selisih };
+}
+
+function konfirmasiNeracaTidakBalance(onLanjut) {
+ const r = cekBalanceNeraca();
+ if (r.isBalance) { onLanjut(); return; }
+
+ // Tampilkan modal konfirmasi custom (tidak pakai confirm() bawaan)
+ const existingModal = document.getElementById('modal-neraca-warning');
+ if (existingModal) existingModal.remove();
+
+ const modal = document.createElement('div');
+ modal.id = 'modal-neraca-warning';
+ modal.style.cssText = `position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;
+  display:flex;align-items:center;justify-content:center;padding:20px;`;
+ modal.innerHTML = `
+  <div style="background:var(--card);border-radius:14px;max-width:520px;width:100%;
+   box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden;">
+   <div style="padding:18px 20px;background:linear-gradient(135deg,rgba(239,68,68,.1),rgba(245,158,11,.08));
+    border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+    <span style="font-size:22px;">⚠️</span>
+    <div>
+     <div style="font-weight:800;font-size:15px;color:#991b1b;">Neraca Tidak Balance!</div>
+     <div style="font-size:12px;color:var(--text2);">Laporan yang dicetak/diekspor mungkin mengandung kesalahan</div>
+    </div>
+   </div>
+   <div style="padding:18px 20px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+     <div style="padding:10px;background:rgba(37,99,235,.06);border-radius:8px;text-align:center;">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;margin-bottom:4px;">Total Aset</div>
+      <div style="font-weight:800;font-size:13px;font-family:var(--mono);color:var(--primary-light);">${fmtC(r.totAset)}</div>
+     </div>
+     <div style="padding:10px;background:rgba(239,68,68,.06);border-radius:8px;text-align:center;">
+      <div style="font-size:10px;color:var(--text3);text-transform:uppercase;margin-bottom:4px;">Kewajiban + Ekuitas</div>
+      <div style="font-weight:800;font-size:13px;font-family:var(--mono);color:var(--danger);">${fmtC(r.totKewEk)}</div>
+     </div>
+     <div style="padding:10px;background:rgba(239,68,68,.1);border-radius:8px;text-align:center;border:1.5px solid var(--danger);">
+      <div style="font-size:10px;color:#991b1b;text-transform:uppercase;margin-bottom:4px;font-weight:700;">Selisih</div>
+      <div style="font-weight:800;font-size:14px;font-family:var(--mono);color:var(--danger);">${fmtC(r.selisih)}</div>
+     </div>
+    </div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.7;padding:10px 12px;
+     background:var(--bg);border-radius:6px;margin-bottom:14px;">
+     <strong>Kemungkinan penyebab:</strong><br>
+     • Jurnal tidak balance atau ada entri yang dihapus sebagian<br>
+     • Saldo awal akun di CoA tidak sesuai neraca awal<br>
+     • Akun prive/dividen belum ditutup ke ekuitas<br>
+     • Rekonsiliasi sub-ledger belum dilakukan
+    </div>
+    <div style="font-size:12px;color:#92400e;padding:8px 12px;background:rgba(245,158,11,.1);
+     border-radius:6px;border-left:3px solid var(--warning);">
+     Disarankan: perbaiki neraca terlebih dahulu sebelum mencetak laporan resmi.
+    </div>
+   </div>
+   <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;">
+    <button onclick="document.getElementById('modal-neraca-warning').remove();"
+     class="btn btn-secondary" style="font-size:13px;">Batalkan — Perbaiki Dulu</button>
+    <button onclick="document.getElementById('modal-neraca-warning').remove(); _neracaWarningCallback();"
+     class="btn btn-danger" style="font-size:13px;">Tetap Cetak/Ekspor ⚠</button>
+   </div>
+  </div>`;
+ document.body.appendChild(modal);
+ // Simpan callback ke variabel global sementara
+ window._neracaWarningCallback = onLanjut;
+}
+
 function printReport(type) {
+ // ── Validasi Neraca sebelum cetak ──────────────────────────────
+ // Intercept jika mencetak neraca atau semua laporan saat neraca tidak balance
+ if ((type === 'neraca' || type === 'semua') && co() && coFilter(DB.journal_entries).length > 0) {
+  konfirmasiNeracaTidakBalance(() => _doPrintReport(type));
+  return;
+ }
+ _doPrintReport(type);
+}
+
+function _doPrintReport(type) {
  // Laporan dasar selalu boleh dicetak, hanya "semua" yang dikunci
  if (type === 'semua' && !canAccess('print_full')) {
  showUpgradeModal('print_full');
@@ -10722,6 +11498,15 @@ function printPage() { printReport(currentPage); }
 // EXPORT EXCEL — menggunakan SheetJS
 // 
 function exportExcel(type) {
+ // ── Validasi Neraca sebelum ekspor ─────────────────────────────
+ if ((type === 'neraca' || type === 'semua') && co() && coFilter(DB.journal_entries).length > 0) {
+  konfirmasiNeracaTidakBalance(() => _doExportExcel(type));
+  return;
+ }
+ _doExportExcel(type);
+}
+
+function _doExportExcel(type) {
  if (!canAccess('export')) {
  showUpgradeModal('export');
  return;
