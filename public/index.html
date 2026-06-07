@@ -1061,7 +1061,71 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <div class="form-group"><label>Periode Mulai</label><input class="form-control" type="date" id="co-start"></div>
 <div class="form-group"><label>Periode Akhir</label><input class="form-control" type="date" id="co-end"></div>
 </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-company')">Batal</button> <button class="btn btn-primary" onclick="saveCompany()">Simpan</button> </div> </div>
-</div> <!-- COA Modal -->
+</div>
+
+<!-- ═══ MODAL PERIOD ROLLOVER ═══ -->
+<div class="modal-overlay" id="modal-rollover">
+ <div class="modal" style="max-width:620px;">
+  <div class="modal-header" style="background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(16,185,129,.06));">
+   <div class="modal-title">🔄 Mulai Periode Baru</div>
+   <button class="modal-close" onclick="closeModal('modal-rollover')"></button>
+  </div>
+  <div class="modal-body">
+   <input type="hidden" id="rollover-source-id">
+   <div id="rollover-source-info" style="padding:12px 16px;background:var(--bg);border-radius:8px;border:1px solid var(--border);margin-bottom:16px;font-size:13px;"></div>
+   <div style="font-weight:700;font-size:13px;margin-bottom:10px;">⚙ Pengaturan Periode Baru</div>
+   <div class="form-grid" style="margin-bottom:16px;">
+    <div class="form-group" style="grid-column:1/-1;">
+     <label>Nama Periode Baru *</label>
+     <input class="form-control" id="rollover-name" placeholder="Misal: PT. ABC — 2025">
+    </div>
+    <div class="form-group">
+     <label>Awal Periode Baru *</label>
+     <input class="form-control" type="date" id="rollover-start">
+    </div>
+    <div class="form-group">
+     <label>Akhir Periode Baru *</label>
+     <input class="form-control" type="date" id="rollover-end">
+    </div>
+   </div>
+   <div style="font-weight:700;font-size:13px;margin-bottom:10px;">📦 Preview Data yang Akan Dipindahkan</div>
+   <div id="rollover-preview" style="margin-bottom:16px;"></div>
+   <div style="padding:12px 14px;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
+    <div style="font-size:12px;font-weight:700;margin-bottom:10px;color:var(--text2);">Opsi Rollover</div>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer;">
+     <input type="checkbox" id="rollover-coa" checked style="width:16px;height:16px;">
+     <span>Saldo akhir akun → Saldo awal periode baru (Chart of Accounts)</span>
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer;">
+     <input type="checkbox" id="rollover-hutang" checked style="width:16px;height:16px;">
+     <span>Hutang usaha yang belum lunas</span>
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer;">
+     <input type="checkbox" id="rollover-piutang" checked style="width:16px;height:16px;">
+     <span>Piutang usaha yang belum lunas</span>
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer;">
+     <input type="checkbox" id="rollover-persediaan" checked style="width:16px;height:16px;">
+     <span>Stok persediaan yang masih tersisa</span>
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
+     <input type="checkbox" id="rollover-aset" checked style="width:16px;height:16px;">
+     <span>Aset tetap (dengan saldo penyusutan terupdate)</span>
+    </label>
+   </div>
+   <div style="margin-top:12px;padding:10px 14px;background:rgba(245,158,11,.08);border-radius:8px;border-left:3px solid var(--warning);font-size:12px;color:#92400e;">
+    ⚠ <strong>Penting:</strong> Proses ini membuat perusahaan/periode baru dan <strong>tidak mengubah</strong> data periode lama. Jurnal dan transaksi tidak ikut dipindahkan — hanya saldo akhir dan outstanding sub-ledger.
+   </div>
+  </div>
+  <div class="modal-footer">
+   <button class="btn btn-secondary" onclick="closeModal('modal-rollover')">Batal</button>
+   <button class="btn btn-primary" onclick="executeRollover()" style="background:linear-gradient(135deg,#2563eb,#10b981);">🔄 Mulai Rollover</button>
+  </div>
+ </div>
+</div>
+<!-- ═══ END MODAL ROLLOVER ═══ -->
+
+ <!-- COA Modal -->
 <div class="modal-overlay" id="modal-coa">
  <div class="modal" style="max-width:620px;">
  <div class="modal-header">
@@ -2270,7 +2334,7 @@ function renderCompanies() {
  <div class="card" style="cursor:pointer;transition:.2s;${DB.current_company_id==co.id?'border-color:var(--primary-light);box-shadow:0 0 0 2px rgba(37,99,235,.15);':''}" onclick="selectCompany('${co.id}')"> <div style="padding:20px;"> <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;"> <div style="font-size:32px;">${co.entity_mode==='nirlaba'?'':co.entity_mode==='koperasi'?'':co.entity_mode==='baznas'?'':''}</div> ${DB.current_company_id==co.id?'<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">AKTIF</span>':''}
  </div> <div style="font-weight:800;font-size:16px;margin-bottom:4px;">${co.name}</div> <div style="font-size:12px;color:var(--text2);">${co.standard} · ${co.type||'—'}</div>
  <div style="margin-top:4px;"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${co.entity_mode==='nirlaba'?'background:rgba(16,185,129,.12);color:#065f46;':co.entity_mode==='koperasi'?'background:rgba(245,158,11,.12);color:#92400e;':co.entity_mode==='baznas'?'background:rgba(22,163,74,.12);color:#15803d;':'background:rgba(37,99,235,.1);color:#1d4ed8;'}">${co.entity_mode==='nirlaba'?'Nirlaba (ISAK 35)':co.entity_mode==='koperasi'?'Koperasi (PSAK 27)':co.entity_mode==='baznas'?'BAZNAS/LAZ (PSAK 109)':'Komersial'}</span></div>
- <div style="font-size:11px;color:var(--text3);margin-top:4px;">${co.period_start||''} s/d ${co.period_end||''}</div> <div style="display:flex;gap:8px;margin-top:16px;"> <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();selectCompany('${co.id}')">Buka</button> <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editCompany('${co.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCompany('${co.id}')">Hapus</button> </div> </div> </div> `).join('');
+ <div style="font-size:11px;color:var(--text3);margin-top:4px;">${co.period_start||''} s/d ${co.period_end||''}</div> <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;"> <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();selectCompany('${co.id}')">Buka</button> <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editCompany('${co.id}')">Edit</button> <button class="btn btn-sm" onclick="event.stopPropagation();openRolloverModal('${co.id}')" style="background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(16,185,129,.1));border:1px solid rgba(37,99,235,.25);color:var(--primary-light);font-weight:700;" title="Buat periode baru berdasarkan saldo akhir periode ini">🔄 Periode Baru</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCompany('${co.id}')">Hapus</button> </div> </div> </div> `).join('');
  if (typeof applyRoleRestrictions === 'function') applyRoleRestrictions();
 }
 
@@ -2331,6 +2395,267 @@ function saveCompany() {
  updateSidebarForStandard();
  toast('Perusahaan disimpan','success');
  if (!DB.current_company_id) selectCompany(obj.id);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PERIOD ROLLOVER — Mulai Periode Baru dari Saldo Akhir Periode Ini
+// Memindahkan: Saldo Akun (CoA), Hutang belum lunas, Piutang belum lunas,
+//              Stok Persediaan tersisa, Aset Tetap + akumulasi penyusutan
+// TIDAK memindahkan: Jurnal, Transaksi, Jurnal Penyesuaian, Jurnal Penutup
+// ═══════════════════════════════════════════════════════════════════
+
+function openRolloverModal(sourceCoId) {
+ const src = DB.companies.find(c => c.id == sourceCoId);
+ if (!src) return;
+
+ document.getElementById('rollover-source-id').value = sourceCoId;
+
+ // Isi info periode sumber
+ document.getElementById('rollover-source-info').innerHTML = `
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+   <span style="font-size:20px;">📂</span>
+   <div>
+    <div style="font-weight:700;">${escapeHtml(src.name)}</div>
+    <div style="font-size:12px;color:var(--text2);">${src.standard} · ${src.period_start||'?'} s/d ${src.period_end||'?'}</div>
+   </div>
+   <span style="margin-left:auto;padding:3px 10px;background:rgba(37,99,235,.1);color:var(--primary-light);
+    border-radius:20px;font-size:11px;font-weight:700;">SUMBER ROLLOVER</span>
+  </div>`;
+
+ // Saran nama & periode baru (otomatis +1 tahun)
+ const nameBase = src.name.replace(/[-—]\s*\d{4}$/, '').trim();
+ const nextYear = src.period_end ? String(parseInt(src.period_end.substring(0,4)) + 1) : '';
+ document.getElementById('rollover-name').value = nextYear ? `${nameBase} — ${nextYear}` : nameBase;
+
+ if (src.period_end) {
+  // Periode baru: mulai hari setelah period_end sumber, +1 tahun
+  const endDate = new Date(src.period_end);
+  const newStart = new Date(endDate);
+  newStart.setDate(newStart.getDate() + 1);
+  const newEnd = new Date(newStart);
+  newEnd.setFullYear(newEnd.getFullYear() + 1);
+  newEnd.setDate(newEnd.getDate() - 1);
+  document.getElementById('rollover-start').value = newStart.toISOString().split('T')[0];
+  document.getElementById('rollover-end').value   = newEnd.toISOString().split('T')[0];
+ }
+
+ // Hitung preview data yang akan dirollover
+ _buildRolloverPreview(sourceCoId);
+ openModal('modal-rollover');
+}
+
+function _buildRolloverPreview(sourceCoId) {
+ const accs   = DB.accounts.filter(a => a.company_id == sourceCoId);
+ const hutang = DB.hutang.filter(h => h.company_id == sourceCoId && h.status !== 'Lunas' && (h.sisa||0) > 0);
+ const piutang= DB.piutang.filter(p => p.company_id == sourceCoId && p.status !== 'Lunas' && (p.sisa||0) > 0);
+ const persd  = DB.persediaan.filter(p => p.company_id == sourceCoId && (p.jumlah||0) > 0);
+ const aset   = DB.aset_tetap.filter(a => a.company_id == sourceCoId);
+
+ const totalHutang  = hutang.reduce((s,h) => s+h.sisa, 0);
+ const totalPiutang = piutang.reduce((s,p) => s+p.sisa, 0);
+ const totalPersd   = persd.reduce((s,p) => s+(p.total_nilai||0), 0);
+
+ // Hitung saldo akhir akun (yang tidak nol)
+ const savedCoId = DB.current_company_id;
+ DB.current_company_id = sourceCoId;
+ const accsSaldo = accs.filter(a => {
+  const s = getAccountBalance(a.id, true);
+  return s !== 0;
+ });
+ DB.current_company_id = savedCoId;
+
+ const row = (icon, label, count, nilai, color) => `
+  <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;
+   background:var(--bg);border-radius:6px;border:1px solid var(--border);margin-bottom:6px;">
+   <span style="font-size:18px;">${icon}</span>
+   <div style="flex:1;">
+    <div style="font-size:13px;font-weight:700;">${label}</div>
+    ${nilai !== null ? `<div style="font-size:12px;color:var(--text2);">${count} item · Total ${fmtC(nilai)}</div>` : `<div style="font-size:12px;color:var(--text2);">${count} akun akan dicarryover</div>`}
+   </div>
+   <span style="font-size:11px;font-weight:800;color:${color};padding:2px 8px;background:${color.replace(')',',0.1)').replace('rgb','rgba')};border-radius:12px;">${count > 0 ? `${count} item` : 'kosong'}</span>
+  </div>`;
+
+ document.getElementById('rollover-preview').innerHTML =
+  row('📒', 'Saldo Akun (Chart of Accounts)', accsSaldo.length, null, 'var(--primary-light)') +
+  row('📤', 'Hutang Usaha Belum Lunas', hutang.length, totalHutang, hutang.length ? 'var(--danger)' : 'var(--text3)') +
+  row('📥', 'Piutang Usaha Belum Lunas', piutang.length, totalPiutang, piutang.length ? 'var(--accent2)' : 'var(--text3)') +
+  row('📦', 'Stok Persediaan Tersisa', persd.length, totalPersd, persd.length ? 'var(--warning)' : 'var(--text3)') +
+  row('🏭', 'Aset Tetap', aset.length, null, aset.length ? '#8b5cf6' : 'var(--text3)');
+}
+
+function executeRollover() {
+ const sourceCoId = document.getElementById('rollover-source-id').value;
+ const newName    = document.getElementById('rollover-name').value.trim();
+ const newStart   = document.getElementById('rollover-start').value;
+ const newEnd     = document.getElementById('rollover-end').value;
+
+ if (!newName)  { toast('Nama periode baru wajib diisi', 'error'); return; }
+ if (!newStart) { toast('Awal periode baru wajib diisi', 'error'); return; }
+ if (!newEnd)   { toast('Akhir periode baru wajib diisi', 'error'); return; }
+ if (newEnd <= newStart) { toast('Akhir periode harus setelah awal periode', 'error'); return; }
+
+ const src = DB.companies.find(c => c.id == sourceCoId);
+ if (!src) { toast('Sumber periode tidak ditemukan', 'error'); return; }
+
+ const doCoA      = document.getElementById('rollover-coa').checked;
+ const doHutang   = document.getElementById('rollover-hutang').checked;
+ const doPiutang  = document.getElementById('rollover-piutang').checked;
+ const doPersd    = document.getElementById('rollover-persediaan').checked;
+ const doAset     = document.getElementById('rollover-aset').checked;
+
+ // Buat perusahaan baru
+ const newCoId = genId();
+ const newCo = {
+  ...src,
+  id: newCoId,
+  name: newName,
+  period_start: newStart,
+  period_end: newEnd,
+  _journal_counter: 0,
+  _rolled_from: sourceCoId,
+  _rolled_at: new Date().toISOString()
+ };
+ DB.companies.push(newCo);
+
+ // Simpan current company sementara agar getAccountBalance bekerja di sumber
+ const savedCoId = DB.current_company_id;
+ DB.current_company_id = sourceCoId;
+
+ let stats = { coa: 0, hutang: 0, piutang: 0, persediaan: 0, aset: 0 };
+
+ // ── 1. ROLLOVER COA ──────────────────────────────────────────────
+ if (doCoA) {
+  const srcAccs = DB.accounts.filter(a => a.company_id == sourceCoId);
+  srcAccs.forEach(a => {
+   const saldoAkhir = getAccountBalance(a.id, true);
+   // Akun nominal (Pendapatan/Beban/Prive) → saldo awal = 0 (sudah ditutup)
+   const isNominal = ['Pendapatan','Beban','Prive',
+    'Pendapatan-LO','Pendapatan-LRA','Belanja','Pembiayaan'].includes(a.type);
+   DB.accounts.push({
+    ...a,
+    id: genId(),
+    company_id: newCoId,
+    saldo_awal: isNominal ? 0 : saldoAkhir,
+    _rolled_from_acc: a.id
+   });
+   stats.coa++;
+  });
+ }
+
+ // ── 2. ROLLOVER HUTANG BELUM LUNAS ───────────────────────────────
+ if (doHutang) {
+  DB.hutang
+   .filter(h => h.company_id == sourceCoId && h.status !== 'Lunas' && (h.sisa||0) > 0)
+   .forEach(h => {
+    DB.hutang.push({
+     ...h,
+     id: genId(),
+     company_id: newCoId,
+     jumlah: h.sisa,      // jumlah = sisa yang belum lunas
+     sisa: h.sisa,
+     status: 'Belum Lunas',
+     tanggal: newStart,   // tanggal rollover = awal periode baru
+     keterangan: `[Saldo Awal] ${h.keterangan||h.supplier||''}`.trim(),
+     _rolled_from: h.id
+    });
+    stats.hutang++;
+   });
+ }
+
+ // ── 3. ROLLOVER PIUTANG BELUM LUNAS ──────────────────────────────
+ if (doPiutang) {
+  DB.piutang
+   .filter(p => p.company_id == sourceCoId && p.status !== 'Lunas' && (p.sisa||0) > 0)
+   .forEach(p => {
+    DB.piutang.push({
+     ...p,
+     id: genId(),
+     company_id: newCoId,
+     jumlah: p.sisa,
+     sisa: p.sisa,
+     status: 'Belum Lunas',
+     tanggal: newStart,
+     keterangan: `[Saldo Awal] ${p.keterangan||p.customer||''}`.trim(),
+     _rolled_from: p.id
+    });
+    stats.piutang++;
+   });
+ }
+
+ // ── 4. ROLLOVER PERSEDIAAN (BATCH TERSISA) ───────────────────────
+ if (doPersd) {
+  DB.persediaan
+   .filter(p => p.company_id == sourceCoId && (p.jumlah||0) > 0)
+   .forEach(p => {
+    DB.persediaan.push({
+     ...p,
+     id: genId(),
+     company_id: newCoId,
+     tanggal: newStart,
+     keterangan: `[Saldo Awal] ${p.nama_barang||''}`.trim(),
+     _rolled_from: p.id
+    });
+    stats.persediaan++;
+   });
+ }
+
+ // ── 5. ROLLOVER ASET TETAP ───────────────────────────────────────
+ if (doAset) {
+  DB.aset_tetap
+   .filter(a => a.company_id == sourceCoId)
+   .forEach(a => {
+    // Hitung akumulasi penyusutan terbaru
+    const akumAcc = DB.accounts.find(acc =>
+     acc.company_id == sourceCoId && (
+      acc.name.toLowerCase().includes('akumulasi') &&
+      acc.name.toLowerCase().includes('penyusutan')
+     )
+    );
+    const akumBal = akumAcc ? getAccountBalance(akumAcc.id, true) : 0;
+    // Nilai buku = harga perolehan - akumulasi penyusutan
+    const nilaiBuku = (a.harga_perolehan||0) - (a.akumulasi_penyusutan||0);
+
+    DB.aset_tetap.push({
+     ...a,
+     id: genId(),
+     company_id: newCoId,
+     tanggal_perolehan: a.tanggal_perolehan || newStart,
+     // Nilai buku saat ini jadi nilai perolehan baru di periode baru
+     // agar penyusutan dihitung dari saldo yang benar
+     harga_perolehan: a.harga_perolehan,
+     akumulasi_penyusutan: a.akumulasi_penyusutan || 0,
+     _rolled_from: a.id,
+     _rolled_at: newStart
+    });
+    stats.aset++;
+   });
+ }
+
+ // Restore current company
+ DB.current_company_id = savedCoId;
+
+ autoSave();
+ closeModal('modal-rollover');
+ renderCompanies();
+
+ // Tanya apakah langsung pindah ke periode baru
+ const totalItems = stats.coa + stats.hutang + stats.piutang + stats.persediaan + stats.aset;
+ const ringkasan = [
+  stats.coa      ? `${stats.coa} akun (CoA)` : '',
+  stats.hutang   ? `${stats.hutang} hutang` : '',
+  stats.piutang  ? `${stats.piutang} piutang` : '',
+  stats.persediaan? `${stats.persediaan} batch persediaan` : '',
+  stats.aset     ? `${stats.aset} aset tetap` : '',
+ ].filter(Boolean).join(', ');
+
+ toast(`✅ Periode baru "${newName}" berhasil dibuat! Dipindahkan: ${ringkasan}.`, 'success', 6000);
+
+ // Konfirmasi pindah ke periode baru
+ setTimeout(() => {
+  if (confirm(`✅ Rollover selesai!\n\nDipindahkan:\n${ringkasan}\n\nBuka periode baru "${newName}" sekarang?`)) {
+   selectCompany(newCoId);
+  }
+ }, 400);
 }
 
 function editCompany(id) {
