@@ -1061,71 +1061,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <div class="form-group"><label>Periode Mulai</label><input class="form-control" type="date" id="co-start"></div>
 <div class="form-group"><label>Periode Akhir</label><input class="form-control" type="date" id="co-end"></div>
 </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-company')">Batal</button> <button class="btn btn-primary" onclick="saveCompany()">Simpan</button> </div> </div>
-</div>
-
-<!-- ═══ MODAL PERIOD ROLLOVER ═══ -->
-<div class="modal-overlay" id="modal-rollover">
- <div class="modal" style="max-width:620px;">
-  <div class="modal-header" style="background:linear-gradient(135deg,rgba(37,99,235,.08),rgba(16,185,129,.06));">
-   <div class="modal-title">🔄 Mulai Periode Baru</div>
-   <button class="modal-close" onclick="closeModal('modal-rollover')"></button>
-  </div>
-  <div class="modal-body">
-   <input type="hidden" id="rollover-source-id">
-   <div id="rollover-source-info" style="padding:12px 16px;background:var(--bg);border-radius:8px;border:1px solid var(--border);margin-bottom:16px;font-size:13px;"></div>
-   <div style="font-weight:700;font-size:13px;margin-bottom:10px;">⚙ Pengaturan Periode Baru</div>
-   <div class="form-grid" style="margin-bottom:16px;">
-    <div class="form-group" style="grid-column:1/-1;">
-     <label>Nama Periode Baru *</label>
-     <input class="form-control" id="rollover-name" placeholder="Misal: PT. ABC — 2025">
-    </div>
-    <div class="form-group">
-     <label>Awal Periode Baru *</label>
-     <input class="form-control" type="date" id="rollover-start">
-    </div>
-    <div class="form-group">
-     <label>Akhir Periode Baru *</label>
-     <input class="form-control" type="date" id="rollover-end">
-    </div>
-   </div>
-   <div style="font-weight:700;font-size:13px;margin-bottom:10px;">📦 Preview Data yang Akan Dipindahkan</div>
-   <div id="rollover-preview" style="margin-bottom:16px;"></div>
-   <div style="padding:12px 14px;background:var(--bg);border-radius:8px;border:1px solid var(--border);">
-    <div style="font-size:12px;font-weight:700;margin-bottom:10px;color:var(--text2);">Opsi Rollover</div>
-    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer;">
-     <input type="checkbox" id="rollover-coa" checked style="width:16px;height:16px;">
-     <span>Saldo akhir akun → Saldo awal periode baru (Chart of Accounts)</span>
-    </label>
-    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer;">
-     <input type="checkbox" id="rollover-hutang" checked style="width:16px;height:16px;">
-     <span>Hutang usaha yang belum lunas</span>
-    </label>
-    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer;">
-     <input type="checkbox" id="rollover-piutang" checked style="width:16px;height:16px;">
-     <span>Piutang usaha yang belum lunas</span>
-    </label>
-    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:13px;cursor:pointer;">
-     <input type="checkbox" id="rollover-persediaan" checked style="width:16px;height:16px;">
-     <span>Stok persediaan yang masih tersisa</span>
-    </label>
-    <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
-     <input type="checkbox" id="rollover-aset" checked style="width:16px;height:16px;">
-     <span>Aset tetap (dengan saldo penyusutan terupdate)</span>
-    </label>
-   </div>
-   <div style="margin-top:12px;padding:10px 14px;background:rgba(245,158,11,.08);border-radius:8px;border-left:3px solid var(--warning);font-size:12px;color:#92400e;">
-    ⚠ <strong>Penting:</strong> Proses ini membuat perusahaan/periode baru dan <strong>tidak mengubah</strong> data periode lama. Jurnal dan transaksi tidak ikut dipindahkan — hanya saldo akhir dan outstanding sub-ledger.
-   </div>
-  </div>
-  <div class="modal-footer">
-   <button class="btn btn-secondary" onclick="closeModal('modal-rollover')">Batal</button>
-   <button class="btn btn-primary" onclick="executeRollover()" style="background:linear-gradient(135deg,#2563eb,#10b981);">🔄 Mulai Rollover</button>
-  </div>
- </div>
-</div>
-<!-- ═══ END MODAL ROLLOVER ═══ -->
-
- <!-- COA Modal -->
+</div> <!-- COA Modal -->
 <div class="modal-overlay" id="modal-coa">
  <div class="modal" style="max-width:620px;">
  <div class="modal-header">
@@ -2334,7 +2270,7 @@ function renderCompanies() {
  <div class="card" style="cursor:pointer;transition:.2s;${DB.current_company_id==co.id?'border-color:var(--primary-light);box-shadow:0 0 0 2px rgba(37,99,235,.15);':''}" onclick="selectCompany('${co.id}')"> <div style="padding:20px;"> <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;"> <div style="font-size:32px;">${co.entity_mode==='nirlaba'?'':co.entity_mode==='koperasi'?'':co.entity_mode==='baznas'?'':''}</div> ${DB.current_company_id==co.id?'<span style="background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">AKTIF</span>':''}
  </div> <div style="font-weight:800;font-size:16px;margin-bottom:4px;">${co.name}</div> <div style="font-size:12px;color:var(--text2);">${co.standard} · ${co.type||'—'}</div>
  <div style="margin-top:4px;"><span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;${co.entity_mode==='nirlaba'?'background:rgba(16,185,129,.12);color:#065f46;':co.entity_mode==='koperasi'?'background:rgba(245,158,11,.12);color:#92400e;':co.entity_mode==='baznas'?'background:rgba(22,163,74,.12);color:#15803d;':'background:rgba(37,99,235,.1);color:#1d4ed8;'}">${co.entity_mode==='nirlaba'?'Nirlaba (ISAK 35)':co.entity_mode==='koperasi'?'Koperasi (PSAK 27)':co.entity_mode==='baznas'?'BAZNAS/LAZ (PSAK 109)':'Komersial'}</span></div>
- <div style="font-size:11px;color:var(--text3);margin-top:4px;">${co.period_start||''} s/d ${co.period_end||''}</div> <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;"> <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();selectCompany('${co.id}')">Buka</button> <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editCompany('${co.id}')">Edit</button> <button class="btn btn-sm" onclick="event.stopPropagation();openRolloverModal('${co.id}')" style="background:linear-gradient(135deg,rgba(37,99,235,.12),rgba(16,185,129,.1));border:1px solid rgba(37,99,235,.25);color:var(--primary-light);font-weight:700;" title="Buat periode baru berdasarkan saldo akhir periode ini">🔄 Periode Baru</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCompany('${co.id}')">Hapus</button> </div> </div> </div> `).join('');
+ <div style="font-size:11px;color:var(--text3);margin-top:4px;">${co.period_start||''} s/d ${co.period_end||''}</div> <div style="display:flex;gap:8px;margin-top:16px;"> <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();selectCompany('${co.id}')">Buka</button> <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();editCompany('${co.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCompany('${co.id}')">Hapus</button> </div> </div> </div> `).join('');
  if (typeof applyRoleRestrictions === 'function') applyRoleRestrictions();
 }
 
@@ -2395,267 +2331,6 @@ function saveCompany() {
  updateSidebarForStandard();
  toast('Perusahaan disimpan','success');
  if (!DB.current_company_id) selectCompany(obj.id);
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// PERIOD ROLLOVER — Mulai Periode Baru dari Saldo Akhir Periode Ini
-// Memindahkan: Saldo Akun (CoA), Hutang belum lunas, Piutang belum lunas,
-//              Stok Persediaan tersisa, Aset Tetap + akumulasi penyusutan
-// TIDAK memindahkan: Jurnal, Transaksi, Jurnal Penyesuaian, Jurnal Penutup
-// ═══════════════════════════════════════════════════════════════════
-
-function openRolloverModal(sourceCoId) {
- const src = DB.companies.find(c => c.id == sourceCoId);
- if (!src) return;
-
- document.getElementById('rollover-source-id').value = sourceCoId;
-
- // Isi info periode sumber
- document.getElementById('rollover-source-info').innerHTML = `
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-   <span style="font-size:20px;">📂</span>
-   <div>
-    <div style="font-weight:700;">${escapeHtml(src.name)}</div>
-    <div style="font-size:12px;color:var(--text2);">${src.standard} · ${src.period_start||'?'} s/d ${src.period_end||'?'}</div>
-   </div>
-   <span style="margin-left:auto;padding:3px 10px;background:rgba(37,99,235,.1);color:var(--primary-light);
-    border-radius:20px;font-size:11px;font-weight:700;">SUMBER ROLLOVER</span>
-  </div>`;
-
- // Saran nama & periode baru (otomatis +1 tahun)
- const nameBase = src.name.replace(/[-—]\s*\d{4}$/, '').trim();
- const nextYear = src.period_end ? String(parseInt(src.period_end.substring(0,4)) + 1) : '';
- document.getElementById('rollover-name').value = nextYear ? `${nameBase} — ${nextYear}` : nameBase;
-
- if (src.period_end) {
-  // Periode baru: mulai hari setelah period_end sumber, +1 tahun
-  const endDate = new Date(src.period_end);
-  const newStart = new Date(endDate);
-  newStart.setDate(newStart.getDate() + 1);
-  const newEnd = new Date(newStart);
-  newEnd.setFullYear(newEnd.getFullYear() + 1);
-  newEnd.setDate(newEnd.getDate() - 1);
-  document.getElementById('rollover-start').value = newStart.toISOString().split('T')[0];
-  document.getElementById('rollover-end').value   = newEnd.toISOString().split('T')[0];
- }
-
- // Hitung preview data yang akan dirollover
- _buildRolloverPreview(sourceCoId);
- openModal('modal-rollover');
-}
-
-function _buildRolloverPreview(sourceCoId) {
- const accs   = DB.accounts.filter(a => a.company_id == sourceCoId);
- const hutang = DB.hutang.filter(h => h.company_id == sourceCoId && h.status !== 'Lunas' && (h.sisa||0) > 0);
- const piutang= DB.piutang.filter(p => p.company_id == sourceCoId && p.status !== 'Lunas' && (p.sisa||0) > 0);
- const persd  = DB.persediaan.filter(p => p.company_id == sourceCoId && (p.jumlah||0) > 0);
- const aset   = DB.aset_tetap.filter(a => a.company_id == sourceCoId);
-
- const totalHutang  = hutang.reduce((s,h) => s+h.sisa, 0);
- const totalPiutang = piutang.reduce((s,p) => s+p.sisa, 0);
- const totalPersd   = persd.reduce((s,p) => s+(p.total_nilai||0), 0);
-
- // Hitung saldo akhir akun (yang tidak nol)
- const savedCoId = DB.current_company_id;
- DB.current_company_id = sourceCoId;
- const accsSaldo = accs.filter(a => {
-  const s = getAccountBalance(a.id, true);
-  return s !== 0;
- });
- DB.current_company_id = savedCoId;
-
- const row = (icon, label, count, nilai, color) => `
-  <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;
-   background:var(--bg);border-radius:6px;border:1px solid var(--border);margin-bottom:6px;">
-   <span style="font-size:18px;">${icon}</span>
-   <div style="flex:1;">
-    <div style="font-size:13px;font-weight:700;">${label}</div>
-    ${nilai !== null ? `<div style="font-size:12px;color:var(--text2);">${count} item · Total ${fmtC(nilai)}</div>` : `<div style="font-size:12px;color:var(--text2);">${count} akun akan dicarryover</div>`}
-   </div>
-   <span style="font-size:11px;font-weight:800;color:${color};padding:2px 8px;background:${color.replace(')',',0.1)').replace('rgb','rgba')};border-radius:12px;">${count > 0 ? `${count} item` : 'kosong'}</span>
-  </div>`;
-
- document.getElementById('rollover-preview').innerHTML =
-  row('📒', 'Saldo Akun (Chart of Accounts)', accsSaldo.length, null, 'var(--primary-light)') +
-  row('📤', 'Hutang Usaha Belum Lunas', hutang.length, totalHutang, hutang.length ? 'var(--danger)' : 'var(--text3)') +
-  row('📥', 'Piutang Usaha Belum Lunas', piutang.length, totalPiutang, piutang.length ? 'var(--accent2)' : 'var(--text3)') +
-  row('📦', 'Stok Persediaan Tersisa', persd.length, totalPersd, persd.length ? 'var(--warning)' : 'var(--text3)') +
-  row('🏭', 'Aset Tetap', aset.length, null, aset.length ? '#8b5cf6' : 'var(--text3)');
-}
-
-function executeRollover() {
- const sourceCoId = document.getElementById('rollover-source-id').value;
- const newName    = document.getElementById('rollover-name').value.trim();
- const newStart   = document.getElementById('rollover-start').value;
- const newEnd     = document.getElementById('rollover-end').value;
-
- if (!newName)  { toast('Nama periode baru wajib diisi', 'error'); return; }
- if (!newStart) { toast('Awal periode baru wajib diisi', 'error'); return; }
- if (!newEnd)   { toast('Akhir periode baru wajib diisi', 'error'); return; }
- if (newEnd <= newStart) { toast('Akhir periode harus setelah awal periode', 'error'); return; }
-
- const src = DB.companies.find(c => c.id == sourceCoId);
- if (!src) { toast('Sumber periode tidak ditemukan', 'error'); return; }
-
- const doCoA      = document.getElementById('rollover-coa').checked;
- const doHutang   = document.getElementById('rollover-hutang').checked;
- const doPiutang  = document.getElementById('rollover-piutang').checked;
- const doPersd    = document.getElementById('rollover-persediaan').checked;
- const doAset     = document.getElementById('rollover-aset').checked;
-
- // Buat perusahaan baru
- const newCoId = genId();
- const newCo = {
-  ...src,
-  id: newCoId,
-  name: newName,
-  period_start: newStart,
-  period_end: newEnd,
-  _journal_counter: 0,
-  _rolled_from: sourceCoId,
-  _rolled_at: new Date().toISOString()
- };
- DB.companies.push(newCo);
-
- // Simpan current company sementara agar getAccountBalance bekerja di sumber
- const savedCoId = DB.current_company_id;
- DB.current_company_id = sourceCoId;
-
- let stats = { coa: 0, hutang: 0, piutang: 0, persediaan: 0, aset: 0 };
-
- // ── 1. ROLLOVER COA ──────────────────────────────────────────────
- if (doCoA) {
-  const srcAccs = DB.accounts.filter(a => a.company_id == sourceCoId);
-  srcAccs.forEach(a => {
-   const saldoAkhir = getAccountBalance(a.id, true);
-   // Akun nominal (Pendapatan/Beban/Prive) → saldo awal = 0 (sudah ditutup)
-   const isNominal = ['Pendapatan','Beban','Prive',
-    'Pendapatan-LO','Pendapatan-LRA','Belanja','Pembiayaan'].includes(a.type);
-   DB.accounts.push({
-    ...a,
-    id: genId(),
-    company_id: newCoId,
-    saldo_awal: isNominal ? 0 : saldoAkhir,
-    _rolled_from_acc: a.id
-   });
-   stats.coa++;
-  });
- }
-
- // ── 2. ROLLOVER HUTANG BELUM LUNAS ───────────────────────────────
- if (doHutang) {
-  DB.hutang
-   .filter(h => h.company_id == sourceCoId && h.status !== 'Lunas' && (h.sisa||0) > 0)
-   .forEach(h => {
-    DB.hutang.push({
-     ...h,
-     id: genId(),
-     company_id: newCoId,
-     jumlah: h.sisa,      // jumlah = sisa yang belum lunas
-     sisa: h.sisa,
-     status: 'Belum Lunas',
-     tanggal: newStart,   // tanggal rollover = awal periode baru
-     keterangan: `[Saldo Awal] ${h.keterangan||h.supplier||''}`.trim(),
-     _rolled_from: h.id
-    });
-    stats.hutang++;
-   });
- }
-
- // ── 3. ROLLOVER PIUTANG BELUM LUNAS ──────────────────────────────
- if (doPiutang) {
-  DB.piutang
-   .filter(p => p.company_id == sourceCoId && p.status !== 'Lunas' && (p.sisa||0) > 0)
-   .forEach(p => {
-    DB.piutang.push({
-     ...p,
-     id: genId(),
-     company_id: newCoId,
-     jumlah: p.sisa,
-     sisa: p.sisa,
-     status: 'Belum Lunas',
-     tanggal: newStart,
-     keterangan: `[Saldo Awal] ${p.keterangan||p.customer||''}`.trim(),
-     _rolled_from: p.id
-    });
-    stats.piutang++;
-   });
- }
-
- // ── 4. ROLLOVER PERSEDIAAN (BATCH TERSISA) ───────────────────────
- if (doPersd) {
-  DB.persediaan
-   .filter(p => p.company_id == sourceCoId && (p.jumlah||0) > 0)
-   .forEach(p => {
-    DB.persediaan.push({
-     ...p,
-     id: genId(),
-     company_id: newCoId,
-     tanggal: newStart,
-     keterangan: `[Saldo Awal] ${p.nama_barang||''}`.trim(),
-     _rolled_from: p.id
-    });
-    stats.persediaan++;
-   });
- }
-
- // ── 5. ROLLOVER ASET TETAP ───────────────────────────────────────
- if (doAset) {
-  DB.aset_tetap
-   .filter(a => a.company_id == sourceCoId)
-   .forEach(a => {
-    // Hitung akumulasi penyusutan terbaru
-    const akumAcc = DB.accounts.find(acc =>
-     acc.company_id == sourceCoId && (
-      acc.name.toLowerCase().includes('akumulasi') &&
-      acc.name.toLowerCase().includes('penyusutan')
-     )
-    );
-    const akumBal = akumAcc ? getAccountBalance(akumAcc.id, true) : 0;
-    // Nilai buku = harga perolehan - akumulasi penyusutan
-    const nilaiBuku = (a.harga_perolehan||0) - (a.akumulasi_penyusutan||0);
-
-    DB.aset_tetap.push({
-     ...a,
-     id: genId(),
-     company_id: newCoId,
-     tanggal_perolehan: a.tanggal_perolehan || newStart,
-     // Nilai buku saat ini jadi nilai perolehan baru di periode baru
-     // agar penyusutan dihitung dari saldo yang benar
-     harga_perolehan: a.harga_perolehan,
-     akumulasi_penyusutan: a.akumulasi_penyusutan || 0,
-     _rolled_from: a.id,
-     _rolled_at: newStart
-    });
-    stats.aset++;
-   });
- }
-
- // Restore current company
- DB.current_company_id = savedCoId;
-
- autoSave();
- closeModal('modal-rollover');
- renderCompanies();
-
- // Tanya apakah langsung pindah ke periode baru
- const totalItems = stats.coa + stats.hutang + stats.piutang + stats.persediaan + stats.aset;
- const ringkasan = [
-  stats.coa      ? `${stats.coa} akun (CoA)` : '',
-  stats.hutang   ? `${stats.hutang} hutang` : '',
-  stats.piutang  ? `${stats.piutang} piutang` : '',
-  stats.persediaan? `${stats.persediaan} batch persediaan` : '',
-  stats.aset     ? `${stats.aset} aset tetap` : '',
- ].filter(Boolean).join(', ');
-
- toast(`✅ Periode baru "${newName}" berhasil dibuat! Dipindahkan: ${ringkasan}.`, 'success', 6000);
-
- // Konfirmasi pindah ke periode baru
- setTimeout(() => {
-  if (confirm(`✅ Rollover selesai!\n\nDipindahkan:\n${ringkasan}\n\nBuka periode baru "${newName}" sekarang?`)) {
-   selectCompany(newCoId);
-  }
- }, 400);
 }
 
 function editCompany(id) {
@@ -4204,6 +3879,90 @@ function konfirmasiBukaPeriodeBaru() {
  });
  }
 
+ // ── ROLLOVER SUB-LEDGER ──────────────────────────────────────────
+ let copiHutang = 0, copiPiutang = 0, copiPersd = 0, copiAset = 0;
+
+ // Hutang belum lunas → pindah sebagai saldo awal periode baru
+ coFilter(DB.hutang)
+  .filter(h => h.status !== 'Lunas' && (h.sisa||0) > 0)
+  .forEach(h => {
+   DB.hutang.push({
+    ...h,
+    id: genId(),
+    company_id: newCoId,
+    jumlah: h.sisa,
+    sisa: h.sisa,
+    status: 'Belum Lunas',
+    tanggal: start,
+    keterangan: ('[Saldo Awal] ' + (h.keterangan||h.supplier||'')).trim(),
+    _rolled_from: h.id
+   });
+   copiHutang++;
+  });
+
+ // Piutang belum lunas → pindah sebagai saldo awal periode baru
+ coFilter(DB.piutang)
+  .filter(p => p.status !== 'Lunas' && (p.sisa||0) > 0)
+  .forEach(p => {
+   DB.piutang.push({
+    ...p,
+    id: genId(),
+    company_id: newCoId,
+    jumlah: p.sisa,
+    sisa: p.sisa,
+    status: 'Belum Lunas',
+    tanggal: start,
+    keterangan: ('[Saldo Awal] ' + (p.keterangan||p.customer||'')).trim(),
+    _rolled_from: p.id
+   });
+   copiPiutang++;
+  });
+
+ // Stok persediaan tersisa → pindah ke periode baru
+ coFilter(DB.persediaan)
+  .filter(p => (p.jumlah||0) > 0)
+  .forEach(p => {
+   DB.persediaan.push({
+    ...p,
+    id: genId(),
+    company_id: newCoId,
+    tanggal: start,
+    keterangan: ('[Saldo Awal] ' + (p.nama_barang||'')).trim(),
+    _rolled_from: p.id
+   });
+   copiPersd++;
+  });
+
+ // Aset tetap → pindah ke periode baru dengan akumulasi penyusutan terupdate
+ coFilter(DB.aset_tetap)
+  .forEach(a => {
+   DB.aset_tetap.push({
+    ...a,
+    id: genId(),
+    company_id: newCoId,
+    _rolled_from: a.id,
+    _rolled_at: start
+   });
+   copiAset++;
+  });
+
+ // Perlengkapan dengan nilai > 0 → pindah sebagai saldo awal
+ let copiPerl = 0;
+ coFilter(DB.perlengkapan)
+  .filter(p => (p.nilai||0) > 0)
+  .forEach(p => {
+   DB.perlengkapan.push({
+    ...p,
+    id: genId(),
+    company_id: newCoId,
+    tanggal: start,
+    keterangan: ('[Saldo Awal] ' + (p.keterangan||p.nama_item||'')).trim(),
+    _rolled_from: p.id
+   });
+   copiPerl++;
+  });
+ // ── END ROLLOVER SUB-LEDGER ──────────────────────────────────────
+
  // Kunci otomatis semua bulan periode lama 
  // Kumpulkan semua bulan yang ada transaksi/penyesuaian di entitas lama
  const bulanLama = new Set();
@@ -4228,12 +3987,22 @@ function konfirmasiBukaPeriodeBaru() {
  const lockInfo = jumlahDikunci > 0
  ? `• ${jumlahDikunci} bulan periode lama dikunci otomatis \n`
  : '';
+ const subLedgerInfo = [
+  copiHutang  ? `• ${copiHutang} hutang belum lunas` : '',
+  copiPiutang ? `• ${copiPiutang} piutang belum lunas` : '',
+  copiPersd   ? `• ${copiPersd} batch stok persediaan` : '',
+  copiPerl    ? `• ${copiPerl} item perlengkapan` : '',
+  copiAset    ? `• ${copiAset} aset tetap` : '',
+ ].filter(Boolean).join('\n');
  const pindah = confirm(
  ` Periode baru "${nama}" berhasil dibuat!\n\n` +
- `• ${copiAkun} akun disalin dengan saldo awal dari saldo akhir periode ini\n` +
- `• Periode baru: ${start} s/d ${end}\n` +
+ `CoA:\n• ${copiAkun} akun disalin (saldo awal = saldo akhir periode ini)\n\n` +
+ (subLedgerInfo
+  ? `Sub-Ledger:\n${subLedgerInfo}\n\n`
+  : `Sub-Ledger: tidak ada data outstanding yang perlu dipindahkan\n\n`) +
+ `Periode: ${start} s/d ${end}\n` +
  lockInfo +
- `\nApakah Anda ingin langsung beralih ke periode baru sekarang?`
+ `\nBeralih ke periode baru sekarang?`
  );
  if (pindah) {
  selectCompany(newCoId);
@@ -7275,6 +7044,8 @@ function renderPerlengkapan() {
  const kredit = ps.filter(p=>p.metode==='kredit').length;
  document.getElementById('perlengkapan-stats').innerHTML = `
  <div class="stat-card blue"><div class="stat-label">Total Nilai Perlengkapan</div><div class="stat-value">${fmtC(totalNilai)}</div><div class="stat-icon"></div></div> <div class="stat-card green"><div class="stat-label">Total Item</div><div class="stat-value">${ps.length}</div><div class="stat-icon"></div></div> <div class="stat-card purple"><div class="stat-label">Beli Tunai</div><div class="stat-value">${tunai}</div><div class="stat-icon"></div></div> <div class="stat-card orange"><div class="stat-label">Beli Kredit</div><div class="stat-value">${kredit}</div><div class="stat-icon"></div></div> `;
+ // ── Rekonsiliasi sub-ledger vs GL ──
+ _injectRekonsiliasiToPage('perlengkapan');
  const tbody = document.getElementById('perlengkapan-tbody');
  if (!ps.length) { tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada perlengkapan.</p></div></td></tr>`; return; }
  tbody.innerHTML = ps.map(p=>`
@@ -11059,13 +10830,13 @@ document.addEventListener('click', e => {
 // ═══════════════════════════════════════════════════════════════════
 
 function cekRekonsiliasi(modul) {
- // modul: 'hutang' | 'piutang' | 'persediaan'
  const accs = coFilter(DB.accounts);
  const hasil = { modul, ok: true, items: [] };
 
+ let glAccs = [], slRecords = [], slTotal = 0;
+
  if (modul === 'hutang') {
-  // GL: saldo akun Kewajiban yang mengandung keyword hutang usaha/dagang
-  const glAccs = accs.filter(a =>
+  glAccs = accs.filter(a =>
    a.type === 'Kewajiban' && (
     a.name.toLowerCase().includes('hutang usaha') ||
     a.name.toLowerCase().includes('hutang dagang') ||
@@ -11074,33 +10845,11 @@ function cekRekonsiliasi(modul) {
     a.account_role === 'hutang_usaha'
    )
   );
-  const glTotal = glAccs.reduce((s, a) => s + getAccountBalance(a.id, true), 0);
-
-  // Sub-ledger: total sisa hutang yang belum lunas
-  const slTotal = coFilter(DB.hutang).reduce((s, h) => s + (h.sisa || 0), 0);
-  const selisih = Math.abs(glTotal - slTotal);
-
-  hasil.glTotal = glTotal;
-  hasil.slTotal = slTotal;
-  hasil.selisih = selisih;
-  hasil.ok = selisih < 1;
-  hasil.glAccs = glAccs;
-
-  if (!hasil.ok) {
-   hasil.items.push({
-    label: 'Hutang Usaha (GL)',
-    nilai: glTotal,
-    warna: 'var(--danger)'
-   });
-   hasil.items.push({
-    label: 'Total Sisa Hutang (Sub-Ledger)',
-    nilai: slTotal,
-    warna: 'var(--warning)'
-   });
-  }
+  slRecords = coFilter(DB.hutang);
+  slTotal   = slRecords.filter(h => h.status !== 'Lunas').reduce((s,h) => s+(h.sisa||0), 0);
 
  } else if (modul === 'piutang') {
-  const glAccs = accs.filter(a =>
+  glAccs = accs.filter(a =>
    a.type === 'Aset' && (
     a.name.toLowerCase().includes('piutang usaha') ||
     a.name.toLowerCase().includes('piutang dagang') ||
@@ -11108,23 +10857,11 @@ function cekRekonsiliasi(modul) {
     a.account_role === 'piutang_usaha'
    )
   );
-  const glTotal = glAccs.reduce((s, a) => s + getAccountBalance(a.id, true), 0);
-  const slTotal = coFilter(DB.piutang).reduce((s, p) => s + (p.sisa || 0), 0);
-  const selisih = Math.abs(glTotal - slTotal);
-
-  hasil.glTotal = glTotal;
-  hasil.slTotal = slTotal;
-  hasil.selisih = selisih;
-  hasil.ok = selisih < 1;
-  hasil.glAccs = glAccs;
-
-  if (!hasil.ok) {
-   hasil.items.push({ label: 'Piutang Usaha (GL)', nilai: glTotal, warna: 'var(--danger)' });
-   hasil.items.push({ label: 'Total Sisa Piutang (Sub-Ledger)', nilai: slTotal, warna: 'var(--warning)' });
-  }
+  slRecords = coFilter(DB.piutang);
+  slTotal   = slRecords.filter(p => p.status !== 'Lunas').reduce((s,p) => s+(p.sisa||0), 0);
 
  } else if (modul === 'persediaan') {
-  const glAccs = accs.filter(a =>
+  glAccs = accs.filter(a =>
    a.type === 'Aset' && (
     a.name.toLowerCase().includes('persediaan') ||
     a.name.toLowerCase().includes('inventory') ||
@@ -11132,21 +10869,63 @@ function cekRekonsiliasi(modul) {
     a.account_role === 'persediaan'
    )
   );
-  const glTotal = glAccs.reduce((s, a) => s + getAccountBalance(a.id, true), 0);
-  const slTotal = coFilter(DB.persediaan).reduce((s, p) => s + (p.total_nilai || 0), 0);
-  const selisih = Math.abs(glTotal - slTotal);
+  slRecords = coFilter(DB.persediaan);
+  slTotal   = slRecords.filter(p => (p.jumlah||0) > 0).reduce((s,p) => s+(p.total_nilai||0), 0);
 
-  hasil.glTotal = glTotal;
-  hasil.slTotal = slTotal;
-  hasil.selisih = selisih;
-  hasil.ok = selisih < 1;
-  hasil.glAccs = glAccs;
-
-  if (!hasil.ok) {
-   hasil.items.push({ label: 'Persediaan Barang (GL)', nilai: glTotal, warna: 'var(--danger)' });
-   hasil.items.push({ label: 'Total Nilai Sub-Ledger', nilai: slTotal, warna: 'var(--warning)' });
-  }
+ } else if (modul === 'perlengkapan') {
+  glAccs = accs.filter(a =>
+   a.type === 'Aset' && (
+    a.name.toLowerCase().includes('perlengkapan') ||
+    a.name.toLowerCase().includes('supplies') ||
+    a.name.toLowerCase().includes('bahan habis') ||
+    a.account_role === 'perlengkapan'
+   )
+  );
+  slRecords = coFilter(DB.perlengkapan);
+  slTotal   = slRecords.reduce((s,p) => s+(p.nilai||0), 0);
  }
+
+ hasil.glAccs = glAccs;
+ if (!glAccs.length) return hasil;
+
+ // Saldo GL total (saldo_awal + mutasi)
+ const glTotal     = glAccs.reduce((s,a) => s + getAccountBalance(a.id, true), 0);
+ // Komponen saldo awal dari CoA
+ const glSaldoAwal = glAccs.reduce((s,a) => s + Math.abs(a.saldo_awal||0), 0);
+ const glMutasi    = glTotal - glSaldoAwal;
+
+ // Pisahkan record sub-ledger: saldo awal vs mutasi periode
+ const slSaldoAwalRec = slRecords.filter(r =>
+  r._is_saldo_awal ||
+  (r.keterangan||'').toLowerCase().includes('[saldo awal]') ||
+  (r.keterangan||'').toLowerCase().includes('saldo awal')
+ );
+ const slMutasiRec = slRecords.filter(r => !slSaldoAwalRec.includes(r));
+
+ const slSaldoAwal = (modul === 'persediaan' || modul === 'perlengkapan')
+  ? slSaldoAwalRec.filter(p=>(p.nilai||p.total_nilai||0)>0).reduce((s,p)=>s+(p.total_nilai||p.nilai||0),0)
+  : slSaldoAwalRec.filter(r=>r.status!=='Lunas').reduce((s,r)=>s+(r.sisa||0),0);
+
+ const slMutasi = (modul === 'persediaan' || modul === 'perlengkapan')
+  ? slMutasiRec.filter(p=>(p.jumlah||p.nilai||0)>0).reduce((s,p)=>s+(p.total_nilai||p.nilai||0),0)
+  : slMutasiRec.filter(r=>r.status!=='Lunas').reduce((s,r)=>s+(r.sisa||0),0);
+
+ const selisihSaldoAwal = Math.abs(glSaldoAwal - slSaldoAwal);
+ const selisihMutasi    = Math.abs(glMutasi - slMutasi);
+ const selisihTotal     = Math.abs(glTotal - slTotal);
+
+ hasil.glTotal          = glTotal;
+ hasil.glSaldoAwal      = glSaldoAwal;
+ hasil.glMutasi         = glMutasi;
+ hasil.slTotal          = slTotal;
+ hasil.slSaldoAwal      = slSaldoAwal;
+ hasil.slMutasi         = slMutasi;
+ hasil.selisihTotal     = selisihTotal;
+ hasil.selisihSaldoAwal = selisihSaldoAwal;
+ hasil.selisihMutasi    = selisihMutasi;
+ hasil.isMigrasiSaja    = selisihMutasi < 1 && selisihSaldoAwal >= 1;
+ hasil.isMutasiError    = selisihMutasi >= 1;
+ hasil.ok               = selisihTotal < 1;
 
  return hasil;
 }
@@ -11157,80 +10936,134 @@ function renderRekonsiliasiPesan(containerId, modul) {
 
  const r = cekRekonsiliasi(modul);
 
- // Tidak ada akun GL yang cocok → tidak bisa rekon, tampilkan info netral
+ // Tidak ada akun GL → info netral
  if (!r.glAccs || r.glAccs.length === 0) {
   el.innerHTML = `
    <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;
     border-left:3px solid var(--warning);font-size:12px;color:#92400e;display:flex;align-items:center;gap:10px;">
     <span>⚠</span>
-    <span><strong>Rekonsiliasi tidak dapat dilakukan</strong> — belum ada akun 
-    <em>${modul === 'hutang' ? 'Hutang Usaha' : modul === 'piutang' ? 'Piutang Usaha' : 'Persediaan'}</em>
-    di Chart of Accounts. Tambahkan akun tersebut agar rekonsiliasi GL vs sub-ledger bisa dijalankan.</span>
+    <span><strong>Rekonsiliasi tidak dapat dilakukan</strong> — belum ada akun
+    <em>${modul==='hutang'?'Hutang Usaha':modul==='piutang'?'Piutang Usaha':modul==='persediaan'?'Persediaan':'Perlengkapan'}</em>
+    di Chart of Accounts.</span>
    </div>`;
   return;
  }
 
+ // GL dan SL sama-sama nol → tidak tampilkan apapun
+ if (r.glTotal === 0 && r.slTotal === 0) { el.innerHTML = ''; return; }
+
+ // Rekonsiliasi OK
  if (r.ok) {
   el.innerHTML = `
    <div style="margin-bottom:10px;padding:9px 14px;background:rgba(16,185,129,.08);border-radius:8px;
     border-left:3px solid var(--accent2);font-size:12px;color:#065f46;display:flex;align-items:center;gap:10px;">
     <span>✅</span>
-    <span><strong>Rekonsiliasi OK</strong> — Saldo GL 
-    <strong>${r.glAccs.map(a=>a.name).join(', ')}</strong> 
+    <span><strong>Rekonsiliasi OK</strong> — Saldo GL
+    <strong>${r.glAccs.map(a=>a.name).join(', ')}</strong>
     (${fmtC(r.glTotal)}) sesuai dengan total sub-ledger (${fmtC(r.slTotal)}).</span>
    </div>`;
- } else {
-  // Gunakan ID unik per modul agar querySelector tidak salah target
-  const detailId = `rekon-detail-${modul}`;
-  const btnId    = `rekon-btn-${modul}`;
-  const penyebab = _analisaPenyebabSelisih(modul, r);
+  return;
+ }
+
+ const detailId  = `rekon-detail-${modul}`;
+ const btnId     = `rekon-btn-${modul}`;
+ const toggleFn  = `(function(){var d=document.getElementById('${detailId}');var b=document.getElementById('${btnId}');if(!d||!b)return;var open=d.style.display!=='none'&&d.style.display!=='';d.style.display=open?'none':'block';b.textContent=open?'▼ Lihat Detail':'▲ Tutup';})()`;
+
+ // TIPE A — Selisih hanya dari saldo awal (migrasi) → KUNING
+ if (r.isMigrasiSaja) {
+  const modulLabel = modul==='hutang'?'Hutang Usaha':modul==='piutang'?'Piutang Usaha':modul==='persediaan'?'Persediaan':'Perlengkapan';
+  const addFn = modul==='hutang'?'openHutangModal()':modul==='piutang'?'openPiutangModal()':modul==='persediaan'?'openPersediaanModal()':'openPerlengkapanModal()';
   el.innerHTML = `
-   <div class="rekon-box" style="margin-bottom:10px;padding:12px 16px;background:rgba(239,68,68,.07);border-radius:10px;
-    border-left:4px solid var(--danger);font-size:12px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-     <span style="font-weight:800;color:#991b1b;font-size:13px;">⚠ Selisih Rekonsiliasi Ditemukan!</span>
-     <button id="${btnId}"
-      onclick="(function(){
-       var d=document.getElementById('${detailId}');
-       var b=document.getElementById('${btnId}');
-       if(!d||!b)return;
-       var open=d.style.display!=='none'&&d.style.display!=='';
-       d.style.display=open?'none':'block';
-       b.textContent=open?'▼ Lihat Detail':'▲ Tutup';
-      })()"
-      style="background:none;border:1px solid var(--danger);border-radius:4px;padding:3px 8px;
-       cursor:pointer;font-size:11px;color:#991b1b;font-weight:700;white-space:nowrap;">
-      ▼ Lihat Detail
-     </button>
+   <div style="margin-bottom:10px;padding:12px 16px;background:rgba(245,158,11,.07);
+    border-radius:10px;border-left:4px solid var(--warning);font-size:12px;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+     <div style="flex:1;">
+      <div style="font-weight:800;color:#92400e;font-size:13px;margin-bottom:6px;">
+       📋 Saldo Awal Belum Didetailkan di Sub-Ledger
+      </div>
+      <div style="color:#78350f;line-height:1.7;">
+       Akun <strong>${r.glAccs.map(a=>a.name).join(', ')}</strong> memiliki
+       saldo awal <strong>${fmtC(r.glSaldoAwal)}</strong> di CoA,
+       tapi belum ada rinciannya di modul ${modulLabel}.<br>
+       <span style="color:var(--accent2);font-weight:600;">✓ Mutasi periode berjalan sudah cocok — ini hanya perlu dilengkapi data awal.</span>
+      </div>
+     </div>
+     <div style="display:flex;flex-direction:column;gap:6px;min-width:160px;">
+      <button onclick="${addFn}"
+       style="padding:7px 12px;background:var(--warning);color:#fff;border:none;
+       border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;white-space:nowrap;">
+       + Rincikan Saldo Awal
+      </button>
+      <button id="${btnId}" onclick="${toggleFn}"
+       style="padding:5px 12px;background:none;border:1px solid var(--warning);
+       border-radius:6px;cursor:pointer;font-size:11px;color:#92400e;font-weight:600;">
+       ▼ Lihat Detail
+      </button>
+     </div>
     </div>
-    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:8px;">
-     <span>📊 <strong>GL:</strong> <span style="font-family:var(--mono);color:var(--danger);font-weight:700;">${fmtC(r.glTotal)}</span></span>
-     <span>📋 <strong>Sub-Ledger:</strong> <span style="font-family:var(--mono);color:var(--warning);font-weight:700;">${fmtC(r.slTotal)}</span></span>
-     <span>📐 <strong>Selisih:</strong> <span style="font-family:var(--mono);color:var(--danger);font-weight:800;">${fmtC(r.selisih)}</span></span>
-    </div>
-    <div id="${detailId}" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.6);border-radius:6px;">
-     <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Kemungkinan Penyebab</div>
-     ${penyebab.map(p => `<div style="padding:4px 0;font-size:12px;color:var(--text2);">• ${p}</div>`).join('')}
-     <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);">
-      Akun GL yang diperiksa: <strong>${r.glAccs.map(a => (a.code||'') + ' ' + a.name).join(', ')}</strong>
+    <div id="${detailId}" style="display:none;margin-top:10px;padding:10px 12px;
+     background:rgba(255,255,255,.7);border-radius:6px;">
+     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;margin-bottom:8px;">
+      <div>📊 <strong>GL Total:</strong> ${fmtC(r.glTotal)}</div>
+      <div>📋 <strong>Sub-Ledger Total:</strong> ${fmtC(r.slTotal)}</div>
+      <div>📌 <strong>Saldo Awal GL:</strong> ${fmtC(r.glSaldoAwal)}</div>
+      <div>📌 <strong>Saldo Awal SL:</strong> ${fmtC(r.slSaldoAwal)}</div>
+      <div>🔄 <strong>Mutasi GL:</strong> ${fmtC(r.glMutasi)}</div>
+      <div>🔄 <strong>Mutasi SL:</strong> ${fmtC(r.slMutasi)} ✓</div>
+     </div>
+     <div style="font-size:11px;color:var(--text3);padding-top:8px;border-top:1px solid var(--border);">
+      <strong>Cara:</strong> Buka modul <strong>${modulLabel}</strong> → klik <strong>"+ Tambah ${modulLabel}"</strong>
+      → isi rincian per record dengan total = <strong>${fmtC(r.glSaldoAwal)}</strong>.
+      Atau gunakan <strong>Pengaturan → Buka Periode Baru</strong> untuk migrasi otomatis di periode berikutnya.
      </div>
     </div>
    </div>`;
+  return;
  }
+
+ // TIPE B — Selisih di mutasi periode → MERAH
+ const penyebab = _analisaPenyebabSelisih(modul, r);
+ el.innerHTML = `
+  <div style="margin-bottom:10px;padding:12px 16px;background:rgba(239,68,68,.07);
+   border-radius:10px;border-left:4px solid var(--danger);font-size:12px;">
+   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <span style="font-weight:800;color:#991b1b;font-size:13px;">⚠ Selisih Rekonsiliasi di Mutasi Periode!</span>
+    <button id="${btnId}" onclick="${toggleFn}"
+     style="background:none;border:1px solid var(--danger);border-radius:4px;
+     padding:3px 8px;cursor:pointer;font-size:11px;color:#991b1b;font-weight:700;white-space:nowrap;">
+     ▼ Lihat Detail
+    </button>
+   </div>
+   <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:8px;">
+    <span>📊 <strong>GL:</strong> <span style="font-family:var(--mono);color:var(--danger);font-weight:700;">${fmtC(r.glTotal)}</span></span>
+    <span>📋 <strong>Sub-Ledger:</strong> <span style="font-family:var(--mono);color:var(--warning);font-weight:700;">${fmtC(r.slTotal)}</span></span>
+    <span>📐 <strong>Selisih:</strong> <span style="font-family:var(--mono);color:var(--danger);font-weight:800;">${fmtC(r.selisihTotal)}</span></span>
+    ${r.selisihSaldoAwal >= 1 ? `<span style="font-size:11px;color:#92400e;">+ saldo awal belum dirinci: ${fmtC(r.selisihSaldoAwal)}</span>` : ''}
+   </div>
+   <div id="${detailId}" style="display:none;margin-top:10px;padding:10px 12px;
+    background:rgba(255,255,255,.6);border-radius:6px;">
+    <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;
+     text-transform:uppercase;letter-spacing:.5px;">Kemungkinan Penyebab</div>
+    ${penyebab.map(p=>`<div style="padding:4px 0;font-size:12px;color:var(--text2);">• ${p}</div>`).join('')}
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);">
+     Akun GL: <strong>${r.glAccs.map(a=>(a.code||'')+' '+a.name).join(', ')}</strong>
+    </div>
+   </div>
+  </div>`;
 }
 
 function _analisaPenyebabSelisih(modul, r) {
  const sebab = [];
  if (r.glTotal > r.slTotal) {
-  sebab.push(`Jurnal manual di Jurnal Umum menggunakan akun ${modul === 'hutang' ? 'Hutang Usaha' : modul === 'piutang' ? 'Piutang Usaha' : 'Persediaan'} tanpa mencatat di modul sub-ledger.`);
-  sebab.push('Pembayaran/pelunasan dicatat di jurnal manual tanpa melalui tombol Bayar/Terima Bayar.');
+  sebab.push(`Jurnal manual menggunakan akun ${modul==='hutang'?'Hutang Usaha':modul==='piutang'?'Piutang Usaha':'Persediaan'} tanpa mencatat di modul sub-ledger.`);
+  sebab.push('Pembayaran/pelunasan dicatat manual tanpa melalui tombol Bayar/Terima Bayar.');
  } else {
-  sebab.push(`Record di sub-ledger lebih besar dari GL — kemungkinan ada entri di modul ${modul} yang jurnalnya dihapus manual dari Jurnal Umum.`);
-  sebab.push('Import data atau migrasi dari sistem lama dengan mapping akun tidak konsisten.');
+  sebab.push(`Record sub-ledger lebih besar dari GL — jurnalnya mungkin sudah dihapus manual.`);
+  sebab.push('Import/migrasi data dengan mapping akun tidak konsisten.');
  }
- sebab.push('Saldo awal akun GL (field saldo_awal di CoA) tidak sesuai dengan saldo awal sub-ledger.');
+ sebab.push('Saldo awal akun GL di CoA tidak sesuai dengan total saldo awal sub-ledger.');
  if (modul === 'persediaan') {
-  sebab.push('Pengurangan stok dari panel HPP Otomatis (versi baru) belum memperbarui total_nilai sub-ledger secara proporsional.');
+  sebab.push('Pengurangan stok dari HPP Otomatis belum memperbarui total_nilai sub-ledger secara proporsional.');
  }
  return sebab;
 }
