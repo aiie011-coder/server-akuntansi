@@ -10855,14 +10855,26 @@ function renderRekonsiliasiPesan(containerId, modul) {
     (${fmtC(r.glTotal)}) sesuai dengan total sub-ledger (${fmtC(r.slTotal)}).</span>
    </div>`;
  } else {
+  // Gunakan ID unik per modul agar querySelector tidak salah target
+  const detailId = `rekon-detail-${modul}`;
+  const btnId    = `rekon-btn-${modul}`;
   const penyebab = _analisaPenyebabSelisih(modul, r);
   el.innerHTML = `
-   <div style="margin-bottom:10px;padding:12px 16px;background:rgba(239,68,68,.07);border-radius:10px;
+   <div class="rekon-box" style="margin-bottom:10px;padding:12px 16px;background:rgba(239,68,68,.07);border-radius:10px;
     border-left:4px solid var(--danger);font-size:12px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
      <span style="font-weight:800;color:#991b1b;font-size:13px;">⚠ Selisih Rekonsiliasi Ditemukan!</span>
-     <button onclick="this.closest('div[style]').querySelector('.rekon-detail').style.display = this.closest('div[style]').querySelector('.rekon-detail').style.display==='none'?'block':'none'; this.textContent = this.textContent.includes('Detail')?'▲ Tutup':'▼ Lihat Detail';" 
-      style="background:none;border:1px solid var(--danger);border-radius:4px;padding:3px 8px;cursor:pointer;font-size:11px;color:#991b1b;font-weight:700;">
+     <button id="${btnId}"
+      onclick="(function(){
+       var d=document.getElementById('${detailId}');
+       var b=document.getElementById('${btnId}');
+       if(!d||!b)return;
+       var open=d.style.display!=='none'&&d.style.display!=='';
+       d.style.display=open?'none':'block';
+       b.textContent=open?'▼ Lihat Detail':'▲ Tutup';
+      })()"
+      style="background:none;border:1px solid var(--danger);border-radius:4px;padding:3px 8px;
+       cursor:pointer;font-size:11px;color:#991b1b;font-weight:700;white-space:nowrap;">
       ▼ Lihat Detail
      </button>
     </div>
@@ -10871,11 +10883,11 @@ function renderRekonsiliasiPesan(containerId, modul) {
      <span>📋 <strong>Sub-Ledger:</strong> <span style="font-family:var(--mono);color:var(--warning);font-weight:700;">${fmtC(r.slTotal)}</span></span>
      <span>📐 <strong>Selisih:</strong> <span style="font-family:var(--mono);color:var(--danger);font-weight:800;">${fmtC(r.selisih)}</span></span>
     </div>
-    <div class="rekon-detail" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.6);border-radius:6px;">
+    <div id="${detailId}" style="display:none;margin-top:10px;padding:10px 12px;background:rgba(255,255,255,.6);border-radius:6px;">
      <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;">Kemungkinan Penyebab</div>
      ${penyebab.map(p => `<div style="padding:4px 0;font-size:12px;color:var(--text2);">• ${p}</div>`).join('')}
      <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);">
-      Akun GL yang diperiksa: <strong>${r.glAccs.map(a => a.code + ' ' + a.name).join(', ')}</strong>
+      Akun GL yang diperiksa: <strong>${r.glAccs.map(a => (a.code||'') + ' ' + a.name).join(', ')}</strong>
      </div>
     </div>
    </div>`;
