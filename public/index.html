@@ -1234,6 +1234,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
    <div class="form-group"><label>Akun Kredit (Hutang)</label><select class="form-control" id="hutang-acc-kredit"><option value="">— Auto dari CoA —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Akun hutang yang dikreditkan (misal: Hutang Usaha, Hutang Bank)</div></div>
   </div>
  </div>
+ <div style="grid-column:1/-1;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);margin-top:4px;"> <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin:0;"> <input type="checkbox" id="hutang-is-saldo-awal" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;" onchange="toggleSaldoAwalInfo('hutang')"> <div> <div style="font-weight:700;font-size:13px;color:#92400e;">Entri Saldo Awal (tidak buat jurnal)</div> <div id="hutang-saldo-awal-info" style="font-size:11px;color:#78350f;margin-top:3px;display:none;">Centang jika data ini berasal dari periode sebelumnya dan saldo awal akun GL sudah diisi di CoA. Sub-ledger terisi tapi <strong>jurnal tidak dibuat</strong> — mencegah double-count di neraca saldo.</div> </div> </label> </div>
  </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-hutang')">Batal</button> <button class="btn btn-primary" onclick="saveHutang()">Simpan</button> </div> </div>
 </div> <!-- Piutang Modal -->
 <div class="modal-overlay" id="modal-piutang"> <div class="modal"> <div class="modal-header"><div class="modal-title">Piutang</div><button class="modal-close" onclick="closeModal('modal-piutang')"></button></div> <div class="modal-body"> <input type="hidden" id="piutang-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Kategori Piutang *</label><select class="form-control" id="piutang-kategori"><option value="penjualan_kredit">Penjualan Kredit (Piutang Dagang)</option><option value="piutang_karyawan">Piutang Karyawan</option><option value="piutang_pinjaman">Pinjaman ke Pihak Lain</option><option value="piutang_bunga">Piutang Bunga</option><option value="lain_lain">Lain-lain</option></select></div> <div class="form-group" style="grid-column:1/-1"><label>Nama Debitur *</label><input class="form-control" id="piutang-nama" required=""></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="piutang-jumlah" min="0" required=""></div> <div class="form-group"><label>Tanggal</label><input class="form-control" type="date" id="piutang-tanggal"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="piutang-jatuh"></div> <div class="form-group"><label>No. Faktur / Referensi *</label><input class="form-control" id="piutang-nomor-faktur" placeholder="Cth: INV-2024-001 atau SO-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="piutang-keterangan" placeholder="Opsional — misal: nama barang/jasa, tujuan pinjaman..."></div>
@@ -1244,6 +1245,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
    <div class="form-group"><label>Akun Kredit</label><select class="form-control" id="piutang-acc-kredit"><option value="">— Auto dari CoA —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Akun yang dikreditkan (misal: Pendapatan Penjualan, Kas)</div></div>
   </div>
  </div>
+ <div style="grid-column:1/-1;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);margin-top:4px;"> <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin:0;"> <input type="checkbox" id="piutang-is-saldo-awal" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;" onchange="toggleSaldoAwalInfo('piutang')"> <div> <div style="font-weight:700;font-size:13px;color:#92400e;">Entri Saldo Awal (tidak buat jurnal)</div> <div id="piutang-saldo-awal-info" style="font-size:11px;color:#78350f;margin-top:3px;display:none;">Centang jika data ini berasal dari periode sebelumnya dan saldo awal akun GL sudah diisi di CoA. Sub-ledger terisi tapi <strong>jurnal tidak dibuat</strong> — mencegah double-count di neraca saldo.</div> </div> </label> </div>
  </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-piutang')">Batal</button> <button class="btn btn-primary" onclick="savePiutang()">Simpan</button> </div> </div>
 </div> <!-- Persediaan Modal -->
 <div class="modal-overlay" id="modal-persediaan"> <div class="modal"> <div class="modal-header"><div class="modal-title">Persediaan</div><button class="modal-close" onclick="closeModal('modal-persediaan')"></button></div> <div class="modal-body"> <input type="hidden" id="pers-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Barang *</label><input class="form-control" id="pers-nama" required=""></div> <div class="form-group"><label>Jumlah</label><input class="form-control" type="number" id="pers-jumlah" min="0"></div> <div class="form-group"><label>Harga Satuan (Rp)</label><input class="form-control" type="number" id="pers-harga" min="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="pers-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="pers-metode" onchange="toggleKrediturPers()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group"><label>Metode Penilaian Persediaan</label> <select class="form-control" id="pers-metode-penilaian"> <option value="">— Ikuti pengaturan perusahaan —</option> <option value="fifo">FIFO (First-In, First-Out)</option> <option value="average">Rata-Rata Tertimbang (Average)</option> </select> </div> <div class="form-group"><label>Stok Minimum (unit) <span style="font-size:11px;color:var(--text3);">— peringatan jika stok ≤ nilai ini</span></label><input class="form-control" type="number" id="pers-stok-min" min="0" placeholder="0 = tidak ada batas"></div> <div class="form-group"><label>No. Referensi / No. PO *</label><input class="form-control" id="pers-nomor-ref" placeholder="Cth: PO-2024-001 atau INV-BELI-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="pers-ket" placeholder="Opsional"></div>
@@ -1255,7 +1257,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
    <div class="form-group" style="grid-column:1/-1"><label>Akun Hutang <span style="font-weight:400;color:var(--text3);">(jika Kredit)</span></label><select class="form-control" id="pers-acc-hutang"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Dikreditkan jika metode = Kredit</div></div>
   </div>
  </div>
- </div> <div id="pers-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="pers-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="pers-jatuh-tempo"></div> </div> </div> <div id="pers-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-persediaan')">Batal</button> <button class="btn btn-primary" onclick="savePersediaan()">Simpan</button> </div> </div>
+ </div> <div id="pers-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="pers-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="pers-jatuh-tempo"></div>  <div style="grid-column:1/-1;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);margin-top:4px;"> <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin:0;"> <input type="checkbox" id="pers-is-saldo-awal" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;" onchange="toggleSaldoAwalInfo('pers')"> <div> <div style="font-weight:700;font-size:13px;color:#92400e;">Entri Saldo Awal (tidak buat jurnal)</div> <div id="pers-saldo-awal-info" style="font-size:11px;color:#78350f;margin-top:3px;display:none;">Centang jika data ini berasal dari periode sebelumnya dan saldo awal akun GL sudah diisi di CoA. Sub-ledger terisi tapi <strong>jurnal tidak dibuat</strong> — mencegah double-count di neraca saldo.</div> </div> </label> </div> </div> </div> <div id="pers-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-persediaan')">Batal</button> <button class="btn btn-primary" onclick="savePersediaan()">Simpan</button> </div> </div>
 </div> <!-- Perlengkapan Modal -->
 <div class="modal-overlay" id="modal-perlengkapan"> <div class="modal"> <div class="modal-header"><div class="modal-title">Perlengkapan</div><button class="modal-close" onclick="closeModal('modal-perlengkapan')"></button></div> <div class="modal-body"> <input type="hidden" id="perl-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Item *</label><input class="form-control" id="perl-nama" required=""></div> <div class="form-group"><label>Jumlah</label><input class="form-control" type="number" id="perl-jumlah" min="0"></div> <div class="form-group"><label>Nilai (Rp)</label><input class="form-control" type="number" id="perl-nilai" min="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="perl-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="perl-metode" onchange="toggleKrediturPerl()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group"><label>No. Referensi / No. Pembelian *</label><input class="form-control" id="perl-nomor-ref" placeholder="Cth: PERL-2024-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="perl-ket" placeholder="Opsional"></div>
  <div class="form-group" style="grid-column:1/-1;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:3px solid var(--primary-lighter);">
@@ -1266,6 +1268,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
    <div class="form-group" style="grid-column:1/-1"><label>Akun Hutang <span style="font-weight:400;color:var(--text3);">(jika Kredit)</span></label><select class="form-control" id="perl-acc-hutang"><option value="">— Pilih Akun —</option></select><div style="font-size:10px;color:var(--text3);margin-top:3px;">Dikreditkan jika metode = Kredit</div></div>
   </div>
  </div>
+ <div style="grid-column:1/-1;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);margin-top:4px;"> <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin:0;"> <input type="checkbox" id="perl-is-saldo-awal" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;" onchange="toggleSaldoAwalInfo('perl')"> <div> <div style="font-weight:700;font-size:13px;color:#92400e;">Entri Saldo Awal (tidak buat jurnal)</div> <div id="perl-saldo-awal-info" style="font-size:11px;color:#78350f;margin-top:3px;display:none;">Centang jika data ini berasal dari periode sebelumnya dan saldo awal akun GL sudah diisi di CoA. Sub-ledger terisi tapi <strong>jurnal tidak dibuat</strong> — mencegah double-count di neraca saldo.</div> </div> </label> </div>
  </div> <div id="perl-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="perl-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="perl-jatuh-tempo"></div> </div> </div> <div id="perl-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-perlengkapan')">Batal</button> <button class="btn btn-primary" onclick="savePerlengkapan()">Simpan</button> </div> </div>
 </div> <!-- Aset Tetap Modal -->
 <div class="modal-overlay" id="modal-aset"> <div class="modal"> <div class="modal-header"><div class="modal-title">Aset Tetap</div><button class="modal-close" onclick="closeModal('modal-aset')"></button></div> <div class="modal-body"> <input type="hidden" id="aset-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Aset *</label><input class="form-control" id="aset-nama" required=""></div> <div class="form-group"><label>Harga Perolehan *</label><input class="form-control" type="number" id="aset-harga" min="0" required=""></div> <div class="form-group"><label>Tahun Perolehan</label><input class="form-control" type="number" id="aset-tahun" placeholder="2023"></div> <div class="form-group"><label>Masa Manfaat (tahun)</label><input class="form-control" type="number" id="aset-masa" min="1" placeholder="5"></div> <div class="form-group"><label>Tambahan Aset</label><input class="form-control" type="number" id="aset-tambah" min="0" value="0"></div> <div class="form-group"><label>Pengurangan Aset</label><input class="form-control" type="number" id="aset-kurang" min="0" value="0"></div> <div class="form-group"><label>Tanggal Pembelian</label><input class="form-control" type="date" id="aset-tanggal"></div> <div class="form-group"><label>Metode Pembelian</label> <select class="form-control" id="aset-metode" onchange="toggleKrediturAset()"> <option value="tunai">Tunai (Kas/Bank)</option> <option value="kredit">Kredit (Hutang Usaha)</option> </select> </div> <div class="form-group" style="grid-column:1/-1"> <label>Metode Penyusutan</label> <select class="form-control" id="aset-metode-penyusutan" onchange="toggleTarifSaldoMenurun()"> <option value="garis-lurus">Garis Lurus (Straight-Line)</option> <option value="saldo-menurun">Saldo Menurun (Declining Balance)</option> </select> </div> <div class="form-group" id="tarif-sm-group" style="display:none;"> <label>Tarif Penyusutan (%) <span style="font-size:11px;color:var(--text3);">— untuk Saldo Menurun</span></label> <input class="form-control" type="number" id="aset-tarif-sm" min="1" max="100" placeholder="mis. 25 berarti 25%/tahun" step="0.01"> <div style="font-size:11px;color:var(--text3);margin-top:4px;">Beban = Tarif × Nilai Buku Awal Periode. Nilai buku tidak turun di bawah 0.</div> </div> <div class="form-group"> <label>Nilai Residu / Sisa (Rp) <span style="font-size:11px;color:var(--text3);">— untuk Garis Lurus</span></label> <input class="form-control" type="number" id="aset-residu" min="0" value="0" placeholder="0"> <div style="font-size:11px;color:var(--text3);margin-top:4px;">Nilai estimasi aset di akhir masa manfaat. Beban GL = (Harga − Residu) ÷ Masa Manfaat.</div> </div> <div class="form-group"><label>No. Referensi / No. Faktur *</label><input class="form-control" id="aset-nomor-ref" placeholder="Cth: FA-2024-001 atau INV-ASET-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="aset-ket" placeholder="Opsional"></div>
@@ -4935,6 +4938,7 @@ function openHutangModal() {
  document.getElementById('hutang-jatuh').value = '';
  document.getElementById('hutang-keterangan').value = '';
  if (document.getElementById('hutang-nomor-faktur')) document.getElementById('hutang-nomor-faktur').value = '';
+ _resetSaldoAwalCheckbox('hutang');
  populateHutangAccDropdowns();
  openModal('modal-hutang');
 }
@@ -4961,6 +4965,36 @@ function openHutangEdit(id) {
  }
  populateHutangAccDropdowns(htDebitId, htKreditId);
  openModal('modal-hutang');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SALDO AWAL SUB-LEDGER — Mencegah double-count di neraca saldo
+// Saat checkbox "Entri Saldo Awal" dicentang, jurnal otomatis
+// tidak dibuat karena GL sudah punya saldo via saldo_awal di CoA.
+// ═══════════════════════════════════════════════════════════════════
+
+function toggleSaldoAwalInfo(modul) {
+ const cb = document.getElementById(`${modul}-is-saldo-awal`);
+ const info = document.getElementById(`${modul}-saldo-awal-info`);
+ if (!cb || !info) return;
+ info.style.display = cb.checked ? 'block' : 'none';
+
+ // Jika saldo awal → sembunyikan field akun (tidak perlu pilih akun jurnal)
+ const accSection = document.getElementById(`${modul}-acc-section`);
+ if (accSection) accSection.style.display = cb.checked ? 'none' : 'block';
+
+ // Untuk persediaan dan perlengkapan → sembunyikan metode bayar
+ if (modul === 'pers' || modul === 'perl') {
+  const metodeGroup = document.getElementById(`${modul}-metode-group`);
+  if (metodeGroup) metodeGroup.style.display = cb.checked ? 'none' : 'block';
+ }
+}
+
+function _resetSaldoAwalCheckbox(modul) {
+ const cb = document.getElementById(`${modul}-is-saldo-awal`);
+ const info = document.getElementById(`${modul}-saldo-awal-info`);
+ if (cb) cb.checked = false;
+ if (info) info.style.display = 'none';
 }
 
 function saveHutang() {
@@ -5035,6 +5069,14 @@ function saveHutang() {
  }
  } else {
  DB.hutang.push(obj);
+ // ── Cek apakah ini entri saldo awal ──────────────────────────────
+ const isSaldoAwalH = document.getElementById('hutang-is-saldo-awal')?.checked || obj._is_saldo_awal || false;
+ if (isSaldoAwalH) {
+  // Saldo awal: GL sudah terisi via saldo_awal di CoA → TIDAK buat jurnal
+  toast('✅ Saldo awal hutang disimpan — jurnal tidak dibuat (GL sudah terisi via saldo_awal CoA).', 'success', 4000);
+  _resetSaldoAwalCheckbox('hutang');
+  autoSave(); closeModal('modal-hutang'); renderHutang(); return;
+ }
  const accs=coFilter(DB.accounts);
  // Tentukan akun Debit dan Kredit berdasarkan kategori
  // _findAccByRole digunakan agar match mengutamakan account_role eksplisit, lalu keyword
@@ -5157,6 +5199,7 @@ function openPiutangModal() {
  document.getElementById('piutang-jatuh').value = '';
  document.getElementById('piutang-keterangan').value = '';
  if (document.getElementById('piutang-nomor-faktur')) document.getElementById('piutang-nomor-faktur').value = '';
+ _resetSaldoAwalCheckbox('piutang');
  populatePiutangAccDropdowns();
  openModal('modal-piutang');
 }
@@ -5256,6 +5299,13 @@ function savePiutang() {
  }
  } else {
  DB.piutang.push(obj);
+ // ── Cek apakah ini entri saldo awal ──────────────────────────────
+ const isSaldoAwalP = document.getElementById('piutang-is-saldo-awal')?.checked || obj._is_saldo_awal || false;
+ if (isSaldoAwalP) {
+  toast('✅ Saldo awal piutang disimpan — jurnal tidak dibuat (GL sudah terisi via saldo_awal CoA).', 'success', 4000);
+  _resetSaldoAwalCheckbox('piutang');
+  autoSave(); closeModal('modal-piutang'); renderPiutang(); return;
+ }
  const accs=coFilter(DB.accounts);
  let debitAcc_piu=null, kreditAcc_piu=null, descJurnal_piu='';
  if (kategori_piu==='penjualan_kredit') {
@@ -5660,6 +5710,7 @@ function openPersediaanModal() {
  document.getElementById('pers-ket').value='';
  if (document.getElementById('pers-nomor-ref')) document.getElementById('pers-nomor-ref').value='';
  document.getElementById('pers-jurnal-preview').style.display='none';
+ _resetSaldoAwalCheckbox('pers');
  populatePersediaanAccDropdowns();
  openModal('modal-persediaan');
 }
@@ -5781,6 +5832,13 @@ function savePersediaan() {
  autoSave(); closeModal('modal-persediaan'); renderPersediaan();
  } else {
  DB.persediaan.push(obj);
+ // ── Cek apakah ini entri saldo awal ──────────────────────────────
+ const isSaldoAwalPers = document.getElementById('pers-is-saldo-awal')?.checked || obj._is_saldo_awal || false;
+ if (isSaldoAwalPers) {
+  toast('✅ Saldo awal persediaan disimpan — jurnal tidak dibuat (GL sudah terisi via saldo_awal CoA).', 'success', 4000);
+  _resetSaldoAwalCheckbox('pers');
+  autoSave(); closeModal('modal-persediaan'); renderPersediaan(); return;
+ }
  // AUTO JOURNAL — gunakan akun dari dropdown jika dipilih, fallback ke keyword search
  const accs=coFilter(DB.accounts);
  const selPersAccId = document.getElementById('pers-acc-persediaan')?.value;
@@ -7074,6 +7132,7 @@ function openPerlengkapanModal() {
  document.getElementById('perl-ket').value='';
  if (document.getElementById('perl-nomor-ref')) document.getElementById('perl-nomor-ref').value='';
  document.getElementById('perl-jurnal-preview').style.display='none';
+ _resetSaldoAwalCheckbox('perl');
  populatePerlengkapanAccDropdowns();
  openModal('modal-perlengkapan');
 }
@@ -7171,6 +7230,13 @@ function savePerlengkapan() {
  autoSave(); closeModal('modal-perlengkapan'); renderPerlengkapan();
  } else {
  DB.perlengkapan.push(obj);
+ // ── Cek apakah ini entri saldo awal ──────────────────────────────
+ const isSaldoAwalPerl = document.getElementById('perl-is-saldo-awal')?.checked || obj._is_saldo_awal || false;
+ if (isSaldoAwalPerl) {
+  toast('✅ Saldo awal perlengkapan disimpan — jurnal tidak dibuat (GL sudah terisi via saldo_awal CoA).', 'success', 4000);
+  _resetSaldoAwalCheckbox('perl');
+  autoSave(); closeModal('modal-perlengkapan'); renderPerlengkapan(); return;
+ }
  // AUTO JOURNAL — gunakan akun dari dropdown jika dipilih, fallback ke keyword search
  const accs=coFilter(DB.accounts);
  const selPerlAccId = document.getElementById('perl-acc-perlengkapan')?.value;
