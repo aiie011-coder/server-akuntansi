@@ -1282,7 +1282,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
  </div>
  </div> <!-- Depreciation Schedule Preview --> <div id="aset-kredit-fields" style="display:none;margin-top:4px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="aset-kreditur" placeholder="Nama pemasok / kreditur"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="aset-jatuh-tempo"></div> </div> </div>
  <!-- Checkbox Saldo Awal -->
- <div style="grid-column:1/-1;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);margin-top:4px;">
+ <div id="aset-saldo-awal-container" style="grid-column:1/-1;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);margin-top:4px;">
   <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;margin:0;">
    <input type="checkbox" id="aset-is-saldo-awal" style="width:16px;height:16px;margin-top:2px;flex-shrink:0;" onchange="toggleSaldoAwalInfo('aset')">
    <div style="flex:1;">
@@ -7780,7 +7780,9 @@ function openAsetModal() {
  if (document.getElementById('aset-nomor-ref')) document.getElementById('aset-nomor-ref').value='';
  document.getElementById('aset-susut-preview').style.display='none';
  document.getElementById('aset-jurnal-preview').style.display='none';
- // Sembunyikan field edit akumulasi (hanya untuk mode edit)
+ // Mode TAMBAH BARU: tampilkan container saldo awal, sembunyikan edit akumulasi
+ const saContainer = document.getElementById('aset-saldo-awal-container');
+ if (saContainer) saContainer.style.display = 'block';
  const akumEditGrp = document.getElementById('aset-akum-edit-group');
  if (akumEditGrp) akumEditGrp.style.display = 'none';
  _resetSaldoAwalCheckbox('aset');
@@ -7980,7 +7982,9 @@ function editAset(id) {
  document.getElementById('aset-metode-penyusutan').value=a.metode_penyusutan||'garis-lurus';
  // Reset checkbox saldo awal (edit tidak pakai saldo awal) + restore visibility
  _resetSaldoAwalCheckbox('aset');
- // Tampilkan field edit akumulasi penyusutan
+ // Mode EDIT: sembunyikan container saldo awal, tampilkan field edit akumulasi
+ const saContainer = document.getElementById('aset-saldo-awal-container');
+ if (saContainer) saContainer.style.display = 'none';
  const akumEditGroup = document.getElementById('aset-akum-edit-group');
  if (akumEditGroup) akumEditGroup.style.display = 'block';
  const akumEditInput = document.getElementById('aset-akum-edit');
@@ -14528,11 +14532,72 @@ function renderAsetPenyusutanAll() {
  if (!as.length) { el.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Belum ada data aset</p></div>'; return; }
  let html = '';
  as.forEach(a => {
- const hargaEfektif = (a.harga_perolehan||0)+(a.tambahan_aset||0)-(a.pengurangan_aset||0);
- const isSM = a.metode_penyusutan === 'saldo-menurun';
- const rows = hitungJadwalPenyusutan(hargaEfektif, a.masa_manfaat||1, a.metode_penyusutan||'garis-lurus', a.tarif_sm||0, 0);
- html += `<div class="card" style="margin-bottom:16px;"> <div class="card-header" style="background:linear-gradient(135deg,rgba(30,58,95,.06),rgba(37,99,235,.04));"> <div> <div class="card-title"> ${a.nama_aset}</div> <div style="font-size:11px;color:var(--text3);margin-top:2px;">${isSM?'Saldo Menurun — Tarif '+( a.tarif_sm||0)+'%/thn':'Garis Lurus — '+( a.masa_manfaat||1)+' Tahun'} | Harga Perolehan: ${fmtC(hargaEfektif)}</div> </div> <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset('${a.id}')">Print Jadwal</button> </div> <div style="overflow-x:auto;"><table class="mutasi-table"> <thead><tr><th>Tahun ke-</th><th>Tahun</th><th>Nilai Buku Awal</th><th>Beban Penyusutan</th><th>Akum. Penyusutan</th><th>Nilai Buku Akhir</th></tr></thead> <tbody> ${rows.map(r=>`<tr style="background:${r.nilaiBuku<1?'rgba(16,185,129,.04)':''};"> <td style="font-weight:600;">Tahun ${r.thn}</td> <td style="color:var(--text2);">${(a.tahun_perolehan||new Date().getFullYear())+(r.thn-1)}</td> <td class="td-mono">${fmtC(Math.round(r.nilaiAwal))}</td> <td class="td-mono" style="color:var(--danger);">${fmtC(Math.round(r.beban))}</td> <td class="td-mono" style="color:var(--text2);">${fmtC(Math.round(r.akum))}</td> <td class="td-mono" style="font-weight:700;color:${r.nilaiBuku<1?'var(--text3)':'var(--accent2)'};">${fmtC(Math.round(r.nilaiBuku))}</td> </tr>`).join('')}
- </tbody> </table></div> </div>`;
+  const hargaEfektif = (a.harga_perolehan||0)+(a.tambahan_aset||0)-(a.pengurangan_aset||0);
+  const isSM = a.metode_penyusutan === 'saldo-menurun';
+  const tglPerolehan = a.tanggal || null;
+  const nilaiResidu = a.nilai_residu || 0;
+
+  // ── Gunakan hitungJadwalPenyusutan dengan tanggal perolehan (PSAK 16) ──
+  const rows = hitungJadwalPenyusutan(
+   hargaEfektif, a.masa_manfaat||1,
+   a.metode_penyusutan||'garis-lurus',
+   a.tarif_sm||0, 0, nilaiResidu, tglPerolehan
+  );
+
+  const totalBulan = rows.reduce((s,r)=>s+r.bulanDihitung,0);
+  const adaParsial = rows.some(r=>r.bulanDihitung<12);
+  const tglLabel   = tglPerolehan
+   ? new Date(tglPerolehan).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})
+   : '—';
+
+  const rowsHtml = rows.map(r => {
+   const isParsial = r.bulanDihitung < 12;
+   return `<tr style="background:${r.nilaiBuku<=nilaiResidu+0.01?'rgba(16,185,129,.04)':''}">
+    <td style="font-weight:600;white-space:nowrap;">
+     Tahun ${r.thn}
+     ${isParsial ? `<span style="font-size:10px;font-weight:700;color:#d97706;background:#fef3c7;padding:1px 5px;border-radius:3px;margin-left:4px;">${r.bulanDihitung} bln</span>` : ''}
+    </td>
+    <td style="color:var(--text2);">${r.tahunFiskal || '—'}</td>
+    <td class="td-mono">${fmtC(Math.round(r.nilaiAwal))}</td>
+    <td class="td-mono" style="color:var(--danger);">${fmtC(Math.round(r.beban))}</td>
+    <td class="td-mono" style="color:var(--text2);">${fmtC(Math.round(r.akum))}</td>
+    <td class="td-mono" style="font-weight:700;color:${r.nilaiBuku<=nilaiResidu+0.01?'var(--text3)':'var(--accent2)'};">${fmtC(Math.round(r.nilaiBuku))}</td>
+   </tr>`;
+  }).join('');
+
+  const parsialNote = adaParsial ? `
+   <div style="margin-top:8px;padding:8px 12px;background:#fffbeb;border-radius:6px;border-left:3px solid #d97706;font-size:11px;color:#92400e;">
+    📋 <strong>PSAK 16 — Pro-rata bulan:</strong>
+    Jadwal ini mencakup <strong>${rows.length} tahun fiskal</strong> (total <strong>${totalBulan} bulan</strong> = ${a.masa_manfaat||1} tahun masa manfaat).
+    Tahun pertama dan/atau terakhir dihitung proporsional sesuai tanggal perolehan: <strong>${tglLabel}</strong>.
+   </div>` : '';
+
+  html += `
+   <div class="card" style="margin-bottom:16px;">
+    <div class="card-header" style="background:linear-gradient(135deg,rgba(30,58,95,.06),rgba(37,99,235,.04));">
+     <div>
+      <div class="card-title">${escapeHtml(a.nama_aset)}</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:2px;">
+       ${isSM ? 'Saldo Menurun — Tarif '+(a.tarif_sm||0)+'%/thn' : 'Garis Lurus — '+(a.masa_manfaat||1)+' Tahun'}
+       | Harga Perolehan: ${fmtC(hargaEfektif)}
+       | Tanggal: ${tglLabel}
+       ${nilaiResidu>0 ? '| Nilai Residu: '+fmtC(nilaiResidu) : ''}
+      </div>
+     </div>
+     <button class="btn btn-secondary btn-sm" onclick="lihatJadwalAset('${a.id}')">Print Jadwal</button>
+    </div>
+    <div style="overflow-x:auto;">
+     <table class="mutasi-table">
+      <thead><tr>
+       <th>Tahun ke-</th><th>Tahun</th>
+       <th>Nilai Buku Awal</th><th>Beban Penyusutan</th>
+       <th>Akum. Penyusutan</th><th>Nilai Buku Akhir</th>
+      </tr></thead>
+      <tbody>${rowsHtml}</tbody>
+     </table>
+    </div>
+    ${parsialNote}
+   </div>`;
  });
  el.innerHTML = html;
 }
