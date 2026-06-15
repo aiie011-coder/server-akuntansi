@@ -1303,7 +1303,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
   <input class="form-control" type="number" id="aset-akum-edit" min="0" value="0" placeholder="0" style="font-size:13px;">
   <div style="font-size:11px;color:var(--text3);margin-top:5px;">⚠ Perubahan ini <strong>tidak membuat jurnal otomatis</strong>. Pastikan jurnal koreksi penyusutan sudah dicatat terpisah di Jurnal Penyesuaian jika diperlukan. Nilai buku akan dihitung ulang = Harga Perolehan − Akumulasi ini.</div>
  </div>
- <div id="aset-susut-preview" style="margin-top:16px;display:none;"> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Simulasi Jadwal Penyusutan</div> <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border);"> <table style="width:100%;border-collapse:collapse;font-size:12px;"> <thead> <tr style="background:var(--primary);color:#fff;"> <th style="padding:7px 10px;text-align:left;">Tahun ke-</th> <th style="padding:7px 10px;text-align:right;">Nilai Buku Awal</th> <th style="padding:7px 10px;text-align:right;">Beban Penyusutan</th> <th style="padding:7px 10px;text-align:right;">Akum. Penyusutan</th> <th style="padding:7px 10px;text-align:right;">Nilai Buku Akhir</th> </tr> </thead> <tbody id="aset-susut-tbody"></tbody> </table> </div> </div> <div id="aset-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-aset')">Batal</button> <button class="btn btn-secondary" onclick="previewJadwalPenyusutan()">Preview Jadwal</button> <button class="btn btn-primary" onclick="saveAset()">Simpan</button> </div> </div>
+ <div id="aset-susut-preview" style="margin-top:16px;display:none;"> <div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Simulasi Jadwal Penyusutan</div> <div style="overflow-x:auto;border-radius:8px;border:1px solid var(--border);"> <table style="width:100%;border-collapse:collapse;font-size:12px;"> <thead> <tr style="background:var(--primary);color:#fff;"> <th style="padding:7px 10px;text-align:left;">Tahun ke-</th> <th style="padding:7px 10px;text-align:right;">Nilai Buku Awal</th> <th style="padding:7px 10px;text-align:right;">Beban Penyusutan</th> <th style="padding:7px 10px;text-align:right;">Akum. Penyusutan</th> <th style="padding:7px 10px;text-align:right;">Nilai Buku Akhir</th> </tr> </thead> <tbody id="aset-susut-tbody"></tbody> </table> </div> <div id="aset-susut-notes"></div> </div> <div id="aset-jurnal-preview" style="margin-top:12px;padding:10px 12px;background:rgba(37,99,235,.06);border-radius:8px;font-size:12px;color:var(--text2);display:none;"></div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-aset')">Batal</button> <button class="btn btn-secondary" onclick="previewJadwalPenyusutan()">Preview Jadwal</button> <button class="btn btn-primary" onclick="saveAset()">Simpan</button> </div> </div>
 </div> <!-- Company Switcher Modal -->
 <div class="modal-overlay" id="modal-switcher"> <div class="modal" style="max-width:400px;"> <div class="modal-header"><div class="modal-title">Pilih Perusahaan Aktif</div><button class="modal-close" onclick="closeModal('modal-switcher')"></button></div> <div class="modal-body" id="switcher-list" style="display:flex;flex-direction:column;gap:8px;padding:16px;"></div> </div>
 </div> <!-- Bayar Modal -->
@@ -7505,60 +7505,146 @@ function toggleTarifSaldoMenurun() {
 
 // Hitung jadwal penyusutan lengkap untuk satu aset (semua tahun)
 // nilaiResidu: nilai estimasi sisa di akhir masa manfaat (hanya untuk Garis Lurus)
-function hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, akumAwal, nilaiResidu) {
- akumAwal = akumAwal || 0;
+// ═══════════════════════════════════════════════════════════════════
+// PSAK 16 — PENYUSUTAN PROPORSIONAL BULAN
+// Tahun 1 (tahun perolehan) : hanya bulan sejak perolehan s/d Des
+// Tahun tengah              : penuh 12 bulan
+// Tahun terakhir            : sisa bulan di tahun penutup
+// Konvensi                  : bulan penuh sejak bulan perolehan
+// ═══════════════════════════════════════════════════════════════════
+function hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, akumAwal, nilaiResidu, tanggalPerolehan) {
+ akumAwal    = akumAwal    || 0;
  nilaiResidu = nilaiResidu || 0;
+
+ // Tentukan bulan perolehan (1–12) dan tahun perolehan
+ let bulanPerolehan = 1;
+ let tahunPerolehan = null;
+ if (tanggalPerolehan) {
+  const d = new Date(tanggalPerolehan);
+  bulanPerolehan = d.getMonth() + 1; // 1-indexed
+  tahunPerolehan = d.getFullYear();
+ }
+
+ // Jumlah bulan yang disusutkan di tahun fiskal pertama
+ const bulanTahun1 = 12 - bulanPerolehan + 1; // misal: Mar = 10 bln (Mar-Des)
+
  const rows = [];
  let nilaiBuku = hargaEfektif - akumAwal;
- let akum = akumAwal;
+ let akum      = akumAwal;
 
  if (metodePenyusutan === 'saldo-menurun') {
- const tarif = (tarifSM||0) / 100;
- // Untuk SM: tampilkan sampai nilai buku mendekati 0 atau maks 50 tahun
- let thn = 1;
- while (nilaiBuku > 0.01 && thn <= 50) {
- const nilaiAwal = nilaiBuku;
- let beban = nilaiAwal * tarif;
- if (beban >nilaiBuku) beban = nilaiBuku; // tidak bisa negatif
- akum += beban;
- nilaiBuku = Math.max(0, hargaEfektif - akum);
- rows.push({ thn, nilaiAwal, beban, akum, nilaiBuku });
- thn++;
- if (nilaiBuku < 1) break;
- }
+  // Saldo Menurun: tarif × nilai buku, proporsional bulan
+  const tarif = (tarifSM || 0) / 100;
+  let thn = 1;
+  let bulanPeriodIni = bulanTahun1;
+
+  while (nilaiBuku > 0.01 && thn <= 60) {
+   const nilaiAwal = nilaiBuku;
+   const faktor    = bulanPeriodIni / 12;
+   let beban       = nilaiAwal * tarif * faktor;
+   beban           = Math.min(beban, nilaiBuku); // tidak melebihi nilai buku
+   if (beban < 0.01) break;
+
+   akum     += beban;
+   nilaiBuku = Math.max(0, hargaEfektif - akum);
+   rows.push({
+    thn,
+    tahunFiskal:    tahunPerolehan ? tahunPerolehan + thn - 1 : null,
+    bulanDihitung:  bulanPeriodIni,
+    nilaiAwal, beban, akum, nilaiBuku,
+    labelBulan: bulanPeriodIni < 12 ? ` (${bulanPeriodIni} bln)` : ''
+   });
+
+   bulanPeriodIni = 12; // tahun berikutnya penuh
+   thn++;
+   if (nilaiBuku < 0.01) break;
+  }
+
  } else {
- // Garis lurus: beban = (Harga − Nilai Residu) / Masa Manfaat
- const dasarSusut = Math.max(0, hargaEfektif - nilaiResidu);
- const bebanPerTahun = dasarSusut / (masa||1);
- for (let thn=1; thn<=masa; thn++) {
- const nilaiAwal = nilaiBuku;
- akum += bebanPerTahun;
- nilaiBuku = Math.max(nilaiResidu, hargaEfektif - akum);
- rows.push({ thn, nilaiAwal, beban: bebanPerTahun, akum, nilaiBuku });
- }
+  // Garis Lurus: beban per bulan = (Harga − Residu) / (Masa × 12)
+  const dasarSusut   = Math.max(0, hargaEfektif - nilaiResidu);
+  const bebanBulanan = dasarSusut / ((masa || 1) * 12);
+
+  let sisaBulan     = masa * 12; // total bulan yang harus disusutkan
+  let thn           = 1;
+  let bulanPeriodIni = bulanTahun1;
+
+  while (sisaBulan > 0 && nilaiBuku > nilaiResidu + 0.01) {
+   const bulanDihitung = Math.min(bulanPeriodIni, sisaBulan);
+   const nilaiAwal     = nilaiBuku;
+   let beban = bebanBulanan * bulanDihitung;
+   beban     = Math.min(beban, nilaiBuku - nilaiResidu); // jangan kurangi di bawah residu
+   if (beban < 0.001) break;
+
+   akum     += beban;
+   nilaiBuku = Math.max(nilaiResidu, hargaEfektif - akum);
+   sisaBulan -= bulanDihitung;
+
+   rows.push({
+    thn,
+    tahunFiskal:   tahunPerolehan ? tahunPerolehan + thn - 1 : null,
+    bulanDihitung,
+    nilaiAwal, beban, akum, nilaiBuku,
+    labelBulan: bulanDihitung < 12 ? ` (${bulanDihitung} bln)` : ''
+   });
+
+   bulanPeriodIni = 12; // tahun berikutnya penuh
+   thn++;
+  }
  }
  return rows;
 }
 
 // Preview jadwal penyusutan di modal saat user klik tombol Preview
 function previewJadwalPenyusutan() {
- const harga = parseFloat(document.getElementById('aset-harga').value)||0;
+ const harga  = parseFloat(document.getElementById('aset-harga').value)||0;
  const tambah = parseFloat(document.getElementById('aset-tambah').value)||0;
  const kurang = parseFloat(document.getElementById('aset-kurang').value)||0;
- const masa = parseInt(document.getElementById('aset-masa').value)||1;
+ const masa   = parseInt(document.getElementById('aset-masa').value)||1;
+ const tgl    = document.getElementById('aset-tanggal').value||'';
  const metodePenyusutan = document.getElementById('aset-metode-penyusutan').value;
- const tarifSM = parseFloat(document.getElementById('aset-tarif-sm').value)||0;
+ const tarifSM  = parseFloat(document.getElementById('aset-tarif-sm').value)||0;
  const hargaEfektif = harga + tambah - kurang;
 
  if (!hargaEfektif) { toast('Masukkan harga perolehan terlebih dahulu','error'); return; }
  if (metodePenyusutan==='saldo-menurun' && !tarifSM) { toast('Masukkan tarif penyusutan (%)','error'); return; }
+
  const nilaiResidu = parseFloat(document.getElementById('aset-residu')?.value)||0;
- const rows = hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, 0, nilaiResidu);
+ const rows = hitungJadwalPenyusutan(hargaEfektif, masa, metodePenyusutan, tarifSM, 0, nilaiResidu, tgl);
+
+ const totalTahun  = rows.length;
+ const totalBulan  = rows.reduce((s,r)=>s+r.bulanDihitung,0);
+ const totalBeban  = rows.reduce((s,r)=>s+r.beban,0);
+
+ // Baris jadwal dengan info bulan
  const tbody = document.getElementById('aset-susut-tbody');
  tbody.innerHTML = rows.map((r,i) => `
- <tr style="background:${i%2===0?'var(--card)':'var(--bg)'};"> <td style="padding:6px 10px;font-weight:600;">Tahun ${r.thn}</td> <td style="padding:6px 10px;text-align:right;font-family:var(--mono);">${fmtC(r.nilaiAwal)}</td> <td style="padding:6px 10px;text-align:right;font-family:var(--mono);color:var(--danger);">${fmtC(r.beban)}</td> <td style="padding:6px 10px;text-align:right;font-family:var(--mono);color:var(--text2);">${fmtC(r.akum)}</td> <td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:${r.nilaiBuku===0?'var(--text3)':'var(--accent2)'};">${fmtC(r.nilaiBuku)}</td> </tr> `).join('');
+  <tr style="background:${i%2===0?'var(--card)':'var(--bg)'};">
+   <td style="padding:6px 10px;font-weight:600;">
+    Tahun ${r.thn}${r.tahunFiskal?` <span style="font-weight:400;color:var(--text3);font-size:11px;">(${r.tahunFiskal})</span>`:''}
+    ${r.labelBulan?`<span style="font-size:10px;color:var(--warning);font-weight:700;">${r.labelBulan}</span>`:''}
+   </td>
+   <td style="padding:6px 10px;text-align:right;font-family:var(--mono);">${fmtC(r.nilaiAwal)}</td>
+   <td style="padding:6px 10px;text-align:right;font-family:var(--mono);color:var(--danger);">${fmtC(r.beban)}</td>
+   <td style="padding:6px 10px;text-align:right;font-family:var(--mono);color:var(--text2);">${fmtC(r.akum)}</td>
+   <td style="padding:6px 10px;text-align:right;font-family:var(--mono);font-weight:700;color:${r.nilaiBuku<=nilaiResidu+0.01?'var(--text3)':'var(--accent2)'};">${fmtC(r.nilaiBuku)}</td>
+  </tr>
+ `).join('');
 
+ // Footer summary
  document.getElementById('aset-susut-preview').style.display = 'block';
+
+ // Sisipkan catatan proporsional jika ada tahun parsial
+ const adaParsial = rows.some(r=>r.bulanDihitung < 12);
+ const notesEl = document.getElementById('aset-susut-notes');
+ if (notesEl) {
+  notesEl.innerHTML = adaParsial
+   ? `<div style="padding:8px 12px;background:rgba(245,158,11,.08);border-radius:6px;font-size:11px;color:#92400e;margin-top:8px;">
+       📋 <strong>PSAK 16 — Pro-rata bulan:</strong> Jadwal ini menghitung ${totalTahun} tahun fiskal (${totalBulan} bulan) = ${masa} tahun masa manfaat.
+       Tahun pertama dan/atau terakhir dihitung proporsional sesuai bulan perolehan (<strong>${tgl?new Date(tgl).toLocaleDateString('id-ID',{month:'long',year:'numeric'}):'belum diisi'}</strong>).
+      </div>`
+   : '';
+ }
 }
 
 // Tampilkan jadwal penyusutan detail untuk aset yang sudah ada (di halaman utama)
@@ -7567,36 +7653,73 @@ function lihatJadwalAset(id) {
  if (!a) return;
  const hargaEfektif = (a.harga_perolehan||0)+(a.tambahan_aset||0)-(a.pengurangan_aset||0);
  const metodePenyusutan = a.metode_penyusutan||'garis-lurus';
- const rows = hitungJadwalPenyusutan(hargaEfektif, a.masa_manfaat||1, metodePenyusutan, a.tarif_sm||0, 0, a.nilai_residu||0);
-
+ const tanggalPerolehan = a.tanggal || null;
+ const rows = hitungJadwalPenyusutan(hargaEfektif, a.masa_manfaat||1, metodePenyusutan, a.tarif_sm||0, 0, a.nilai_residu||0, tanggalPerolehan);
  const metodeLbl = metodePenyusutan==='saldo-menurun'
- ? `Saldo Menurun — Tarif: <strong>${a.tarif_sm||0}%</strong>/tahun`
- : `Garis Lurus — Masa Manfaat: <strong>${a.masa_manfaat||1} tahun</strong>`;
+  ? `Saldo Menurun — Tarif: <strong>${a.tarif_sm||0}%/tahun</strong>`
+  : `Garis Lurus — Masa Manfaat: <strong>${a.masa_manfaat||1} tahun</strong>`;
 
- const win = window.open('','_blank','width=800,height:600');
- win.document.write(`<!DOCTYPE html><html lang="id"><head> <meta charset="UTF-8"><title>Jadwal Penyusutan — ${a.nama_aset}</title> <style> *{margin:0;padding:0;box-sizing:border-box;}
- body{font-family:'Segoe UI',sans-serif;padding:24px;color:#1e293b;background:#f8fafc;}
- h1{font-size:18px;font-weight:800;color:#1e3a5f;}
- h2{font-size:13px;color:#64748b;margin:4px 0 20px;font-weight:400;}
- .info{display:flex;gap:24px;flex-wrap:wrap;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:14px 18px;margin-bottom:20px;}
- .info-item{display:flex;flex-direction:column;gap:2px;}
- .info-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#94a3b8;}
- .info-value{font-size:14px;font-weight:800;color:#1e293b;}
+ const totalTahun = rows.length;
+ const totalBulan = rows.reduce((s,r)=>s+r.bulanDihitung,0);
+ const adaParsial = rows.some(r=>r.bulanDihitung<12);
+ const nilaiResidu = a.nilai_residu||0;
+
+ const tglLabel = tanggalPerolehan
+  ? new Date(tanggalPerolehan).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})
+  : '—';
+
+ const rowsHtml = rows.map((r,i) => `
+  <tr style="background:${i%2===0?'#fff':'#f9fafb'}">
+   <td style="padding:7px 10px;font-weight:600;white-space:nowrap;">
+    Tahun ${r.thn}${r.tahunFiskal?` <span style="font-weight:400;color:#6b7280;font-size:11px;">(${r.tahunFiskal})</span>`:''}
+    ${r.labelBulan?`<span style="font-size:10px;color:#d97706;font-weight:700;">${r.labelBulan}</span>`:''}
+   </td>
+   <td style="padding:7px 10px;text-align:right;font-family:monospace;">${r.nilaiAwal.toLocaleString('id-ID')}</td>
+   <td style="padding:7px 10px;text-align:right;font-family:monospace;color:#dc2626;">${r.beban.toLocaleString('id-ID')}</td>
+   <td style="padding:7px 10px;text-align:right;font-family:monospace;color:#6b7280;">${r.akum.toLocaleString('id-ID')}</td>
+   <td style="padding:7px 10px;text-align:right;font-family:monospace;font-weight:700;color:${r.nilaiBuku<=nilaiResidu+0.01?'#9ca3af':'#059669'};">${r.nilaiBuku.toLocaleString('id-ID')}</td>
+  </tr>`).join('');
+
+ const parsialNote = adaParsial ? `
+  <div style="margin-top:12px;padding:10px 14px;background:#fffbeb;border-radius:8px;border-left:4px solid #d97706;font-size:12px;color:#92400e;">
+   <strong>📋 PSAK 16 — Pro-rata bulan:</strong> Jadwal ini mencakup <strong>${totalTahun} tahun fiskal</strong> (total <strong>${totalBulan} bulan</strong> = ${a.masa_manfaat||1} tahun masa manfaat).
+   Tahun pertama dan/atau terakhir dihitung proporsional sesuai tanggal perolehan (<strong>${tglLabel}</strong>).
+  </div>` : '';
+
+ const win = window.open('','_blank');
+ win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Jadwal Penyusutan — ${a.nama_aset}</title>
+ <style>body{font-family:Arial,sans-serif;padding:24px;color:#1f2937;max-width:900px;margin:0 auto;}
+ h1{font-size:20px;margin-bottom:4px;}h2{font-size:14px;font-weight:normal;color:#6b7280;margin-bottom:16px;}
+ .info{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:20px;}
+ .info-item{padding:10px 14px;background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;}
+ .info-label{font-size:11px;color:#6b7280;text-transform:uppercase;margin-bottom:4px;display:block;}
+ .info-value{font-weight:700;font-size:14px;}
  table{width:100%;border-collapse:collapse;font-size:13px;}
- thead tr{background:#1e3a5f;}
- thead th{padding:10px 14px;text-align:left;color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
- thead th:not(:first-child){text-align:right;}
- tbody td{padding:10px 14px;border-bottom:1px solid #e2e8f0;}
- tbody td:not(:first-child){text-align:right;font-family:'Courier New',monospace;}
- tbody tr:nth-child(even){background:#f8fafc;}
- .nol{color:#94a3b8;}
- @media print{body{padding:0;}button{display:none!important;}}
- </style></head><body> <h1>Jadwal Penyusutan Aset Tetap</h1> <h2>${a.nama_aset} · ${metodeLbl}</h2> <div class="info"> <div class="info-item"><span class="info-label">Harga Perolehan</span><span class="info-value">Rp ${hargaEfektif.toLocaleString('id-ID')}</span></div> <div class="info-item"><span class="info-label">Tahun Perolehan</span><span class="info-value">${a.tahun_perolehan||'—'}</span></div> <div class="info-item"><span class="info-label">Metode</span><span class="info-value">${metodePenyusutan==='saldo-menurun'?'Saldo Menurun':'Garis Lurus'}</span></div> ${metodePenyusutan==='saldo-menurun'?`<div class="info-item"><span class="info-label">Tarif/Tahun</span><span class="info-value">${a.tarif_sm||0}%</span></div>`:`<div class="info-item"><span class="info-label">Masa Manfaat</span><span class="info-value">${a.masa_manfaat||1} Tahun</span></div>`}
- </div> <table> <thead><tr><th>Tahun ke-</th><th>Nilai Buku Awal</th><th>Beban Penyusutan</th><th>Akum. Penyusutan</th><th>Nilai Buku Akhir</th></tr></thead> <tbody> ${rows.map((r,i)=>`
- <tr> <td>Tahun ${r.thn} (${(a.tahun_perolehan||new Date().getFullYear())+(r.thn-1)})</td> <td>Rp ${Math.round(r.nilaiAwal).toLocaleString('id-ID')}</td> <td style="color:#ef4444;">Rp ${Math.round(r.beban).toLocaleString('id-ID')}</td> <td style="color:#64748b;">Rp ${Math.round(r.akum).toLocaleString('id-ID')}</td> <td style="font-weight:700;${r.nilaiBuku<1?'color:#94a3b8;':'color:#10b981;'}">Rp ${Math.round(r.nilaiBuku).toLocaleString('id-ID')}</td> </tr> `).join('')}
- </tbody> </table> <div style="margin-top:16px;display:flex;gap:10px;"> <button onclick="window.print()" style="padding:8px 16px;background:#1e3a5f;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;">Print / PDF</button> <button onclick="window.close()" style="padding:8px 16px;background:#e2e8f0;color:#1e293b;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;">Tutup</button> </div> </body></html>`);
+ th{padding:8px 10px;background:#1e3a5f;color:#fff;text-align:right;}th:first-child{text-align:left;}
+ tr:hover{background:#f0fdf4!important;}
+ @media print{button{display:none}}</style></head><body>
+ <h1>Jadwal Penyusutan Aset Tetap</h1>
+ <h2>${a.nama_aset} · ${metodeLbl}</h2>
+ <div class="info">
+  <div class="info-item"><span class="info-label">Harga Perolehan</span><span class="info-value">Rp ${hargaEfektif.toLocaleString('id-ID')}</span></div>
+  <div class="info-item"><span class="info-label">Tanggal Perolehan</span><span class="info-value">${tglLabel}</span></div>
+  <div class="info-item"><span class="info-label">Nilai Residu</span><span class="info-value">Rp ${nilaiResidu.toLocaleString('id-ID')}</span></div>
+  <div class="info-item"><span class="info-label">Metode</span><span class="info-value">${metodePenyusutan==='saldo-menurun'?'Saldo Menurun':'Garis Lurus'}</span></div>
+  ${metodePenyusutan==='saldo-menurun'?`<div class="info-item"><span class="info-label">Tarif/Tahun</span><span class="info-value">${a.tarif_sm||0}%</span></div>`:`<div class="info-item"><span class="info-label">Masa Manfaat</span><span class="info-value">${a.masa_manfaat||1} Tahun (${totalBulan} bln)</span></div>`}
+  <div class="info-item"><span class="info-label">Akumulasi Saat Ini</span><span class="info-value">Rp ${(a.akumulasi_penyusutan||0).toLocaleString('id-ID')}</span></div>
+  <div class="info-item"><span class="info-label">Nilai Buku Saat Ini</span><span class="info-value">Rp ${(a.nilai_buku||0).toLocaleString('id-ID')}</span></div>
+ </div>
+ <table><thead><tr>
+  <th style="text-align:left;">Tahun</th>
+  <th>Nilai Buku Awal</th><th>Beban Penyusutan</th><th>Akum. Penyusutan</th><th>Nilai Buku Akhir</th>
+ </tr></thead><tbody>${rowsHtml}</tbody></table>
+ ${parsialNote}
+ <div style="margin-top:16px;font-size:11px;color:#9ca3af;text-align:right;">Dicetak dari ZeQui · ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}</div>
+ <script>window.print();<\/script>
+ </body></html>`);
  win.document.close();
 }
+
 
 function renderAsetTetap() {
  if (currentPage !== 'aset-tetap') return;
@@ -7989,34 +8112,31 @@ function hitung_penyusutan_all() {
  let beban=0;
  const metodePenyusutan = a.metode_penyusutan||'garis-lurus';
  if (metodePenyusutan==='saldo-menurun') {
- const tarif = (a.tarif_sm||0)/100;
- if (tarif<=0) {
- toast(`Selisih: Aset "${a.nama_aset}" metode saldo menurun tapi tarif belum diatur. Dilewati.`,'error',4000);
- skipped++;
- return;
- }
- beban = nilaiBookSaatIni * tarif;
- } else {
- // Garis lurus: (Harga Efektif − Nilai Residu) ÷ Masa Manfaat (per tahun → per bulan)
- const bebanTahunan = Math.max(0, harga - nilaiResidu) / (a.masa_manfaat||1);
- beban = bebanTahunan / 12; // penyusutan per bulan
+  const tarif = (a.tarif_sm||0)/100;
+  if (tarif<=0) {
+   toast(`Selisih: Aset "${a.nama_aset}" metode saldo menurun tapi tarif belum diatur. Dilewati.`,'error',4000);
+   skipped++;
+   return;
+  }
+  // Saldo menurun per bulan = nilaiBook × tarif/12
+  // Pro-rata tahun pertama dan terakhir ditangani oleh posting bulanan (tiap bulan = 1/12 tarif)
+  beban = nilaiBookSaatIni * tarif / 12;
 
- // PERBAIKAN: Proporsional bulan pertama 
- // Jika ini adalah bulan perolehan aset, hitung pro-rata harian
- if (a.tanggal_perolehan) {
- const tglPerolehan = new Date(a.tanggal_perolehan);
- const periodeYM = periodeLabel; // YYYY-MM
- const asetYM = a.tanggal_perolehan.substring(0,7);
- if (asetYM === periodeYM) {
- // Bulan yang sama: hitung sisa hari dalam bulan itu
- const tahun = tglPerolehan.getFullYear();
- const bulan = tglPerolehan.getMonth(); // 0-indexed
- const hariDalamBulan = new Date(tahun, bulan+1, 0).getDate();
- const hariPerolehan = tglPerolehan.getDate();
- const sisaHari = hariDalamBulan - hariPerolehan + 1;
- beban = bebanTahunan * (sisaHari / (hariDalamBulan * 12));
- }
- }
+ } else {
+  // Garis lurus: beban per bulan = (Harga − Residu) / (Masa × 12)
+  const bebanBulanan = Math.max(0, harga - nilaiResidu) / ((a.masa_manfaat||1) * 12);
+  beban = bebanBulanan;
+
+  // PSAK 16 — Pro-rata bulan: skip jika belum mencapai bulan perolehan
+  // (posting bulanan dipanggil per bulan, jadi tidak perlu hitung sisa hari)
+  if (a.tanggal) {
+   const bulanPerolehan = a.tanggal.substring(0, 7); // YYYY-MM
+   if (periodeLabel < bulanPerolehan) {
+    // Belum saatnya menyusut — periode lebih awal dari bulan perolehan
+    skipped++;
+    return;
+   }
+  }
  }
 
  // PERBAIKAN PENUH: Nilai buku tidak boleh turun di bawah nilai residu 
