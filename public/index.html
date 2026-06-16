@@ -4977,7 +4977,14 @@ function openHutangEdit(id) {
  document.getElementById('hutang-jatuh').value = h.jatuh_tempo || '';
  document.getElementById('hutang-keterangan').value = h.keterangan || '';
  if (document.getElementById('hutang-nomor-faktur')) document.getElementById('hutang-nomor-faktur').value = h.nomor_ref || '';
+ // Auto-detect saldo awal record
+ const _saH = _isSaldoAwalRecord(h);
+ const saContainerH = document.getElementById('hutang-saldo-awal-container') || document.getElementById('hutang-is-saldo-awal')?.closest('div[style*="warning"]');
  _resetSaldoAwalCheckbox('hutang');
+ if (_saH) {
+  const cbH = document.getElementById('hutang-is-saldo-awal');
+  if (cbH) { cbH.checked = true; toggleSaldoAwalInfo('hutang'); }
+ }
  // Pre-select akun dari jurnal terkait
  let htDebitId='', htKreditId='';
  if (h.ref_journal_id) {
@@ -4996,6 +5003,15 @@ function openHutangEdit(id) {
 // Saat checkbox "Entri Saldo Awal" dicentang, jurnal otomatis
 // tidak dibuat karena GL sudah punya saldo via saldo_awal di CoA.
 // ═══════════════════════════════════════════════════════════════════
+
+
+// Deteksi saldo awal dari record
+function _isSaldoAwalRecord(rec) {
+ if (!rec) return false;
+ if (rec._is_saldo_awal === true) return true;
+ const ket = (rec.keterangan || rec.ket || '').toLowerCase();
+ return ket.includes('[saldo awal]') || ket.includes('saldo awal');
+}
 
 function toggleSaldoAwalInfo(modul) {
  const cb   = document.getElementById(`${modul}-is-saldo-awal`);
@@ -5082,6 +5098,10 @@ function saveHutang() {
  if (cekPeriodeLock(_htglH)) return;
  if (cekJurnalPenutupSudahPosting()) return;
  const id=document.getElementById('hutang-edit-id').value;
+ // Deteksi saldo awal: checkbox (baru) ATAU flag record lama (edit)
+ const _existingRec_hutang = id ? DB.hutang.find(x => String(x.id) === String(id)) : null;
+ const _isSA_hutang = _isSaldoAwalRecord(_existingRec_hutang) ||
+  (!id && (document.getElementById('hutang-is-saldo-awal')?.checked || false));
  const nama=document.getElementById('hutang-nama').value.trim();
  const jumlah=parseFloat(document.getElementById('hutang-jumlah').value)||0;
  if (!nama||!jumlah) { toast('Nama dan jumlah wajib','error'); return; }
@@ -5098,7 +5118,8 @@ function saveHutang() {
  const kategori=document.getElementById('hutang-kategori').value||'pembelian_kredit';
  const keterangan=document.getElementById('hutang-keterangan').value.trim();
  const nomorFaktur=(document.getElementById('hutang-nomor-faktur')?.value||'').trim();
- if (!nomorFaktur) { toast('No. Faktur / Referensi wajib diisi','error'); return; }
+ if (!nomorFaktur && !_isSA_hutang) { toast('No. Faktur / Referensi wajib diisi','error'); return; }
+ if (!nomorFaktur && _isSA_hutang) nomorFaktur = 'SA-' + new Date().getTime();
  if (!id) {
    const duplikat = coFilter(DB.hutang).find(h => h.nomor_ref && h.nomor_ref.toLowerCase() === nomorFaktur.toLowerCase());
    if (duplikat) { toast('No. Faktur "'+nomorFaktur+'" sudah ada ('+duplikat.nama_kreditur+', '+fmtC(duplikat.jumlah)+'). Gunakan nomor berbeda.','error',5000); return; }
@@ -5106,8 +5127,15 @@ function saveHutang() {
  const obj={id:id?id:genId(),company_id:co(),nama_kreditur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('hutang-jatuh').value,sisa:id?(oldRec_hut?.sisa??jumlah):jumlah,status:id?(oldRec_hut?.status||'Belum Lunas'):'Belum Lunas',kategori,keterangan,nomor_ref:nomorFaktur};
  if (oldRec_hut?.ref_journal_id) obj.ref_journal_id=oldRec_hut.ref_journal_id;
  if (id) {
+ const _oldHut = DB.hutang.find(h=>String(h.id)==String(id));
+ // SA record: jika sisa == jumlah lama (belum ada pembayaran), update sisa ke jumlah baru
+ if (_isSA_hutang && _oldHut && Math.abs((_oldHut.sisa||0)-(_oldHut.jumlah||0)) < 1) {
+  obj.sisa = obj.jumlah;
+ } else if (_oldHut) {
+  obj.sisa = _oldHut.sisa; // preserve sisa yang sudah berkurang dari pembayaran
+ }
  const i=DB.hutang.findIndex(h=>String(h.id)==String(id));
- if (i>=0) DB.hutang[i]=obj;
+ if (i>=0) DB.hutang[i]={...DB.hutang[i],...obj};
  if (oldRec_hut?.ref_journal_id) {
  const detailsH=DB.journal_details.filter(d=>d.journal_id===oldRec_hut.ref_journal_id);
  const debitDetH=detailsH.find(d=>d.debit>0);
@@ -5146,6 +5174,12 @@ function saveHutang() {
  toast('Hutang diperbarui','success');
  }
  } else {
+
+ // Preserve flags saldo awal dari record lama
+ if (_existRec_hutang?._is_saldo_awal) obj._is_saldo_awal = true;
+ if (_existRec_hutang?._rolled_from) obj._rolled_from = _existRec_hutang._rolled_from;
+ // Set flag saldo awal jika ini record baru dengan checkbox
+ if (!id && _isSA_hutang) obj._is_saldo_awal = true;
  DB.hutang.push(obj);
  // ── Cek apakah ini entri saldo awal ──────────────────────────────
  const isSaldoAwalH = document.getElementById('hutang-is-saldo-awal')?.checked || obj._is_saldo_awal || false;
@@ -5293,7 +5327,13 @@ function openPiutangEdit(id) {
  document.getElementById('piutang-jatuh').value = p.jatuh_tempo || '';
  document.getElementById('piutang-keterangan').value = p.keterangan || '';
  if (document.getElementById('piutang-nomor-faktur')) document.getElementById('piutang-nomor-faktur').value = p.nomor_ref || '';
+ // Auto-detect saldo awal record
+ const _saP = _isSaldoAwalRecord(p);
  _resetSaldoAwalCheckbox('piutang');
+ if (_saP) {
+  const cbP = document.getElementById('piutang-is-saldo-awal');
+  if (cbP) { cbP.checked = true; toggleSaldoAwalInfo('piutang'); }
+ }
  // Pre-select akun dari jurnal terkait
  let piuDebitId='', piuKreditId='';
  if (p.ref_journal_id) {
@@ -5314,6 +5354,10 @@ function savePiutang() {
  if (cekPeriodeLock(_htglP)) return;
  if (cekJurnalPenutupSudahPosting()) return;
  const id=document.getElementById('piutang-edit-id').value;
+ // ── SA detect: checkbox (baru) ATAU flag record lama (edit) ──
+ const _existRec_piutang = id ? DB.piutang.find(x => String(x.id) === String(id)) : null;
+ const _isSA_piutang = _isSaldoAwalRecord(_existRec_piutang) ||
+  (!id && (document.getElementById('piutang-is-saldo-awal')?.checked || false));
  const nama=document.getElementById('piutang-nama').value.trim();
  const jumlah=parseFloat(document.getElementById('piutang-jumlah').value)||0;
  if (!nama||!jumlah) { toast('Nama dan jumlah wajib','error'); return; }
@@ -5338,8 +5382,14 @@ function savePiutang() {
  const obj={id:id?id:genId(),company_id:co(),nama_debitur:nama,jumlah,tanggal,jatuh_tempo:document.getElementById('piutang-jatuh').value,sisa:id?(oldRec_piu?.sisa??jumlah):jumlah,status:id?(oldRec_piu?.status||'Belum Lunas'):'Belum Lunas',kategori:kategori_piu,keterangan:keterangan_piu,nomor_ref:nomorFakturPiu};
  if (oldRec_piu?.ref_journal_id) obj.ref_journal_id=oldRec_piu.ref_journal_id;
  if (id) {
+ const _oldPiu = DB.piutang.find(p=>String(p.id)==String(id));
+ if (_isSA_piutang && _oldPiu && Math.abs((_oldPiu.sisa||0)-(_oldPiu.jumlah||0)) < 1) {
+  obj.sisa = obj.jumlah;
+ } else if (_oldPiu) {
+  obj.sisa = _oldPiu.sisa;
+ }
  const i=DB.piutang.findIndex(p=>String(p.id)==String(id));
- if (i>=0) DB.piutang[i]=obj;
+ if (i>=0) DB.piutang[i]={...DB.piutang[i],...obj};
  if (oldRec_piu?.ref_journal_id) {
  const detailsPiu=DB.journal_details.filter(d=>d.journal_id===oldRec_piu.ref_journal_id);
  const debitDetPiu=detailsPiu.find(d=>d.debit>0);
@@ -5377,6 +5427,12 @@ function savePiutang() {
  toast('Piutang diperbarui','success');
  }
  } else {
+
+ // Preserve flags saldo awal dari record lama
+ if (_existRec_piutang?._is_saldo_awal) obj._is_saldo_awal = true;
+ if (_existRec_piutang?._rolled_from) obj._rolled_from = _existRec_piutang._rolled_from;
+ // Set flag saldo awal jika ini record baru dengan checkbox
+ if (!id && _isSA_piutang) obj._is_saldo_awal = true;
  DB.piutang.push(obj);
  // ── Cek apakah ini entri saldo awal ──────────────────────────────
  const isSaldoAwalP = document.getElementById('piutang-is-saldo-awal')?.checked || obj._is_saldo_awal || false;
@@ -5824,6 +5880,10 @@ function savePersediaan() {
   const stokMin=parseFloat(document.getElementById('pers-stok-min').value)||0;
   const ket=document.getElementById('pers-ket').value.trim();
   const id=document.getElementById('pers-edit-id').value;
+ // ── SA detect: checkbox (baru) ATAU flag record lama (edit) ──
+ const _existRec_pers = id ? DB.persediaan.find(x => String(x.id) === String(id)) : null;
+ const _isSA_pers = _isSaldoAwalRecord(_existRec_pers) ||
+  (!id && (document.getElementById('pers-is-saldo-awal')?.checked || false));
  const nomorRefPers=(document.getElementById('pers-nomor-ref')?.value||'').trim();
  if (!nomorRefPers) { toast('No. Referensi / No. PO wajib diisi','error'); return; }
  if (!id) {
@@ -5845,7 +5905,7 @@ function savePersediaan() {
  const i=DB.persediaan.findIndex(x=>String(x.id)==String(id));
  // Pertahankan ref_journal_id agar tidak putus
  if (oldRec?.ref_journal_id) obj.ref_journal_id=oldRec.ref_journal_id;
- DB.persediaan[i]=obj;
+ DB.persediaan[i]={...DB.persediaan[i],...obj};
  // [FIX] Sinkronkan nominal DAN akun jurnal jika ada ref_journal_id
  if (oldRec?.ref_journal_id) {
  const nilaiLama=oldRec.total_nilai||0;
@@ -5910,6 +5970,12 @@ function savePersediaan() {
  }
  autoSave(); closeModal('modal-persediaan'); renderPersediaan();
  } else {
+
+ // Preserve flags saldo awal dari record lama
+ if (_existRec_pers?._is_saldo_awal) obj._is_saldo_awal = true;
+ if (_existRec_pers?._rolled_from) obj._rolled_from = _existRec_pers._rolled_from;
+ // Set flag saldo awal jika ini record baru dengan checkbox
+ if (!id && _isSA_pers) obj._is_saldo_awal = true;
  DB.persediaan.push(obj);
  // ── Cek apakah ini entri saldo awal ──────────────────────────────
  const isSaldoAwalPers = document.getElementById('pers-is-saldo-awal')?.checked || obj._is_saldo_awal || false;
@@ -5975,8 +6041,15 @@ function editPersediaan(id) {
  document.getElementById('pers-stok-min').value=p.stok_minimum||'';
  document.getElementById('pers-ket').value=p.keterangan||'';
  if (document.getElementById('pers-nomor-ref')) document.getElementById('pers-nomor-ref').value=p.nomor_ref||'';
+ // Auto-detect saldo awal record
+ const _saPrs = _isSaldoAwalRecord(p);
  _resetSaldoAwalCheckbox('pers');
- toggleKrediturPers();
+ if (_saPrs) {
+  const cbPrs = document.getElementById('pers-is-saldo-awal');
+  if (cbPrs) { cbPrs.checked = true; toggleSaldoAwalInfo('pers'); }
+ } else {
+  toggleKrediturPers();
+ }
  // Ambil akun dari jurnal terkait untuk pre-select dropdown
  let persAccId='', kasAccId='', hutAccId='';
  if (p.ref_journal_id) {
@@ -7232,6 +7305,10 @@ function savePerlengkapan() {
   const jatuhTempo=(metode==='kredit'?(document.getElementById('perl-jatuh-tempo').value||''):'');
   const ket=document.getElementById('perl-ket').value.trim();
   const id=document.getElementById('perl-edit-id').value;
+ // ── SA detect: checkbox (baru) ATAU flag record lama (edit) ──
+ const _existRec_perl = id ? DB.perlengkapan.find(x => String(x.id) === String(id)) : null;
+ const _isSA_perl = _isSaldoAwalRecord(_existRec_perl) ||
+  (!id && (document.getElementById('perl-is-saldo-awal')?.checked || false));
  const nomorRefPerl=(document.getElementById('perl-nomor-ref')?.value||'').trim();
  if (!nomorRefPerl) { toast('No. Referensi wajib diisi','error'); return; }
  if (!id) {
@@ -7247,7 +7324,7 @@ function savePerlengkapan() {
  const oldRec=DB.perlengkapan.find(x=>String(x.id)==String(id));
  const i=DB.perlengkapan.findIndex(x=>String(x.id)==String(id));
  if (oldRec?.ref_journal_id) obj.ref_journal_id=oldRec.ref_journal_id;
- DB.perlengkapan[i]=obj;
+ DB.perlengkapan[i]={...DB.perlengkapan[i],...obj};
  if (oldRec?.ref_journal_id) {
  const nilaiLama=oldRec.nilai||0;
  const nilaiBaru=nilai;
@@ -7309,6 +7386,12 @@ function savePerlengkapan() {
  }
  autoSave(); closeModal('modal-perlengkapan'); renderPerlengkapan();
  } else {
+
+ // Preserve flags saldo awal dari record lama
+ if (_existRec_perl?._is_saldo_awal) obj._is_saldo_awal = true;
+ if (_existRec_perl?._rolled_from) obj._rolled_from = _existRec_perl._rolled_from;
+ // Set flag saldo awal jika ini record baru dengan checkbox
+ if (!id && _isSA_perl) obj._is_saldo_awal = true;
  DB.perlengkapan.push(obj);
  // ── Cek apakah ini entri saldo awal ──────────────────────────────
  const isSaldoAwalPerl = document.getElementById('perl-is-saldo-awal')?.checked || obj._is_saldo_awal || false;
@@ -7370,8 +7453,15 @@ function editPerlengkapan(id) {
  document.getElementById('perl-jatuh-tempo').value=p.jatuh_tempo||'';
  document.getElementById('perl-ket').value=p.keterangan||'';
  if (document.getElementById('perl-nomor-ref')) document.getElementById('perl-nomor-ref').value=p.nomor_ref||'';
+ // Auto-detect saldo awal record
+ const _saPrl = _isSaldoAwalRecord(p);
  _resetSaldoAwalCheckbox('perl');
- toggleKrediturPerl();
+ if (_saPrl) {
+  const cbPrl = document.getElementById('perl-is-saldo-awal');
+  if (cbPrl) { cbPrl.checked = true; toggleSaldoAwalInfo('perl'); }
+ } else {
+  toggleKrediturPerl();
+ }
  // Ambil akun dari jurnal terkait untuk pre-select dropdown
  let perlAccId='', kasAccId='', hutAccId='';
  if (p.ref_journal_id) {
@@ -7812,17 +7902,23 @@ function saveAset() {
  const ket=document.getElementById('aset-ket').value.trim();
  const hargaEfektif=harga+tambah-kurang;
  const id=document.getElementById('aset-edit-id').value;
+ // ── SA detect: checkbox (baru) ATAU flag record lama (edit) ──
+ const _existRec_aset = id ? DB.aset_tetap.find(x => String(x.id) === String(id)) : null;
+ const _isSA_aset = _isSaldoAwalRecord(_existRec_aset) ||
+  (!id && (document.getElementById('aset-is-saldo-awal')?.checked || false));
  const nomorRefAset=(document.getElementById('aset-nomor-ref')?.value||'').trim();
- if (!nomorRefAset) { toast('No. Referensi / No. Faktur wajib diisi','error'); return; }
+ if (!nomorRefAset && !_isSA_aset) { toast('No. Referensi / No. Faktur wajib diisi','error'); return; }
+ let nomorRefAsetFinal = nomorRefAset;
+ if (!nomorRefAsetFinal && _isSA_aset) nomorRefAsetFinal = 'SA-' + new Date().getTime();
  if (!id) {
-   const dupRefA = coFilter(DB.aset_tetap).find(a => a.nomor_ref && a.nomor_ref.toLowerCase() === nomorRefAset.toLowerCase());
-   if (dupRefA) { toast('No. Referensi "'+nomorRefAset+'" sudah ada ('+dupRefA.nama_aset+'). Gunakan nomor berbeda.','error',5000); return; }
+   const dupRefA = coFilter(DB.aset_tetap).find(a => a.nomor_ref && a.nomor_ref.toLowerCase() === nomorRefAsetFinal.toLowerCase());
+   if (dupRefA) { toast('No. Referensi "'+nomorRefAsetFinal+'" sudah ada ('+dupRefA.nama_aset+'). Gunakan nomor berbeda.','error',5000); return; }
  }
  const existingAkum = id?(DB.aset_tetap.find(x=>String(x.id)==String(id))?.akumulasi_penyusutan||0):0;
- // ── Cek apakah ini entri saldo awal (hanya relevan untuk record baru) ──
- const isSaldoAwalAset = !id && (document.getElementById('aset-is-saldo-awal')?.checked || false);
- // Untuk mode EDIT: gunakan nilai dari field edit akumulasi jika diubah
- const akumEditVal = id ? (parseFloat(document.getElementById('aset-akum-edit')?.value) || existingAkum) : existingAkum;
+ // ── Gunakan _isSA_aset (mendukung mode baru DAN edit record saldo awal) ──
+ const isSaldoAwalAset = _isSA_aset;
+ // Untuk mode EDIT (bukan saldo awal): gunakan nilai dari field edit akumulasi jika diubah
+ const akumEditVal = (id && !isSaldoAwalAset) ? (parseFloat(document.getElementById('aset-akum-edit')?.value) || existingAkum) : existingAkum;
  const akumAwalInput = isSaldoAwalAset
   ? (parseFloat(document.getElementById('aset-akum-awal')?.value) || 0)
   : (id ? akumEditVal : existingAkum);
@@ -7848,12 +7944,16 @@ function saveAset() {
  metode_penyusutan: metodePenyusutan,
  tarif_sm: metodePenyusutan==='saldo-menurun'?tarifSM:null,
  nilai_residu: metodePenyusutan==='garis-lurus'?nilaiResidu:0,
- nomor_ref: nomorRefAset
+ nomor_ref: nomorRefAsetFinal
  };
  if (id) {
  const oldRec=DB.aset_tetap.find(x=>String(x.id)==String(id));
  const i=DB.aset_tetap.findIndex(x=>String(x.id)==String(id));
  if (oldRec?.ref_journal_id) obj.ref_journal_id=oldRec.ref_journal_id;
+ // Preserve flag saldo awal & metadata rollover dari record lama
+ if (oldRec?._is_saldo_awal) obj._is_saldo_awal = true;
+ if (oldRec?._rolled_from) obj._rolled_from = oldRec._rolled_from;
+ if (oldRec?._rolled_at) obj._rolled_at = oldRec._rolled_at;
  DB.aset_tetap[i]=obj;
  if (oldRec?.ref_journal_id) {
  const hargaLama=oldRec.harga_perolehan||0;
@@ -7911,11 +8011,19 @@ function saveAset() {
  if (debitDetA && selAsetAccIdEdit) { const a=accsEditA.find(x=>String(x.id)===String(selAsetAccIdEdit)); if(a) perubahanA.push(`Debit → ${a.name}`); }
  if (kreditDetA) { const kId=metode==='tunai'?selKasAccIdEditA:selHutAccIdEditA; if(kId) { const a=accsEditA.find(x=>String(x.id)===String(kId)); if(a) perubahanA.push(`Kredit → ${a.name}`); } }
  toast(`Aset tetap + jurnal${hutangAset?' + hutang':''} diperbarui${perubahanA.length?': '+perubahanA.join(', '):''}`,'success',4000);
+ } else if (isSaldoAwalAset) {
+ toast(`✅ Saldo awal aset "${nama}" diperbarui (akumulasi: ${fmtC(akumAwalInput)}, nilai buku: ${fmtC(obj.nilai_buku)}) — jurnal tetap tidak dibuat.`, 'success', 5000);
  } else {
  toast('Aset tetap diperbarui','success');
  }
  autoSave(); closeModal('modal-aset'); renderAsetTetap();
  } else {
+
+ // Preserve flags saldo awal dari record lama
+ if (_existRec_aset?._is_saldo_awal) obj._is_saldo_awal = true;
+ if (_existRec_aset?._rolled_from) obj._rolled_from = _existRec_aset._rolled_from;
+ // Set flag saldo awal jika ini record baru dengan checkbox
+ if (!id && _isSA_aset) obj._is_saldo_awal = true;
  DB.aset_tetap.push(obj);
  // ── Entri Saldo Awal: skip pembuatan jurnal ──────────────────────
  if (isSaldoAwalAset) {
@@ -7980,15 +8088,26 @@ function editAset(id) {
  document.getElementById('aset-kreditur').value=a.nama_kreditur||'';
  document.getElementById('aset-jatuh-tempo').value=a.jatuh_tempo||'';
  document.getElementById('aset-metode-penyusutan').value=a.metode_penyusutan||'garis-lurus';
- // Reset checkbox saldo awal (edit tidak pakai saldo awal) + restore visibility
+ // Auto-detect saldo awal record
+ const _saA = _isSaldoAwalRecord(a);
  _resetSaldoAwalCheckbox('aset');
- // Mode EDIT: sembunyikan container saldo awal, tampilkan field edit akumulasi
  const saContainer = document.getElementById('aset-saldo-awal-container');
- if (saContainer) saContainer.style.display = 'none';
- const akumEditGroup = document.getElementById('aset-akum-edit-group');
- if (akumEditGroup) akumEditGroup.style.display = 'block';
- const akumEditInput = document.getElementById('aset-akum-edit');
- if (akumEditInput) akumEditInput.value = a.akumulasi_penyusutan || 0;
+ const akumEditGroupA = document.getElementById('aset-akum-edit-group');
+ if (_saA) {
+  // Saldo awal: tampilkan container SA, sembunyikan edit akumulasi
+  if (saContainer) saContainer.style.display = 'block';
+  if (akumEditGroupA) akumEditGroupA.style.display = 'none';
+  const cbA = document.getElementById('aset-is-saldo-awal');
+  if (cbA) { cbA.checked = true; toggleSaldoAwalInfo('aset'); }
+  const akumAwalInput = document.getElementById('aset-akum-awal');
+  if (akumAwalInput) akumAwalInput.value = a.akumulasi_penyusutan || 0;
+ } else {
+  // Bukan saldo awal: sembunyikan container SA, tampilkan edit akumulasi
+  if (saContainer) saContainer.style.display = 'none';
+  if (akumEditGroupA) akumEditGroupA.style.display = 'block';
+  const akumEditInput = document.getElementById('aset-akum-edit');
+  if (akumEditInput) akumEditInput.value = a.akumulasi_penyusutan || 0;
+ }
  toggleKrediturAset();
  document.getElementById('aset-tarif-sm').value=a.tarif_sm||'';
  document.getElementById('aset-residu').value=a.nilai_residu||0;
