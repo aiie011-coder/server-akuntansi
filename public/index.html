@@ -5099,8 +5099,8 @@ function saveHutang() {
  if (cekJurnalPenutupSudahPosting()) return;
  const id=document.getElementById('hutang-edit-id').value;
  // Deteksi saldo awal: checkbox (baru) ATAU flag record lama (edit)
- const _existingRec_hutang = id ? DB.hutang.find(x => String(x.id) === String(id)) : null;
- const _isSA_hutang = _isSaldoAwalRecord(_existingRec_hutang) ||
+ const _existRec_hutang = id ? DB.hutang.find(x => String(x.id) === String(id)) : null;
+ const _isSA_hutang = _isSaldoAwalRecord(_existRec_hutang) ||
   (!id && (document.getElementById('hutang-is-saldo-awal')?.checked || false));
  const nama=document.getElementById('hutang-nama').value.trim();
  const jumlah=parseFloat(document.getElementById('hutang-jumlah').value)||0;
