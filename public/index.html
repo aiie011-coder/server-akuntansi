@@ -679,7 +679,7 @@ textarea.form-control { resize:vertical; min-height:80px; }
 <!-- HEADER --> <div id="header"> <div id="header-left"> <button id="mobile-menu-btn" onclick="toggleMobileSidebar()" style="display:none;background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--text2);font-size:20px;line-height:1;margin-right:4px;" aria-label="Menu"></button> <div id="company-switcher" onclick="openCompanySwitcher()"> <div> <div class="co-name" id="hdr-company-name">— Pilih Perusahaan —</div> <div class="co-period" id="hdr-company-period">2025-01-01 s/d 2025-12-31</div> </div> <span style="margin-left:auto; color:var(--text3);"></span> </div> </div> <div id="header-right"> <!-- Excel Dropdown --> <div style="position:relative;" id="excel-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('excel-dropdown')">Excel </button> <div id="excel-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Export ke Excel</div> <div class="dropdown-item" onclick="exportExcel('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="exportExcel('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="exportExcel('laba-rugi')"><span id="excel-label-laba-rugi">Laba Rugi</span></div> <div class="dropdown-item" onclick="exportExcel('neraca')"><span id="excel-label-neraca">Posisi Keuangan</span></div> <div class="dropdown-item" id="excel-item-lra" style="display:none;" onclick="exportExcel('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="excel-item-lsal" style="display:none;" onclick="exportExcel('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="excel-item-shu" style="display:none;" onclick="exportExcel('shu')">Lap. SHU (Koperasi)</div> <div class="dropdown-item" id="excel-item-lpd" style="display:none;" onclick="exportExcel('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="excel-item-pak" style="display:none;" onclick="exportExcel('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="exportExcel('hutang')">Hutang (AP)</div> <div class="dropdown-item" onclick="exportExcel('piutang')">Piutang (AR)</div> <div class="dropdown-item" onclick="exportExcel('persediaan')">Persediaan</div> <div class="dropdown-item" onclick="exportExcel('aset-tetap')">Aset Tetap</div> <div class="dropdown-item" onclick="exportExcel('buku-besar')">Buku Besar (Semua)</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="exportExcel('semua')" style="font-weight:700;color:var(--primary-light);">Export Semua (Multi-Sheet)</div> </div> </div> </div> <!-- Print Dropdown --> <div style="position:relative;" id="print-dropdown-wrap"> <button class="hdr-btn" onclick="toggleDropdown('print-dropdown')">Print </button> <div id="print-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); right: 0px; background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius2); box-shadow: var(--shadow2); z-index: 500; min-width: 220px; overflow: hidden;"> <div style="padding:8px 0;"> <div style="padding:6px 16px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);">Cetak Laporan</div> <div class="dropdown-item" onclick="printReport('jurnal')">Jurnal Umum</div> <div class="dropdown-item" onclick="printReport('neraca-saldo')">Neraca Saldo</div> <div class="dropdown-item" onclick="printReport('ns-penyesuaian')">NS Setelah Penyesuaian</div> <div class="dropdown-item" onclick="printReport('laba-rugi')"><span id="print-label-laba-rugi">Laporan Laba Rugi</span></div> <div class="dropdown-item" onclick="printReport('neraca')"><span id="print-label-neraca">Laporan Posisi Keuangan</span></div> <div class="dropdown-item" onclick="printReport('perubahan-ekuitas')"><span id="print-label-ekuitas">Perubahan Ekuitas</span></div> <div class="dropdown-item" onclick="printReport('arus-kas')"><span id="print-label-arus-kas">Arus Kas</span></div> <div class="dropdown-item" id="print-item-lra" style="display:none;" onclick="printReport('lra')">Realisasi Anggaran (LRA)</div> <div class="dropdown-item" id="print-item-lsal" style="display:none;" onclick="printReport('lsal')">Saldo Anggaran Lebih (LSAL)</div> <div class="dropdown-item" id="print-item-shu" style="display:none;" onclick="printReport('shu')"><span id="print-label-shu">Lap. SHU (Koperasi)</span></div> <div class="dropdown-item" id="print-item-lpd" style="display:none;" onclick="printReport('lpd')">Perubahan Dana (BAZNAS)</div> <div class="dropdown-item" id="print-item-pak" style="display:none;" onclick="printReport('pak')">Aset Kelolaan (BAZNAS)</div> <div class="dropdown-item" onclick="printReport('jurnal-penutup')">Jurnal Penutup</div> <div class="dropdown-item" onclick="printBukuBesar()">Buku Besar</div> <div style="border-top:1px solid var(--border);margin:4px 0;"></div> <div class="dropdown-item" onclick="printReport('semua')" style="font-weight:700;color:var(--primary-light);">Cetak Semua Laporan</div> </div> </div> </div> <span id="save-indicator" style="font-size:11px;font-weight:600;color:#10b981;opacity:0;transition:opacity .5s;margin-right:4px;"></span> <button class="hdr-btn" onclick="openSyncModal()" title="Sinkronisasi data antar pengguna">🔄 Sinkron</button>
  </div> </div> <!-- CONTENT --> <div id="content"> <!-- DASHBOARD --> <div id="page-dashboard" class="page"> <div class="page-header"> <div><div class="page-title"> Dashboard</div><div class="page-subtitle" id="dash-subtitle">Pilih perusahaan untuk memulai</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="renderDashboard()" title="Refresh data dashboard"> Refresh</button> <button class="btn btn-secondary" onclick="printReport('dashboard')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('semua')">Export Semua</button> </div> </div> <div class="stats-grid" id="dash-stats"> </div> <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;"> <div class="card"> <div class="card-header"><div class="card-title">Pendapatan vs Beban</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartRevenueExpense" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> <div class="card"> <div class="card-header"><div class="card-title">Distribusi Aset</div></div> <div class="card-body"><div class="chart-container"><canvas id="chartAsset" style="box-sizing: border-box; display: block; height: 220px; width: 443px;" width="665" height="330"></canvas></div></div> </div> </div> <div class="card"> <div class="card-header"><div class="card-title">Transaksi Terbaru</div></div> <div class="card-body" style="padding:0"><div class="table-wrap"><table id="dash-recent-table"><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="dash-recent-tbody"></tbody></table></div></div> </div> </div> <!-- COMPANIES --> <div id="page-companies" class="page"> <div class="page-header"> <div><div class="page-title">Perusahaan</div><div class="page-subtitle">Kelola data perusahaan Anda</div></div> <div class="page-actions"> <span id="co-limit-badge" style="font-size:12px;color:var(--text3);margin-right:8px;"></span> <button class="btn btn-primary" onclick="openCompanyModal()">Tambah Perusahaan</button> </div> </div> <div id="company-cards" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div> </div> <!-- COA --> <div id="page-coa" class="page"> <div class="page-header"> <div><div class="page-title">Chart of Accounts</div><div class="page-subtitle">Daftar akun keuangan</div></div> <div class="page-actions"> <button class="btn btn-secondary btn-sm" onclick="loadDefaultCOA()">Muat CoA Default</button> <button class="btn btn-primary" onclick="resetCOAForm(); openModal('modal-coa')">Tambah Akun</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari akun..." oninput="filterTable('coa-tbody',this.value,[0,1,2])"></div> <select class="form-control" style="width:auto;padding:7px 12px;font-size:12px;" onchange="filterCoaType(this.value)"> <option value="">Semua Tipe</option> <option>Aset</option><option>Kewajiban</option><option>Ekuitas</option> <option>Pendapatan</option><option>Beban</option> </select> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('coa-tbody',0)">Kode ↕</th><th onclick="sortTable('coa-tbody',1)">Nama Akun ↕</th><th>Tipe</th><th>Saldo Normal</th><th>Header / Sub Header</th><th>Aksi</th></tr></thead><tbody id="coa-tbody"></tbody></table></div> </div> </div> <!-- TRANSACTIONS --> <div id="page-transactions" class="page"> <div class="page-header"> <div><div class="page-title">Transaksi</div><div class="page-subtitle">Input transaksi — jurnal dibuat otomatis</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openTransactionModal()">Transaksi Baru</button></div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari transaksi..." oninput="filterTable('trx-tbody',this.value,[1,2])"></div> <div style="display:flex;gap:8px;align-items:center;"> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-from"> <span style="font-size:12px;color:var(--text2);">s/d</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="trx-to"> <button class="btn btn-secondary btn-sm" onclick="filterTrxDate()">Filter</button>
  <button class="btn btn-secondary btn-sm" onclick="document.getElementById('trx-from').value='';document.getElementById('trx-to').value='';renderTransactions();" title="Reset filter tanggal"> Reset</button> </div> </div> <div class="table-wrap"><table><thead><tr><th onclick="sortTable('trx-tbody',0)">Tanggal ↕</th><th>No. Jurnal</th><th onclick="sortTable('trx-tbody',2)">Keterangan ↕</th><th>Total Debit</th><th>Aksi</th></tr></thead><tbody id="trx-tbody"> </tbody></table></div> <div style="padding:12px 16px;display:flex;justify-content:flex-end;"><div id="trx-pagination" class="pagination"></div></div> </div> </div> <!-- JURNAL UMUM --> <div id="page-jurnal" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Umum</div><div class="page-subtitle">Detail debit-kredit setiap transaksi</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('jurnal')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('jurnal')">Export</button> </div> </div> <div class="card"> <div class="table-toolbar"> <div class="search-box"> <input type="text" placeholder="Cari jurnal..." oninput="filterTable('jurnal-tbody',this.value,[0,2,3])"></div> </div> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No. Jurnal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jurnal-tbody"> </tbody></table></div> </div> </div> <!-- BUKU BESAR --> <div id="page-buku-besar" class="page"> <div class="page-header"> <div><div class="page-title">Buku Besar</div><div class="page-subtitle">Akumulasi per akun</div></div> </div> <div style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;"> <select class="form-control" style="max-width:300px;" id="bb-account-select" onchange="renderBukuBesar()"><option value="">— Pilih Akun —</option></select> <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;"> <input type="checkbox" id="bb-include-adj" checked onchange="renderBukuBesar()">Sertakan penyesuaian
- </label> <button class="btn btn-secondary btn-sm" onclick="renderBukuBesarSemua()">Tampilkan Semua Akun</button> <button class="btn btn-secondary btn-sm" onclick="printBukuBesar()">Cetak</button> <button class="btn btn-secondary btn-sm" onclick="exportBukuBesarExcel()">Export Excel</button> </div> <div id="bb-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih akun dari dropdown di atas atau klik "Tampilkan Semua Akun"</p></div> </div> </div> <!-- NERACA SALDO --> <div id="page-neraca-saldo" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo</div><div class="page-subtitle">Saldo akhir semua akun</div></div> </div> <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:12px;color:#92400e;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"> <span>ℹ <strong>Sebelum Penyesuaian</strong> — Neraca Saldo ini belum mencakup jurnal penyesuaian.</span> <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:600;"><input type="checkbox" id="ns-show-zero" onchange="renderNeracaSaldo()"> Tampilkan akun saldo nol</label>
+ </label> <div style="display:flex;gap:8px;align-items:center;padding-left:8px;border-left:1px solid var(--border);"> <span style="font-size:12px;color:var(--text2);">Periode:</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="bb-date-from" onchange="renderBukuBesarActive()"> <span style="font-size:12px;color:var(--text2);">s/d</span> <input type="date" class="form-control" style="font-size:12px;padding:7px 10px;" id="bb-date-to" onchange="renderBukuBesarActive()"> <button class="btn btn-secondary btn-sm" onclick="document.getElementById('bb-date-from').value='';document.getElementById('bb-date-to').value='';renderBukuBesarActive();" title="Reset filter periode"> Reset</button> </div> <button class="btn btn-secondary btn-sm" onclick="renderBukuBesarSemua()">Tampilkan Semua Akun</button> <button class="btn btn-secondary btn-sm" onclick="printBukuBesar()">Cetak</button> <button class="btn btn-secondary btn-sm" onclick="exportBukuBesarExcel()">Export Excel</button> </div> <div id="bb-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih akun dari dropdown di atas atau klik "Tampilkan Semua Akun"</p></div> </div> </div> <!-- NERACA SALDO --> <div id="page-neraca-saldo" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo</div><div class="page-subtitle">Saldo akhir semua akun</div></div> </div> <div style="margin-bottom:10px;padding:9px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:12px;color:#92400e;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;"> <span>ℹ <strong>Sebelum Penyesuaian</strong> — Neraca Saldo ini belum mencakup jurnal penyesuaian.</span> <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-weight:600;"><input type="checkbox" id="ns-show-zero" onchange="renderNeracaSaldo()"> Tampilkan akun saldo nol</label>
  Lihat tab <strong>NS Setelah Penyesuaian</strong>untuk saldo yang sudah memperhitungkan penyesuaian akhir periode.
  </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="ns-tbody"></tbody><tfoot id="ns-tfoot"></tfoot></table></div> </div> </div> <!-- JURNAL PENYESUAIAN --> <div id="page-penyesuaian" class="page"> <div class="page-header"> <div><div class="page-title">Jurnal Penyesuaian</div><div class="page-subtitle">Penyesuaian akhir periode</div></div> <div class="page-actions"><button class="btn btn-primary" onclick="openModal('modal-penyesuaian')">Tambah Penyesuaian</button></div> </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun Debit</th><th>Akun Kredit</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="penyesuaian-tbody"></tbody></table></div> </div> </div> <!-- NS SETELAH PENYESUAIAN --> <div id="page-ns-penyesuaian" class="page"> <div class="page-header"> <div><div class="page-title">Neraca Saldo Setelah Penyesuaian</div></div> </div> <div class="card"> <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="nspa-tbody"></tbody><tfoot id="nspa-tfoot"></tfoot></table></div> </div> </div> <!-- HUTANG --> <div id="page-hutang" class="page"> <div class="page-header"> <div><div class="page-title">Hutang (Accounts Payable)</div><div class="page-subtitle">Catat invoice di sini → jurnal otomatis dibuat. Pelunasan lewat tombol <strong>Bayar</strong>.</div></div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('hutang')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('hutang')">Export</button> <button class="btn btn-primary" onclick="openHutangModal()">Tambah Hutang</button> </div> </div> <div style="margin-bottom:12px;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);">
 ℹ️ <strong>Alur Hutang:</strong> Tambah Hutang → jurnal otomatis (D: Aset/Beban / K: Hutang Usaha). Klik <strong>Bayar</strong> saat melunasi → jurnal pelunasan otomatis (D: Hutang Usaha / K: Kas). Input jurnal manual di menu Jurnal Umum <em>tidak</em> membuat record di sini.
@@ -4352,7 +4352,7 @@ function renderJurnal() {
 // 
 // BUKU BESAR — Enhanced with saldo berjalan & print/export
 // 
-function getBukuBesarData(accId, includeAdj) {
+function getBukuBesarData(accId, includeAdj, dateFrom, dateTo) {
  const acc = DB.accounts.find(a=>a.id==accId);
  if (!acc) return null;
  const jds = DB.journal_details.filter(d=>d.account_id==accId);
@@ -4393,19 +4393,44 @@ function getBukuBesarData(accId, includeAdj) {
  if (!isOpeningSource && !isOpeningDesc) return false;
  return DB.journal_details.some(d => d.journal_id === je.id && d.account_id == accId);
  });
- const saldoAwalBB = adaJurnalPembukaBB ? 0 : (acc.saldo_awal || 0);
+ const saldoAwalCoA = adaJurnalPembukaBB ? 0 : (acc.saldo_awal || 0);
 
- let saldo = saldoAwalBB;
- combined.forEach(r=>{
+ // ── FILTER PERIODE (opsional) ──────────────────────────────────────
+ // Jika dateFrom diisi: hitung saldo akumulasi SEBELUM dateFrom sebagai
+ // "Saldo Awal Periode" baru, lalu hanya tampilkan mutasi DI DALAM rentang.
+ let saldoAwalEfektif = saldoAwalCoA;
+ let combinedFiltered = combined;
+
+ if (dateFrom || dateTo) {
+  if (dateFrom) {
+   const mutasiSebelumFrom = combined.filter(r => r.date < dateFrom);
+   let akumSebelum = 0;
+   mutasiSebelumFrom.forEach(r => {
+    if (acc.normal_balance==='Debit') akumSebelum += r.debit - r.kredit;
+    else akumSebelum += r.kredit - r.debit;
+   });
+   saldoAwalEfektif = saldoAwalCoA + akumSebelum;
+  }
+  combinedFiltered = combined.filter(r =>
+   (!dateFrom || r.date >= dateFrom) && (!dateTo || r.date <= dateTo)
+  );
+ }
+
+ let saldo = saldoAwalEfektif;
+ combinedFiltered.forEach(r=>{
  if (acc.normal_balance==='Debit') saldo += r.debit - r.kredit;
  else saldo += r.kredit - r.debit;
  r.saldo = saldo;
  });
 
- return {acc, combined, saldo, saldoAwal: saldoAwalBB};
+ return {
+  acc, combined: combinedFiltered, saldo, saldoAwal: saldoAwalEfektif,
+  isFiltered: !!(dateFrom || dateTo), dateFrom, dateTo
+ };
 }
 
 function renderBukuBesar() {
+ window._bbLastMode = 'single';
  const accs = coFilter(DB.accounts).sort((a,b)=>a.code.localeCompare(b.code,'id',{numeric:true}));
  const sel = document.getElementById('bb-account-select');
  const curVal = sel.value;
@@ -4417,37 +4442,66 @@ function renderBukuBesar() {
  }
  const accId = sel.value;  // UUID-safe
  const includeAdj = document.getElementById('bb-include-adj')?.checked !== false;
- const data = getBukuBesarData(accId, includeAdj);
+ const dateFrom = document.getElementById('bb-date-from')?.value || '';
+ const dateTo   = document.getElementById('bb-date-to')?.value || '';
+ const data = getBukuBesarData(accId, includeAdj, dateFrom, dateTo);
  if (!data) return;
- const {acc, combined, saldo, saldoAwal} = data;
+ const {acc, combined, saldo, saldoAwal, isFiltered} = data;
+
+ const periodeBanner = isFiltered ? `
+  <div style="margin-bottom:10px;padding:9px 14px;background:rgba(37,99,235,.07);border-radius:8px;
+   border-left:3px solid var(--primary-light);font-size:12px;color:var(--primary-light);display:flex;align-items:center;gap:8px;">
+   <span>📅</span>
+   <span><strong>Periode terfilter:</strong> ${dateFrom||'awal'} s/d ${dateTo||'akhir'}
+    — Saldo Awal Periode dihitung otomatis dari akumulasi sebelum tanggal mulai.</span>
+  </div>` : '';
 
  const rows = combined.map(r=>`<tr> <td>${r.date}</td> <td style="font-size:11px;color:var(--text3);">${r.ref}</td> <td style="${r.type==='P'?'font-style:italic;color:var(--text2);':''}">${r.desc}</td> <td class="td-mono">${r.debit?fmtC(r.debit):''}</td> <td class="td-mono" style="color:var(--text2);">${r.kredit?fmtC(r.kredit):''}</td> <td class="td-mono" style="font-weight:700;color:${r.saldo>=0?'var(--text)':'var(--danger)'};">${fmtC(r.saldo)}</td> </tr>`);
 
- document.getElementById('bb-content').innerHTML = `
- <div class="card" style="margin-bottom:12px;"> <div style="padding:16px 20px;display:flex;gap:24px;align-items:center;flex-wrap:wrap;"> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Akun</div><div style="font-weight:800;font-size:16px;">${acc.code} — ${acc.name}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Tipe</div><div style="font-weight:600;">${acc.type}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Saldo Normal</div><div style="font-weight:600;">${acc.normal_balance}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Mutasi</div><div style="font-weight:600;">${combined.length} entri</div></div> <div style="margin-left:auto;text-align:right;"> <div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Saldo Akhir</div> <div style="font-weight:800;font-size:22px;font-family:var(--mono);color:${saldo>=0?'var(--text)':'var(--danger)'};">${fmtC(saldo)}</div> </div> </div> </div> <div class="card"> <div class="table-wrap"><table> <thead><tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo Berjalan</th></tr></thead> <tbody> <tr style="background:var(--bg);"><td colspan="5" style="padding:8px 14px;font-weight:700;font-size:12px;">Saldo Awal</td><td class="td-mono" style="padding:8px 14px;font-weight:700;">${fmtC(saldoAwal||0)}</td></tr> ${rows.join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3);">Tidak ada transaksi</td></tr>'}
+ document.getElementById('bb-content').innerHTML = periodeBanner + `
+ <div class="card" style="margin-bottom:12px;"> <div style="padding:16px 20px;display:flex;gap:24px;align-items:center;flex-wrap:wrap;"> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Akun</div><div style="font-weight:800;font-size:16px;">${acc.code} — ${acc.name}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Tipe</div><div style="font-weight:600;">${acc.type}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Saldo Normal</div><div style="font-weight:600;">${acc.normal_balance}</div></div> <div><div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Mutasi</div><div style="font-weight:600;">${combined.length} entri${isFiltered?' (terfilter)':''}</div></div> <div style="margin-left:auto;text-align:right;"> <div style="font-size:11px;color:var(--text2);text-transform:uppercase;font-weight:700;">Saldo Akhir${isFiltered?' Periode':''}</div> <div style="font-weight:800;font-size:22px;font-family:var(--mono);color:${saldo>=0?'var(--text)':'var(--danger)'};">${fmtC(saldo)}</div> </div> </div> </div> <div class="card"> <div class="table-wrap"><table> <thead><tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo Berjalan</th></tr></thead> <tbody> <tr style="background:var(--bg);"><td colspan="5" style="padding:8px 14px;font-weight:700;font-size:12px;">Saldo Awal${isFiltered?' Periode (per '+(dateFrom||'awal')+')':''}</td><td class="td-mono" style="padding:8px 14px;font-weight:700;">${fmtC(saldoAwal||0)}</td></tr> ${rows.join('')||'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text3);">Tidak ada transaksi'+(isFiltered?' pada periode ini':'')+'</td></tr>'}
  <tr style="background:var(--bg);font-weight:800;"> <td colspan="3" style="padding:10px 14px;">SALDO AKHIR</td> <td class="td-mono" style="padding:10px 14px;">${fmtC(combined.reduce((s,r)=>s+r.debit,0))}</td> <td class="td-mono" style="padding:10px 14px;color:var(--text2);">${fmtC(combined.reduce((s,r)=>s+r.kredit,0))}</td> <td class="td-mono" style="padding:10px 14px;color:${saldo>=0?'var(--accent2)':'var(--danger)'};">${fmtC(saldo)}</td> </tr> </tbody> </table></div> </div> `;
 }
 
+// Re-render mempertahankan tab aktif (Per Akun vs Semua Akun) saat filter periode diubah
+function renderBukuBesarActive() {
+ const sel = document.getElementById('bb-account-select');
+ const lastMode = window._bbLastMode || 'single';
+ if (lastMode === 'all') renderBukuBesarSemua();
+ else if (sel?.value) renderBukuBesar();
+}
+
 function renderBukuBesarSemua() {
+ window._bbLastMode = 'all';
  const accs = coFilter(DB.accounts).sort((a,b)=>a.code.localeCompare(b.code,'id',{numeric:true}));
  const includeAdj = document.getElementById('bb-include-adj')?.checked !== false;
+ const dateFrom = document.getElementById('bb-date-from')?.value || '';
+ const dateTo   = document.getElementById('bb-date-to')?.value || '';
  let html = '';
 
+ const periodeBanner = (dateFrom || dateTo) ? `
+  <div style="margin-bottom:14px;padding:9px 14px;background:rgba(37,99,235,.07);border-radius:8px;
+   border-left:3px solid var(--primary-light);font-size:12px;color:var(--primary-light);display:flex;align-items:center;gap:8px;">
+   <span>📅</span>
+   <span><strong>Periode terfilter:</strong> ${dateFrom||'awal'} s/d ${dateTo||'akhir'}
+    — Saldo Awal per akun dihitung otomatis dari akumulasi sebelum tanggal mulai.</span>
+  </div>` : '';
+
  accs.forEach(acc => {
- const data = getBukuBesarData(acc.id, includeAdj);
+ const data = getBukuBesarData(acc.id, includeAdj, dateFrom, dateTo);
  if (!data || !data.combined.length) return;
- const {combined, saldo} = data;
+ const {combined, saldo, saldoAwal, isFiltered} = data;
 
  const rows = combined.map(r=>`<tr> <td>${r.date}</td> <td style="font-size:11px;color:var(--text3);">${r.ref}</td> <td style="${r.type==='P'?'font-style:italic;color:var(--text2);':''}">${r.desc}</td> <td class="td-mono">${r.debit?fmtC(r.debit):''}</td> <td class="td-mono" style="color:var(--text2);">${r.kredit?fmtC(r.kredit):''}</td> <td class="td-mono" style="font-weight:700;color:${r.saldo>=0?'var(--text)':'var(--danger)'};">${fmtC(r.saldo)}</td> </tr>`).join('');
 
  html += `
- <div class="card" style="margin-bottom:20px;"> <div class="card-header" style="background:var(--bg);"> <div> <span class="td-mono" style="font-size:13px;font-weight:700;">${acc.code}</span> <span style="font-weight:800;font-size:15px;margin-left:8px;">${acc.name}</span> <span style="margin-left:8px;font-size:11px;color:var(--text3);">${acc.type} · Saldo Normal: ${acc.normal_balance}</span> </div> <div style="font-family:var(--mono);font-weight:800;font-size:16px;color:${saldo>=0?'var(--accent2)':'var(--danger)'};">${fmtC(saldo)}</div> </div> <div class="table-wrap"><table> <thead><tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo</th></tr></thead> <tbody> ${rows}
+ <div class="card" style="margin-bottom:20px;"> <div class="card-header" style="background:var(--bg);"> <div> <span class="td-mono" style="font-size:13px;font-weight:700;">${acc.code}</span> <span style="font-weight:800;font-size:15px;margin-left:8px;">${acc.name}</span> <span style="margin-left:8px;font-size:11px;color:var(--text3);">${acc.type} · Saldo Normal: ${acc.normal_balance}</span> </div> <div style="font-family:var(--mono);font-weight:800;font-size:16px;color:${saldo>=0?'var(--accent2)':'var(--danger)'};">${fmtC(saldo)}</div> </div> <div class="table-wrap"><table> <thead><tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo</th></tr></thead> <tbody> ${isFiltered?`<tr style="background:var(--bg);"><td colspan="5" style="padding:6px 14px;font-size:11px;font-weight:700;">Saldo Awal Periode</td><td class="td-mono" style="padding:6px 14px;font-size:11px;font-weight:700;">${fmtC(saldoAwal||0)}</td></tr>`:''} ${rows}
  <tr style="background:var(--bg);font-weight:800;"> <td colspan="3" style="padding:8px 14px;">TOTAL / SALDO AKHIR</td> <td class="td-mono" style="padding:8px 14px;">${fmtC(combined.reduce((s,r)=>s+r.debit,0))}</td> <td class="td-mono" style="padding:8px 14px;">${fmtC(combined.reduce((s,r)=>s+r.kredit,0))}</td> <td class="td-mono" style="padding:8px 14px;color:${saldo>=0?'var(--accent2)':'var(--danger)'};">${fmtC(saldo)}</td> </tr> </tbody> </table></div> </div>`;
  });
 
- if (!html) html = '<div class="empty-state"><div class="empty-icon"></div><p>Tidak ada data buku besar.</p></div>';
- document.getElementById('bb-content').innerHTML = html;
- toast(`Menampilkan buku besar ${accs.filter(a=>getBukuBesarData(a.id,includeAdj)?.combined.length).length} akun`, 'success');
+ if (!html) html = '<div class="empty-state"><div class="empty-icon"></div><p>Tidak ada data buku besar'+((dateFrom||dateTo)?' pada periode ini':'')+'.</p></div>';
+ document.getElementById('bb-content').innerHTML = periodeBanner + html;
+ toast(`Menampilkan buku besar ${accs.filter(a=>getBukuBesarData(a.id,includeAdj,dateFrom,dateTo)?.combined.length).length} akun${(dateFrom||dateTo)?' (periode terfilter)':''}`, 'success');
 }
 
 // PRINT BUKU BESAR 
@@ -4455,24 +4509,28 @@ function printBukuBesar() {
  if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
  const co_data = getCompany();
  const coName = co_data?.name || 'Perusahaan';
- const period = `${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}`;
  const includeAdj = document.getElementById('bb-include-adj')?.checked !== false;
+ const dateFrom = document.getElementById('bb-date-from')?.value || '';
+ const dateTo   = document.getElementById('bb-date-to')?.value || '';
+ const period = (dateFrom || dateTo)
+  ? `${dateFrom||'awal'} s/d ${dateTo||'akhir'} (terfilter)`
+  : `${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}`;
 
  const selAccId = document.getElementById('bb-account-select')?.value || '';  // UUID-safe
  const accs = selAccId ? [DB.accounts.find(a=>a.id==selAccId)] : coFilter(DB.accounts).sort((a,b)=>a.code.localeCompare(b.code,'id',{numeric:true}));
 
  let body = '';
  accs.filter(Boolean).forEach(acc => {
- const data = getBukuBesarData(acc.id, includeAdj);
+ const data = getBukuBesarData(acc.id, includeAdj, dateFrom, dateTo);
  if (!data || !data.combined.length) return;
- const {combined, saldo} = data;
+ const {combined, saldo, saldoAwal, isFiltered} = data;
 
  body += `
- <div style="margin-bottom:24px;page-break-inside:avoid;"> <div style="background:#1e3a5f;color:#fff;padding:8px 12px;border-radius:4px 4px 0 0;display:flex;justify-content:space-between;align-items:center;"> <strong>${acc.code} — ${acc.name}</strong> <span>${acc.type} | Saldo Normal: ${acc.normal_balance}</span> </div> <table> <thead><tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo Berjalan</th></tr></thead> <tbody> ${combined.map(r=>`<tr> <td>${r.date}</td><td style="color:#64748b;font-size:11px;">${r.ref}</td> <td style="${r.type==='P'?'font-style:italic;':''}">${r.desc}</td> <td class="num">${r.debit?'Rp '+r.debit.toLocaleString('id-ID'):''}</td> <td class="num">${r.kredit?'Rp '+r.kredit.toLocaleString('id-ID'):''}</td> <td class="num" style="font-weight:700;">Rp ${r.saldo.toLocaleString('id-ID')}</td> </tr>`).join('')}
+ <div style="margin-bottom:24px;page-break-inside:avoid;"> <div style="background:#1e3a5f;color:#fff;padding:8px 12px;border-radius:4px 4px 0 0;display:flex;justify-content:space-between;align-items:center;"> <strong>${acc.code} — ${acc.name}</strong> <span>${acc.type} | Saldo Normal: ${acc.normal_balance}</span> </div> <table> <thead><tr><th>Tanggal</th><th>Ref</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo Berjalan</th></tr></thead> <tbody> ${isFiltered?`<tr><td colspan="5" style="font-weight:700;background:#f1f5f9;">Saldo Awal Periode</td><td class="num" style="font-weight:700;background:#f1f5f9;">Rp ${(saldoAwal||0).toLocaleString('id-ID')}</td></tr>`:''} ${combined.map(r=>`<tr> <td>${r.date}</td><td style="color:#64748b;font-size:11px;">${r.ref}</td> <td style="${r.type==='P'?'font-style:italic;':''}">${r.desc}</td> <td class="num">${r.debit?'Rp '+r.debit.toLocaleString('id-ID'):''}</td> <td class="num">${r.kredit?'Rp '+r.kredit.toLocaleString('id-ID'):''}</td> <td class="num" style="font-weight:700;">Rp ${r.saldo.toLocaleString('id-ID')}</td> </tr>`).join('')}
  <tr class="total-row"> <td colspan="3">SALDO AKHIR — ${acc.name}</td> <td class="num">Rp ${combined.reduce((s,r)=>s+r.debit,0).toLocaleString('id-ID')}</td> <td class="num">Rp ${combined.reduce((s,r)=>s+r.kredit,0).toLocaleString('id-ID')}</td> <td class="num">Rp ${saldo.toLocaleString('id-ID')}</td> </tr> </tbody> </table> </div>`;
  });
 
- if (!body) { toast('Tidak ada data untuk dicetak','error'); return; }
+ if (!body) { toast('Tidak ada data untuk dicetak'+((dateFrom||dateTo)?' pada periode ini':''),'error'); return; }
 
  const win = window.open('', '_blank', 'width=1000,height=700');
  win.document.write(`<!DOCTYPE html><html lang="id"><head>
@@ -4508,18 +4566,24 @@ function exportBukuBesarExcel() {
  if (typeof XLSX === 'undefined') { toast('Library Excel belum siap','error'); return; }
  const co_data = getCompany();
  const includeAdj = document.getElementById('bb-include-adj')?.checked !== false;
+ const dateFrom = document.getElementById('bb-date-from')?.value || '';
+ const dateTo   = document.getElementById('bb-date-to')?.value || '';
+ const periodeLabel = (dateFrom || dateTo)
+  ? `${dateFrom||'awal'} s/d ${dateTo||'akhir'} (terfilter)`
+  : `${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}`;
  const accs = coFilter(DB.accounts).sort((a,b)=>a.code.localeCompare(b.code,'id',{numeric:true}));
  const wb = XLSX.utils.book_new();
 
  accs.forEach(acc => {
- const data = getBukuBesarData(acc.id, includeAdj);
+ const data = getBukuBesarData(acc.id, includeAdj, dateFrom, dateTo);
  if (!data || !data.combined.length) return;
- const {combined, saldo} = data;
+ const {combined, saldo, saldoAwal, isFiltered} = data;
  const wsData = [
  [`BUKU BESAR — ${acc.code} ${acc.name}`],
- [`Perusahaan: ${co_data?.name||'—'} | Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'}`],
+ [`Perusahaan: ${co_data?.name||'—'} | Periode: ${periodeLabel}`],
  [],
  ['Tanggal','Ref','Keterangan','Debit','Kredit','Saldo'],
+ ...(isFiltered ? [['', '', 'Saldo Awal Periode', '', '', saldoAwal||0]] : []),
  ...combined.map(r=>[r.date, r.ref, r.desc, r.debit||0, r.kredit||0, r.saldo||0]),
  [],
  ['SALDO AKHIR','','', combined.reduce((s,r)=>s+r.debit,0), combined.reduce((s,r)=>s+r.kredit,0), saldo]
@@ -4530,7 +4594,7 @@ function exportBukuBesarExcel() {
  XLSX.utils.book_append_sheet(wb, ws, sheetName);
  });
 
- if (wb.SheetNames.length === 0) { toast('Tidak ada data buku besar','error'); return; }
+ if (wb.SheetNames.length === 0) { toast('Tidak ada data buku besar'+((dateFrom||dateTo)?' pada periode ini':''),'error'); return; }
  const filename = `BukuBesar_${co_data?.name||'Perusahaan'}_${new Date().toISOString().slice(0,10)}.xlsx`;
  XLSX.writeFile(wb, filename);
  toast(` Buku Besar (${wb.SheetNames.length} akun) berhasil diekspor!`, 'success', 4000);
