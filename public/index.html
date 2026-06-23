@@ -1224,7 +1224,9 @@ textarea.form-control { resize:vertical; min-height:80px; }
 
  <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Detail Jurnal</div> <table class="jd-table"> <thead><tr><th style="width:35%">Akun</th><th>Keterangan</th><th style="width:18%">Debit</th><th style="width:18%">Kredit</th><th style="width:40px"></th></tr></thead> <tbody id="jd-tbody"></tbody> <tfoot> <tr class="balance-row"> <td colspan="2" style="text-align:right;font-size:12px;padding:8px 10px;">Total:</td> <td id="jd-total-debit" class="td-mono" style="padding:8px 10px;font-size:12px;">0</td> <td id="jd-total-kredit" class="td-mono" style="padding:8px 10px;font-size:12px;">0</td> <td></td> </tr> <tr><td colspan="5" style="padding:6px 10px;font-size:12px;" id="jd-balance-msg"></td></tr> </tfoot> </table> <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addJournalRow()">Tambah Baris</button> <div id="trx-subledger-panel" style="display:none;"></div> </div> <div class="modal-footer"> <div style="font-size:11px;color:var(--text3);margin-right:auto;">Transaksi akan otomatis terintegrasi ke Hutang/Piutang/Persediaan/Aset Tetap/Perlengkapan</div> <button class="btn btn-secondary" onclick="closeModal('modal-transaction')">Batal</button> <button class="btn btn-primary" onclick="saveTransaction()">Simpan Transaksi</button> </div> </div>
 </div> <!-- Penyesuaian Modal -->
-<div class="modal-overlay" id="modal-penyesuaian"> <div class="modal"> <div class="modal-header"><div class="modal-title" id="pen-modal-title">Jurnal Penyesuaian</div><button class="modal-close" onclick="closeModal('modal-penyesuaian')"></button></div> <div class="modal-body"> <input type="hidden" id="pen-edit-id"> <div class="form-grid"> <div class="form-group"><label>Tanggal *</label><input class="form-control" type="date" id="pen-date" required=""></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan *</label><input class="form-control" id="pen-desc" required=""></div> <div class="form-group"><label>Akun Debit *</label><select class="form-control" id="pen-debit-acc"></select></div> <div class="form-group"><label>Akun Kredit *</label><select class="form-control" id="pen-kredit-acc"></select></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="pen-amount" min="0"></div> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-penyesuaian')">Batal</button> <button class="btn btn-primary" onclick="savePenyesuaian()">Simpan</button> </div> </div>
+<div class="modal-overlay" id="modal-penyesuaian"> <div class="modal"> <div class="modal-header"><div class="modal-title" id="pen-modal-title">Jurnal Penyesuaian</div><button class="modal-close" onclick="closeModal('modal-penyesuaian')"></button></div> <div class="modal-body"> <input type="hidden" id="pen-edit-id"> <div class="form-grid"> <div class="form-group"><label>Tanggal *</label><input class="form-control" type="date" id="pen-date" required=""></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan *</label><input class="form-control" id="pen-desc" required=""></div> <div class="form-group"><label>Akun Debit *</label><select class="form-control" id="pen-debit-acc" onchange="renderPenyesuaianSLPanel()"></select></div> <div class="form-group"><label>Akun Kredit *</label><select class="form-control" id="pen-kredit-acc" onchange="renderPenyesuaianSLPanel()"></select></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="pen-amount" min="0" oninput="renderPenyesuaianSLPanel()"></div> </div>
+ <div id="pen-subledger-panel" style="display:none;"></div>
+ </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-penyesuaian')">Batal</button> <button class="btn btn-primary" onclick="savePenyesuaian()">Simpan</button> </div> </div>
 </div> <!-- Hutang Modal -->
 <div class="modal-overlay" id="modal-hutang"> <div class="modal"> <div class="modal-header"><div class="modal-title">Hutang</div><button class="modal-close" onclick="closeModal('modal-hutang')"></button></div> <div class="modal-body"> <input type="hidden" id="hutang-edit-id"> <div class="form-grid"> <div class="form-group" style="grid-column:1/-1"><label>Kategori Hutang *</label><select class="form-control" id="hutang-kategori"><option value="pembelian_kredit">Pembelian Kredit (Hutang Dagang)</option><option value="pinjaman_bank">Pinjaman Bank</option><option value="pinjaman_pribadi">Pinjaman Pribadi / Pemegang Saham</option><option value="hutang_gaji">Hutang Gaji / Upah</option><option value="hutang_pajak">Hutang Pajak</option><option value="lain_lain">Lain-lain</option></select></div> <div class="form-group" style="grid-column:1/-1"><label>Nama Kreditur *</label><input class="form-control" id="hutang-nama" required=""></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="hutang-jumlah" min="0" required=""></div> <div class="form-group"><label>Tanggal</label><input class="form-control" type="date" id="hutang-tanggal"></div> <div class="form-group"><label>Jatuh Tempo</label><input class="form-control" type="date" id="hutang-jatuh"></div> <div class="form-group"><label>No. Faktur / Referensi *</label><input class="form-control" id="hutang-nomor-faktur" placeholder="Cth: INV-2024-001 atau PO-001" required></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan</label><input class="form-control" id="hutang-keterangan" placeholder="Opsional — misal: tujuan pinjaman, nama barang..."></div>
  <div class="form-group" style="grid-column:1/-1;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:3px solid var(--primary-lighter);">
@@ -3075,136 +3077,208 @@ function deleteCOA(id) {
 //   - Aset Tetap      → hanya sisi DEBIT  (perolehan)
 // ═══════════════════════════════════════════════════════════════════
 
+// ═══════════════════════════════════════════════════════════════════
+// DETEKSI ROLE SUB-LEDGER dari nama akun (tanpa cek type — universal)
+// ═══════════════════════════════════════════════════════════════════
+function _getSubledgerRole(acc) {
+ if (!acc) return null;
+ if (acc.account_role) return acc.account_role; // eksplisit dari CoA
+ const n = (acc.name || '').toLowerCase();
+ // Akumulasi Penyusutan (harus dicek SEBELUM aset_tetap)
+ if (n.includes('akumulasi') || n.includes('depresiasi'))
+  return 'akumulasi_penyusutan';
+ // Piutang
+ if ((n.includes('piutang') || n.includes('tagihan')) &&
+  !n.includes('ppn') && !n.includes('pph') && !n.includes('pajak') && !n.includes('penyisihan'))
+  return 'piutang_usaha';
+ // Hutang / Utang
+ if ((n.includes('hutang') || n.includes('utang')) &&
+  !n.includes('ppn') && !n.includes('pph') && !n.includes('pajak') &&
+  !n.includes('gaji') && !n.includes('bank') && !n.includes('obligasi'))
+  return 'hutang_usaha';
+ // Persediaan
+ if (n.includes('persediaan') || n.includes('stok barang') || n.includes('inventory') || n.includes('barang dagangan'))
+  return 'persediaan';
+ // Perlengkapan — exclude beban/biaya/expense
+ if (!n.includes('beban') && !n.includes('biaya') && !n.includes('expense') &&
+  (n.includes('perlengkapan') || n.includes('supplies') || n.includes('bahan habis')))
+  return 'perlengkapan';
+ // Aset Tetap
+ if (n.includes('peralatan') || n.includes('mesin') || n.includes('gedung') ||
+  n.includes('kendaraan') || n.includes('inventaris') || n.includes('aset tetap') ||
+  n.includes('aktiva tetap') || n.includes('bangunan') || n.includes('tanah') ||
+  n.includes('komputer') || n.includes('furnitur') || n.includes('mebel'))
+  return 'aset_tetap';
+ return null;
+}
+
+// ── Matriks deteksi lengkap semua sub-ledger ──────────────────────
+// role          | DEBIT                    | KREDIT
+// piutang_usaha | piutang_masuk (baru)     | skip (pelunasan → Terima Bayar)
+// hutang_usaha  | skip (bayar → Bayar)     | hutang_masuk (baru)
+// persediaan    | persediaan_masuk (baru)  | persediaan_keluar (kurangi batch)
+// perlengkapan  | perlengkapan_masuk (baru)| perlengkapan_pakai (kurangi nilai)
+// aset_tetap    | aset_tetap_masuk (baru)  | aset_tetap_keluar (pelepasan)
+// akumulasi     | skip (reversal jurnal)   | akumulasi_update (update nilai buku)
 function _detectSubledgerRows() {
  const accs = coFilter(DB.accounts);
  const rows = document.querySelectorAll('#jd-tbody tr');
  const matches = [];
  rows.forEach((r, idx) => {
-  const sel = r.querySelector('select');
+  const sel  = r.querySelector('select');
   const inps = r.querySelectorAll('input[type=number]');
-  const accId = sel?.value;
-  const debit = parseFloat(inps[0]?.value) || 0;
+  const accId  = sel?.value;
+  const debit  = parseFloat(inps[0]?.value) || 0;
   const kredit = parseFloat(inps[1]?.value) || 0;
   if (!accId || accId === '' || accId === '0') return;
   const acc = accs.find(a => String(a.id) === String(accId));
   if (!acc) return;
-
-  if (_accHasRole(acc,'piutang_usaha') && debit > 0) {
-   matches.push({rowIdx: idx, accId, role:'piutang_usaha', amount: debit, acc});
-  } else if (_accHasRole(acc,'hutang_usaha') && kredit > 0) {
-   matches.push({rowIdx: idx, accId, role:'hutang_usaha', amount: kredit, acc});
-  } else if (_accHasRole(acc,'persediaan') && debit > 0) {
-   matches.push({rowIdx: idx, accId, role:'persediaan', amount: debit, acc});
-  } else if (_accHasRole(acc,'perlengkapan') && debit > 0) {
-   matches.push({rowIdx: idx, accId, role:'perlengkapan', amount: debit, acc});
-  } else if (_accHasRole(acc,'aset_tetap') && debit > 0) {
-   matches.push({rowIdx: idx, accId, role:'aset_tetap', amount: debit, acc});
-  }
+  const role = _getSubledgerRole(acc);
+  if (!role) return;
+  if      (role==='piutang_usaha'      && debit  > 0) matches.push({rowIdx:idx,accId,role:'piutang_masuk',       amount:debit,  acc});
+  else if (role==='hutang_usaha'       && kredit > 0) matches.push({rowIdx:idx,accId,role:'hutang_masuk',        amount:kredit, acc});
+  else if (role==='persediaan'         && debit  > 0) matches.push({rowIdx:idx,accId,role:'persediaan_masuk',    amount:debit,  acc});
+  else if (role==='persediaan'         && kredit > 0) matches.push({rowIdx:idx,accId,role:'persediaan_keluar',   amount:kredit, acc});
+  else if (role==='perlengkapan'       && debit  > 0) matches.push({rowIdx:idx,accId,role:'perlengkapan_masuk', amount:debit,  acc});
+  else if (role==='perlengkapan'       && kredit > 0) matches.push({rowIdx:idx,accId,role:'perlengkapan_pakai', amount:kredit, acc});
+  else if (role==='aset_tetap'         && debit  > 0) matches.push({rowIdx:idx,accId,role:'aset_tetap_masuk',   amount:debit,  acc});
+  else if (role==='aset_tetap'         && kredit > 0) matches.push({rowIdx:idx,accId,role:'aset_tetap_keluar',  amount:kredit, acc});
+  else if (role==='akumulasi_penyusutan'&& kredit > 0) matches.push({rowIdx:idx,accId,role:'akumulasi_update',  amount:kredit, acc});
  });
  return matches;
 }
 
+// ── Render panel sub-ledger di modal Transaksi ────────────────────
 function renderSubledgerSyncPanel() {
  const panel = document.getElementById('trx-subledger-panel');
  if (!panel) return;
-
  const editId = document.getElementById('trx-edit-id')?.value;
  if (editId) {
-  panel.style.display = 'block';
-  panel.innerHTML = `<div style="margin-top:14px;padding:10px 14px;background:rgba(245,158,11,.07);
-   border-radius:8px;border-left:3px solid var(--warning);font-size:11px;color:#92400e;">
-   ℹ️ Sinkronisasi otomatis sub-ledger hanya berlaku saat <strong>membuat transaksi baru</strong>,
-   bukan saat edit. Untuk mengubah data sub-ledger dari transaksi ini, buka langsung modul
-   Hutang/Piutang/Persediaan/Perlengkapan/Aset Tetap yang terkait.
-  </div>`;
-  window._trxSubledgerMatches = [];
-  return;
+  panel.style.display='block';
+  panel.innerHTML=`<div style="margin-top:14px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);font-size:11px;color:#92400e;">ℹ️ Sinkronisasi sub-ledger hanya berlaku saat <strong>membuat transaksi baru</strong>. Untuk mengubah sub-ledger, buka langsung modul terkait.</div>`;
+  window._trxSubledgerMatches=[]; return;
  }
-
- const matches = _detectSubledgerRows();
- if (!matches.length) {
-  panel.style.display = 'none';
-  panel.innerHTML = '';
-  window._trxSubledgerMatches = [];
-  return;
- }
-
- const counterparty = document.getElementById('trx-counterparty')?.value || '';
- const roleLabel = {
-  piutang_usaha: '📥 Piutang Usaha — isi data debitur',
-  hutang_usaha:  '📤 Hutang Usaha — isi data kreditur',
-  persediaan:    '📦 Persediaan — isi nama barang & qty',
-  perlengkapan:  '🗂️ Perlengkapan — isi nama item',
-  aset_tetap:    '🏭 Aset Tetap — isi nama & masa manfaat'
+ let matches = _detectSubledgerRows();
+ // HPP Otomatis sudah tangani persediaan_keluar → skip agar tidak dobel
+ if (window._hppPending) matches = matches.filter(m => m.role !== 'persediaan_keluar');
+ if (!matches.length) { panel.style.display='none'; panel.innerHTML=''; window._trxSubledgerMatches=[]; return; }
+ const cp = document.getElementById('trx-counterparty')?.value || '';
+ const META = {
+  piutang_masuk:      {icon:'📥', label:'Piutang Baru',              bg:'rgba(37,99,235,.08)',  bd:'rgba(37,99,235,.3)'},
+  hutang_masuk:       {icon:'📤', label:'Hutang Baru',               bg:'rgba(239,68,68,.07)',  bd:'rgba(239,68,68,.3)'},
+  persediaan_masuk:   {icon:'📦', label:'Stok Masuk (Pembelian)',    bg:'rgba(16,185,129,.08)', bd:'rgba(16,185,129,.3)'},
+  persediaan_keluar:  {icon:'📦', label:'Stok Keluar (Penjualan)',   bg:'rgba(245,158,11,.08)', bd:'rgba(245,158,11,.3)'},
+  perlengkapan_masuk: {icon:'🗂️', label:'Perlengkapan Baru',         bg:'rgba(16,185,129,.08)', bd:'rgba(16,185,129,.3)'},
+  perlengkapan_pakai: {icon:'🗂️', label:'Pemakaian Perlengkapan',    bg:'rgba(245,158,11,.08)', bd:'rgba(245,158,11,.3)'},
+  aset_tetap_masuk:   {icon:'🏭', label:'Aset Tetap Baru',           bg:'rgba(37,99,235,.08)',  bd:'rgba(37,99,235,.3)'},
+  aset_tetap_keluar:  {icon:'🏭', label:'Pelepasan Aset Tetap',      bg:'rgba(239,68,68,.07)',  bd:'rgba(239,68,68,.3)'},
+  akumulasi_update:   {icon:'📉', label:'Update Akumulasi Penyusutan',bg:'rgba(139,92,246,.08)', bd:'rgba(139,92,246,.3)'},
  };
-
- let html = `<div style="margin-top:14px;padding:14px 16px;
-  background:linear-gradient(135deg,rgba(37,99,235,.07),rgba(16,185,129,.05));
-  border:1.5px solid rgba(37,99,235,.2);border-radius:10px;">
-  <div style="font-size:12px;font-weight:800;color:var(--primary-light);text-transform:uppercase;
-   letter-spacing:.5px;margin-bottom:10px;">
-   🔗 Lengkapi Info Sub-Ledger — Berlaku untuk semua jenis transaksi (tunai & kredit)
-  </div>`;
-
- matches.forEach((m, i) => {
-  html += `<div class="sl-field-group" style="margin-bottom:10px;padding:10px 12px;
-   background:rgba(255,255,255,.6);border-radius:8px;">
-   <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;">
-    ${roleLabel[m.role]} — ${escapeHtml(m.acc.name)}
-    <span style="font-weight:400;color:var(--text3);">(${fmtC(m.amount)})</span>
-   </div>`;
-
-  if (m.role === 'piutang_usaha' || m.role === 'hutang_usaha') {
-   const namaLabel = m.role === 'piutang_usaha' ? 'Nama Debitur *' : 'Nama Kreditur *';
-   html += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;">
-    <input class="form-control" id="sl-${i}-nama" placeholder="${namaLabel}" value="${escapeHtml(counterparty)}" style="font-size:12px;">
-    <input class="form-control" id="sl-${i}-faktur" placeholder="No. Faktur (opsional)" style="font-size:12px;">
-    <input class="form-control" type="date" id="sl-${i}-jatuh" style="font-size:12px;">
-   </div>
-   <div style="display:grid;grid-template-columns:1fr;gap:8px;">
-    <input class="form-control" id="sl-${i}-ket" placeholder="Keterangan (opsional — kosong = pakai keterangan transaksi)" style="font-size:12px;">
-   </div>
-   <div style="font-size:10px;color:var(--text3);margin-top:4px;">Jatuh tempo opsional. Keterangan kosong = otomatis pakai keterangan jurnal.</div>`;
-  } else if (m.role === 'persediaan') {
-   html += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;">
+ let h = `<div style="margin-top:14px;padding:14px 16px;background:linear-gradient(135deg,rgba(37,99,235,.06),rgba(16,185,129,.04));border:1.5px solid rgba(37,99,235,.2);border-radius:10px;">
+  <div style="font-size:12px;font-weight:800;color:var(--primary-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">🔗 Info Sub-Ledger — Berlaku untuk semua transaksi (tunai & kredit)</div>`;
+ matches.forEach((m,i) => {
+  const mt = META[m.role]||{icon:'🔗',label:m.role,bg:'rgba(0,0,0,.04)',bd:'rgba(0,0,0,.15)'};
+  h += `<div style="margin-bottom:10px;padding:10px 12px;background:${mt.bg};border-left:3px solid ${mt.bd};border-radius:8px;">
+   <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;">${mt.icon} ${mt.label} — <span style="color:var(--primary-light);">${escapeHtml(m.acc.name)}</span> <span style="font-weight:400;color:var(--text3);">${fmtC(m.amount)}</span></div>`;
+  if (m.role==='piutang_masuk') {
+   h += _slRowPiuHut(i,'Nama Debitur *',cp);
+  } else if (m.role==='hutang_masuk') {
+   h += _slRowPiuHut(i,'Nama Kreditur *',cp);
+  } else if (m.role==='persediaan_masuk') {
+   h += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;">
     <input class="form-control" id="sl-${i}-nama" placeholder="Nama Barang *" style="font-size:12px;">
-    <input class="form-control" type="number" id="sl-${i}-qty" placeholder="Qty *" min="0" style="font-size:12px;" oninput="_slUpdateHargaSatuan(${i},${m.amount})">
-    <input class="form-control" type="number" id="sl-${i}-harga" placeholder="Harga Satuan" readonly style="font-size:12px;background:var(--bg);">
+    <input class="form-control" type="number" id="sl-${i}-qty" placeholder="Qty *" min="0" style="font-size:12px;" oninput="_slHarga(${i},${m.amount})">
+    <input class="form-control" type="number" id="sl-${i}-harga" placeholder="Harga/unit (auto)" readonly style="font-size:12px;background:var(--bg);">
    </div>
-   <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:4px;">
+   <input class="form-control" id="sl-${i}-ket" placeholder="Keterangan (opsional)" style="font-size:12px;width:100%;margin-top:4px;">
+   <div style="font-size:10px;color:var(--text3);margin-top:3px;">Harga satuan = nominal ÷ qty, otomatis.</div>`;
+  } else if (m.role==='persediaan_keluar') {
+   const batches=coFilter(DB.persediaan).filter(p=>(p.jumlah||0)>0);
+   const opts=batches.length?batches.map(p=>`<option value="${p.id}">${escapeHtml(p.nama_barang)} — Sisa ${p.jumlah} @ ${fmtC(p.harga_satuan)}</option>`).join(''):'<option value="">Tidak ada stok</option>';
+   h += `<div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-bottom:6px;">
+    <select class="form-control" id="sl-${i}-batch" style="font-size:12px;" onchange="_slQtyKeluar(${i},${m.amount})">
+     <option value="">— Pilih barang yang keluar *—</option>${opts}</select>
+    <input class="form-control" type="number" id="sl-${i}-qty" placeholder="Qty keluar *" min="0" style="font-size:12px;">
+   </div>
+   <div id="sl-${i}-info" style="font-size:10px;color:var(--text3);">Pilih batch yang dijual/dipakai.</div>`;
+  } else if (m.role==='perlengkapan_masuk') {
+   h += `<div style="display:grid;gap:6px;">
+    <input class="form-control" id="sl-${i}-nama" placeholder="Nama Item Perlengkapan *" style="font-size:12px;">
     <input class="form-control" id="sl-${i}-ket" placeholder="Keterangan (opsional)" style="font-size:12px;">
+   </div>`;
+  } else if (m.role==='perlengkapan_pakai') {
+   const items=coFilter(DB.perlengkapan).filter(p=>(p.nilai||0)>0);
+   const opts=items.length?items.map(p=>`<option value="${p.id}">${escapeHtml(p.nama_item)} — Sisa ${fmtC(p.nilai)}</option>`).join(''):'<option value="">Tidak ada item</option>';
+   h += `<div style="display:grid;gap:6px;">
+    <select class="form-control" id="sl-${i}-item" style="font-size:12px;"><option value="">— Pilih perlengkapan *—</option>${opts}</select>
+    <input class="form-control" id="sl-${i}-ket" placeholder="Keterangan pemakaian (opsional)" style="font-size:12px;">
    </div>
-   <div style="font-size:10px;color:var(--text3);">Harga satuan otomatis = nominal debit ÷ qty.</div>`;
-  } else if (m.role === 'perlengkapan') {
-   html += `<input class="form-control" id="sl-${i}-nama" placeholder="Nama Item *" style="font-size:12px;width:100%;">`;
-  } else if (m.role === 'aset_tetap') {
-   html += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;">
+   <div style="font-size:10px;color:var(--text3);margin-top:3px;">Nilai akan dikurangi ${fmtC(m.amount)}.</div>`;
+  } else if (m.role==='aset_tetap_masuk') {
+   h += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;">
     <input class="form-control" id="sl-${i}-nama" placeholder="Nama Aset *" style="font-size:12px;">
     <input class="form-control" type="number" id="sl-${i}-masa" placeholder="Masa Manfaat (thn) *" min="1" style="font-size:12px;">
-    <select class="form-control" id="sl-${i}-metode" style="font-size:12px;"
-     onchange="document.getElementById('sl-${i}-tarif-wrap').style.display=this.value==='saldo-menurun'?'block':'none';">
-     <option value="garis-lurus">Garis Lurus</option>
-     <option value="saldo-menurun">Saldo Menurun</option>
+    <select class="form-control" id="sl-${i}-metode" style="font-size:12px;" onchange="var w=document.getElementById('sl-${i}-tw');if(w)w.style.display=this.value==='saldo-menurun'?'block':'none';">
+     <option value="garis-lurus">Garis Lurus</option><option value="saldo-menurun">Saldo Menurun</option>
     </select>
-    <span id="sl-${i}-tarif-wrap" style="display:none;">
-     <input class="form-control" type="number" id="sl-${i}-tarif" placeholder="Tarif %/thn" style="font-size:12px;">
-    </span>
-   </div>`;
+   </div>
+   <div id="sl-${i}-tw" style="display:none;margin-bottom:6px;">
+    <input class="form-control" type="number" id="sl-${i}-tarif" placeholder="Tarif %/thn (Saldo Menurun)" style="font-size:12px;width:100%;">
+   </div>
+   <input class="form-control" id="sl-${i}-ket" placeholder="Keterangan aset (opsional)" style="font-size:12px;width:100%;">`;
+  } else if (m.role==='aset_tetap_keluar') {
+   const asets=coFilter(DB.aset_tetap).filter(a=>(a.nilai_buku||0)>0.01);
+   const opts=asets.length?asets.map(a=>`<option value="${a.id}">${escapeHtml(a.nama_aset)} — Nilai buku ${fmtC(a.nilai_buku)}</option>`).join(''):'<option value="">Tidak ada aset aktif</option>';
+   h += `<div style="display:grid;gap:6px;">
+    <select class="form-control" id="sl-${i}-aset" style="font-size:12px;"><option value="">— Pilih aset yang dilepas/dijual *—</option>${opts}</select>
+    <input class="form-control" id="sl-${i}-ket" placeholder="Keterangan pelepasan (opsional)" style="font-size:12px;">
+   </div>
+   <div style="font-size:10px;color:var(--text3);margin-top:3px;">Nilai buku aset akan menjadi 0 dan ditandai dilepas.</div>`;
+  } else if (m.role==='akumulasi_update') {
+   const asets=coFilter(DB.aset_tetap).filter(a=>(a.harga_perolehan||0)>0);
+   const opts=asets.length?asets.map(a=>`<option value="${a.id}">${escapeHtml(a.nama_aset)} — Akum. ${fmtC(a.akumulasi_penyusutan||0)} | Nilai buku ${fmtC(a.nilai_buku||0)}</option>`).join(''):'<option value="">Tidak ada aset</option>';
+   h += `<div style="display:grid;gap:6px;">
+    <select class="form-control" id="sl-${i}-aset" style="font-size:12px;"><option value="">— Pilih aset yang disusutkan *—</option>${opts}</select>
+    <input class="form-control" id="sl-${i}-ket" placeholder="Keterangan penyusutan (opsional)" style="font-size:12px;">
+   </div>
+   <div style="font-size:10px;color:var(--text3);margin-top:3px;">Akumulasi penyusutan aset akan bertambah ${fmtC(m.amount)}, nilai buku berkurang.</div>`;
   }
-  html += `</div>`;
+  h += `</div>`;
  });
-
- html += `</div>`;
- panel.innerHTML = html;
+ h += `</div>`;
+ panel.innerHTML = h;
  panel.style.display = 'block';
  window._trxSubledgerMatches = matches;
 }
 
-function _slUpdateHargaSatuan(i, amount) {
- const qtyEl = document.getElementById(`sl-${i}-qty`);
- const hargaEl = document.getElementById(`sl-${i}-harga`);
- const qty = parseFloat(qtyEl?.value) || 0;
- if (hargaEl) hargaEl.value = qty > 0 ? (amount / qty).toFixed(2) : '';
+// Helper field piutang/hutang
+function _slRowPiuHut(i, lbl, cp) {
+ return `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-bottom:6px;">
+  <input class="form-control" id="sl-${i}-nama" placeholder="${lbl}" value="${escapeHtml(cp)}" style="font-size:12px;">
+  <input class="form-control" id="sl-${i}-faktur" placeholder="No. Faktur (opsional)" style="font-size:12px;">
+  <input class="form-control" type="date" id="sl-${i}-jatuh" style="font-size:12px;">
+ </div>
+ <input class="form-control" id="sl-${i}-ket" placeholder="Keterangan (opsional — kosong = pakai keterangan jurnal)" style="font-size:12px;width:100%;margin-bottom:4px;">`;
+}
+
+// Helper auto harga satuan untuk persediaan masuk
+function _slHarga(i, amount) {
+ const qty = parseFloat(document.getElementById(`sl-${i}-qty`)?.value) || 0;
+ const el  = document.getElementById(`sl-${i}-harga`);
+ if (el) el.value = qty > 0 ? (amount / qty).toFixed(2) : '';
+}
+
+// Helper auto qty estimasi untuk persediaan keluar
+function _slQtyKeluar(i, amount) {
+ const bId  = document.getElementById(`sl-${i}-batch`)?.value;
+ const qEl  = document.getElementById(`sl-${i}-qty`);
+ const inEl = document.getElementById(`sl-${i}-info`);
+ if (!bId) return;
+ const b = DB.persediaan.find(x => String(x.id) === String(bId));
+ if (!b) return;
+ const est = b.harga_satuan > 0 ? Math.round(amount / b.harga_satuan) : '';
+ if (qEl && !qEl.value) qEl.value = est;
+ if (inEl) inEl.innerHTML = `Stok: <strong>${b.jumlah} unit</strong> @ ${fmtC(b.harga_satuan)}. Estimasi qty: ${est} unit.`;
 }
 
 function openTransactionModal() {
@@ -4267,34 +4341,65 @@ function saveTransaction() {
   const matches = window._trxSubledgerMatches || [];
   for (let i = 0; i < matches.length; i++) {
    const m = matches[i];
-   const nama = (document.getElementById(`sl-${i}-nama`)?.value || '').trim();
-   if (!nama) {
-    const labelRole = {
-     piutang_usaha: 'Nama Debitur', hutang_usaha: 'Nama Kreditur',
-     persediaan: 'Nama Barang', perlengkapan: 'Nama Item', aset_tetap: 'Nama Aset'
-    }[m.role] || 'Nama';
-    toast(`"${labelRole}" wajib diisi di panel sub-ledger untuk baris "${m.acc.name}" sebelum menyimpan.`, 'error', 5000);
-    return;
-   }
    const ket = (document.getElementById(`sl-${i}-ket`)?.value || '').trim();
-   const payload = { ...m, nama, keterangan: ket || null };
-   if (m.role === 'persediaan') {
+   const payload = { ...m, keterangan: ket || null };
+
+   if (['piutang_masuk','hutang_masuk'].includes(m.role)) {
+    const nama = (document.getElementById(`sl-${i}-nama`)?.value || '').trim();
+    if (!nama) { toast(`Nama ${m.role==='piutang_masuk'?'Debitur':'Kreditur'} wajib diisi untuk "${m.acc.name}"`, 'error', 5000); return; }
+    payload.nama = nama;
+    payload.noFaktur   = (document.getElementById(`sl-${i}-faktur`)?.value || '').trim();
+    payload.jatuhTempo = document.getElementById(`sl-${i}-jatuh`)?.value || '';
+
+   } else if (m.role === 'persediaan_masuk') {
+    const nama = (document.getElementById(`sl-${i}-nama`)?.value || '').trim();
+    if (!nama) { toast(`Nama Barang wajib diisi untuk "${m.acc.name}"`, 'error', 5000); return; }
     const qty = parseFloat(document.getElementById(`sl-${i}-qty`)?.value) || 0;
     if (!qty || qty <= 0) { toast(`Qty wajib diisi untuk barang "${nama}"`, 'error', 5000); return; }
-    payload.qty = qty;
-    payload.hargaSatuan = m.amount / qty;
-   } else if (m.role === 'aset_tetap') {
+    payload.nama = nama; payload.qty = qty; payload.hargaSatuan = m.amount / qty;
+
+   } else if (m.role === 'persediaan_keluar') {
+    const batchId = document.getElementById(`sl-${i}-batch`)?.value || '';
+    if (!batchId) { toast(`Pilih barang yang keluar untuk "${m.acc.name}"`, 'error', 5000); return; }
+    const qty = parseFloat(document.getElementById(`sl-${i}-qty`)?.value) || 0;
+    if (!qty || qty <= 0) { toast(`Qty keluar wajib diisi`, 'error', 5000); return; }
+    const batch = DB.persediaan.find(x => String(x.id) === String(batchId));
+    if (batch && qty > (batch.jumlah||0)) {
+     if (!confirm(`Qty keluar (${qty}) melebihi stok tersedia (${batch.jumlah} unit). Lanjutkan?`)) return;
+    }
+    payload.batchId = batchId; payload.qty = qty;
+
+   } else if (m.role === 'perlengkapan_masuk') {
+    const nama = (document.getElementById(`sl-${i}-nama`)?.value || '').trim();
+    if (!nama) { toast(`Nama Item wajib diisi untuk "${m.acc.name}"`, 'error', 5000); return; }
+    payload.nama = nama;
+
+   } else if (m.role === 'perlengkapan_pakai') {
+    const itemId = document.getElementById(`sl-${i}-item`)?.value || '';
+    if (!itemId) { toast(`Pilih perlengkapan yang dipakai`, 'error', 5000); return; }
+    payload.itemId = itemId;
+
+   } else if (m.role === 'aset_tetap_masuk') {
+    const nama = (document.getElementById(`sl-${i}-nama`)?.value || '').trim();
+    if (!nama) { toast(`Nama Aset wajib diisi untuk "${m.acc.name}"`, 'error', 5000); return; }
     const masa = parseFloat(document.getElementById(`sl-${i}-masa`)?.value) || 0;
     if (!masa || masa <= 0) { toast(`Masa Manfaat wajib diisi untuk aset "${nama}"`, 'error', 5000); return; }
-    payload.masaManfaat = masa;
+    payload.nama = nama; payload.masaManfaat = masa;
     payload.metodePenyusutan = document.getElementById(`sl-${i}-metode`)?.value || 'garis-lurus';
     payload.tarifSM = parseFloat(document.getElementById(`sl-${i}-tarif`)?.value) || 0;
     if (payload.metodePenyusutan === 'saldo-menurun' && !payload.tarifSM) {
-     toast(`Tarif %/tahun wajib diisi untuk aset "${nama}" (metode Saldo Menurun)`, 'error', 5000); return;
+     toast(`Tarif %/tahun wajib diisi untuk Saldo Menurun`, 'error', 5000); return;
     }
-   } else if (m.role === 'piutang_usaha' || m.role === 'hutang_usaha') {
-    payload.noFaktur = (document.getElementById(`sl-${i}-faktur`)?.value || '').trim();
-    payload.jatuhTempo = document.getElementById(`sl-${i}-jatuh`)?.value || '';
+
+   } else if (m.role === 'aset_tetap_keluar') {
+    const asetId = document.getElementById(`sl-${i}-aset`)?.value || '';
+    if (!asetId) { toast(`Pilih aset yang dilepas/dijual`, 'error', 5000); return; }
+    payload.asetId = asetId;
+
+   } else if (m.role === 'akumulasi_update') {
+    const asetId = document.getElementById(`sl-${i}-aset`)?.value || '';
+    if (!asetId) { toast(`Pilih aset yang disusutkan untuk "${m.acc.name}"`, 'error', 5000); return; }
+    payload.asetId = asetId;
    }
    subledgerPayload.push(payload);
   }
@@ -4341,51 +4446,76 @@ function saveTransaction() {
 
  // ── Eksekusi auto-sync sub-ledger (memakai jeId/trxId yang SAMA — tidak buat jurnal ganda) ──
  subledgerPayload.forEach(p => {
-  // Keterangan: pakai dari panel jika diisi, fallback ke deskripsi jurnal
   const ketSL = p.keterangan || desc;
-  // Nomor referensi: pakai nomor faktur dari panel, fallback ke nomor jurnal (JU-XXXX) yang konsisten
-  const nomorRefSL = p.noFaktur || journalNo || ('JU-' + date.replace(/-/g,''));
-  if (p.role === 'piutang_usaha') {
-   DB.piutang.push({
-    id: genId(), company_id: co(), nama_debitur: p.nama, jumlah: p.amount, sisa: p.amount,
-    status: 'Belum Lunas', tanggal: date, jatuh_tempo: p.jatuhTempo || '',
-    nomor_ref: nomorRefSL, keterangan: ketSL, kategori: 'lainnya',
-    ref_journal_id: jeId, ref_transaction_id: trxId
-   });
-  } else if (p.role === 'hutang_usaha') {
-   DB.hutang.push({
-    id: genId(), company_id: co(), nama_kreditur: p.nama, jumlah: p.amount, sisa: p.amount,
-    status: 'Belum Lunas', tanggal: date, jatuh_tempo: p.jatuhTempo || '',
-    nomor_ref: nomorRefSL, keterangan: ketSL, kategori: 'lainnya',
-    ref_journal_id: jeId, ref_transaction_id: trxId
-   });
-  } else if (p.role === 'persediaan') {
-   DB.persediaan.push({
-    id: genId(), company_id: co(), nama_barang: p.nama, jumlah: p.qty,
-    harga_satuan: p.hargaSatuan, total_nilai: p.amount, tanggal: date,
-    keterangan: ketSL, metode: 'jurnal_umum', nomor_ref: nomorRefSL,
-    ref_journal_id: jeId, ref_transaction_id: trxId
-   });
-  } else if (p.role === 'perlengkapan') {
-   DB.perlengkapan.push({
-    id: genId(), company_id: co(), nama_item: p.nama, nilai: p.amount, tanggal: date,
-    keterangan: ketSL, metode: 'jurnal_umum', nomor_ref: nomorRefSL,
-    ref_journal_id: jeId, ref_transaction_id: trxId
-   });
-  } else if (p.role === 'aset_tetap') {
-   DB.aset_tetap.push({
-    id: genId(), company_id: co(), nama_aset: p.nama, harga_perolehan: p.amount,
-    tahun_perolehan: new Date(date).getFullYear(), masa_manfaat: p.masaManfaat,
-    akumulasi_penyusutan: 0, nilai_buku: p.amount, tanggal: date,
-    metode_penyusutan: p.metodePenyusutan, tarif_sm: p.tarifSM || null,
-    nilai_residu: 0, keterangan: ketSL, metode: 'jurnal_umum', nomor_ref: nomorRefSL,
-    ref_journal_id: jeId, ref_transaction_id: trxId
-   });
+  const nrSL  = p.noFaktur || journalNo || ('JU-' + date.replace(/-/g,''));
+  if (p.role === 'piutang_masuk') {
+   DB.piutang.push({ id:genId(), company_id:co(), nama_debitur:p.nama, jumlah:p.amount, sisa:p.amount,
+    status:'Belum Lunas', tanggal:date, jatuh_tempo:p.jatuhTempo||'',
+    nomor_ref:nrSL, keterangan:ketSL, kategori:'lainnya',
+    ref_journal_id:jeId, ref_transaction_id:trxId });
+  } else if (p.role === 'hutang_masuk') {
+   DB.hutang.push({ id:genId(), company_id:co(), nama_kreditur:p.nama, jumlah:p.amount, sisa:p.amount,
+    status:'Belum Lunas', tanggal:date, jatuh_tempo:p.jatuhTempo||'',
+    nomor_ref:nrSL, keterangan:ketSL, kategori:'lainnya',
+    ref_journal_id:jeId, ref_transaction_id:trxId });
+  } else if (p.role === 'persediaan_masuk') {
+   DB.persediaan.push({ id:genId(), company_id:co(), nama_barang:p.nama, jumlah:p.qty,
+    harga_satuan:p.hargaSatuan, total_nilai:p.amount, tanggal:date,
+    keterangan:ketSL, metode:'jurnal_umum', nomor_ref:nrSL,
+    ref_journal_id:jeId, ref_transaction_id:trxId });
+  } else if (p.role === 'persediaan_keluar') {
+   // Kurangi stok batch yang dipilih
+   const bIdx = DB.persediaan.findIndex(x => String(x.id) === String(p.batchId));
+   if (bIdx >= 0) {
+    DB.persediaan[bIdx].jumlah       = Math.max(0, (DB.persediaan[bIdx].jumlah||0) - p.qty);
+    DB.persediaan[bIdx].total_nilai   = Math.max(0, (DB.persediaan[bIdx].total_nilai||0) - (p.qty * (DB.persediaan[bIdx].harga_satuan||0)));
+   }
+  } else if (p.role === 'perlengkapan_masuk') {
+   DB.perlengkapan.push({ id:genId(), company_id:co(), nama_item:p.nama, nilai:p.amount, tanggal:date,
+    keterangan:ketSL, metode:'jurnal_umum', nomor_ref:nrSL,
+    ref_journal_id:jeId, ref_transaction_id:trxId });
+  } else if (p.role === 'perlengkapan_pakai') {
+   // Kurangi nilai perlengkapan yang dipilih
+   const pIdx = DB.perlengkapan.findIndex(x => String(x.id) === String(p.itemId));
+   if (pIdx >= 0) {
+    DB.perlengkapan[pIdx].nilai = Math.max(0, (DB.perlengkapan[pIdx].nilai||0) - p.amount);
+   }
+  } else if (p.role === 'aset_tetap_masuk') {
+   DB.aset_tetap.push({ id:genId(), company_id:co(), nama_aset:p.nama, harga_perolehan:p.amount,
+    tahun_perolehan:new Date(date).getFullYear(), masa_manfaat:p.masaManfaat,
+    akumulasi_penyusutan:0, nilai_buku:p.amount, tanggal:date,
+    metode_penyusutan:p.metodePenyusutan, tarif_sm:p.tarifSM||null,
+    nilai_residu:0, keterangan:ketSL, metode:'jurnal_umum', nomor_ref:nrSL,
+    ref_journal_id:jeId, ref_transaction_id:trxId });
+  } else if (p.role === 'aset_tetap_keluar') {
+   // Tandai aset sebagai dilepas
+   const aIdx = DB.aset_tetap.findIndex(x => String(x.id) === String(p.asetId));
+   if (aIdx >= 0) {
+    DB.aset_tetap[aIdx].nilai_buku = 0;
+    DB.aset_tetap[aIdx]._dilepas   = true;
+    DB.aset_tetap[aIdx]._tgl_lepas = date;
+    DB.aset_tetap[aIdx].keterangan = ketSL;
+   }
+  } else if (p.role === 'akumulasi_update') {
+   // Tambah akumulasi penyusutan aset yang dipilih, hitung ulang nilai buku
+   const aIdx = DB.aset_tetap.findIndex(x => String(x.id) === String(p.asetId));
+   if (aIdx >= 0) {
+    const a = DB.aset_tetap[aIdx];
+    a.akumulasi_penyusutan = (a.akumulasi_penyusutan||0) + p.amount;
+    a.nilai_buku = Math.max(0, (a.harga_perolehan||0) - a.akumulasi_penyusutan);
+    if (ketSL) a.keterangan = ketSL;
+   }
   }
  });
  if (subledgerPayload.length) {
-  const ringkasan = subledgerPayload.map(p => `${p.nama} (${p.role.replace(/_/g,' ')})`).join(', ');
-  toast(`🔗 Sub-ledger otomatis tersinkron: ${ringkasan}`, 'success', 6000);
+  const ringkasan = subledgerPayload.map(p => {
+   const lbl = {piutang_masuk:'Piutang',hutang_masuk:'Hutang',persediaan_masuk:'Persediaan masuk',
+    persediaan_keluar:'Persediaan keluar',perlengkapan_masuk:'Perlengkapan',
+    perlengkapan_pakai:'Perlengkapan pakai',aset_tetap_masuk:'Aset tetap',
+    aset_tetap_keluar:'Pelepasan aset',akumulasi_update:'Akumulasi penyusutan'}[p.role]||p.role;
+   return `${lbl}${p.nama?' ('+p.nama+')':''}`;
+  }).join(', ');
+  toast(`🔗 Sub-ledger tersinkron: ${ringkasan}`, 'success', 6000);
  }
  }
 
@@ -5022,6 +5152,113 @@ function openPenyesuaianEdit(id) {
  openModal('modal-penyesuaian');
 }
 
+// ── Panel sub-ledger untuk Jurnal Penyesuaian ──────────────────────
+// Sama seperti Jurnal Umum, tapi input-nya satu baris debit + satu baris kredit
+function renderPenyesuaianSLPanel() {
+ const panel = document.getElementById('pen-subledger-panel');
+ if (!panel) return;
+ const dAccId = document.getElementById('pen-debit-acc')?.value;
+ const kAccId = document.getElementById('pen-kredit-acc')?.value;
+ const amount  = parseFloat(document.getElementById('pen-amount')?.value) || 0;
+ const editId  = document.getElementById('pen-edit-id')?.value;
+ if (editId) { panel.style.display='none'; return; }
+ if (!amount) { panel.style.display='none'; panel.innerHTML=''; return; }
+
+ const accs = coFilter(DB.accounts);
+ const dAcc = accs.find(a => String(a.id) === String(dAccId));
+ const kAcc = accs.find(a => String(a.id) === String(kAccId));
+ const matches = [];
+ if (dAcc) {
+  const r = _getSubledgerRole(dAcc);
+  if (r==='piutang_usaha')      matches.push({side:'debit',  role:'piutang_masuk',       amount, acc:dAcc});
+  else if (r==='persediaan')    matches.push({side:'debit',  role:'persediaan_masuk',     amount, acc:dAcc});
+  else if (r==='perlengkapan')  matches.push({side:'debit',  role:'perlengkapan_masuk',   amount, acc:dAcc});
+  else if (r==='aset_tetap')    matches.push({side:'debit',  role:'aset_tetap_masuk',     amount, acc:dAcc});
+ }
+ if (kAcc) {
+  const r = _getSubledgerRole(kAcc);
+  if (r==='hutang_usaha')              matches.push({side:'kredit', role:'hutang_masuk',        amount, acc:kAcc});
+  else if (r==='persediaan')           matches.push({side:'kredit', role:'persediaan_keluar',    amount, acc:kAcc});
+  else if (r==='perlengkapan')         matches.push({side:'kredit', role:'perlengkapan_pakai',   amount, acc:kAcc});
+  else if (r==='aset_tetap')           matches.push({side:'kredit', role:'aset_tetap_keluar',    amount, acc:kAcc});
+  else if (r==='akumulasi_penyusutan') matches.push({side:'kredit', role:'akumulasi_update',     amount, acc:kAcc});
+ }
+ if (!matches.length) { panel.style.display='none'; panel.innerHTML=''; window._penSLMatches=[]; return; }
+
+ const META = {
+  piutang_masuk:      {icon:'📥', label:'Piutang Baru'},
+  hutang_masuk:       {icon:'📤', label:'Hutang Baru'},
+  persediaan_masuk:   {icon:'📦', label:'Stok Masuk'},
+  persediaan_keluar:  {icon:'📦', label:'Stok Keluar'},
+  perlengkapan_masuk: {icon:'🗂️', label:'Perlengkapan Baru'},
+  perlengkapan_pakai: {icon:'🗂️', label:'Pemakaian Perlengkapan'},
+  aset_tetap_masuk:   {icon:'🏭', label:'Aset Tetap Baru'},
+  aset_tetap_keluar:  {icon:'🏭', label:'Pelepasan Aset'},
+  akumulasi_update:   {icon:'📉', label:'Update Akumulasi Penyusutan'},
+ };
+ let h = `<div style="margin-top:12px;padding:12px 14px;background:linear-gradient(135deg,rgba(139,92,246,.06),rgba(16,185,129,.04));border:1.5px solid rgba(139,92,246,.2);border-radius:10px;">
+  <div style="font-size:12px;font-weight:800;color:#7c3aed;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">🔗 Info Sub-Ledger Penyesuaian</div>`;
+ matches.forEach((m,i) => {
+  const mt = META[m.role]||{icon:'🔗',label:m.role};
+  h += `<div style="margin-bottom:8px;padding:10px 12px;background:rgba(255,255,255,.7);border-left:3px solid rgba(139,92,246,.4);border-radius:8px;">
+   <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:7px;">${mt.icon} ${mt.label} — <span style="color:#7c3aed;">${escapeHtml(m.acc.name)}</span> <span style="font-weight:400;color:var(--text3);">${fmtC(m.amount)}</span></div>`;
+  if (m.role==='piutang_masuk') {
+   h += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;">
+    <input class="form-control" id="pen-sl-${i}-nama" placeholder="Nama Debitur *" style="font-size:12px;">
+    <input class="form-control" id="pen-sl-${i}-faktur" placeholder="No. Faktur (opsional)" style="font-size:12px;">
+    <input class="form-control" type="date" id="pen-sl-${i}-jatuh" style="font-size:12px;">
+   </div>`;
+  } else if (m.role==='hutang_masuk') {
+   h += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;">
+    <input class="form-control" id="pen-sl-${i}-nama" placeholder="Nama Kreditur *" style="font-size:12px;">
+    <input class="form-control" id="pen-sl-${i}-faktur" placeholder="No. Faktur (opsional)" style="font-size:12px;">
+    <input class="form-control" type="date" id="pen-sl-${i}-jatuh" style="font-size:12px;">
+   </div>`;
+  } else if (m.role==='persediaan_masuk') {
+   h += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;">
+    <input class="form-control" id="pen-sl-${i}-nama" placeholder="Nama Barang *" style="font-size:12px;">
+    <input class="form-control" type="number" id="pen-sl-${i}-qty" placeholder="Qty *" min="0" style="font-size:12px;" oninput="var hs=document.getElementById('pen-sl-${i}-harga');if(hs)hs.value=this.value>0?(${m.amount}/this.value).toFixed(2):''">
+    <input class="form-control" type="number" id="pen-sl-${i}-harga" placeholder="Harga/unit (auto)" readonly style="font-size:12px;background:var(--bg);">
+   </div>`;
+  } else if (m.role==='persediaan_keluar') {
+   const batches=coFilter(DB.persediaan).filter(p=>(p.jumlah||0)>0);
+   const opts=batches.length?batches.map(p=>`<option value="${p.id}">${escapeHtml(p.nama_barang)} — Sisa ${p.jumlah} @ ${fmtC(p.harga_satuan)}</option>`).join(''):'<option value="">Tidak ada stok</option>';
+   h += `<div style="display:grid;grid-template-columns:2fr 1fr;gap:8px;">
+    <select class="form-control" id="pen-sl-${i}-batch" style="font-size:12px;"><option value="">— Pilih barang keluar *—</option>${opts}</select>
+    <input class="form-control" type="number" id="pen-sl-${i}-qty" placeholder="Qty *" min="0" style="font-size:12px;">
+   </div>`;
+  } else if (m.role==='perlengkapan_masuk') {
+   h += `<input class="form-control" id="pen-sl-${i}-nama" placeholder="Nama Item *" style="font-size:12px;width:100%;">`;
+  } else if (m.role==='perlengkapan_pakai') {
+   const items=coFilter(DB.perlengkapan).filter(p=>(p.nilai||0)>0);
+   const opts=items.length?items.map(p=>`<option value="${p.id}">${escapeHtml(p.nama_item)} — Sisa ${fmtC(p.nilai)}</option>`).join(''):'<option value="">Tidak ada item</option>';
+   h += `<select class="form-control" id="pen-sl-${i}-item" style="font-size:12px;width:100%;"><option value="">— Pilih perlengkapan *—</option>${opts}</select>`;
+  } else if (m.role==='aset_tetap_masuk') {
+   h += `<div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;">
+    <input class="form-control" id="pen-sl-${i}-nama" placeholder="Nama Aset *" style="font-size:12px;">
+    <input class="form-control" type="number" id="pen-sl-${i}-masa" placeholder="Masa (thn) *" min="1" style="font-size:12px;">
+    <select class="form-control" id="pen-sl-${i}-metode" style="font-size:12px;">
+     <option value="garis-lurus">Garis Lurus</option><option value="saldo-menurun">Saldo Menurun</option>
+    </select>
+   </div>`;
+  } else if (m.role==='aset_tetap_keluar') {
+   const asets=coFilter(DB.aset_tetap).filter(a=>(a.nilai_buku||0)>0.01);
+   const opts=asets.length?asets.map(a=>`<option value="${a.id}">${escapeHtml(a.nama_aset)} — Nilai buku ${fmtC(a.nilai_buku)}</option>`).join(''):'<option value="">Tidak ada aset</option>';
+   h += `<select class="form-control" id="pen-sl-${i}-aset" style="font-size:12px;width:100%;"><option value="">— Pilih aset dilepas *—</option>${opts}</select>`;
+  } else if (m.role==='akumulasi_update') {
+   const asets=coFilter(DB.aset_tetap).filter(a=>(a.harga_perolehan||0)>0);
+   const opts=asets.length?asets.map(a=>`<option value="${a.id}">${escapeHtml(a.nama_aset)} — Akum. ${fmtC(a.akumulasi_penyusutan||0)} | Buku ${fmtC(a.nilai_buku||0)}</option>`).join(''):'<option value="">Tidak ada aset</option>';
+   h += `<select class="form-control" id="pen-sl-${i}-aset" style="font-size:12px;width:100%;"><option value="">— Pilih aset disusutkan *—</option>${opts}</select>
+   <div style="font-size:10px;color:var(--text3);margin-top:3px;">Akumulasi bertambah ${fmtC(m.amount)}, nilai buku berkurang.</div>`;
+  }
+  h += `</div>`;
+ });
+ h += `</div>`;
+ panel.innerHTML = h;
+ panel.style.display = 'block';
+ window._penSLMatches = matches;
+}
+
 function savePenyesuaian() {
  const date = document.getElementById('pen-date').value;
  const desc = document.getElementById('pen-desc').value.trim();
@@ -5131,6 +5368,86 @@ function savePenyesuaian() {
  DB.penyesuaian.push({id:newId, company_id:co(), date, description:desc,
  debit_acc:dAcc, kredit_acc:kAcc, amount,
  ref_journal_id:jeidAdj, ref_transaction_id:tidAdj});
+
+ // ── Eksekusi sub-ledger sync dari panel penyesuaian ──────────────
+ const penSLMatches = window._penSLMatches || [];
+ let penSLErr = false;
+ penSLMatches.forEach((m, i) => {
+  const nr = genJournalNo ? 'AJE-'+date.replace(/-/g,'') : '';
+  if (m.role==='piutang_masuk') {
+   const nm = (document.getElementById(`pen-sl-${i}-nama`)?.value||'').trim();
+   if (!nm) { toast(`Nama Debitur wajib diisi di panel sub-ledger`, 'error', 4000); penSLErr=true; return; }
+   DB.piutang.push({ id:genId(), company_id:co(), nama_debitur:nm, jumlah:amount, sisa:amount,
+    status:'Belum Lunas', tanggal:date,
+    jatuh_tempo:document.getElementById(`pen-sl-${i}-jatuh`)?.value||'',
+    nomor_ref:document.getElementById(`pen-sl-${i}-faktur`)?.value||nr,
+    keterangan:desc, kategori:'penyesuaian',
+    ref_journal_id:jeidAdj, ref_transaction_id:tidAdj });
+  } else if (m.role==='hutang_masuk') {
+   const nm = (document.getElementById(`pen-sl-${i}-nama`)?.value||'').trim();
+   if (!nm) { toast(`Nama Kreditur wajib diisi`, 'error', 4000); penSLErr=true; return; }
+   DB.hutang.push({ id:genId(), company_id:co(), nama_kreditur:nm, jumlah:amount, sisa:amount,
+    status:'Belum Lunas', tanggal:date,
+    jatuh_tempo:document.getElementById(`pen-sl-${i}-jatuh`)?.value||'',
+    nomor_ref:document.getElementById(`pen-sl-${i}-faktur`)?.value||nr,
+    keterangan:desc, kategori:'penyesuaian',
+    ref_journal_id:jeidAdj, ref_transaction_id:tidAdj });
+  } else if (m.role==='persediaan_masuk') {
+   const nm = (document.getElementById(`pen-sl-${i}-nama`)?.value||'').trim();
+   const qty = parseFloat(document.getElementById(`pen-sl-${i}-qty`)?.value)||0;
+   if (!nm||!qty) { toast(`Nama Barang & Qty wajib diisi`, 'error', 4000); penSLErr=true; return; }
+   DB.persediaan.push({ id:genId(), company_id:co(), nama_barang:nm, jumlah:qty,
+    harga_satuan:amount/qty, total_nilai:amount, tanggal:date,
+    keterangan:desc, metode:'penyesuaian', nomor_ref:nr,
+    ref_journal_id:jeidAdj, ref_transaction_id:tidAdj });
+  } else if (m.role==='persediaan_keluar') {
+   const bId = document.getElementById(`pen-sl-${i}-batch`)?.value||'';
+   const qty = parseFloat(document.getElementById(`pen-sl-${i}-qty`)?.value)||0;
+   if (!bId||!qty) { toast(`Pilih barang & isi Qty keluar`, 'error', 4000); penSLErr=true; return; }
+   const bIdx = DB.persediaan.findIndex(x=>String(x.id)===String(bId));
+   if (bIdx>=0) {
+    DB.persediaan[bIdx].jumlah = Math.max(0,(DB.persediaan[bIdx].jumlah||0)-qty);
+    DB.persediaan[bIdx].total_nilai = Math.max(0,(DB.persediaan[bIdx].total_nilai||0)-(qty*(DB.persediaan[bIdx].harga_satuan||0)));
+   }
+  } else if (m.role==='perlengkapan_masuk') {
+   const nm = (document.getElementById(`pen-sl-${i}-nama`)?.value||'').trim();
+   if (!nm) { toast(`Nama Item wajib diisi`, 'error', 4000); penSLErr=true; return; }
+   DB.perlengkapan.push({ id:genId(), company_id:co(), nama_item:nm, nilai:amount, tanggal:date,
+    keterangan:desc, metode:'penyesuaian', ref_journal_id:jeidAdj, ref_transaction_id:tidAdj });
+  } else if (m.role==='perlengkapan_pakai') {
+   const pId = document.getElementById(`pen-sl-${i}-item`)?.value||'';
+   if (!pId) { toast(`Pilih perlengkapan yang dipakai`, 'error', 4000); penSLErr=true; return; }
+   const pIdx = DB.perlengkapan.findIndex(x=>String(x.id)===String(pId));
+   if (pIdx>=0) DB.perlengkapan[pIdx].nilai = Math.max(0,(DB.perlengkapan[pIdx].nilai||0)-amount);
+  } else if (m.role==='aset_tetap_masuk') {
+   const nm = (document.getElementById(`pen-sl-${i}-nama`)?.value||'').trim();
+   const masa = parseFloat(document.getElementById(`pen-sl-${i}-masa`)?.value)||0;
+   if (!nm||!masa) { toast(`Nama Aset & Masa Manfaat wajib diisi`, 'error', 4000); penSLErr=true; return; }
+   DB.aset_tetap.push({ id:genId(), company_id:co(), nama_aset:nm, harga_perolehan:amount,
+    tahun_perolehan:new Date(date).getFullYear(), masa_manfaat:masa,
+    akumulasi_penyusutan:0, nilai_buku:amount, tanggal:date,
+    metode_penyusutan:document.getElementById(`pen-sl-${i}-metode`)?.value||'garis-lurus',
+    keterangan:desc, metode:'penyesuaian', ref_journal_id:jeidAdj, ref_transaction_id:tidAdj });
+  } else if (m.role==='aset_tetap_keluar') {
+   const aId = document.getElementById(`pen-sl-${i}-aset`)?.value||'';
+   if (!aId) { toast(`Pilih aset yang dilepas`, 'error', 4000); penSLErr=true; return; }
+   const aIdx = DB.aset_tetap.findIndex(x=>String(x.id)===String(aId));
+   if (aIdx>=0) { DB.aset_tetap[aIdx].nilai_buku=0; DB.aset_tetap[aIdx]._dilepas=true; DB.aset_tetap[aIdx]._tgl_lepas=date; }
+  } else if (m.role==='akumulasi_update') {
+   const aId = document.getElementById(`pen-sl-${i}-aset`)?.value||'';
+   if (!aId) { toast(`Pilih aset yang disusutkan`, 'error', 4000); penSLErr=true; return; }
+   const aIdx = DB.aset_tetap.findIndex(x=>String(x.id)===String(aId));
+   if (aIdx>=0) {
+    DB.aset_tetap[aIdx].akumulasi_penyusutan = (DB.aset_tetap[aIdx].akumulasi_penyusutan||0) + amount;
+    DB.aset_tetap[aIdx].nilai_buku = Math.max(0,(DB.aset_tetap[aIdx].harga_perolehan||0)-DB.aset_tetap[aIdx].akumulasi_penyusutan);
+   }
+  }
+ });
+ if (penSLMatches.length && !penSLErr) {
+  toast('🔗 Sub-ledger penyesuaian tersinkron', 'success', 4000);
+ }
+ window._penSLMatches = [];
+
  auditLog('CREATE', 'penyesuaian', newId, { desc, date, amount });
  toast('Penyesuaian disimpan & diposting ke Jurnal Umum','success');
  }
