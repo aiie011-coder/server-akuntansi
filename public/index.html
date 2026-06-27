@@ -795,10 +795,12 @@ textarea.form-control { resize:vertical; min-height:80px; }
  </div>
  <button class="btn btn-primary" onclick="openSyncModal()" style="background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;font-weight:700;">🔄 Sinkronisasi Data Multi-User</button>
  <button class="btn btn-secondary" onclick="exportJSON()" style="font-weight:600;"> Export JSON (Backup)</button>
- <label class="btn btn-secondary" style="cursor:pointer;font-weight:600;text-align:center;"> Import JSON <input type="file" accept=".json" onchange="importJSON(this)" style="display:none"></label>
+ <button class="btn btn-secondary" onclick="openImportJSON()" style="font-weight:600;">🔄 Import JSON (Merge/Replace)</button>
  <div style="border-top:1px solid var(--border);margin:2px 0;"></div>
  <button class="btn btn-secondary" onclick="exportExcel('semua')" style="font-weight:600;"> Export Semua ke Excel</button>
  <button class="btn btn-primary" onclick="openImportCSV()" style="background:var(--accent2);border-color:var(--accent2);font-weight:600;"> Import Transaksi CSV/Excel</button>
+ <button class="btn btn-primary" onclick="openImportCoA()" style="background:#7c3aed;border-color:#7c3aed;font-weight:600;">📋 Import CoA</button>
+ <button class="btn btn-primary" onclick="openImportSL()" style="background:var(--accent2);border-color:var(--accent2);font-weight:600;filter:hue-rotate(40deg);">📊 Import Sub-Ledger</button>
  </div>
  </div>
 
@@ -1224,6 +1226,138 @@ textarea.form-control { resize:vertical; min-height:80px; }
 
  <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Detail Jurnal</div> <table class="jd-table"> <thead><tr><th style="width:35%">Akun</th><th>Keterangan</th><th style="width:18%">Debit</th><th style="width:18%">Kredit</th><th style="width:40px"></th></tr></thead> <tbody id="jd-tbody"></tbody> <tfoot> <tr class="balance-row"> <td colspan="2" style="text-align:right;font-size:12px;padding:8px 10px;">Total:</td> <td id="jd-total-debit" class="td-mono" style="padding:8px 10px;font-size:12px;">0</td> <td id="jd-total-kredit" class="td-mono" style="padding:8px 10px;font-size:12px;">0</td> <td></td> </tr> <tr><td colspan="5" style="padding:6px 10px;font-size:12px;" id="jd-balance-msg"></td></tr> </tfoot> </table> <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="addJournalRow()">Tambah Baris</button> <div id="trx-subledger-panel" style="display:none;"></div> </div> <div class="modal-footer"> <div style="font-size:11px;color:var(--text3);margin-right:auto;">Transaksi akan otomatis terintegrasi ke Hutang/Piutang/Persediaan/Aset Tetap/Perlengkapan</div> <button class="btn btn-secondary" onclick="closeModal('modal-transaction')">Batal</button> <button class="btn btn-primary" onclick="saveTransaction()">Simpan Transaksi</button> </div> </div>
 </div> <!-- Penyesuaian Modal -->
+
+<!-- ══════════════════ MODAL IMPORT COA ══════════════════ -->
+<div class="modal-overlay" id="modal-import-coa">
+ <div class="modal" style="max-width:820px;">
+  <div class="modal-header">
+   <div class="modal-title">📋 Import Chart of Accounts (CoA)</div>
+   <button class="modal-close" onclick="closeModal('modal-import-coa')"></button>
+  </div>
+  <div class="modal-body">
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div style="padding:12px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:3px solid var(--primary-light);">
+     <div style="font-size:12px;font-weight:700;color:var(--primary-light);margin-bottom:6px;">📄 Format File</div>
+     <div style="font-size:11px;color:var(--text2);line-height:1.6;">
+      CSV atau Excel (.xlsx) dengan kolom:<br>
+      <code style="background:var(--bg);padding:1px 4px;border-radius:3px;">kode, nama, tipe, saldo_normal, saldo_awal</code><br>
+      <span style="color:var(--text3);">saldo_awal opsional (Rp, bisa 0)</span>
+     </div>
+    </div>
+    <div style="padding:12px 14px;background:rgba(245,158,11,.06);border-radius:8px;border-left:3px solid var(--warning);">
+     <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:6px;">⚙️ Mode Import</div>
+     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;margin-bottom:6px;">
+      <input type="radio" name="coa-import-mode" value="merge" checked> <span><strong>Merge</strong> — tambah akun baru, perbarui yang sudah ada (kode sama)</span>
+     </label>
+     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+      <input type="radio" name="coa-import-mode" value="replace"> <span><strong>Replace</strong> — hapus semua CoA lama, ganti dengan file ini</span>
+     </label>
+    </div>
+   </div>
+   <div style="display:flex;gap:10px;margin-bottom:12px;align-items:center;">
+    <input type="file" id="import-coa-file" accept=".csv,.xlsx,.xls" onchange="previewImportCoA(this)" style="flex:1;" class="form-control">
+    <button class="btn btn-secondary btn-sm" onclick="downloadTemplateCoA()">⬇ Template</button>
+   </div>
+   <div id="import-coa-preview" style="display:none;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+     <span id="import-coa-summary" style="font-size:13px;font-weight:700;color:var(--accent2);"></span>
+     <span id="import-coa-errors" style="font-size:12px;color:var(--danger);"></span>
+    </div>
+    <div class="table-wrap" style="max-height:280px;overflow-y:auto;">
+     <table><thead><tr><th>Kode</th><th>Nama</th><th>Tipe</th><th>Saldo Normal</th><th>Saldo Awal</th><th>Status</th></tr></thead>
+     <tbody id="import-coa-tbody"></tbody></table>
+    </div>
+   </div>
+  </div>
+  <div class="modal-footer">
+   <button class="btn btn-secondary" onclick="closeModal('modal-import-coa')">Batal</button>
+   <button class="btn btn-primary" id="btn-import-coa-confirm" style="display:none;" onclick="confirmImportCoA()">✅ Import CoA</button>
+  </div>
+ </div>
+</div>
+
+<!-- ══════════════════ MODAL IMPORT SUB-LEDGER ══════════════════ -->
+<div class="modal-overlay" id="modal-import-sl">
+ <div class="modal" style="max-width:860px;">
+  <div class="modal-header">
+   <div class="modal-title">📊 Import Sub-Ledger (Saldo Awal)</div>
+   <button class="modal-close" onclick="closeModal('modal-import-sl')"></button>
+  </div>
+  <div class="modal-body">
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+    <div style="padding:12px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:3px solid var(--primary-light);">
+     <div style="font-size:12px;font-weight:700;color:var(--primary-light);margin-bottom:6px;">📄 Format File</div>
+     <div style="font-size:11px;color:var(--text2);line-height:1.8;">
+      File Excel (.xlsx) dengan <strong>sheet terpisah per modul</strong>:<br>
+      <code>Hutang</code> | <code>Piutang</code> | <code>Persediaan</code><br>
+      <code>Perlengkapan</code> | <code>Aset Tetap</code><br>
+      <span style="color:var(--text3);">Semua data diimpor sebagai saldo awal — jurnal tidak dibuat.</span>
+     </div>
+    </div>
+    <div style="padding:12px 14px;background:rgba(245,158,11,.06);border-radius:8px;border-left:3px solid var(--warning);">
+     <div style="font-size:12px;font-weight:700;color:#92400e;margin-bottom:6px;">⚙️ Mode Import</div>
+     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;margin-bottom:6px;">
+      <input type="radio" name="sl-import-mode" value="merge" checked> <span><strong>Merge</strong> — tambah data baru tanpa hapus yang sudah ada</span>
+     </label>
+     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;">
+      <input type="radio" name="sl-import-mode" value="replace"> <span><strong>Replace</strong> — hapus sub-ledger yang dipilih, ganti dengan file ini</span>
+     </label>
+    </div>
+   </div>
+   <div style="display:flex;gap:10px;margin-bottom:12px;align-items:center;">
+    <input type="file" id="import-sl-file" accept=".xlsx,.xls" onchange="previewImportSL(this)" style="flex:1;" class="form-control">
+    <button class="btn btn-secondary btn-sm" onclick="downloadTemplateSL()">⬇ Template</button>
+   </div>
+   <div id="import-sl-preview" style="display:none;">
+    <div id="import-sl-summary" style="margin-bottom:10px;"></div>
+    <div id="import-sl-detail" style="max-height:300px;overflow-y:auto;"></div>
+   </div>
+  </div>
+  <div class="modal-footer">
+   <button class="btn btn-secondary" onclick="closeModal('modal-import-sl')">Batal</button>
+   <button class="btn btn-primary" id="btn-import-sl-confirm" style="display:none;" onclick="confirmImportSL()">✅ Import Sub-Ledger</button>
+  </div>
+ </div>
+</div>
+
+<!-- ══════════════════ MODAL IMPORT JSON (Merge/Replace) ══════════════════ -->
+<div class="modal-overlay" id="modal-import-json">
+ <div class="modal" style="max-width:520px;">
+  <div class="modal-header">
+   <div class="modal-title">🔄 Restore / Merge Backup JSON</div>
+   <button class="modal-close" onclick="closeModal('modal-import-json')"></button>
+  </div>
+  <div class="modal-body">
+   <div style="padding:12px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);margin-bottom:16px;font-size:12px;color:#92400e;">
+    ⚠️ <strong>Catatan:</strong> File backup JSON harus berasal dari ZeQui (hasil Export JSON). Import file dari sumber lain dapat menyebabkan data rusak.
+   </div>
+   <div style="margin-bottom:16px;">
+    <div style="font-size:13px;font-weight:700;margin-bottom:10px;">Pilih Mode Import:</div>
+    <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:12px;border:2px solid var(--border);border-radius:8px;margin-bottom:8px;" id="json-mode-merge-lbl">
+     <input type="radio" name="json-import-mode" value="merge" checked onchange="updateJsonModeUI()">
+     <div>
+      <div style="font-weight:700;font-size:13px;">🔀 Merge (Tambah Data)</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px;">Data dari file ditambahkan ke data yang sudah ada. Cocok untuk menggabungkan data dari departemen berbeda. Record dengan ID sama akan diperbarui.</div>
+     </div>
+    </label>
+    <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;padding:12px;border:2px solid var(--border);border-radius:8px;" id="json-mode-replace-lbl">
+     <input type="radio" name="json-import-mode" value="replace" onchange="updateJsonModeUI()">
+     <div>
+      <div style="font-weight:700;font-size:13px;">🔄 Replace (Ganti Semua)</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:3px;">Semua data lama dihapus dan diganti dengan isi file backup. Gunakan hanya untuk restore penuh ke kondisi backup.</div>
+     </div>
+    </label>
+   </div>
+   <input type="file" id="import-json-file" accept=".json" class="form-control" style="margin-bottom:8px;">
+   <div id="import-json-info" style="font-size:12px;color:var(--text3);margin-top:6px;"></div>
+  </div>
+  <div class="modal-footer">
+   <button class="btn btn-secondary" onclick="closeModal('modal-import-json')">Batal</button>
+   <button class="btn btn-danger" onclick="confirmImportJSON()">✅ Lanjutkan Import</button>
+  </div>
+ </div>
+</div>
+
 <div class="modal-overlay" id="modal-penyesuaian"> <div class="modal"> <div class="modal-header"><div class="modal-title" id="pen-modal-title">Jurnal Penyesuaian</div><button class="modal-close" onclick="closeModal('modal-penyesuaian')"></button></div> <div class="modal-body"> <input type="hidden" id="pen-edit-id"> <div class="form-grid"> <div class="form-group"><label>Tanggal *</label><input class="form-control" type="date" id="pen-date" required=""></div> <div class="form-group" style="grid-column:1/-1"><label>Keterangan *</label><input class="form-control" id="pen-desc" required=""></div> <div class="form-group"><label>Akun Debit *</label><select class="form-control" id="pen-debit-acc" onchange="renderPenyesuaianSLPanel()"></select></div> <div class="form-group"><label>Akun Kredit *</label><select class="form-control" id="pen-kredit-acc" onchange="renderPenyesuaianSLPanel()"></select></div> <div class="form-group"><label>Jumlah *</label><input class="form-control" type="number" id="pen-amount" min="0" oninput="renderPenyesuaianSLPanel()"></div> </div>
  <div id="pen-subledger-panel" style="display:none;"></div>
  </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-penyesuaian')">Batal</button> <button class="btn btn-primary" onclick="savePenyesuaian()">Simpan</button> </div> </div>
@@ -16283,6 +16417,372 @@ function confirmImportCSV() {
  renderTransactions();
  toast(` Import selesai: ${imported} jurnal berhasil${skip>0?' | '+skip+' jurnal tidak balance (dilewati)':''}`, 'success', 5000);
  if (currentPage === 'transactions') renderTransactions();
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// IMPORT COA
+// ═══════════════════════════════════════════════════════════════════
+const TIPE_VALID = ['Aset','Kewajiban','Ekuitas','Pendapatan','Beban','Liabilitas','Aset Lancar','Kewajiban Lancar'];
+const SALDO_VALID = ['Debit','Kredit'];
+
+function openImportCoA() {
+ if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
+ document.getElementById('import-coa-file').value='';
+ document.getElementById('import-coa-preview').style.display='none';
+ document.getElementById('btn-import-coa-confirm').style.display='none';
+ document.querySelector('input[name="coa-import-mode"][value="merge"]').checked=true;
+ openModal('modal-import-coa');
+}
+
+function downloadTemplateCoA() {
+ const csv=[
+  'kode,nama,tipe,saldo_normal,saldo_awal',
+  '1-101,Kas,Aset,Debit,50000000',
+  '1-102,Bank BCA,Aset,Debit,30000000',
+  '1-201,Piutang Usaha,Aset,Debit,8000000',
+  '1-301,Persediaan Barang,Aset,Debit,0',
+  '1-401,Perlengkapan Toko,Aset,Debit,2000000',
+  '1-501,Peralatan Toko,Aset,Debit,20000000',
+  '1-502,Akumulasi Penyusutan Peralatan,Aset,Kredit,4000000',
+  '2-101,Hutang Usaha,Kewajiban,Kredit,5000000',
+  '3-101,Modal Pemilik,Ekuitas,Kredit,101000000',
+  '4-101,Pendapatan Penjualan,Pendapatan,Kredit,0',
+  '5-101,Harga Pokok Penjualan,Beban,Debit,0',
+  '5-201,Beban Penyusutan,Beban,Debit,0',
+  '5-301,Beban Perlengkapan,Beban,Debit,0',
+ ].join('\n');
+ const a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));
+ a.download='template_import_coa.csv'; a.click();
+}
+
+let _importCoAData = [];
+async function previewImportCoA(input) {
+ const file=input.files[0]; if(!file) return;
+ let rows=[];
+ try {
+  if (file.name.endsWith('.csv')) {
+   rows=_parseCSVText(await file.text());
+  } else {
+   const XLSX=await _loadXLSX();
+   const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
+   const ws=wb.Sheets[wb.SheetNames[0]];
+   rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}).map(r=>r.map(c=>String(c===null||c===undefined?'':c).trim()));
+  }
+ } catch(e) { toast('Gagal baca file: '+e.message,'error'); return; }
+ if (rows.length<2) { toast('File kosong atau hanya header','error'); return; }
+
+ const hdr=rows[0].map(h=>h.toLowerCase().replace(/\s+/g,'_'));
+ const iKode=hdr.findIndex(h=>h.includes('kode'));
+ const iNama=hdr.findIndex(h=>h.includes('nama'));
+ const iTipe=hdr.findIndex(h=>h.includes('tipe')||h.includes('type'));
+ const iSN  =hdr.findIndex(h=>h.includes('saldo_normal')||h.includes('normal'));
+ const iSA  =hdr.findIndex(h=>h.includes('saldo_awal')||h.includes('saldo'));
+ if (iKode<0||iNama<0||iTipe<0||iSN<0) {
+  toast('Kolom tidak lengkap. Wajib: kode, nama, tipe, saldo_normal','error',5000); return;
+ }
+
+ _importCoAData=[]; let errCount=0;
+ const existAccs=coFilter(DB.accounts);
+ let html='';
+ rows.slice(1).forEach(r=>{
+  const kode=(r[iKode]||'').trim();
+  const nama=(r[iNama]||'').trim();
+  const tipe=r[iTipe]||'';
+  const sn  =r[iSN]||'';
+  const sa  =_parseNum(iSA>=0?r[iSA]:0);
+  let err='';
+  if (!kode) err='Kode kosong';
+  else if (!nama) err='Nama kosong';
+  else if (!TIPE_VALID.some(t=>t.toLowerCase()===tipe.toLowerCase())) err=`Tipe "${tipe}" tidak valid`;
+  else if (!SALDO_VALID.some(s=>s.toLowerCase()===sn.toLowerCase())) err=`Saldo normal "${sn}" harus Debit/Kredit`;
+  const existing=existAccs.find(a=>a.code===kode);
+  const status=err?'❌':'existing'? (existing?'🔄 Update':'✅ Baru'):(existing?'🔄 Update':'✅ Baru');
+  const statusStr=err?'❌':existing?'🔄 Perbarui':'✅ Baru';
+  if (err) errCount++;
+  _importCoAData.push({kode,nama,tipe,saldo_normal:sn,saldo_awal:sa,err,existing:!!existing});
+  html+=`<tr style="${err?'background:rgba(239,68,68,.06)':existing?'background:rgba(245,158,11,.04)':''}">
+   <td>${kode}</td><td>${nama}</td><td>${tipe}</td><td>${sn}</td>
+   <td style="text-align:right;">${sa?fmtC(sa):'—'}</td>
+   <td><span style="font-size:11px;">${statusStr}${err?'<br><span style="color:var(--danger);font-size:10px;">'+err+'</span>':''}</span></td>
+  </tr>`;
+ });
+ document.getElementById('import-coa-tbody').innerHTML=html;
+ const valid=_importCoAData.filter(r=>!r.err);
+ document.getElementById('import-coa-summary').textContent=`${valid.length} akun valid (${_importCoAData.filter(r=>!r.err&&r.existing).length} update, ${_importCoAData.filter(r=>!r.err&&!r.existing).length} baru)`;
+ document.getElementById('import-coa-errors').textContent=errCount?`${errCount} baris bermasalah`:'';
+ document.getElementById('import-coa-preview').style.display='block';
+ document.getElementById('btn-import-coa-confirm').style.display=valid.length?'inline-flex':'none';
+}
+
+function confirmImportCoA() {
+ if (!co()) return;
+ const mode=document.querySelector('input[name="coa-import-mode"]:checked')?.value||'merge';
+ const valid=_importCoAData.filter(r=>!r.err);
+ if (!valid.length) { toast('Tidak ada data valid','error'); return; }
+ if (mode==='replace') {
+  if (!confirm(`REPLACE: Semua ${coFilter(DB.accounts).length} akun CoA yang ada akan dihapus dan diganti dengan ${valid.length} akun dari file ini.\n\nLanjutkan?`)) return;
+  DB.accounts=DB.accounts.filter(a=>a.company_id!==co());
+ }
+ let added=0,updated=0;
+ valid.forEach(r=>{
+  const existing=DB.accounts.find(a=>a.company_id===co()&&a.code===r.kode);
+  if (existing) {
+   existing.name=r.nama; existing.type=r.tipe; existing.normal_balance=r.saldo_normal;
+   if (r.saldo_awal) existing.saldo_awal=r.saldo_awal;
+   updated++;
+  } else {
+   DB.accounts.push({id:genId(),company_id:co(),code:r.kode,name:r.nama,
+    type:r.tipe,normal_balance:r.saldo_normal,saldo_awal:r.saldo_awal||0});
+   added++;
+  }
+ });
+ autoSave(); closeModal('modal-import-coa');
+ if (currentPage==='coa') renderCoA?.();
+ toast(`✅ CoA ${mode==='replace'?'(replace)':'(merge)'}: ${added} ditambah, ${updated} diperbarui`,'success',5000);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// IMPORT SUB-LEDGER
+// ═══════════════════════════════════════════════════════════════════
+function openImportSL() {
+ if (!co()) { toast('Pilih perusahaan dulu','error'); return; }
+ document.getElementById('import-sl-file').value='';
+ document.getElementById('import-sl-preview').style.display='none';
+ document.getElementById('btn-import-sl-confirm').style.display='none';
+ document.querySelector('input[name="sl-import-mode"][value="merge"]').checked=true;
+ openModal('modal-import-sl');
+}
+
+function downloadTemplateSL() {
+ _loadXLSX().then(XLSX=>{
+  const wb=XLSX.utils.book_new();
+  const sheets={
+   'Hutang':[['nama_kreditur','jumlah','jatuh_tempo','keterangan','nomor_ref'],['CV Sumber Bahan',3000000,'2024-04-01','Pembelian bahan baku','INV-001'],['PT Besi Kuat',2000000,'2024-04-15','','INV-002']],
+   'Piutang':[['nama_debitur','jumlah','jatuh_tempo','keterangan','nomor_ref'],['Toko Rapi Indah',5000000,'2024-04-01','Penjualan','SO-001'],['Pak Darmawan',3000000,'','','SO-002']],
+   'Persediaan':[['nama_barang','qty','harga_satuan','keterangan'],['Semen Tiga Roda',100,60000,'Stok awal'],['Besi Hollow',50,25000,'']],
+   'Perlengkapan':[['nama_item','nilai','keterangan'],['Alat tulis & stempel',2000000,''],['Rol kabel listrik',500000,'']],
+   'Aset Tetap':[['nama_aset','harga_perolehan','akumulasi_awal','masa_manfaat','metode','tanggal','keterangan'],['Peralatan Toko',20000000,4000000,5,'garis-lurus','2020-01-01',''],['Kendaraan',80000000,32000000,8,'garis-lurus','2019-03-01','']],
+  };
+  Object.entries(sheets).forEach(([name,data])=>{
+   const ws=XLSX.utils.aoa_to_sheet(data);
+   ws['!cols']=[{wch:25},{wch:15},{wch:15},{wch:25},{wch:15}];
+   XLSX.utils.book_append_sheet(wb,ws,name);
+  });
+  XLSX.writeFile(wb,'template_import_subledger.xlsx');
+ }).catch(e=>toast('Gagal load library Excel: '+e.message,'error'));
+}
+
+let _importSLData={};
+async function previewImportSL(input) {
+ const file=input.files[0]; if(!file) return;
+ if (!file.name.match(/\.xlsx?$/i)) { toast('Hanya mendukung file Excel (.xlsx/.xls)','error'); return; }
+ let wb;
+ try {
+  const XLSX=await _loadXLSX();
+  wb=XLSX.read(await file.arrayBuffer(),{type:'array',cellDates:false});
+ } catch(e) { toast('Gagal baca Excel: '+e.message,'error'); return; }
+
+ _importSLData={};
+ const today=new Date().toISOString().split('T')[0];
+ let totalValid=0; let summaryHtml=''; let detailHtml='';
+
+ const parseSheet=(sheetName,cols,parser)=>{
+  const ws=wb.Sheets[sheetName]||wb.Sheets[wb.SheetNames.find(n=>n.toLowerCase()===sheetName.toLowerCase())];
+  if (!ws) return;
+  const rows=window.XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}).map(r=>r.map(c=>String(c===null||c===undefined?'':c).trim()));
+  if (rows.length<2) return;
+  const hdr=rows[0].map(h=>h.toLowerCase().replace(/\s+/g,'_'));
+  const gIdx=names=>{ for(const n of names){const i=hdr.findIndex(h=>h.includes(n));if(i>=0)return i;} return -1; };
+  const items=[]; let errC=0;
+  rows.slice(1).filter(r=>r.some(c=>c)).forEach((r,i)=>{
+   const res=parser(r,gIdx,i);
+   if(res) { items.push(res); if(res._err) errC++; }
+  });
+  _importSLData[sheetName]=items;
+  const valid=items.filter(x=>!x._err);
+  totalValid+=valid.length;
+  summaryHtml+=`<div style="padding:8px 12px;background:rgba(37,99,235,.06);border-radius:6px;font-size:12px;">
+   <strong>${sheetName}</strong>: ${valid.length} valid${errC?` | <span style="color:var(--danger);">${errC} error</span>`:''}
+  </div>`;
+  if (items.length) {
+   detailHtml+=`<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px;">${sheetName}</div>
+   <div class="table-wrap" style="max-height:150px;overflow-y:auto;"><table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}<th>Status</th></tr></thead><tbody>
+   ${items.map(item=>`<tr style="${item._err?'background:rgba(239,68,68,.06)':''}"><td>${Object.values(item).filter((_,k)=>k<cols.length).join('</td><td>')}</td><td style="font-size:10px;">${item._err?'<span style="color:var(--danger);">'+item._err+'</span>':'✅'}</td></tr>`).join('')}
+   </tbody></table></div></div>`;
+  }
+ };
+
+ parseSheet('Hutang',['Kreditur','Jumlah','Jatuh Tempo','Keterangan','No. Ref'],(r,g)=>{
+  const nama=(r[g(['nama_kreditur','nama','kreditur'])]||'').trim();
+  const jml=_parseNum(r[g(['jumlah','amount'])]);
+  if (!nama) return {nama:'—',jml:0,_err:'Nama kreditur kosong'};
+  if (!jml)  return {nama,jml:0,_err:'Jumlah 0'};
+  return {nama,jumlah:fmtC(jml),jatuh:r[g(['jatuh_tempo','jatuh'])]||'',ket:r[g(['keterangan','ket'])]||'',ref:r[g(['nomor_ref','ref','no'])]||'',_raw:{nama,jumlah:jml,jatuh_tempo:r[g(['jatuh_tempo','jatuh'])]||'',keterangan:r[g(['keterangan','ket'])]||'',nomor_ref:r[g(['nomor_ref','ref','no'])]||''}};
+ });
+
+ parseSheet('Piutang',['Debitur','Jumlah','Jatuh Tempo','Keterangan','No. Ref'],(r,g)=>{
+  const nama=(r[g(['nama_debitur','nama','debitur'])]||'').trim();
+  const jml=_parseNum(r[g(['jumlah','amount'])]);
+  if (!nama) return {nama:'—',jml:0,_err:'Nama debitur kosong'};
+  if (!jml)  return {nama,jml:0,_err:'Jumlah 0'};
+  return {nama,jumlah:fmtC(jml),jatuh:r[g(['jatuh_tempo','jatuh'])]||'',ket:r[g(['keterangan','ket'])]||'',ref:r[g(['nomor_ref','ref','no'])]||'',_raw:{nama,jumlah:jml,jatuh_tempo:r[g(['jatuh_tempo','jatuh'])]||'',keterangan:r[g(['keterangan','ket'])]||'',nomor_ref:r[g(['nomor_ref','ref','no'])]||''}};
+ });
+
+ parseSheet('Persediaan',['Nama Barang','Qty','Harga Satuan','Keterangan'],(r,g)=>{
+  const nama=(r[g(['nama_barang','nama','barang'])]||'').trim();
+  const qty=_parseNum(r[g(['qty','jumlah','quantity'])]);
+  const harga=_parseNum(r[g(['harga_satuan','harga','price'])]);
+  if (!nama) return {nama:'—',qty:0,harga:0,ket:'',_err:'Nama barang kosong'};
+  if (!qty)  return {nama,qty:0,harga,ket:'',_err:'Qty 0'};
+  return {nama,qty,harga:fmtC(harga),ket:r[g(['keterangan','ket'])]||'',_raw:{nama_barang:nama,jumlah:qty,harga_satuan:harga,total_nilai:qty*harga,tanggal:today,keterangan:r[g(['keterangan','ket'])]||''}};
+ });
+
+ parseSheet('Perlengkapan',['Nama Item','Nilai','Keterangan'],(r,g)=>{
+  const nama=(r[g(['nama_item','nama','item'])]||'').trim();
+  const nilai=_parseNum(r[g(['nilai','value','harga'])]);
+  if (!nama) return {nama:'—',nilai:0,ket:'',_err:'Nama item kosong'};
+  if (!nilai) return {nama,nilai:0,ket:'',_err:'Nilai 0'};
+  return {nama,nilai:fmtC(nilai),ket:r[g(['keterangan','ket'])]||'',_raw:{nama_item:nama,nilai,tanggal:today,keterangan:r[g(['keterangan','ket'])]||''}};
+ });
+
+ parseSheet('Aset Tetap',['Nama Aset','Harga Perolehan','Akum. Awal','Masa Manfaat','Metode'],(r,g)=>{
+  const nama=(r[g(['nama_aset','nama','aset'])]||'').trim();
+  const harga=_parseNum(r[g(['harga_perolehan','harga','perolehan'])]);
+  const akum=_parseNum(r[g(['akumulasi_awal','akumulasi','akum'])]);
+  const masa=parseFloat(r[g(['masa_manfaat','masa'])])||0;
+  const metode=(r[g(['metode','method'])]||'garis-lurus').toLowerCase().includes('saldo')?'saldo-menurun':'garis-lurus';
+  const tgl=_parseDate(r[g(['tanggal','date','tgl'])])||today;
+  if (!nama) return {nama:'—',harga:0,akum:0,masa:0,metode:'-',_err:'Nama aset kosong'};
+  if (!harga) return {nama,harga:0,akum:0,masa:0,metode,_err:'Harga perolehan 0'};
+  return {nama,harga:fmtC(harga),akum:fmtC(akum),masa,metode,_raw:{nama_aset:nama,harga_perolehan:harga,akumulasi_penyusutan:akum,nilai_buku:harga-akum,masa_manfaat:masa||5,metode_penyusutan:metode,tanggal:tgl,keterangan:r[g(['keterangan','ket'])]||''}};
+ });
+
+ if (totalValid===0) { toast('Tidak ada data valid di semua sheet','error'); return; }
+ document.getElementById('import-sl-summary').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;">${summaryHtml}</div>`;
+ document.getElementById('import-sl-detail').innerHTML=detailHtml;
+ document.getElementById('import-sl-preview').style.display='block';
+ document.getElementById('btn-import-sl-confirm').style.display='inline-flex';
+}
+
+function confirmImportSL() {
+ if (!co()) return;
+ const mode=document.querySelector('input[name="sl-import-mode"]:checked')?.value||'merge';
+ let added={hutang:0,piutang:0,persediaan:0,perlengkapan:0,aset:0};
+
+ const doImport=(sheetName,dbArr,builder)=>{
+  const items=(_importSLData[sheetName]||[]).filter(x=>!x._err);
+  if (!items.length) return;
+  if (mode==='replace') dbArr=dbArr.filter(x=>x.company_id!==co());
+  items.forEach(item=>{
+   const rec={id:genId(),company_id:co(),...item._raw,_is_saldo_awal:true};
+   dbArr.push(rec);
+  });
+  return items.length;
+ };
+
+ if (mode==='replace') {
+  const toReplace=Object.keys(_importSLData);
+  if (!confirm(`REPLACE: Sub-ledger ${toReplace.join(', ')} yang ada akan dihapus dan diganti.\n\nLanjutkan?`)) return;
+  if (_importSLData['Hutang']?.length)      DB.hutang=DB.hutang.filter(x=>x.company_id!==co());
+  if (_importSLData['Piutang']?.length)     DB.piutang=DB.piutang.filter(x=>x.company_id!==co());
+  if (_importSLData['Persediaan']?.length)  DB.persediaan=DB.persediaan.filter(x=>x.company_id!==co());
+  if (_importSLData['Perlengkapan']?.length)DB.perlengkapan=DB.perlengkapan.filter(x=>x.company_id!==co());
+  if (_importSLData['Aset Tetap']?.length)  DB.aset_tetap=DB.aset_tetap.filter(x=>x.company_id!==co());
+ }
+
+ (_importSLData['Hutang']||[]).filter(x=>!x._err).forEach(x=>{
+  DB.hutang.push({id:genId(),company_id:co(),...x._raw,status:'Belum Lunas',sisa:x._raw.jumlah,nomor_ref:x._raw.nomor_ref||('SA-'+genId().slice(0,6)),kategori:'lainnya',_is_saldo_awal:true});
+  added.hutang++;
+ });
+ (_importSLData['Piutang']||[]).filter(x=>!x._err).forEach(x=>{
+  DB.piutang.push({id:genId(),company_id:co(),...x._raw,status:'Belum Lunas',sisa:x._raw.jumlah,nomor_ref:x._raw.nomor_ref||('SA-'+genId().slice(0,6)),kategori:'lainnya',_is_saldo_awal:true});
+  added.piutang++;
+ });
+ (_importSLData['Persediaan']||[]).filter(x=>!x._err).forEach(x=>{
+  DB.persediaan.push({id:genId(),company_id:co(),...x._raw,_is_saldo_awal:true});
+  added.persediaan++;
+ });
+ (_importSLData['Perlengkapan']||[]).filter(x=>!x._err).forEach(x=>{
+  DB.perlengkapan.push({id:genId(),company_id:co(),...x._raw,_is_saldo_awal:true});
+  added.perlengkapan++;
+ });
+ (_importSLData['Aset Tetap']||[]).filter(x=>!x._err).forEach(x=>{
+  DB.aset_tetap.push({id:genId(),company_id:co(),...x._raw,_is_saldo_awal:true});
+  added.aset++;
+ });
+
+ autoSave(); closeModal('modal-import-sl');
+ const parts=Object.entries({Hutang:added.hutang,Piutang:added.piutang,Persediaan:added.persediaan,Perlengkapan:added.perlengkapan,'Aset Tetap':added.aset}).filter(([,v])=>v>0).map(([k,v])=>`${k}: ${v}`);
+ toast(`✅ Import Sub-Ledger ${mode==='replace'?'(replace)':'(merge)'}: ${parts.join(' | ')} record ditambahkan`,'success',6000);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// IMPORT JSON — MERGE / REPLACE
+// ═══════════════════════════════════════════════════════════════════
+function openImportJSON() {
+ document.getElementById('import-json-file').value='';
+ document.getElementById('import-json-info').textContent='';
+ document.querySelector('input[name="json-import-mode"][value="merge"]').checked=true;
+ updateJsonModeUI();
+ openModal('modal-import-json');
+}
+
+function updateJsonModeUI() {
+ const mode=document.querySelector('input[name="json-import-mode"]:checked')?.value;
+ document.getElementById('json-mode-merge-lbl').style.borderColor=mode==='merge'?'var(--accent2)':'var(--border)';
+ document.getElementById('json-mode-replace-lbl').style.borderColor=mode==='replace'?'var(--danger)':'var(--border)';
+}
+
+async function confirmImportJSON() {
+ const file=document.getElementById('import-json-file').files[0];
+ if (!file) { toast('Pilih file JSON terlebih dahulu','error'); return; }
+ const mode=document.querySelector('input[name="json-import-mode"]:checked')?.value||'merge';
+ let data;
+ try {
+  data=JSON.parse(await file.text());
+ } catch(e) { toast('File JSON tidak valid: '+e.message,'error'); return; }
+ if (!data||typeof data!=='object') { toast('Struktur JSON tidak dikenali','error'); return; }
+
+ if (mode==='replace') {
+  if (!confirm('REPLACE: Semua data aplikasi akan dihapus dan diganti dengan isi backup ini.\n\nProses ini TIDAK bisa dibatalkan. Lanjutkan?')) return;
+  // Replace langsung — sama seperti importJSON lama
+  const TABLES=['companies','accounts','transactions','journal_entries','journal_details',
+   'hutang','piutang','persediaan','perlengkapan','aset_tetap','penyusutan_log',
+   'penyesuaian','retur_penjualan','audit_log','lra_data','templates','rekonsiliasi'];
+  TABLES.forEach(t=>{ if(Array.isArray(data[t])) DB[t]=data[t]; });
+  autoSave(); closeModal('modal-import-json');
+  location.reload();
+  return;
+ }
+
+ // ── MERGE: tambah data dari file ke data yang ada ────────────────
+ // Prinsip: record dengan ID yang belum ada = tambahkan
+ //          record dengan ID yang sudah ada = lewati (preserve local changes)
+ const MERGE_TABLES=['accounts','transactions','journal_entries','journal_details',
+  'hutang','piutang','persediaan','perlengkapan','aset_tetap','penyusutan_log',
+  'penyesuaian','retur_penjualan','audit_log','templates'];
+ let stats={};
+ MERGE_TABLES.forEach(t=>{
+  if (!Array.isArray(data[t])) return;
+  const existing=new Set((DB[t]||[]).map(x=>x.id));
+  const newRecs=data[t].filter(x=>x&&x.id&&!existing.has(x.id));
+  if (!DB[t]) DB[t]=[];
+  DB[t].push(...newRecs);
+  if (newRecs.length) stats[t]=newRecs.length;
+ });
+ // Merge companies: tambah company yang belum ada
+ if (Array.isArray(data.companies)) {
+  const existCo=new Set((DB.companies||[]).map(x=>x.id));
+  const newCo=data.companies.filter(x=>x&&x.id&&!existCo.has(x.id));
+  if (!DB.companies) DB.companies=[];
+  DB.companies.push(...newCo);
+  if (newCo.length) stats.companies=newCo.length;
+ }
+ autoSave(); closeModal('modal-import-json');
+ const summary=Object.entries(stats).filter(([,v])=>v>0).map(([k,v])=>`${k}: +${v}`).join(' | ');
+ toast(`🔀 Merge selesai${summary?' — '+summary:' (tidak ada data baru)'}`, 'success', 7000);
+ if (currentPage) navigate(currentPage);
 }
 
 // 
