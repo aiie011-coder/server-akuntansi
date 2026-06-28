@@ -701,7 +701,45 @@ textarea.form-control { resize:vertical; min-height:80px; }
 
  <!-- JURNAL PENUTUP --> <div id="page-jurnal-penutup" class="page"> <div class="page-header"> <div> <div class="page-title">Jurnal Penutup</div> <div id="jp-status-badge" style="margin-top:6px;"></div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="buatJurnalPenutup()">Preview Jurnal Penutup</button> <button class="btn btn-primary" id="btn-posting-jp" onclick="postingJurnalPenutup()" style="display:none;">Posting ke Jurnal Umum</button> </div> </div> <div style="margin-bottom:12px;padding:10px 14px;background:rgba(37,99,235,.06);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:12px;color:var(--text2);"> ℹ <strong>Jurnal Penutup</strong>menutup akun nominal (Pendapatan &amp; Beban) ke Ikhtisar L/R, lalu Ikhtisar L/R ke Modal.
  Klik <strong>Preview</strong>untuk melihat drafnya, lalu klik <strong>Posting ke Jurnal Umum</strong>untuk menyimpan ke buku besar. Setelah posting, saldo akun nominal menjadi nol.
- </div> <div class="card"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jp-tbody"> <tr><td colspan="5"><div class="empty-state"><div class="empty-icon"></div><p>Klik <strong>Buat / Refresh Jurnal Penutup</strong>untuk menghitung jurnal penutup dari data transaksi aktif.</p></div></td></tr> </tbody></table></div></div> </div> <!-- SETTINGS --> <!-- KOMPARASI MULTI-TAHUN --> <div id="page-komparasi" class="page"> <div class="page-header"> <div> <div class="page-title">Komparasi Multi-Tahun</div> <div class="page-subtitle">Bandingkan laporan keuangan antar periode/tahun</div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('komparasi')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('komparasi')">Excel</button> </div> </div> <!-- Pemilihan periode --> <div class="card" style="margin-bottom:20px;"> <div class="card-header"> <div class="card-title">Pilih Periode untuk Dibandingkan</div> </div> <div class="card-body"> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px;"> <div class="form-group"> <label>Periode 1 (Wajib)</label> <select class="form-control" id="komp-p1" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 2 (Wajib)</label> <select class="form-control" id="komp-p2" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 3 (Opsional)</label> <select class="form-control" id="komp-p3" onchange="renderKomparasi()"> <option value="">— Tidak dipilih —</option> </select> </div> <div class="form-group"> <label>Tampilkan</label> <select class="form-control" id="komp-jenis" onchange="renderKomparasi()"> <option value="laba-rugi">Laba Rugi</option> <option value="neraca">Neraca</option> <option value="perubahan-ekuitas">Perubahan Ekuitas</option> <option value="arus-kas">Arus Kas</option> <option value="ringkasan">Ringkasan KPI</option> </select> </div> </div> <div style="font-size:12px;color:var(--text2);">Setiap "Perusahaan" di ZeQui dapat mewakili satu tahun buku. Tambahkan perusahaan baru untuk setiap tahun fiskal.</div> </div> </div> <div id="komparasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih minimal dua periode di atas untuk melihat perbandingan.</p></div> </div> </div> <div id="page-settings" class="page">
+ </div> <div class="card"><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jp-tbody"> <tr><td colspan="5"><div class="empty-state"><div class="empty-icon"></div><p>Klik <strong>Buat / Refresh Jurnal Penutup</strong>untuk menghitung jurnal penutup dari data transaksi aktif.</p></div></td></tr> </tbody></table></div></div> </div> <!-- SETTINGS --> <!-- KOMPARASI MULTI-TAHUN --> <div id="page-komparasi" class="page"> <div class="page-header"> <div> <div class="page-title">Komparasi Multi-Tahun</div> <div class="page-subtitle">Bandingkan laporan keuangan antar periode/tahun</div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('komparasi')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('komparasi')">Excel</button> </div> </div> <!-- Pemilihan periode --> <div class="card" style="margin-bottom:20px;"> <div class="card-header"> <div class="card-title">Pilih Periode untuk Dibandingkan</div> </div> <div class="card-body"> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px;"> <div class="form-group"> <label>Periode 1 (Wajib)</label> <select class="form-control" id="komp-p1" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 2 (Wajib)</label> <select class="form-control" id="komp-p2" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 3 (Opsional)</label> <select class="form-control" id="komp-p3" onchange="renderKomparasi()"> <option value="">— Tidak dipilih —</option> </select> </div> <div class="form-group"> <label>Tampilkan</label> <select class="form-control" id="komp-jenis" onchange="renderKomparasi()"> <option value="laba-rugi">Laba Rugi</option> <option value="neraca">Neraca</option> <option value="perubahan-ekuitas">Perubahan Ekuitas</option> <option value="arus-kas">Arus Kas</option> <option value="ringkasan">Ringkasan KPI</option> </select> </div> </div> <div style="font-size:12px;color:var(--text2);">Setiap "Perusahaan" di ZeQui dapat mewakili satu tahun buku. Tambahkan perusahaan baru untuk setiap tahun fiskal.</div> </div> </div> <div id="komparasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih minimal dua periode di atas untuk melihat perbandingan.</p></div> </div> </div>
+<!-- REKONSILIASI BANK -->
+<div id="page-rekonsiliasi" class="page">
+ <div class="page-header">
+  <div><div class="page-title">Rekonsiliasi Bank</div><div class="page-subtitle">Cocokkan saldo buku dengan mutasi rekening bank</div></div>
+  <div class="page-actions">
+   <button class="btn btn-secondary" onclick="printReport('rekonsiliasi')">Print</button>
+  </div>
+ </div>
+ <div id="rekonsiliasi-content">
+  <div class="empty-state"><div class="empty-icon"></div><p>Fitur rekonsiliasi bank sedang dalam pengembangan. Gunakan menu Buku Besar untuk memeriksa saldo akun kas/bank.</p></div>
+ </div>
+</div>
+<!-- TEMPLATE TRANSAKSI BERULANG -->
+<div id="page-template-transaksi" class="page">
+ <div class="page-header">
+  <div><div class="page-title">Template Berulang</div><div class="page-subtitle">Simpan dan gunakan kembali transaksi yang sering diinput</div></div>
+  <div class="page-actions">
+   <button class="btn btn-primary" onclick="openTransactionModal()">Buat dari Transaksi Baru</button>
+  </div>
+ </div>
+ <div id="template-transaksi-content">
+  <div class="empty-state"><div class="empty-icon"></div><p>Fitur template transaksi berulang sedang dalam pengembangan. Gunakan menu Transaksi untuk input transaksi reguler.</p></div>
+ </div>
+</div>
+<!-- LAPORAN PAJAK -->
+<div id="page-laporan-pajak" class="page">
+ <div class="page-header">
+  <div><div class="page-title">Laporan Pajak</div><div class="page-subtitle">Ringkasan data untuk keperluan perpajakan</div></div>
+  <div class="page-actions">
+   <button class="btn btn-secondary" onclick="printReport('laporan-pajak')">Print</button>
+   <button class="btn btn-secondary" onclick="exportExcel('laporan-pajak')">Export</button>
+  </div>
+ </div>
+ <div id="laporan-pajak-content">
+  <div class="empty-state"><div class="empty-icon"></div><p>Fitur laporan pajak sedang dalam pengembangan. Gunakan menu Laporan Laba Rugi dan Neraca untuk data referensi perpajakan.</p></div>
+ </div>
+</div>
+ <div id="page-settings" class="page">
 
  <!-- Backup Reminder Banners -->
  <div id="backup-reminder-warn" style="display:none;margin-bottom:16px;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #f59e0b;border-radius:12px;padding:14px 18px;display:flex;align-items:flex-start;gap:12px;">
@@ -9144,6 +9182,54 @@ function deleteAset(id) {
 }
 
 // Saran 4: Cek reminder penyusutan — tampilkan peringatan jika periode aktif belum dihitung 
+function cekJatuhTempo() {
+ if (!co()) return;
+ const today = new Date(); today.setHours(0,0,0,0);
+ const sudahLewat = (tgl) => { if (!tgl) return false; const d=new Date(tgl); d.setHours(0,0,0,0); return d<today; };
+ const dalam7Hari = (tgl) => { if (!tgl) return false; const d=new Date(tgl); d.setHours(0,0,0,0); const s=Math.round((d-today)/86400000); return s>=0&&s<=7; };
+ const hutangAlert = coFilter(DB.hutang||[]).filter(h=>h.status!=='Lunas'&&(sudahLewat(h.jatuh_tempo)||dalam7Hari(h.jatuh_tempo)));
+ const piutangAlert = coFilter(DB.piutang||[]).filter(p=>p.status!=='Lunas'&&(sudahLewat(p.jatuh_tempo)||dalam7Hari(p.jatuh_tempo)));
+ if (!hutangAlert.length && !piutangAlert.length) return;
+ if (document.getElementById('jatuh-tempo-reminder')) return;
+ const lines=[];
+ if (hutangAlert.length) lines.push(`<strong>${hutangAlert.length}</strong> hutang mendekati/melewati jatuh tempo`);
+ if (piutangAlert.length) lines.push(`<strong>${piutangAlert.length}</strong> piutang mendekati/melewati jatuh tempo`);
+ const el=document.createElement('div');
+ el.id='jatuh-tempo-reminder';
+ el.style.cssText='position:fixed;bottom:80px;right:20px;z-index:9999;background:var(--card);border:1px solid var(--danger);border-radius:12px;padding:14px 18px;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,.15);animation:slideInRight .3s ease;';
+ el.innerHTML=`<div style="display:flex;align-items:flex-start;gap:10px;"><div style="font-size:24px;line-height:1;">⏰</div><div style="flex:1;"><div style="font-size:13px;font-weight:700;margin-bottom:4px;">Peringatan Jatuh Tempo</div><div style="font-size:12px;color:var(--text2);line-height:1.5;">${lines.join('<br>')}</div><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;"><button class="btn btn-secondary btn-sm" style="font-size:11px;" onclick="navigate('hutang');document.getElementById('jatuh-tempo-reminder')?.remove();">Lihat Hutang</button><button class="btn btn-secondary btn-sm" style="font-size:11px;" onclick="navigate('piutang');document.getElementById('jatuh-tempo-reminder')?.remove();">Lihat Piutang</button><button class="btn btn-secondary btn-sm" style="font-size:11px;" onclick="document.getElementById('jatuh-tempo-reminder')?.remove();">Tutup</button></div></div><button onclick="document.getElementById('jatuh-tempo-reminder')?.remove();" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:0;line-height:1;">✕</button></div>`;
+ document.body.appendChild(el);
+ setTimeout(()=>el?.remove(),30000);
+}
+
+function renderJatuhTempoBanner(containerId, dataArr, namaField, labelPrefix) {
+ const el=document.getElementById(containerId);
+ if (!el) return;
+ const today=new Date(); today.setHours(0,0,0,0);
+ const items=coFilter(dataArr||[]).filter(item=>{
+  if(item.status==='Lunas'||!item.jatuh_tempo) return false;
+  const d=new Date(item.jatuh_tempo); d.setHours(0,0,0,0);
+  return Math.round((d-today)/86400000)<=7;
+ });
+ if(!items.length){el.style.display='none';el.innerHTML='';return;}
+ const lewat=items.filter(i=>new Date(i.jatuh_tempo)<today);
+ const dekat=items.filter(i=>new Date(i.jatuh_tempo)>=today);
+ let html=`<div style="margin-bottom:12px;padding:10px 14px;background:rgba(239,68,68,.07);border-radius:8px;border-left:4px solid var(--danger);font-size:12px;">`;
+ if(lewat.length){
+  html+=`<div style="font-weight:700;color:var(--danger);margin-bottom:4px;"> ${lewat.length} item sudah melewati jatuh tempo:</div>`;
+  html+=lewat.slice(0,3).map(i=>`<div style="color:var(--text2);">• ${labelPrefix} <strong>${escapeHtml(i[namaField]||'')}</strong> — ${i.jatuh_tempo}</div>`).join('');
+  if(lewat.length>3) html+=`<div style="color:var(--text3);">...dan ${lewat.length-3} lainnya</div>`;
+ }
+ if(dekat.length){
+  html+=`<div style="font-weight:700;color:#f59e0b;margin-top:${lewat.length?'8px':'0'};margin-bottom:4px;">⏰ ${dekat.length} item jatuh tempo dalam 7 hari:</div>`;
+  html+=dekat.slice(0,3).map(i=>`<div style="color:var(--text2);">• ${labelPrefix} <strong>${escapeHtml(i[namaField]||'')}</strong> — ${i.jatuh_tempo}</div>`).join('');
+  if(dekat.length>3) html+=`<div style="color:var(--text3);">...dan ${dekat.length-3} lainnya</div>`;
+ }
+ html+=`</div>`;
+ el.style.display='';
+ el.innerHTML=html;
+}
+
 function cekReminderPenyusutan() {
  if (!co()) return;
  const asets = coFilter(DB.aset_tetap);
@@ -11627,6 +11713,91 @@ function renderKomparasi() {
  jenis==='perubahan-ekuitas'?' Perubahan Ekuitas':
  jenis==='arus-kas'?' Arus Kas':
  ' Ringkasan KPI'} — Perbandingan ${cos.length} Periode</div> <div style="font-size:12px;color:var(--text2);">Perubahan (%) dihitung relatif terhadap periode sebelumnya di kiri</div> </div> <div class="table-wrap" style="overflow-x:auto;">${body}</div> </div>`;
+}
+
+// Fungsi stub untuk halaman yang sedang dikembangkan
+function renderRekonsiliasi() {
+ const container = document.getElementById('new-pages-container');
+ if (!container) return;
+ const coData = DB.companies.find(c => c.id === DB.current_company_id);
+ if (!coData) { container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Pilih perusahaan terlebih dahulu.</p></div>'; return; }
+ const kasAccounts = (DB.accounts || []).filter(a => {
+  const kode = (a.code || '').toString();
+  return kode.startsWith('1-1') || (a.name || '').toLowerCase().includes('kas') || (a.name || '').toLowerCase().includes('bank');
+ });
+ container.innerHTML = `
+  <div class="page-header">
+   <div><div class="page-title">Rekonsiliasi Bank</div><div class="page-subtitle">Cocokkan saldo buku dengan mutasi rekening bank</div></div>
+   <div class="page-actions"><button class="btn btn-secondary" onclick="window.print()">Print</button></div>
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+   <div class="card-header"><div class="card-title">Rekonsiliasi Bank — ${escapeHtml(coData.name)}</div></div>
+   <div class="card-body">
+    <div style="padding:16px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:13px;color:#92400e;margin-bottom:16px;">
+     ℹ Fitur rekonsiliasi bank penuh sedang dalam pengembangan. Di bawah ini adalah ringkasan akun kas &amp; bank dari Chart of Accounts.
+    </div>
+    <div class="table-wrap"><table>
+     <thead><tr><th>Kode</th><th>Nama Akun</th><th>Tipe</th></tr></thead>
+     <tbody>${kasAccounts.length ? kasAccounts.map(a => `<tr><td>${escapeHtml(a.code)}</td><td>${escapeHtml(a.name)}</td><td>${escapeHtml(a.type||'')}</td></tr>`).join('') : '<tr><td colspan="3"><div class="empty-state"><p>Tidak ada akun kas/bank ditemukan.</p></div></td></tr>'}</tbody>
+    </table></div>
+    <div style="margin-top:16px;text-align:center;">
+     <button class="btn btn-secondary" onclick="navigate('buku-besar')">Buka Buku Besar</button>
+    </div>
+   </div>
+  </div>`;
+}
+
+function renderTemplateTransaksi() {
+ const container = document.getElementById('new-pages-container');
+ if (!container) return;
+ container.innerHTML = `
+  <div class="page-header">
+   <div><div class="page-title">Template Berulang</div><div class="page-subtitle">Simpan dan gunakan kembali transaksi yang sering diinput</div></div>
+   <div class="page-actions"><button class="btn btn-primary" onclick="navigate('transactions')">Buat Transaksi Baru</button></div>
+  </div>
+  <div class="card">
+   <div class="card-header"><div class="card-title">Template Transaksi Berulang</div></div>
+   <div class="card-body">
+    <div style="padding:16px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:13px;color:#92400e;margin-bottom:16px;">
+     ℹ Fitur template transaksi berulang sedang dalam pengembangan.
+    </div>
+    <div class="empty-state">
+     <div class="empty-icon"></div>
+     <p>Gunakan menu <strong>Transaksi</strong> untuk input transaksi reguler.</p>
+     <button class="btn btn-primary" style="margin-top:12px;" onclick="navigate('transactions')">Buka Transaksi</button>
+    </div>
+   </div>
+  </div>`;
+}
+
+function renderLaporanPajak() {
+ const container = document.getElementById('new-pages-container');
+ if (!container) return;
+ const coData = DB.companies.find(c => c.id === DB.current_company_id);
+ if (!coData) { container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Pilih perusahaan terlebih dahulu.</p></div>'; return; }
+ container.innerHTML = `
+  <div class="page-header">
+   <div><div class="page-title">Laporan Pajak</div><div class="page-subtitle">Ringkasan data untuk keperluan perpajakan</div></div>
+   <div class="page-actions">
+    <button class="btn btn-secondary" onclick="window.print()">Print</button>
+   </div>
+  </div>
+  <div class="card">
+   <div class="card-header"><div class="card-title">Laporan Pajak — ${escapeHtml(coData.name)}</div></div>
+   <div class="card-body">
+    <div style="padding:16px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:13px;color:#92400e;margin-bottom:16px;">
+     ℹ Fitur laporan pajak otomatis sedang dalam pengembangan. Gunakan data dari Laporan Laba Rugi dan Neraca sebagai referensi.
+    </div>
+    <div class="empty-state">
+     <div class="empty-icon"></div>
+     <p>Referensi data pajak tersedia di Laporan Laba Rugi dan Neraca Saldo.</p>
+     <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
+      <button class="btn btn-secondary" onclick="navigate('laba-rugi')">Laba Rugi</button>
+      <button class="btn btn-secondary" onclick="navigate('neraca-saldo')">Neraca Saldo</button>
+     </div>
+    </div>
+   </div>
+  </div>`;
 }
 
 function renderKomparasiPage() {
@@ -16557,16 +16728,65 @@ function openImportSL() {
 function downloadTemplateSL() {
  _loadXLSX().then(XLSX=>{
   const wb=XLSX.utils.book_new();
+  const today=new Date().toISOString().split('T')[0];
   const sheets={
-   'Hutang':[['nama_kreditur','jumlah','jatuh_tempo','keterangan','nomor_ref'],['CV Sumber Bahan',3000000,'2024-04-01','Pembelian bahan baku','INV-001'],['PT Besi Kuat',2000000,'2024-04-15','','INV-002']],
-   'Piutang':[['nama_debitur','jumlah','jatuh_tempo','keterangan','nomor_ref'],['Toko Rapi Indah',5000000,'2024-04-01','Penjualan','SO-001'],['Pak Darmawan',3000000,'','','SO-002']],
-   'Persediaan':[['nama_barang','qty','harga_satuan','keterangan'],['Semen Tiga Roda',100,60000,'Stok awal'],['Besi Hollow',50,25000,'']],
-   'Perlengkapan':[['nama_item','nilai','keterangan'],['Alat tulis & stempel',2000000,''],['Rol kabel listrik',500000,'']],
-   'Aset Tetap':[['nama_aset','harga_perolehan','akumulasi_awal','masa_manfaat','metode','tanggal','keterangan'],['Peralatan Toko',20000000,4000000,5,'garis-lurus','2020-01-01',''],['Kendaraan',80000000,32000000,8,'garis-lurus','2019-03-01','']],
+   'Hutang':{
+    cols:['nama_kreditur','jumlah','tanggal','jatuh_tempo','kategori','keterangan','nomor_ref'],
+    rows:[
+     ['CV Sumber Bahan',3000000,today,'2024-04-01','pembelian_kredit','Pembelian bahan baku','INV-001'],
+     ['PT Besi Kuat',2000000,today,'2024-04-15','pembelian_kredit','','INV-002'],
+    ]
+   },
+   'Piutang':{
+    cols:['nama_debitur','jumlah','tanggal','jatuh_tempo','kategori','keterangan','nomor_ref'],
+    rows:[
+     ['Toko Rapi Indah',5000000,today,'2024-04-01','penjualan_kredit','Penjualan barang','SO-001'],
+     ['Pak Darmawan',3000000,today,'','penjualan_kredit','','SO-002'],
+    ]
+   },
+   'Persediaan':{
+    cols:['nama_barang','qty','harga_satuan','tanggal','metode_penilaian','stok_minimum','keterangan'],
+    rows:[
+     ['Semen Tiga Roda',100,60000,today,'FIFO',10,'Stok awal'],
+     ['Besi Hollow',50,25000,today,'FIFO',5,''],
+    ]
+   },
+   'Perlengkapan':{
+    cols:['nama_item','nilai','jumlah','tanggal','keterangan'],
+    rows:[
+     ['Alat tulis & stempel',2000000,1,today,''],
+     ['Rol kabel listrik',500000,5,today,''],
+    ]
+   },
+   'Aset Tetap':{
+    cols:['nama_aset','harga_perolehan','akumulasi_awal','masa_manfaat','metode','tarif_sm_persen','nilai_residu','tanggal','keterangan'],
+    rows:[
+     ['Peralatan Toko',20000000,4000000,5,'garis-lurus',0,0,'2020-01-01',''],
+     ['Kendaraan',80000000,32000000,8,'garis-lurus',0,0,'2019-03-01',''],
+     ['Mesin Produksi',50000000,10000000,0,'saldo-menurun',25,0,'2021-06-01','Tarif 25%/thn'],
+    ]
+   },
   };
-  Object.entries(sheets).forEach(([name,data])=>{
+  // Catatan di sheet Info
+  const infoData=[
+   ['PANDUAN IMPORT SUB-LEDGER ZeQui'],
+   [''],
+   ['Sheet','Keterangan'],
+   ['Hutang','Data hutang belum lunas. kategori: pembelian_kredit / lainnya'],
+   ['Piutang','Data piutang belum lunas. kategori: penjualan_kredit / lainnya'],
+   ['Persediaan','Stok barang. metode_penilaian: FIFO / Average'],
+   ['Perlengkapan','Item perlengkapan. jumlah = jumlah unit (opsional)'],
+   ['Aset Tetap','metode: garis-lurus atau saldo-menurun. Jika saldo-menurun, isi tarif_sm_persen (misal 25)'],
+   [''],
+   ['CATATAN: Semua data diimpor sebagai Saldo Awal — jurnal TIDAK dibuat secara otomatis.'],
+  ];
+  const wsInfo=XLSX.utils.aoa_to_sheet(infoData);
+  wsInfo['!cols']=[{wch:20},{wch:60}];
+  XLSX.utils.book_append_sheet(wb,wsInfo,'Info');
+  Object.entries(sheets).forEach(([name,{cols,rows}])=>{
+   const data=[cols,...rows];
    const ws=XLSX.utils.aoa_to_sheet(data);
-   ws['!cols']=[{wch:25},{wch:15},{wch:15},{wch:25},{wch:15}];
+   ws['!cols']=cols.map(c=>({wch:Math.max(c.length+2,16)}));
    XLSX.utils.book_append_sheet(wb,ws,name);
   });
   XLSX.writeFile(wb,'template_import_subledger.xlsx');
@@ -16587,79 +16807,129 @@ async function previewImportSL(input) {
  const today=new Date().toISOString().split('T')[0];
  let totalValid=0; let summaryHtml=''; let detailHtml='';
 
- const parseSheet=(sheetName,cols,parser)=>{
-  const ws=wb.Sheets[sheetName]||wb.Sheets[wb.SheetNames.find(n=>n.toLowerCase()===sheetName.toLowerCase())];
-  if (!ws) return;
-  const rows=window.XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}).map(r=>r.map(c=>String(c===null||c===undefined?'':c).trim()));
+ // Helper: cari index kolom fleksibel
+ const gIdx=(hdr,names)=>{ for(const n of names){const i=hdr.findIndex(h=>h.includes(n));if(i>=0)return i;} return -1; };
+ const gStr=(r,hdr,names)=>(r[gIdx(hdr,names)]||'').toString().trim();
+ const gNum=(r,hdr,names)=>_parseNum(r[gIdx(hdr,names)]);
+ const gDat=(r,hdr,names)=>_parseDate(r[gIdx(hdr,names)])||today;
+
+ const parseSheet=(sheetName,previewCols,parser)=>{
+  // Cari sheet dengan nama fleksibel
+  const wsName=wb.SheetNames.find(n=>n.toLowerCase().trim()===sheetName.toLowerCase().trim()
+   ||n.toLowerCase().includes(sheetName.toLowerCase().split(' ')[0]));
+  if (!wsName) return;
+  const rows=window.XLSX.utils.sheet_to_json(wb.Sheets[wsName],{header:1,raw:true,defval:''})
+   .map(r=>r.map(c=>String(c===null||c===undefined?'':c).trim()));
   if (rows.length<2) return;
-  const hdr=rows[0].map(h=>h.toLowerCase().replace(/\s+/g,'_'));
-  const gIdx=names=>{ for(const n of names){const i=hdr.findIndex(h=>h.includes(n));if(i>=0)return i;} return -1; };
+  const hdr=rows[0].map(h=>h.toLowerCase().replace(/[\s\-\/]+/g,'_'));
   const items=[]; let errC=0;
-  rows.slice(1).filter(r=>r.some(c=>c)).forEach((r,i)=>{
-   const res=parser(r,gIdx,i);
-   if(res) { items.push(res); if(res._err) errC++; }
+  rows.slice(1).filter(r=>r.some(c=>c)).forEach((r)=>{
+   const res=parser(r,hdr);
+   if(res){items.push(res);if(res._err)errC++;}
   });
   _importSLData[sheetName]=items;
   const valid=items.filter(x=>!x._err);
   totalValid+=valid.length;
-  summaryHtml+=`<div style="padding:8px 12px;background:rgba(37,99,235,.06);border-radius:6px;font-size:12px;">
-   <strong>${sheetName}</strong>: ${valid.length} valid${errC?` | <span style="color:var(--danger);">${errC} error</span>`:''}
+  summaryHtml+=`<div style="padding:8px 12px;background:rgba(37,99,235,.06);border-radius:6px;font-size:12px;display:flex;justify-content:space-between;align-items:center;">
+   <strong>${sheetName}</strong>
+   <span>${valid.length} valid${errC?` <span style="color:var(--danger);">(${errC} error)</span>`:' <span style="color:var(--accent2);">✅</span>'}</span>
   </div>`;
   if (items.length) {
-   detailHtml+=`<div style="margin-bottom:12px;"><div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px;">${sheetName}</div>
-   <div class="table-wrap" style="max-height:150px;overflow-y:auto;"><table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}<th>Status</th></tr></thead><tbody>
-   ${items.map(item=>`<tr style="${item._err?'background:rgba(239,68,68,.06)':''}"><td>${Object.values(item).filter((_,k)=>k<cols.length).join('</td><td>')}</td><td style="font-size:10px;">${item._err?'<span style="color:var(--danger);">'+item._err+'</span>':'✅'}</td></tr>`).join('')}
+   detailHtml+=`<div style="margin-bottom:14px;">
+   <div style="font-size:12px;font-weight:700;color:var(--text2);margin:8px 0 4px;">${sheetName} (${items.length} baris)</div>
+   <div class="table-wrap" style="max-height:180px;overflow-y:auto;"><table>
+   <thead><tr>${previewCols.map(c=>`<th>${c}</th>`).join('')}<th>Status</th></tr></thead>
+   <tbody>${items.map(item=>{
+    const vals=item._preview||[];
+    return `<tr style="${item._err?'background:rgba(239,68,68,.06)':''}">
+     ${vals.map(v=>`<td>${v}</td>`).join('')}
+     <td style="font-size:10px;">${item._err?`<span style="color:var(--danger);">${item._err}</span>`:'✅'}</td>
+    </tr>`;
+   }).join('')}
    </tbody></table></div></div>`;
   }
  };
 
- parseSheet('Hutang',['Kreditur','Jumlah','Jatuh Tempo','Keterangan','No. Ref'],(r,g)=>{
-  const nama=(r[g(['nama_kreditur','nama','kreditur'])]||'').trim();
-  const jml=_parseNum(r[g(['jumlah','amount'])]);
-  if (!nama) return {nama:'—',jml:0,_err:'Nama kreditur kosong'};
-  if (!jml)  return {nama,jml:0,_err:'Jumlah 0'};
-  return {nama,jumlah:fmtC(jml),jatuh:r[g(['jatuh_tempo','jatuh'])]||'',ket:r[g(['keterangan','ket'])]||'',ref:r[g(['nomor_ref','ref','no'])]||'',_raw:{nama,jumlah:jml,jatuh_tempo:r[g(['jatuh_tempo','jatuh'])]||'',keterangan:r[g(['keterangan','ket'])]||'',nomor_ref:r[g(['nomor_ref','ref','no'])]||''}};
+ parseSheet('Hutang',['Kreditur','Jumlah','Tanggal','Jatuh Tempo','Kategori','No. Ref'],(r,hdr)=>{
+  const nm=gStr(r,hdr,['nama_kreditur','nama','kreditur']);
+  const jml=gNum(r,hdr,['jumlah','amount','nominal']);
+  const tgl=gDat(r,hdr,['tanggal','date','tgl']);
+  const jtmp=gStr(r,hdr,['jatuh_tempo','jatuh','due']);
+  const kat=gStr(r,hdr,['kategori','kategory','cat'])||'pembelian_kredit';
+  const ket=gStr(r,hdr,['keterangan','ket','desc']);
+  const ref=gStr(r,hdr,['nomor_ref','no_ref','ref','nomor','invoice'])||('SA-'+Date.now().toString(36));
+  if (!nm) return {_preview:['—',0,tgl,'','',''],_err:'Nama kreditur kosong'};
+  if (!jml) return {_preview:[nm,0,tgl,'',kat,ref],_err:'Jumlah 0'};
+  return {_preview:[nm,fmtC(jml),tgl,jtmp,kat,ref],
+   _raw:{nama_kreditur:nm,jumlah:jml,sisa:jml,status:'Belum Lunas',
+    tanggal:tgl,jatuh_tempo:jtmp,kategori:kat,keterangan:ket,nomor_ref:ref}};
  });
 
- parseSheet('Piutang',['Debitur','Jumlah','Jatuh Tempo','Keterangan','No. Ref'],(r,g)=>{
-  const nama=(r[g(['nama_debitur','nama','debitur'])]||'').trim();
-  const jml=_parseNum(r[g(['jumlah','amount'])]);
-  if (!nama) return {nama:'—',jml:0,_err:'Nama debitur kosong'};
-  if (!jml)  return {nama,jml:0,_err:'Jumlah 0'};
-  return {nama,jumlah:fmtC(jml),jatuh:r[g(['jatuh_tempo','jatuh'])]||'',ket:r[g(['keterangan','ket'])]||'',ref:r[g(['nomor_ref','ref','no'])]||'',_raw:{nama,jumlah:jml,jatuh_tempo:r[g(['jatuh_tempo','jatuh'])]||'',keterangan:r[g(['keterangan','ket'])]||'',nomor_ref:r[g(['nomor_ref','ref','no'])]||''}};
+ parseSheet('Piutang',['Debitur','Jumlah','Tanggal','Jatuh Tempo','Kategori','No. Ref'],(r,hdr)=>{
+  const nm=gStr(r,hdr,['nama_debitur','nama','debitur']);
+  const jml=gNum(r,hdr,['jumlah','amount','nominal']);
+  const tgl=gDat(r,hdr,['tanggal','date','tgl']);
+  const jtmp=gStr(r,hdr,['jatuh_tempo','jatuh','due']);
+  const kat=gStr(r,hdr,['kategori','kategory','cat'])||'penjualan_kredit';
+  const ket=gStr(r,hdr,['keterangan','ket','desc']);
+  const ref=gStr(r,hdr,['nomor_ref','no_ref','ref','nomor','invoice'])||('SA-'+Date.now().toString(36));
+  if (!nm) return {_preview:['—',0,tgl,'','',''],_err:'Nama debitur kosong'};
+  if (!jml) return {_preview:[nm,0,tgl,'',kat,ref],_err:'Jumlah 0'};
+  return {_preview:[nm,fmtC(jml),tgl,jtmp,kat,ref],
+   _raw:{nama_debitur:nm,jumlah:jml,sisa:jml,status:'Belum Lunas',
+    tanggal:tgl,jatuh_tempo:jtmp,kategori:kat,keterangan:ket,nomor_ref:ref}};
  });
 
- parseSheet('Persediaan',['Nama Barang','Qty','Harga Satuan','Keterangan'],(r,g)=>{
-  const nama=(r[g(['nama_barang','nama','barang'])]||'').trim();
-  const qty=_parseNum(r[g(['qty','jumlah','quantity'])]);
-  const harga=_parseNum(r[g(['harga_satuan','harga','price'])]);
-  if (!nama) return {nama:'—',qty:0,harga:0,ket:'',_err:'Nama barang kosong'};
-  if (!qty)  return {nama,qty:0,harga,ket:'',_err:'Qty 0'};
-  return {nama,qty,harga:fmtC(harga),ket:r[g(['keterangan','ket'])]||'',_raw:{nama_barang:nama,jumlah:qty,harga_satuan:harga,total_nilai:qty*harga,tanggal:today,keterangan:r[g(['keterangan','ket'])]||''}};
+ parseSheet('Persediaan',['Nama Barang','Qty','Harga Satuan','Tanggal','Metode','Stok Min'],(r,hdr)=>{
+  const nm=gStr(r,hdr,['nama_barang','nama','barang','item']);
+  const qty=gNum(r,hdr,['qty','jumlah','quantity','stok']);
+  const hs=gNum(r,hdr,['harga_satuan','harga','price','satuan']);
+  const tgl=gDat(r,hdr,['tanggal','date','tgl']);
+  const met=gStr(r,hdr,['metode_penilaian','metode','method'])||'FIFO';
+  const stokMin=gNum(r,hdr,['stok_minimum','stok_min','minimum','min'])||0;
+  const ket=gStr(r,hdr,['keterangan','ket','desc']);
+  if (!nm) return {_preview:['—',0,0,tgl,'',''],_err:'Nama barang kosong'};
+  if (!qty) return {_preview:[nm,0,hs,tgl,met,stokMin],_err:'Qty 0'};
+  return {_preview:[nm,qty,fmtC(hs),tgl,met,stokMin],
+   _raw:{nama_barang:nm,jumlah:qty,harga_satuan:hs,total_nilai:qty*hs,
+    tanggal:tgl,metode_penilaian:met,stok_minimum:stokMin,keterangan:ket}};
  });
 
- parseSheet('Perlengkapan',['Nama Item','Nilai','Keterangan'],(r,g)=>{
-  const nama=(r[g(['nama_item','nama','item'])]||'').trim();
-  const nilai=_parseNum(r[g(['nilai','value','harga'])]);
-  if (!nama) return {nama:'—',nilai:0,ket:'',_err:'Nama item kosong'};
-  if (!nilai) return {nama,nilai:0,ket:'',_err:'Nilai 0'};
-  return {nama,nilai:fmtC(nilai),ket:r[g(['keterangan','ket'])]||'',_raw:{nama_item:nama,nilai,tanggal:today,keterangan:r[g(['keterangan','ket'])]||''}};
+ parseSheet('Perlengkapan',['Nama Item','Nilai','Jumlah Unit','Tanggal'],(r,hdr)=>{
+  const nm=gStr(r,hdr,['nama_item','nama','item']);
+  const nilai=gNum(r,hdr,['nilai','value','harga']);
+  const jml=gNum(r,hdr,['jumlah','qty','unit'])||1;
+  const tgl=gDat(r,hdr,['tanggal','date','tgl']);
+  const ket=gStr(r,hdr,['keterangan','ket','desc']);
+  if (!nm) return {_preview:['—',0,1,tgl],_err:'Nama item kosong'};
+  if (!nilai) return {_preview:[nm,0,jml,tgl],_err:'Nilai 0'};
+  return {_preview:[nm,fmtC(nilai),jml,tgl],
+   _raw:{nama_item:nm,nilai,jumlah:jml,total_nilai:nilai*jml,tanggal:tgl,keterangan:ket}};
  });
 
- parseSheet('Aset Tetap',['Nama Aset','Harga Perolehan','Akum. Awal','Masa Manfaat','Metode'],(r,g)=>{
-  const nama=(r[g(['nama_aset','nama','aset'])]||'').trim();
-  const harga=_parseNum(r[g(['harga_perolehan','harga','perolehan'])]);
-  const akum=_parseNum(r[g(['akumulasi_awal','akumulasi','akum'])]);
-  const masa=parseFloat(r[g(['masa_manfaat','masa'])])||0;
-  const metode=(r[g(['metode','method'])]||'garis-lurus').toLowerCase().includes('saldo')?'saldo-menurun':'garis-lurus';
-  const tgl=_parseDate(r[g(['tanggal','date','tgl'])])||today;
-  if (!nama) return {nama:'—',harga:0,akum:0,masa:0,metode:'-',_err:'Nama aset kosong'};
-  if (!harga) return {nama,harga:0,akum:0,masa:0,metode,_err:'Harga perolehan 0'};
-  return {nama,harga:fmtC(harga),akum:fmtC(akum),masa,metode,_raw:{nama_aset:nama,harga_perolehan:harga,akumulasi_penyusutan:akum,nilai_buku:harga-akum,masa_manfaat:masa||5,metode_penyusutan:metode,tanggal:tgl,keterangan:r[g(['keterangan','ket'])]||''}};
+ parseSheet('Aset Tetap',['Nama Aset','Harga Perolehan','Akum. Awal','Masa Manfaat','Metode','Tarif SM','Nilai Residu'],(r,hdr)=>{
+  const nm=gStr(r,hdr,['nama_aset','nama','aset']);
+  const hp=gNum(r,hdr,['harga_perolehan','harga','perolehan']);
+  const akum=gNum(r,hdr,['akumulasi_awal','akumulasi','akum'])||0;
+  const masa=gNum(r,hdr,['masa_manfaat','masa'])||5;
+  const met=(gStr(r,hdr,['metode','method'])||'garis-lurus').toLowerCase().includes('saldo')?'saldo-menurun':'garis-lurus';
+  const tarif=gNum(r,hdr,['tarif_sm_persen','tarif_sm','tarif','rate'])||0;
+  const residu=gNum(r,hdr,['nilai_residu','residu','salvage'])||0;
+  const tgl=gDat(r,hdr,['tanggal','date','tgl']);
+  const ket=gStr(r,hdr,['keterangan','ket','desc']);
+  if (!nm) return {_preview:['—',0,0,0,'','',''],_err:'Nama aset kosong'};
+  if (!hp) return {_preview:[nm,0,akum,masa,met,tarif,residu],_err:'Harga perolehan 0'};
+  if (met==='saldo-menurun'&&!tarif) return {_preview:[nm,fmtC(hp),fmtC(akum),masa,met,0,residu],_err:'Tarif SM wajib diisi untuk metode Saldo Menurun'};
+  return {_preview:[nm,fmtC(hp),fmtC(akum),masa,met,tarif?tarif+'%':'—',residu?fmtC(residu):'—'],
+   _raw:{nama_aset:nm,harga_perolehan:hp,akumulasi_penyusutan:akum,nilai_buku:hp-akum,
+    masa_manfaat:masa,metode_penyusutan:met,tarif_sm:tarif||null,nilai_residu:residu,
+    tahun_perolehan:new Date(tgl).getFullYear(),tanggal:tgl,keterangan:ket}};
  });
 
- if (totalValid===0) { toast('Tidak ada data valid di semua sheet','error'); return; }
- document.getElementById('import-sl-summary').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;">${summaryHtml}</div>`;
+ if (totalValid===0) { toast('Tidak ada data valid. Pastikan nama sheet sesuai: Hutang, Piutang, Persediaan, Perlengkapan, Aset Tetap','error',6000); return; }
+ document.getElementById('import-sl-summary').innerHTML=`
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-bottom:10px;">${summaryHtml}</div>
+  <div style="font-size:11px;color:var(--text3);">Semua data akan diimpor sebagai <strong>saldo awal</strong> — jurnal tidak dibuat. Pastikan saldo awal akun GL di CoA sudah sesuai.</div>`;
  document.getElementById('import-sl-detail').innerHTML=detailHtml;
  document.getElementById('import-sl-preview').style.display='block';
  document.getElementById('btn-import-sl-confirm').style.display='inline-flex';
@@ -16668,35 +16938,24 @@ async function previewImportSL(input) {
 function confirmImportSL() {
  if (!co()) return;
  const mode=document.querySelector('input[name="sl-import-mode"]:checked')?.value||'merge';
- let added={hutang:0,piutang:0,persediaan:0,perlengkapan:0,aset:0};
-
- const doImport=(sheetName,dbArr,builder)=>{
-  const items=(_importSLData[sheetName]||[]).filter(x=>!x._err);
-  if (!items.length) return;
-  if (mode==='replace') dbArr=dbArr.filter(x=>x.company_id!==co());
-  items.forEach(item=>{
-   const rec={id:genId(),company_id:co(),...item._raw,_is_saldo_awal:true};
-   dbArr.push(rec);
-  });
-  return items.length;
- };
-
  if (mode==='replace') {
-  const toReplace=Object.keys(_importSLData);
-  if (!confirm(`REPLACE: Sub-ledger ${toReplace.join(', ')} yang ada akan dihapus dan diganti.\n\nLanjutkan?`)) return;
-  if (_importSLData['Hutang']?.length)      DB.hutang=DB.hutang.filter(x=>x.company_id!==co());
-  if (_importSLData['Piutang']?.length)     DB.piutang=DB.piutang.filter(x=>x.company_id!==co());
-  if (_importSLData['Persediaan']?.length)  DB.persediaan=DB.persediaan.filter(x=>x.company_id!==co());
-  if (_importSLData['Perlengkapan']?.length)DB.perlengkapan=DB.perlengkapan.filter(x=>x.company_id!==co());
-  if (_importSLData['Aset Tetap']?.length)  DB.aset_tetap=DB.aset_tetap.filter(x=>x.company_id!==co());
- }
+  const hasData=Object.keys(_importSLData);
+  if (!confirm(`REPLACE: Sub-ledger (${hasData.join(', ')}) yang ada akan dihapus dan diganti dengan data dari file ini.
 
+Lanjutkan?`)) return;
+  if (_importSLData['Hutang']?.length)       DB.hutang=DB.hutang.filter(x=>x.company_id!==co());
+  if (_importSLData['Piutang']?.length)      DB.piutang=DB.piutang.filter(x=>x.company_id!==co());
+  if (_importSLData['Persediaan']?.length)   DB.persediaan=DB.persediaan.filter(x=>x.company_id!==co());
+  if (_importSLData['Perlengkapan']?.length) DB.perlengkapan=DB.perlengkapan.filter(x=>x.company_id!==co());
+  if (_importSLData['Aset Tetap']?.length)   DB.aset_tetap=DB.aset_tetap.filter(x=>x.company_id!==co());
+ }
+ let added={hutang:0,piutang:0,persediaan:0,perlengkapan:0,aset:0};
  (_importSLData['Hutang']||[]).filter(x=>!x._err).forEach(x=>{
-  DB.hutang.push({id:genId(),company_id:co(),...x._raw,status:'Belum Lunas',sisa:x._raw.jumlah,nomor_ref:x._raw.nomor_ref||('SA-'+genId().slice(0,6)),kategori:'lainnya',_is_saldo_awal:true});
+  DB.hutang.push({id:genId(),company_id:co(),...x._raw,_is_saldo_awal:true});
   added.hutang++;
  });
  (_importSLData['Piutang']||[]).filter(x=>!x._err).forEach(x=>{
-  DB.piutang.push({id:genId(),company_id:co(),...x._raw,status:'Belum Lunas',sisa:x._raw.jumlah,nomor_ref:x._raw.nomor_ref||('SA-'+genId().slice(0,6)),kategori:'lainnya',_is_saldo_awal:true});
+  DB.piutang.push({id:genId(),company_id:co(),...x._raw,_is_saldo_awal:true});
   added.piutang++;
  });
  (_importSLData['Persediaan']||[]).filter(x=>!x._err).forEach(x=>{
@@ -16711,646 +16970,15 @@ function confirmImportSL() {
   DB.aset_tetap.push({id:genId(),company_id:co(),...x._raw,_is_saldo_awal:true});
   added.aset++;
  });
-
- autoSave(); closeModal('modal-import-sl');
- const parts=Object.entries({Hutang:added.hutang,Piutang:added.piutang,Persediaan:added.persediaan,Perlengkapan:added.perlengkapan,'Aset Tetap':added.aset}).filter(([,v])=>v>0).map(([k,v])=>`${k}: ${v}`);
+ autoSave();
+ closeModal('modal-import-sl');
+ const parts=Object.entries({Hutang:added.hutang,Piutang:added.piutang,Persediaan:added.persediaan,Perlengkapan:added.perlengkapan,'Aset Tetap':added.aset})
+  .filter(([,v])=>v>0).map(([k,v])=>`${k}: ${v}`);
  toast(`✅ Import Sub-Ledger ${mode==='replace'?'(replace)':'(merge)'}: ${parts.join(' | ')} record ditambahkan`,'success',6000);
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// IMPORT JSON — MERGE / REPLACE
-// ═══════════════════════════════════════════════════════════════════
-function openImportJSON() {
- document.getElementById('import-json-file').value='';
- document.getElementById('import-json-info').textContent='';
- document.querySelector('input[name="json-import-mode"][value="merge"]').checked=true;
- updateJsonModeUI();
- openModal('modal-import-json');
-}
-
-function updateJsonModeUI() {
- const mode=document.querySelector('input[name="json-import-mode"]:checked')?.value;
- document.getElementById('json-mode-merge-lbl').style.borderColor=mode==='merge'?'var(--accent2)':'var(--border)';
- document.getElementById('json-mode-replace-lbl').style.borderColor=mode==='replace'?'var(--danger)':'var(--border)';
-}
-
-async function confirmImportJSON() {
- const file=document.getElementById('import-json-file').files[0];
- if (!file) { toast('Pilih file JSON terlebih dahulu','error'); return; }
- const mode=document.querySelector('input[name="json-import-mode"]:checked')?.value||'merge';
- let data;
- try {
-  data=JSON.parse(await file.text());
- } catch(e) { toast('File JSON tidak valid: '+e.message,'error'); return; }
- if (!data||typeof data!=='object') { toast('Struktur JSON tidak dikenali','error'); return; }
-
- if (mode==='replace') {
-  if (!confirm('REPLACE: Semua data aplikasi akan dihapus dan diganti dengan isi backup ini.\n\nProses ini TIDAK bisa dibatalkan. Lanjutkan?')) return;
-  // Replace langsung — sama seperti importJSON lama
-  const TABLES=['companies','accounts','transactions','journal_entries','journal_details',
-   'hutang','piutang','persediaan','perlengkapan','aset_tetap','penyusutan_log',
-   'penyesuaian','retur_penjualan','audit_log','lra_data','templates','rekonsiliasi'];
-  TABLES.forEach(t=>{ if(Array.isArray(data[t])) DB[t]=data[t]; });
-  autoSave(); closeModal('modal-import-json');
-  location.reload();
-  return;
- }
-
- // ── MERGE: tambah data dari file ke data yang ada ────────────────
- // Prinsip: record dengan ID yang belum ada = tambahkan
- //          record dengan ID yang sudah ada = lewati (preserve local changes)
- const MERGE_TABLES=['accounts','transactions','journal_entries','journal_details',
-  'hutang','piutang','persediaan','perlengkapan','aset_tetap','penyusutan_log',
-  'penyesuaian','retur_penjualan','audit_log','templates'];
- let stats={};
- MERGE_TABLES.forEach(t=>{
-  if (!Array.isArray(data[t])) return;
-  const existing=new Set((DB[t]||[]).map(x=>x.id));
-  const newRecs=data[t].filter(x=>x&&x.id&&!existing.has(x.id));
-  if (!DB[t]) DB[t]=[];
-  DB[t].push(...newRecs);
-  if (newRecs.length) stats[t]=newRecs.length;
- });
- // Merge companies: tambah company yang belum ada
- if (Array.isArray(data.companies)) {
-  const existCo=new Set((DB.companies||[]).map(x=>x.id));
-  const newCo=data.companies.filter(x=>x&&x.id&&!existCo.has(x.id));
-  if (!DB.companies) DB.companies=[];
-  DB.companies.push(...newCo);
-  if (newCo.length) stats.companies=newCo.length;
- }
- autoSave(); closeModal('modal-import-json');
- const summary=Object.entries(stats).filter(([,v])=>v>0).map(([k,v])=>`${k}: +${v}`).join(' | ');
- toast(`🔀 Merge selesai${summary?' — '+summary:' (tidak ada data baru)'}`, 'success', 7000);
- if (currentPage) navigate(currentPage);
-}
-
-// 
-// FITUR 1: NOTIFIKASI JATUH TEMPO HUTANG / PIUTANG
-// Dipanggil otomatis saat startup dan saat navigate ke hutang/piutang
-// 
-function cekJatuhTempo() {
- if (!co()) return;
- const today = new Date(); today.setHours(0,0,0,0);
- const h7 = new Date(today); h7.setDate(h7.getDate() + 7);
- const h1 = new Date(today); h1.setDate(h1.getDate() + 1);
- const hasil = [];
-
- const cekList = (list, jenisLabel, namaField) => {
- coFilter(list).filter(x => x.status !== 'Lunas' && x.jatuh_tempo).forEach(x => {
- const jt = new Date(x.jatuh_tempo); jt.setHours(0,0,0,0);
- const selisih = Math.round((jt - today) / 86400000);
- const nama = x[namaField] || '—';
- if (selisih < 0) {
- hasil.push({ tipe: 'danger', msg: `${jenisLabel} <strong>${nama}</strong> sudah lewat jatuh tempo ${Math.abs(selisih)} hari lalu (${fmtC(x.sisa)})` });
- } else if (selisih === 0) {
- hasil.push({ tipe: 'danger', msg: ` ${jenisLabel} <strong>${nama}</strong> jatuh tempo <strong>hari ini</strong>! (${fmtC(x.sisa)})` });
- } else if (selisih === 1) {
- hasil.push({ tipe: 'warning', msg: `🟡 ${jenisLabel} <strong>${nama}</strong> jatuh tempo <strong>besok</strong> (${fmtC(x.sisa)})` });
- } else if (selisih <= 7) {
- hasil.push({ tipe: 'info', msg: ` ${jenisLabel} <strong>${nama}</strong> jatuh tempo ${selisih} hari lagi — ${x.jatuh_tempo} (${fmtC(x.sisa)})` });
- }
- });
- };
-
- cekList(DB.hutang, 'Hutang ke', 'nama_kreditur');
- cekList(DB.piutang, 'Piutang dari', 'nama_debitur');
-
- if (hasil.length === 0) return;
-
- // Tampilkan max 3 notif toast, sisanya dilihat di dashboard
- hasil.slice(0, 3).forEach((h, i) => {
- setTimeout(() => toast(h.msg, h.tipe, 8000), i * 1200);
- });
- if (hasil.length > 3) {
- setTimeout(() => toast(` +${hasil.length - 3} notifikasi jatuh tempo lainnya — cek halaman Hutang/Piutang`, 'info', 6000), 4000);
- }
-}
-
-// Banner jatuh tempo di halaman hutang/piutang
-function renderJatuhTempoBanner(containerId, list, namaField, jenisLabel) {
- const today = new Date(); today.setHours(0,0,0,0);
- const items = coFilter(list).filter(x => x.status !== 'Lunas' && x.jatuh_tempo).map(x => {
- const jt = new Date(x.jatuh_tempo); jt.setHours(0,0,0,0);
- const selisih = Math.round((jt - today) / 86400000);
- return { ...x, selisih };
- }).filter(x => x.selisih <= 7).sort((a,b) => a.selisih - b.selisih);
-
- const container = document.getElementById(containerId);
- if (!container) return;
- if (!items.length) { container.innerHTML = ''; return; }
-
- const rows = items.map(x => {
- const warna = x.selisih < 0 ? 'var(--danger)' : x.selisih <= 1 ? '#f59e0b' : 'var(--primary-light)';
- const label = x.selisih < 0 ? `Terlambat ${Math.abs(x.selisih)} hari` : x.selisih === 0 ? 'Hari ini!' : x.selisih === 1 ? 'Besok' : `${x.selisih} hari lagi`;
- return `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(0,0,0,.05);">
- <span style="font-size:12px;">${jenisLabel} <strong>${x[namaField]||'—'}</strong></span>
- <span style="font-size:11px;color:${warna};font-weight:700;">${label} — ${fmtC(x.sisa)}</span>
- </div>`;
- }).join('');
-
- container.innerHTML = `<div style="padding:10px 14px;background:rgba(245,158,11,.08);border-radius:8px;border-left:4px solid #f59e0b;margin-bottom:12px;">
- <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#b45309;margin-bottom:6px;">Mendekati Jatuh Tempo (7 hari ke depan)</div>
- ${rows}
- </div>`;
-}
-
-// 
-// FITUR 2: REKONSILIASI BANK
-// 
-function renderRekonsiliasi() {
- const accs = coFilter(DB.accounts).filter(a => _accHasRole(a,'kas_bank') || a.type==='Aset' && (a.name.toLowerCase().includes('bank') || a.name.toLowerCase().includes('kas')));
- const rekList = coFilter(DB.rekonsiliasi||[]);
-
- document.getElementById('new-pages-container').innerHTML = `
- <div class="page-header">
- <div><div class="page-title">Rekonsiliasi Bank</div><div class="page-subtitle">Cocokkan mutasi rekening bank dengan catatan jurnal</div></div>
- <div class="page-actions"><button class="btn btn-primary" onclick="openRekonsiliasi()">+ Rekonsiliasi Baru</button></div>
- </div>
- ${accs.length === 0 ? `<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada akun kas/bank. Tambahkan akun dengan tipe Aset yang mengandung kata "Kas" atau "Bank" di CoA.</p></div></div></div>` : ''}
- ${rekList.length === 0 ? `<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada rekonsiliasi. Klik <strong>+ Rekonsiliasi Baru</strong> untuk mulai.</p></div></div></div>` :
- `<div class="card"><div class="table-wrap"><table><thead><tr>
- <th>Periode</th><th>Akun Bank</th><th>Saldo Buku</th><th>Saldo Bank</th><th>Selisih</th><th>Status</th><th>Aksi</th>
- </tr></thead><tbody>${rekList.map(r => {
- const acc = accs.find(a=>a.id==r.account_id);
- const selisih = (r.saldo_bank||0) - (r.saldo_buku||0);
- return `<tr>
- <td>${r.periode||'—'}</td>
- <td>${acc ? acc.code+' — '+acc.name : '—'}</td>
- <td class="td-mono">${fmtC(r.saldo_buku||0)}</td>
- <td class="td-mono">${fmtC(r.saldo_bank||0)}</td>
- <td class="td-mono" style="color:${Math.abs(selisih)<1?'var(--accent2)':'var(--danger)'};font-weight:700;">${fmtC(Math.abs(selisih))} ${Math.abs(selisih)<1?'':selisih>0?'(Bank lebih)':'(Buku lebih)'}</td>
- <td><span class="badge-status ${Math.abs(selisih)<1?'badge-lunas':'badge-belum'}">${Math.abs(selisih)<1?'Seimbang':'Selisih'}</span></td>
- <td><button class="btn btn-secondary btn-sm" onclick="editRekonsiliasi('${r.id}')">Detail</button>
- <button class="btn btn-danger btn-sm" onclick="hapusRekonsiliasi('${r.id}')">Hapus</button></td>
- </tr>`;
- }).join('')}</tbody></table></div></div>`
- }`;
-}
-
-let _rekState = { items: [], account_id: null };
-
-function openRekonsiliasi(id) {
- const accs = coFilter(DB.accounts).filter(a => _accHasRole(a,'kas_bank') || (a.type==='Aset' && (a.name.toLowerCase().includes('bank')||a.name.toLowerCase().includes('kas'))));
- if (!accs.length) { toast('Tambahkan akun Kas/Bank di CoA terlebih dahulu','error'); return; }
-
- const rek = id ? coFilter(DB.rekonsiliasi||[]).find(r=>r.id==id) : null;
- _rekState = rek ? { ...rek, items: rek.items||[] } : { id: null, account_id: accs[0].id, periode: '', saldo_bank: 0, items: [] };
-
- const today = new Date().toISOString().split('T')[0];
- const accOpts = accs.map(a=>`<option value="${a.id}" ${_rekState.account_id==a.id?'selected':''}>${a.code} — ${a.name}</option>`).join('');
-
- // Ambil transaksi jurnal untuk akun terpilih
- _renderRekItems();
-
- const modal = document.createElement('div');
- modal.className = 'modal-overlay show';
- modal.id = 'modal-rekonsiliasi-temp';
- modal.innerHTML = `<div class="modal modal-lg" style="max-width:800px;">
- <div class="modal-header"><div class="modal-title">Rekonsiliasi Bank</div><button class="modal-close" onclick="document.getElementById('modal-rekonsiliasi-temp').remove()"></button></div>
- <div class="modal-body">
- <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
- <div class="form-group"><label>Akun Bank *</label>
- <select class="form-control" id="rek-account" onchange="_rekChangeAcc(this.value)">${accOpts}</select></div>
- <div class="form-group"><label>Periode *</label>
- <input class="form-control" id="rek-periode" type="month" value="${_rekState.periode||today.substring(0,7)}"></div>
- <div class="form-group"><label>Saldo Rekening Bank (Rp) *</label>
- <input class="form-control" type="number" id="rek-saldo-bank" value="${_rekState.saldo_bank||0}" placeholder="Saldo di rekening koran" oninput="_rekUpdateSummary()"></div>
- </div>
- <div style="font-weight:700;font-size:13px;margin-bottom:8px;">Transaksi di Buku Besar — centang yang sudah muncul di rekening bank</div>
- <div style="max-height:320px;overflow-y:auto;border:1px solid var(--border);border-radius:6px;">
- <table style="width:100%;font-size:12px;border-collapse:collapse;">
- <thead style="position:sticky;top:0;background:var(--bg-card);z-index:1;">
- <tr>
- <th style="padding:7px 10px;text-align:center;border-bottom:1px solid var(--border);width:36px;"><input type="checkbox" id="rek-check-all" onchange="_rekCheckAll(this.checked)"></th>
- <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">Tanggal</th>
- <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">No. Jurnal</th>
- <th style="padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);">Keterangan</th>
- <th style="padding:7px 10px;text-align:right;border-bottom:1px solid var(--border);">Debit</th>
- <th style="padding:7px 10px;text-align:right;border-bottom:1px solid var(--border);">Kredit</th>
- </tr>
- </thead>
- <tbody id="rek-tbody"></tbody>
- </table>
- </div>
- <div id="rek-summary" style="margin-top:12px;padding:12px 14px;background:var(--bg);border-radius:8px;font-size:13px;"></div>
- </div>
- <div class="modal-footer">
- <button class="btn btn-secondary" onclick="document.getElementById('modal-rekonsiliasi-temp').remove()">Batal</button>
- <button class="btn btn-primary" onclick="saveRekonsiliasi()">Simpan Rekonsiliasi</button>
- </div>
- </div>`;
- document.body.appendChild(modal);
- _rekChangeAcc(accs[0].id);
-}
-
-function _rekChangeAcc(accId) {
- _rekState.account_id = accId;  // UUID-safe
- _renderRekItems();
-}
-
-function _renderRekItems() {
- const tbody = document.getElementById('rek-tbody');
- if (!tbody) return;
- const accId = _rekState.account_id;
- const JEs = coFilter(DB.journal_entries).map(je=>je.id);
- const details = DB.journal_details.filter(d => JEs.includes(d.journal_id) && d.account_id == accId);
-
- _rekState.rows = details.map(d => {
- const je = DB.journal_entries.find(e=>e.id==d.journal_id);
- const checked = (_rekState.items||[]).includes(d.id);
- return { id: d.id, date: je?.date||'', desc: je?.description||'', jno: getJournalNo(je), debit: d.debit, kredit: d.kredit, checked };
- }).sort((a,b)=>a.date.localeCompare(b.date));
-
- tbody.innerHTML = _rekState.rows.map(r => `
- <tr id="rek-row-${r.id}" style="${r.checked?'background:rgba(16,185,129,.05)':''}">
- <td style="padding:5px 10px;text-align:center;"><input type="checkbox" data-rid="${r.id}" ${r.checked?'checked':''} onchange="_rekToggle(${r.id},this.checked)"></td>
- <td style="padding:5px 10px;">${r.date}</td>
- <td style="padding:5px 10px;color:var(--text3);font-family:var(--mono);">${r.jno}</td>
- <td style="padding:5px 10px;max-width:220px;overflow:hidden;text-overflow:ellipsis;">${r.desc}</td>
- <td style="padding:5px 10px;text-align:right;">${r.debit?fmtC(r.debit):''}</td>
- <td style="padding:5px 10px;text-align:right;color:var(--text2);">${r.kredit?fmtC(r.kredit):''}</td>
- </tr>`).join('');
- _rekUpdateSummary();
-}
-
-function _rekToggle(id, checked) {
- if (!_rekState.items) _rekState.items = [];
- if (checked) { if (!_rekState.items.includes(id)) _rekState.items.push(id); }
- else { _rekState.items = _rekState.items.filter(x=>x!==id); }
- const row = document.getElementById('rek-row-'+id);
- if (row) row.style.background = checked ? 'rgba(16,185,129,.05)' : '';
- _rekUpdateSummary();
-}
-
-function _rekCheckAll(checked) {
- (_rekState.rows||[]).forEach(r => _rekToggle(r.id, checked));
- document.querySelectorAll('#rek-tbody input[type=checkbox]').forEach(cb => cb.checked = checked);
-}
-
-function _rekUpdateSummary() {
- const summary = document.getElementById('rek-summary');
- if (!summary) return;
- const saldoBank = parseFloat(document.getElementById('rek-saldo-bank')?.value)||0;
- const checked = (_rekState.rows||[]).filter(r => (_rekState.items||[]).includes(r.id));
- const totalD = checked.reduce((s,r)=>s+r.debit,0);
- const totalK = checked.reduce((s,r)=>s+r.kredit,0);
- const saldoBuku = totalD - totalK;
- const selisih = saldoBank - saldoBuku;
- const balance = Math.abs(selisih) < 1;
- summary.innerHTML = `
- <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
- <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Item Dicentang</div><div style="font-weight:700;">${checked.length} item</div></div>
- <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Saldo Buku</div><div class="td-mono" style="font-weight:700;">${fmtC(saldoBuku)}</div></div>
- <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Saldo Bank</div><div class="td-mono" style="font-weight:700;">${fmtC(saldoBank)}</div></div>
- <div><div style="font-size:10px;color:var(--text3);text-transform:uppercase;">Selisih</div>
- <div class="td-mono" style="font-weight:700;color:${balance?'var(--accent2)':'var(--danger)'};">${balance?'Seimbang':'Selisih: '+fmtC(Math.abs(selisih))}</div></div>
- </div>`;
-}
-
-function saveRekonsiliasi() {
- const accId = parseInt(document.getElementById('rek-account').value)||0;
- const periode = document.getElementById('rek-periode').value;
- const saldoBank = parseFloat(document.getElementById('rek-saldo-bank').value)||0;
- if (!periode) { toast('Periode wajib diisi','error'); return; }
- const checked = (_rekState.rows||[]).filter(r=>(_rekState.items||[]).includes(r.id));
- const saldoBuku = checked.reduce((s,r)=>s+r.debit-r.kredit,0);
- if (!DB.rekonsiliasi) DB.rekonsiliasi = [];
- const obj = { id: _rekState.id||genId(), company_id:co(), account_id:accId, periode, saldo_bank:saldoBank, saldo_buku:saldoBuku, items: _rekState.items||[], updated_at:new Date().toISOString() };
- const idx = DB.rekonsiliasi.findIndex(r=>r.id==obj.id);
- if (idx>=0) DB.rekonsiliasi[idx]=obj; else DB.rekonsiliasi.push(obj);
- autoSave();
- document.getElementById('modal-rekonsiliasi-temp')?.remove();
- renderRekonsiliasi();
- toast(`Rekonsiliasi disimpan — Selisih: ${fmtC(Math.abs(saldoBank-saldoBuku))}`, Math.abs(saldoBank-saldoBuku)<1?'success':'warning', 5000);
-}
-
-function editRekonsiliasi(id) { openRekonsiliasi(id); }
-function hapusRekonsiliasi(id) {
- if (!confirm('Hapus rekonsiliasi ini?')) return;
- DB.rekonsiliasi = (DB.rekonsiliasi||[]).filter(r=>r.id!=id);
- autoSave(); renderRekonsiliasi();
- toast('Rekonsiliasi dihapus','success');
-}
-
-// 
-// FITUR 3: TEMPLATE TRANSAKSI BERULANG
-// 
-function renderTemplateTransaksi() {
- const list = coFilter(DB.templates||[]);
- document.getElementById('new-pages-container').innerHTML = `
- <div class="page-header">
- <div><div class="page-title">Template Transaksi Berulang</div><div class="page-subtitle">Simpan transaksi rutin seperti gaji, sewa, cicilan agar bisa digunakan ulang</div></div>
- <div class="page-actions"><button class="btn btn-primary" onclick="openTemplateModal()">+ Template Baru</button></div>
- </div>
- ${list.length===0 ?
- `<div class="card"><div class="card-body"><div class="empty-state"><div class="empty-icon"></div><p>Belum ada template. Klik <strong>+ Template Baru</strong> untuk membuat transaksi berulang.</p></div></div></div>` :
- `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
- ${list.map(t=>{
- const frekLabel = {harian:'Setiap Hari',mingguan:'Setiap Minggu',bulanan:'Setiap Bulan',tahunan:'Setiap Tahun'}[t.frekuensi]||t.frekuensi;
- const totD = (t.details||[]).reduce((s,d)=>s+d.debit,0);
- return `<div class="card">
- <div class="card-header" style="justify-content:space-between;align-items:flex-start;">
- <div>
- <div class="card-title">${t.nama}</div>
- <div style="font-size:12px;color:var(--text3);margin-top:2px;">${frekLabel} — ${fmtC(totD)}</div>
- </div>
- <span style="font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(37,99,235,.08);color:var(--primary-light);white-space:nowrap;">${t.frekuensi}</span>
- </div>
- <div class="card-body" style="padding-top:0;">
- <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">${t.keterangan||'—'}</div>
- <div style="font-size:11px;color:var(--text3);margin-bottom:14px;">Terakhir digunakan: ${t.last_used||'Belum pernah'}</div>
- <div style="display:flex;gap:8px;flex-wrap:wrap;">
- <button class="btn btn-primary btn-sm" onclick="gunakanTemplate('${t.id}')">Gunakan Sekarang</button>
- <button class="btn btn-secondary btn-sm" onclick="editTemplate('${t.id}')">Edit</button>
- <button class="btn btn-danger btn-sm" onclick="hapusTemplate('${t.id}')">Hapus</button>
- </div>
- </div>
- </div>`;
- }).join('')}
- </div>`
- }`;
-}
-
-function openTemplateModal(id) {
- const t = id ? coFilter(DB.templates||[]).find(x=>x.id==id) : null;
- const accs = coFilter(DB.accounts).filter(a=>!a.is_header);
- const accOpts = accs.map(a=>`<option value="${a.id}">${a.code} — ${a.name}</option>`).join('');
-
- const detailRows = (t?.details||[{},{},{}]).map((d,i)=>`
- <tr id="tmpl-row-${i}">
- <td style="padding:4px 6px;"><select class="form-control" id="tmpl-acc-${i}" style="font-size:12px;"><option value="">— Pilih Akun —</option>${accs.map(a=>`<option value="${a.id}" ${d.account_id==a.id?'selected':''}>${a.code} — ${a.name}</option>`).join('')}</select></td>
- <td style="padding:4px 6px;"><input class="form-control" type="number" id="tmpl-d-${i}" value="${d.debit||0}" style="font-size:12px;" min="0"></td>
- <td style="padding:4px 6px;"><input class="form-control" type="number" id="tmpl-k-${i}" value="${d.kredit||0}" style="font-size:12px;" min="0"></td>
- <td style="padding:4px 6px;text-align:center;"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()"></button></td>
- </tr>`).join('');
-
- const modal = document.createElement('div');
- modal.className = 'modal-overlay show';
- modal.id = 'modal-template-temp';
- modal.innerHTML = `<div class="modal modal-lg" style="max-width:680px;">
- <div class="modal-header"><div class="modal-title">${id?'Edit':'Buat'} Template Transaksi</div>
- <button class="modal-close" onclick="document.getElementById('modal-template-temp').remove()"></button></div>
- <div class="modal-body">
- <input type="hidden" id="tmpl-edit-id" value="${id||''}">
- <div class="form-grid">
- <div class="form-group" style="grid-column:1/-1"><label>Nama Template *</label><input class="form-control" id="tmpl-nama" value="${t?.nama||''}" placeholder="Contoh: Gaji Karyawan Bulanan"></div>
- <div class="form-group" style="grid-column:1/-1"><label>Keterangan Jurnal *</label><input class="form-control" id="tmpl-ket" value="${t?.keterangan||''}" placeholder="Keterangan yang akan muncul di jurnal saat digunakan"></div>
- <div class="form-group"><label>Frekuensi</label>
- <select class="form-control" id="tmpl-frek">
- <option value="harian" ${t?.frekuensi==='harian'?'selected':''}>Setiap Hari</option>
- <option value="mingguan" ${t?.frekuensi==='mingguan'?'selected':''}>Setiap Minggu</option>
- <option value="bulanan" ${!t||t?.frekuensi==='bulanan'?'selected':''}>Setiap Bulan</option>
- <option value="tahunan" ${t?.frekuensi==='tahunan'?'selected':''}>Setiap Tahun</option>
- </select></div>
- </div>
- <div style="font-weight:700;font-size:13px;margin:12px 0 8px;">Detail Jurnal</div>
- <table style="width:100%;border-collapse:collapse;font-size:12px;">
- <thead><tr>
- <th style="padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);">Akun</th>
- <th style="padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);">Debit</th>
- <th style="padding:6px 8px;text-align:left;border-bottom:1px solid var(--border);">Kredit</th>
- <th style="padding:6px 8px;width:36px;border-bottom:1px solid var(--border);"></th>
- </tr></thead>
- <tbody id="tmpl-tbody">${detailRows}</tbody>
- </table>
- <button class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="_addTmplRow()">+ Tambah Baris</button>
- </div>
- <div class="modal-footer">
- <button class="btn btn-secondary" onclick="document.getElementById('modal-template-temp').remove()">Batal</button>
- <button class="btn btn-primary" onclick="saveTemplate()">Simpan Template</button>
- </div>
- </div>`;
- document.body.appendChild(modal);
-}
-
-let _tmplRowCount = 3;
-function _addTmplRow() {
- const i = _tmplRowCount++;
- const accs = coFilter(DB.accounts).filter(a=>!a.is_header);
- const tr = document.createElement('tr');
- tr.id = 'tmpl-row-'+i;
- tr.innerHTML = `
- <td style="padding:4px 6px;"><select class="form-control" id="tmpl-acc-${i}" style="font-size:12px;"><option value="">— Pilih Akun —</option>${accs.map(a=>`<option value="${a.id}">${a.code} — ${a.name}</option>`).join('')}</select></td>
- <td style="padding:4px 6px;"><input class="form-control" type="number" id="tmpl-d-${i}" value="0" style="font-size:12px;" min="0"></td>
- <td style="padding:4px 6px;"><input class="form-control" type="number" id="tmpl-k-${i}" value="0" style="font-size:12px;" min="0"></td>
- <td style="padding:4px 6px;text-align:center;"><button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()"></button></td>`;
- document.getElementById('tmpl-tbody').appendChild(tr);
-}
-
-function saveTemplate() {
- const nama = document.getElementById('tmpl-nama').value.trim();
- const ket = document.getElementById('tmpl-ket').value.trim();
- const frek = document.getElementById('tmpl-frek').value;
- const id = document.getElementById('tmpl-edit-id').value;
- if (!nama||!ket) { toast('Nama dan keterangan wajib diisi','error'); return; }
-
- const rows = [...document.getElementById('tmpl-tbody').querySelectorAll('tr')];
- const details = rows.map(tr => {
- const idx = tr.id.replace('tmpl-row-','');
- const accId = document.getElementById('tmpl-acc-'+idx)?.value || '';  // UUID-safe
- const debit = parseFloat(document.getElementById('tmpl-d-'+idx)?.value)||0;
- const kredit = parseFloat(document.getElementById('tmpl-k-'+idx)?.value)||0;
- return { account_id:accId, debit, kredit };
- }).filter(d=>d.account_id&&d.account_id!==''&&(d.debit||d.kredit));
-
- if (details.length<2) { toast('Minimal 2 baris detail jurnal','error'); return; }
- const totD=details.reduce((s,d)=>s+d.debit,0), totK=details.reduce((s,d)=>s+d.kredit,0);
- if (Math.abs(Math.round(totD)-Math.round(totK))>1) { toast(`Debit (${fmtC(totD)}) ≠ Kredit (${fmtC(totK)}). Jurnal harus balance.`,'error'); return; }
-
- if (!DB.templates) DB.templates=[];
- const obj={id:id?id:genId(), company_id:co(), nama, keterangan:ket, frekuensi:frek, details, last_used:id?(DB.templates.find(x=>String(x.id)==String(id))?.last_used||null):null};
- const idx2=DB.templates.findIndex(x=>x.id==obj.id);
- if(idx2>=0) DB.templates[idx2]=obj; else DB.templates.push(obj);
- autoSave();
- document.getElementById('modal-template-temp')?.remove();
- renderTemplateTransaksi();
- toast('Template disimpan','success');
-}
-
-function gunakanTemplate(id) {
- const t = coFilter(DB.templates||[]).find(x=>x.id==id);
- if (!t) return;
- // Pre-fill modal transaksi dengan detail dari template
- navigate('transactions');
- setTimeout(()=>{
- openTransactionModal();
- setTimeout(()=>{
- document.getElementById('trx-desc').value = t.keterangan;
- // Isi detail jurnal
- const tbody = document.getElementById('jd-tbody');
- tbody.innerHTML='';
- t.details.forEach(d=>{
- addJournalRow();
- const rows=tbody.querySelectorAll('tr');
- const last=rows[rows.length-1];
- const sel=last.querySelector('select');
- if(sel){sel.value=d.account_id; sel.dispatchEvent(new Event('change'));}
- const dinp=last.querySelectorAll('input[type=number]');
- if(dinp[0]) { dinp[0].value=d.debit||0; dinp[0].dispatchEvent(new Event('input')); }
- if(dinp[1]) { dinp[1].value=d.kredit||0; dinp[1].dispatchEvent(new Event('input')); }
- });
- updateJournalTotals();
- // Update last_used
- const idx=DB.templates.findIndex(x=>x.id==id);
- if(idx>=0) DB.templates[idx].last_used=new Date().toISOString().split('T')[0];
- autoSave();
- toast(`Template "${t.nama}" dimuat ke form transaksi`,'success',3000);
- },200);
- },100);
-}
-
-function editTemplate(id) { openTemplateModal(id); }
-function hapusTemplate(id) {
- if (!confirm('Hapus template ini?')) return;
- DB.templates=(DB.templates||[]).filter(x=>x.id!=id);
- autoSave(); renderTemplateTransaksi();
- toast('Template dihapus','success');
-}
-
-// 
-// FITUR 4: LAPORAN PAJAK — PPh 21 & PPN
-// 
-function renderLaporanPajak() {
- const co_data = getCompany();
- const jes = coFilter(DB.journal_entries);
- const jeIds = jes.map(je=>je.id);
- const accs = coFilter(DB.accounts);
-
- // Hitung PPN: cari akun PPN Keluaran & Masukan
- const accPPNKeluaran = accs.filter(a=>a.name.toLowerCase().includes('ppn keluaran')||a.name.toLowerCase().includes('pajak keluaran'));
- const accPPNMasukan = accs.filter(a=>a.name.toLowerCase().includes('ppn masukan')||a.name.toLowerCase().includes('pajak masukan'));
- const accGaji = accs.filter(a=>a.name.toLowerCase().includes('gaji')||a.name.toLowerCase().includes('upah')||a.name.toLowerCase().includes('salari'));
- const accPPh21 = accs.filter(a=>a.name.toLowerCase().includes('pph 21')||a.name.toLowerCase().includes('pajak penghasilan karyawan'));
-
- const sumAcc = (accList) => {
- let tot=0;
- accList.forEach(a=>{
- DB.journal_details.filter(d=>jeIds.includes(d.journal_id)&&d.account_id==a.id).forEach(d=>{
- tot += (a.normal_balance==='Kredit') ? d.kredit-d.debit : d.debit-d.kredit;
- });
- });
- return tot;
- };
-
- const ppnKeluaran = sumAcc(accPPNKeluaran);
- const ppnMasukan = sumAcc(accPPNMasukan);
- const ppnKurang = ppnKeluaran - ppnMasukan;
- const totalGaji = sumAcc(accGaji);
- const pph21Terpotong = sumAcc(accPPh21);
-
- // Tarif PPh 21 PTKP 2024 (TK/0) — sesuai UU HPP No.7/2021
- const PTKP = 54000000;
- const hitungPPh21 = (bruto) => {
- const pkp = Math.max(0, bruto - PTKP);
- if (pkp <= 60000000) return pkp * 0.05;
- if (pkp <= 250000000) return 3000000 + (pkp-60000000)*0.15;
- if (pkp <= 500000000) return 31500000 + (pkp-250000000)*0.25;
- if (pkp <= 5000000000) return 94000000 + (pkp-500000000)*0.30;
- return 1444000000 + (pkp-5000000000)*0.35; // [FIX AUDIT] bracket 35% UU HPP 2021
- };
- const pph21Estimasi = hitungPPh21(totalGaji);
-
- document.getElementById('new-pages-container').innerHTML = `
- <div class="page-header">
- <div>
- <div class="page-title">Laporan Pajak</div>
- <div class="page-subtitle">Ringkasan PPh 21 dan PPN berdasarkan data jurnal — ${co_data?.name||''}</div>
- </div>
- <div class="page-actions">
- <button class="btn btn-secondary" onclick="exportPajakExcel()">Export Excel</button>
- </div>
- </div>
-
- <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
-
- <!-- PPN -->
- <div class="card">
- <div class="card-header"><div class="card-title">Pajak Pertambahan Nilai (PPN)</div></div>
- <div class="card-body">
- ${accPPNKeluaran.length===0&&accPPNMasukan.length===0 ?
- `<div class="empty-state" style="padding:16px 0;"><p style="font-size:12px;">Belum ada akun PPN Keluaran / PPN Masukan di CoA.<br>Tambahkan akun dengan nama mengandung "PPN Keluaran" atau "PPN Masukan".</p></div>` :
- `<table style="width:100%;font-size:13px;border-collapse:collapse;">
- <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PPN Keluaran (Penjualan)</td><td class="td-mono" style="text-align:right;font-weight:600;">${fmtC(ppnKeluaran)}</td></tr>
- <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PPN Masukan (Pembelian)</td><td class="td-mono" style="text-align:right;font-weight:600;">${fmtC(ppnMasukan)}</td></tr>
- <tr style="background:rgba(37,99,235,.04);border-radius:4px;">
- <td style="padding:10px 0;font-weight:700;">${ppnKurang>=0?'PPN Kurang Bayar':'PPN Lebih Bayar'}</td>
- <td class="td-mono" style="text-align:right;font-weight:700;font-size:15px;color:${ppnKurang>=0?'var(--danger)':'var(--accent2)'};">${fmtC(Math.abs(ppnKurang))}</td>
- </tr>
- </table>
- <div style="margin-top:12px;font-size:11px;color:var(--text3);padding:8px 10px;background:var(--bg);border-radius:6px;">
- PPN 11% sesuai UU HPP No.7/2021. Kurang bayar = wajib setor ke DJP. Lebih bayar = dapat dikompensasi.
- </div>`
- }
- </div>
- </div>
-
- <!-- PPh 21 -->
- <div class="card">
- <div class="card-header"><div class="card-title">PPh Pasal 21 (Karyawan)</div></div>
- <div class="card-body">
- ${accGaji.length===0 ?
- `<div class="empty-state" style="padding:16px 0;"><p style="font-size:12px;">Belum ada akun Gaji/Upah di CoA.<br>Tambahkan akun dengan nama mengandung "Gaji" atau "Upah".</p></div>` :
- `<table style="width:100%;font-size:13px;border-collapse:collapse;">
- <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">Total Gaji/Upah (Bruto)</td><td class="td-mono" style="text-align:right;font-weight:600;">${fmtC(totalGaji)}</td></tr>
- <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PTKP (TK/0)</td><td class="td-mono" style="text-align:right;">${fmtC(PTKP)}</td></tr>
- <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PKP</td><td class="td-mono" style="text-align:right;">${fmtC(Math.max(0,totalGaji-PTKP))}</td></tr>
- <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PPh 21 Estimasi (tarif progresif)</td><td class="td-mono" style="text-align:right;font-weight:600;">${fmtC(pph21Estimasi)}</td></tr>
- <tr style="border-bottom:1px solid var(--border);"><td style="padding:8px 0;color:var(--text2);">PPh 21 Sudah Dipotong (dari jurnal)</td><td class="td-mono" style="text-align:right;color:var(--accent2);font-weight:600;">${fmtC(pph21Terpotong)}</td></tr>
- <tr style="background:rgba(37,99,235,.04);">
- <td style="padding:10px 0;font-weight:700;">Selisih</td>
- <td class="td-mono" style="text-align:right;font-weight:700;font-size:15px;color:${Math.abs(pph21Estimasi-pph21Terpotong)<1000?'var(--accent2)':'var(--danger)'};">${fmtC(Math.abs(pph21Estimasi-pph21Terpotong))}</td>
- </tr>
- </table>
- <div style="margin-top:12px;font-size:11px;color:var(--text3);padding:8px 10px;background:var(--bg);border-radius:6px;">
- <strong>Catatan penting:</strong> Estimasi ini menghitung PPh 21 dengan asumsi <em>satu karyawan TK/0</em> menerima seluruh gaji.
- Jika ada beberapa karyawan, PPh 21 harus dihitung <strong>per karyawan</strong> lalu dijumlahkan — hasilnya akan berbeda karena tarif progresif.
- Gunakan DJP Online atau konsultan pajak untuk perhitungan akurat per karyawan.
- </div>`
- }
- </div>
- </div>
- </div>
-
- <!-- Daftar transaksi terkait pajak -->
- <div class="card">
- <div class="card-header"><div class="card-title">Transaksi Terkait Pajak</div></div>
- <div class="card-body" style="padding:0;">
- ${[...accPPNKeluaran,...accPPNMasukan,...accGaji,...accPPh21].length===0 ?
- `<div class="empty-state"><p style="font-size:12px;">Belum ada akun pajak di CoA.<br>Tambahkan akun PPN Keluaran, PPN Masukan, Beban Gaji, atau PPh 21.</p></div>` :
- `<div class="table-wrap"><table><thead><tr>
- <th>Tanggal</th><th>No. Jurnal</th><th>Keterangan</th><th>Akun Pajak</th><th>Debit</th><th>Kredit</th>
- </tr></thead>
- <tbody>${(() => {
- const pajakAccIds = [...accPPNKeluaran,...accPPNMasukan,...accGaji,...accPPh21].map(a=>a.id);
- const rows = [];
- jes.forEach(je=>{
- DB.journal_details.filter(d=>d.journal_id==je.id&&pajakAccIds.includes(d.account_id)).forEach(d=>{
- const acc=accs.find(a=>a.id==d.account_id);
- rows.push(`<tr>
- <td>${je.date}</td>
- <td class="td-mono" style="color:var(--text3);">${getJournalNo(je)}</td>
- <td>${je.description}</td>
- <td>${acc?acc.name:'—'}</td>
- <td class="td-mono">${d.debit?fmtC(d.debit):''}</td>
- <td class="td-mono" style="color:var(--text2);">${d.kredit?fmtC(d.kredit):''}</td>
- </tr>`);
- });
- });
- return rows.length?rows.join(''):'<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3);">Belum ada transaksi pajak</td></tr>';
- })()}</tbody></table></div>`
- }
- </div>
- </div>`;
-}
-
-function exportPajakExcel() {
- toast('Export laporan pajak ke Excel sedang disiapkan...','info',2000);
- exportExcel('pajak');
-}
 
 
-</script> <!-- LRA MODAL (SAP) -->
-<div class="modal-overlay" id="modal-lra"> <div class="modal modal-lg" style="max-width:740px;"> <div class="modal-header"><div class="modal-title">Input Anggaran & Realisasi — LRA (Basis Kas)</div><button class="modal-close" onclick="closeModal('modal-lra')"></button></div> <div class="modal-body"> <div style="padding:10px 14px;background:rgba(37,99,235,.07);border-radius:8px;border-left:4px solid var(--primary-lighter);font-size:11px;color:var(--text2);margin-bottom:16px;"> ℹ <strong>LRA — Basis Kas:</strong>Input anggaran APBD dan realisasi kas. Gunakan akun <strong>Belanja</strong>(bukan Beban). Pembiayaan dipisah menjadi Penerimaan dan Pengeluaran Pembiayaan.<br> <strong>SiLPA/SiKPA</strong> = (Pendapatan − Belanja) + (Penerimaan Pembiayaan − Pengeluaran Pembiayaan)
- </div> <div style="display:grid;grid-template-columns:130px 1fr 1fr 1fr 28px;gap:8px;padding:6px 0;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--text3);border-bottom:2px solid var(--border);"> <span>Kategori</span><span>Nama Akun / Uraian</span><span style="text-align:right;">Anggaran (Rp)</span><span style="text-align:right;">Realisasi (Rp)</span><span></span> </div> <div id="lra-items-container"></div> <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap;"> <button class="btn btn-secondary btn-sm" onclick="addLRAItem('pendapatan')">Pendapatan</button> <button class="btn btn-secondary btn-sm" onclick="addLRAItem('belanja')">Belanja</button> <button class="btn btn-secondary btn-sm" onclick="addLRAItem('penerimaan_pembiayaan')">Penerimaan Pembiayaan</button> <button class="btn btn-secondary btn-sm" onclick="addLRAItem('pengeluaran_pembiayaan')">Pengeluaran Pembiayaan</button> </div> </div> <div class="modal-footer"> <button class="btn btn-secondary" onclick="closeModal('modal-lra')">Batal</button> <button class="btn btn-primary" onclick="saveLRAData()">Simpan & Hitung LRA + LSAL</button> </div> </div>
-</div> </body></html>
+</script>
+</body>
+</html>
