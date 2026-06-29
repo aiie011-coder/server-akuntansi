@@ -11716,36 +11716,682 @@ function renderKomparasi() {
 }
 
 // Fungsi stub untuk halaman yang sedang dikembangkan
+// ═══════════════════════════════════════════════════════════
+// REKONSILIASI BANK — State modul
+// ═══════════════════════════════════════════════════════════
+const _rekon = {
+ mutasiBank: [],      // baris dari file CSV/OFX
+ matches: {},         // key: bankIdx → internalIdx (atau 'new'/'ignored')
+ sessionId: null,     // ID sesi rekonsiliasi aktif
+ akunBankId: null,    // akun kas/bank yang dipilih
+};
+
 function renderRekonsiliasi() {
  const container = document.getElementById('new-pages-container');
  if (!container) return;
- const coData = DB.companies.find(c => c.id === DB.current_company_id);
- if (!coData) { container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Pilih perusahaan terlebih dahulu.</p></div>'; return; }
- const kasAccounts = (DB.accounts || []).filter(a => {
-  const kode = (a.code || '').toString();
-  return kode.startsWith('1-1') || (a.name || '').toLowerCase().includes('kas') || (a.name || '').toLowerCase().includes('bank');
+ const coData = getCompany();
+ if (!coData) {
+  container.innerHTML = '<div class="empty-state"><div class="empty-icon"></div><p>Pilih perusahaan terlebih dahulu.</p></div>';
+  return;
+ }
+
+ // Daftar akun kas/bank dari CoA
+ const kasAccounts = coFilter(DB.accounts || []).filter(a => {
+  const kode = String(a.code || '');
+  const nama = (a.name || '').toLowerCase();
+  return kode.match(/^1[-.]?1/) || nama.includes('kas') || nama.includes('bank') || nama.includes('giro') || nama.includes('tabungan');
  });
+
+ // Sesi rekonsiliasi tersimpan milik perusahaan ini
+ const sesiList = (DB.rekonsiliasi || []).filter(r => r.company_id === co()).sort((a,b) => b.tanggal?.localeCompare(a.tanggal));
+
  container.innerHTML = `
   <div class="page-header">
-   <div><div class="page-title">Rekonsiliasi Bank</div><div class="page-subtitle">Cocokkan saldo buku dengan mutasi rekening bank</div></div>
-   <div class="page-actions"><button class="btn btn-secondary" onclick="window.print()">Print</button></div>
+   <div>
+    <div class="page-title">Rekonsiliasi Bank</div>
+    <div class="page-subtitle">Cocokkan catatan internal dengan rekening koran bank</div>
+   </div>
+   <div class="page-actions">
+    <button class="btn btn-secondary" onclick="_rekonCetakLaporan()">🖨 Cetak Laporan</button>
+   </div>
   </div>
-  <div class="card" style="margin-bottom:16px;">
-   <div class="card-header"><div class="card-title">Rekonsiliasi Bank — ${escapeHtml(coData.name)}</div></div>
+
+  <!-- STEP 1: Setup -->
+  <div id="rekon-step-setup" class="card" style="margin-bottom:16px;">
+   <div class="card-header"><div class="card-title">⚙ Pengaturan Rekonsiliasi</div></div>
    <div class="card-body">
-    <div style="padding:16px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid #d97706;font-size:13px;color:#92400e;margin-bottom:16px;">
-     ℹ Fitur rekonsiliasi bank penuh sedang dalam pengembangan. Di bawah ini adalah ringkasan akun kas &amp; bank dari Chart of Accounts.
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+     <div class="form-group">
+      <label>Akun Bank / Kas</label>
+      <select class="form-control" id="rekon-akun-id" onchange="_rekonUpdateSaldoBuku()">
+       <option value="">— Pilih Akun —</option>
+       ${kasAccounts.map(a => `<option value="${a.id}">${escapeHtml(a.code)} — ${escapeHtml(a.name)}</option>`).join('')}
+      </select>
+     </div>
+     <div class="form-group">
+      <label>Saldo Buku (otomatis)</label>
+      <input class="form-control" id="rekon-saldo-buku" type="text" readonly style="background:var(--bg);font-weight:700;" value="—">
+     </div>
+     <div class="form-group">
+      <label>Saldo Rekening Koran (input manual)</label>
+      <input class="form-control" id="rekon-saldo-bank" type="number" placeholder="0" oninput="_rekonHitungSelisih()">
+     </div>
     </div>
-    <div class="table-wrap"><table>
-     <thead><tr><th>Kode</th><th>Nama Akun</th><th>Tipe</th></tr></thead>
-     <tbody>${kasAccounts.length ? kasAccounts.map(a => `<tr><td>${escapeHtml(a.code)}</td><td>${escapeHtml(a.name)}</td><td>${escapeHtml(a.type||'')}</td></tr>`).join('') : '<tr><td colspan="3"><div class="empty-state"><p>Tidak ada akun kas/bank ditemukan.</p></div></td></tr>'}</tbody>
-    </table></div>
-    <div style="margin-top:16px;text-align:center;">
-     <button class="btn btn-secondary" onclick="navigate('buku-besar')">Buka Buku Besar</button>
+    <div style="margin-bottom:16px;">
+     <label style="font-size:13px;font-weight:600;display:block;margin-bottom:8px;">Upload Rekening Koran (.CSV atau .OFX)</label>
+     <label class="btn btn-secondary" style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+      📂 Pilih File
+      <input type="file" accept=".csv,.ofx,.qfx" onchange="_rekonLoadFile(this)" style="display:none">
+     </label>
+     <span id="rekon-file-info" style="font-size:12px;color:var(--text2);margin-left:12px;"></span>
+    </div>
+    <div id="rekon-selisih-bar" style="display:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;margin-top:4px;"></div>
+   </div>
+  </div>
+
+  <!-- STEP 2: Panel dua sisi -->
+  <div id="rekon-panel-utama" style="display:none;">
+   <!-- Ringkasan selisih -->
+   <div id="rekon-summary-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;"></div>
+
+   <!-- Dua kolom side-by-side -->
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+    <!-- Kiri: Mutasi Bank -->
+    <div class="card">
+     <div class="card-header">
+      <div class="card-title">🏦 Mutasi Bank</div>
+      <span id="rekon-bank-count" style="font-size:12px;color:var(--text2);"></span>
+     </div>
+     <div class="card-body" style="padding:0;">
+      <div style="max-height:480px;overflow-y:auto;">
+       <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead style="position:sticky;top:0;background:var(--card);z-index:1;">
+         <tr>
+          <th style="padding:8px;text-align:left;border-bottom:1px solid var(--border);">Tgl</th>
+          <th style="padding:8px;text-align:left;border-bottom:1px solid var(--border);">Keterangan</th>
+          <th style="padding:8px;text-align:right;border-bottom:1px solid var(--border);">Jumlah</th>
+          <th style="padding:8px;text-align:center;border-bottom:1px solid var(--border);">Status</th>
+         </tr>
+        </thead>
+        <tbody id="rekon-bank-tbody"></tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+
+    <!-- Kanan: Transaksi Internal -->
+    <div class="card">
+     <div class="card-header">
+      <div class="card-title">📒 Catatan Internal</div>
+      <span id="rekon-internal-count" style="font-size:12px;color:var(--text2);"></span>
+     </div>
+     <div class="card-body" style="padding:0;">
+      <div style="max-height:480px;overflow-y:auto;">
+       <table style="width:100%;border-collapse:collapse;font-size:12px;">
+        <thead style="position:sticky;top:0;background:var(--card);z-index:1;">
+         <tr>
+          <th style="padding:8px;text-align:left;border-bottom:1px solid var(--border);">Tgl</th>
+          <th style="padding:8px;text-align:left;border-bottom:1px solid var(--border);">Keterangan</th>
+          <th style="padding:8px;text-align:right;border-bottom:1px solid var(--border);">Jumlah</th>
+          <th style="padding:8px;text-align:center;border-bottom:1px solid var(--border);">Status</th>
+         </tr>
+        </thead>
+        <tbody id="rekon-internal-tbody"></tbody>
+       </table>
+      </div>
+     </div>
     </div>
    </div>
+
+   <!-- Tombol aksi -->
+   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+    <button class="btn btn-primary" onclick="_rekonAutoMatch()">✨ Auto-Match Otomatis</button>
+    <button class="btn btn-secondary" onclick="_rekonSimpanSesi()">💾 Simpan Sesi</button>
+    <button class="btn btn-secondary" onclick="_rekonReset()">🔄 Reset</button>
+   </div>
+
+   <!-- Laporan rekonsiliasi -->
+   <div class="card" id="rekon-laporan-card" style="display:none;">
+    <div class="card-header"><div class="card-title">📋 Laporan Rekonsiliasi Bank</div></div>
+    <div class="card-body" id="rekon-laporan-body"></div>
+   </div>
+  </div>
+
+  <!-- Riwayat sesi -->
+  ${sesiList.length ? `
+  <div class="card" style="margin-top:16px;">
+   <div class="card-header"><div class="card-title">🕓 Riwayat Sesi Rekonsiliasi</div></div>
+   <div class="card-body" style="padding:0;">
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+     <thead><tr>
+      <th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">Tanggal</th>
+      <th style="padding:10px;text-align:left;border-bottom:1px solid var(--border);">Akun</th>
+      <th style="padding:10px;text-align:right;border-bottom:1px solid var(--border);">Saldo Buku</th>
+      <th style="padding:10px;text-align:right;border-bottom:1px solid var(--border);">Saldo Bank</th>
+      <th style="padding:10px;text-align:right;border-bottom:1px solid var(--border);">Selisih</th>
+      <th style="padding:10px;text-align:center;border-bottom:1px solid var(--border);">Aksi</th>
+     </tr></thead>
+     <tbody>
+      ${sesiList.map(s => {
+       const akun = (DB.accounts||[]).find(a=>String(a.id)===String(s.akun_id));
+       const selisih = (s.saldo_bank||0) - (s.saldo_buku||0);
+       return `<tr>
+        <td style="padding:10px;border-bottom:1px solid var(--border);">${s.tanggal||''}</td>
+        <td style="padding:10px;border-bottom:1px solid var(--border);">${escapeHtml(akun?.name||s.akun_id||'—')}</td>
+        <td style="padding:10px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);">${fmtC(s.saldo_buku||0)}</td>
+        <td style="padding:10px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);">${fmtC(s.saldo_bank||0)}</td>
+        <td style="padding:10px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);color:${Math.abs(selisih)<1?'#10b981':selisih<0?'var(--danger)':'#f59e0b'};font-weight:700;">${selisih>=0?'+':''}${fmtC(selisih)}</td>
+        <td style="padding:10px;text-align:center;border-bottom:1px solid var(--border);">
+         <button class="btn btn-secondary btn-sm" onclick="_rekonMuatSesi('${s.id}')">Muat</button>
+         <button class="btn btn-secondary btn-sm" style="color:var(--danger);" onclick="_rekonHapusSesi('${s.id}')">Hapus</button>
+        </td>
+       </tr>`;
+      }).join('')}
+     </tbody>
+    </table>
+   </div>
+  </div>` : ''}
+
+  <!-- Modal: Buat transaksi baru dari rekonsiliasi -->
+  <div id="rekon-modal-trx" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;align-items:center;justify-content:center;">
+   <div style="background:var(--card);border-radius:12px;padding:24px;width:100%;max-width:480px;margin:16px;">
+    <div style="font-size:16px;font-weight:700;margin-bottom:16px;">➕ Buat Transaksi Baru</div>
+    <div class="form-group">
+     <label>Tanggal</label>
+     <input class="form-control" id="rekon-trx-tanggal" type="date">
+    </div>
+    <div class="form-group">
+     <label>Keterangan</label>
+     <input class="form-control" id="rekon-trx-desc" type="text" placeholder="mis: Biaya admin bank, Bunga deposito...">
+    </div>
+    <div class="form-group">
+     <label>Jumlah</label>
+     <input class="form-control" id="rekon-trx-jumlah" type="number" placeholder="0">
+    </div>
+    <div class="form-group">
+     <label>Tipe</label>
+     <select class="form-control" id="rekon-trx-tipe">
+      <option value="keluar">Keluar (Beban/Biaya Bank)</option>
+      <option value="masuk">Masuk (Pendapatan Bunga)</option>
+     </select>
+    </div>
+    <div class="form-group">
+     <label>Akun Lawan</label>
+     <select class="form-control" id="rekon-trx-akun-lawan">
+      ${coFilter(DB.accounts||[]).map(a=>`<option value="${a.id}">${escapeHtml(a.code)} — ${escapeHtml(a.name)}</option>`).join('')}
+     </select>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;">
+     <button class="btn btn-secondary" style="flex:1;" onclick="_rekonTutupModalTrx()">Batal</button>
+     <button class="btn btn-primary" style="flex:1;" onclick="_rekonSimpanTrxBaru()">Simpan Transaksi</button>
+    </div>
+   </div>
+  </div>
+ `;
+
+ // Init state baru
+ _rekon.mutasiBank = [];
+ _rekon.matches = {};
+ _rekon.akunBankId = null;
+}
+
+// ── Helper: hitung saldo buku akun yang dipilih ──────────────
+function _rekonUpdateSaldoBuku() {
+ const akunId = document.getElementById('rekon-akun-id')?.value;
+ _rekon.akunBankId = akunId || null;
+ const el = document.getElementById('rekon-saldo-buku');
+ if (!el) return;
+ if (!akunId) { el.value = '—'; return; }
+
+ // Hitung saldo dari journal_details
+ let saldo = 0;
+ const jds = coFilter(DB.journal_details || []).filter(d => String(d.account_id) === String(akunId));
+ jds.forEach(d => { saldo += (d.debit || 0) - (d.kredit || 0); });
+ el.value = fmtC(saldo);
+ el._saldoNum = saldo;
+ _rekonHitungSelisih();
+}
+
+function _rekonHitungSelisih() {
+ const saldoBuku = document.getElementById('rekon-saldo-buku')?._saldoNum || 0;
+ const saldoBank = parseFloat(document.getElementById('rekon-saldo-bank')?.value) || 0;
+ const selisih = saldoBank - saldoBuku;
+ const bar = document.getElementById('rekon-selisih-bar');
+ if (!bar) return;
+ bar.style.display = '';
+ if (Math.abs(selisih) < 1) {
+  bar.style.background = 'rgba(16,185,129,.1)'; bar.style.color = '#065f46'; bar.style.border = '1px solid #10b981';
+  bar.textContent = '✅ Saldo buku = Saldo bank. Tidak ada selisih!';
+ } else {
+  bar.style.background = 'rgba(239,68,68,.07)'; bar.style.color = 'var(--danger)'; bar.style.border = '1px solid var(--danger)';
+  bar.textContent = `⚠ Selisih: ${fmtC(Math.abs(selisih))} (${selisih>0?'Bank lebih besar':'Buku lebih besar'})`;
+ }
+}
+
+// ── Load file CSV / OFX ──────────────────────────────────────
+function _rekonLoadFile(input) {
+ const file = input.files[0];
+ if (!file) return;
+ const info = document.getElementById('rekon-file-info');
+ if (info) info.textContent = '⏳ Memproses...';
+ const reader = new FileReader();
+ reader.onload = e => {
+  const text = e.target.result;
+  let rows = [];
+  try {
+   if (file.name.toLowerCase().endsWith('.ofx') || file.name.toLowerCase().endsWith('.qfx')) {
+    rows = _rekonParseOFX(text);
+   } else {
+    rows = _rekonParseCSV(text);
+   }
+  } catch(err) {
+   toast('Gagal membaca file: ' + err.message, 'error', 5000);
+   if (info) info.textContent = '❌ Gagal membaca file';
+   return;
+  }
+  if (!rows.length) { toast('Tidak ada data transaksi ditemukan di file', 'error'); return; }
+  _rekon.mutasiBank = rows;
+  _rekon.matches = {};
+  if (info) info.textContent = `✅ ${file.name} — ${rows.length} transaksi dimuat`;
+  _rekonTampilkanPanel();
+  toast(`${rows.length} baris mutasi bank berhasil dimuat`, 'success');
+ };
+ reader.readAsText(file);
+}
+
+function _rekonParseCSV(text) {
+ // Coba deteksi delimiter: koma, titik koma, atau tab
+ const delim = text.indexOf(';') > text.indexOf(',') ? ';' : (text.indexOf('\t') !== -1 && text.indexOf(',') === -1 ? '\t' : ',');
+ const lines = text.split(/\r?\n/).filter(l => l.trim());
+ if (lines.length < 2) throw new Error('File CSV kosong atau hanya ada header');
+
+ // Deteksi header
+ const header = lines[0].split(delim).map(h => h.replace(/["']/g,'').trim().toLowerCase());
+ const idxTgl   = header.findIndex(h => h.includes('tgl') || h.includes('tanggal') || h.includes('date'));
+ const idxKet   = header.findIndex(h => h.includes('ket') || h.includes('desc') || h.includes('keterangan') || h.includes('narasi') || h.includes('remark'));
+ const idxJml   = header.findIndex(h => h.includes('jumlah') || h.includes('amount') || h.includes('nominal'));
+ const idxDebit = header.findIndex(h => h.includes('debit') || h.includes('db'));
+ const idxKredit= header.findIndex(h => h.includes('kredit') || h.includes('cr') || h.includes('credit'));
+
+ return lines.slice(1).map((line, i) => {
+  const cols = line.split(delim).map(c => c.replace(/^["']|["']$/g,'').trim());
+  const tgl = idxTgl >= 0 ? cols[idxTgl] : '';
+  const ket = idxKet >= 0 ? cols[idxKet] : (cols[1] || '');
+  let jumlah = 0, tipe = 'keluar';
+  if (idxJml >= 0) {
+   jumlah = Math.abs(parseFloat((cols[idxJml]||'0').replace(/[^0-9.,-]/g,'').replace(',','.')) || 0);
+   tipe = (parseFloat((cols[idxJml]||'0').replace(/[^0-9.,-]/g,'').replace(',','.')) || 0) >= 0 ? 'masuk' : 'keluar';
+  } else if (idxDebit >= 0 || idxKredit >= 0) {
+   const d = parseFloat((cols[idxDebit]||'0').replace(/[^0-9.,-]/g,'').replace(',','.')) || 0;
+   const k = parseFloat((cols[idxKredit]||'0').replace(/[^0-9.,-]/g,'').replace(',','.')) || 0;
+   if (k > 0) { jumlah = k; tipe = 'masuk'; } else { jumlah = d; tipe = 'keluar'; }
+  } else {
+   jumlah = Math.abs(parseFloat((cols[2]||'0').replace(/[^0-9.,-]/g,'').replace(',','.')) || 0);
+  }
+  return { idx: i, tanggal: tgl, keterangan: ket, jumlah, tipe, matched: false };
+ }).filter(r => r.jumlah > 0);
+}
+
+function _rekonParseOFX(text) {
+ const rows = [];
+ const stmtRe = /<STMTTRN>([\s\S]*?)<\/STMTTRN>/gi;
+ let m;
+ let i = 0;
+ while ((m = stmtRe.exec(text)) !== null) {
+  const block = m[1];
+  const get = (tag) => { const r = new RegExp(`<${tag}>([^<\r\n]+)`,'i'); const mm = r.exec(block); return mm ? mm[1].trim() : ''; };
+  const trntype = get('TRNTYPE');
+  const dtposted = get('DTPOSTED').substring(0,8); // YYYYMMDD
+  const tgl = dtposted ? `${dtposted.substring(0,4)}-${dtposted.substring(4,6)}-${dtposted.substring(6,8)}` : '';
+  const rawAmt = parseFloat(get('TRNAMT')) || 0;
+  const memo = get('MEMO') || get('NAME') || '';
+  if (!rawAmt) continue;
+  rows.push({ idx: i++, tanggal: tgl, keterangan: memo, jumlah: Math.abs(rawAmt), tipe: rawAmt >= 0 ? 'masuk' : 'keluar', matched: false });
+ }
+ if (!rows.length) throw new Error('Tidak ada transaksi ditemukan di file OFX');
+ return rows;
+}
+
+// ── Tampilkan panel dua sisi ──────────────────────────────────
+function _rekonTampilkanPanel() {
+ const panel = document.getElementById('rekon-panel-utama');
+ if (panel) panel.style.display = '';
+ _rekonRenderBankTbody();
+ _rekonRenderInternalTbody();
+ _rekonUpdateSummary();
+}
+
+function _rekonRenderBankTbody() {
+ const tbody = document.getElementById('rekon-bank-tbody');
+ if (!tbody) return;
+ const count = document.getElementById('rekon-bank-count');
+ if (count) count.textContent = `${_rekon.mutasiBank.length} transaksi`;
+
+ tbody.innerHTML = _rekon.mutasiBank.map((b, i) => {
+  const matchKey = _rekon.matches[i];
+  const isMatched = matchKey !== undefined && matchKey !== 'ignored' && matchKey !== 'new';
+  const isIgnored = matchKey === 'ignored';
+  const isNew     = matchKey === 'new';
+  let statusHtml = '';
+  if (isMatched) statusHtml = `<span style="color:#10b981;font-weight:700;font-size:11px;">✅ Cocok</span>`;
+  else if (isIgnored) statusHtml = `<span style="color:var(--text3);font-size:11px;">Dilewati</span>`;
+  else if (isNew) statusHtml = `<span style="color:#3b82f6;font-size:11px;">➕ Trx Baru</span>`;
+  else statusHtml = `
+   <button onclick="_rekonBuatTrxBaru(${i})" style="font-size:10px;padding:2px 6px;background:rgba(37,99,235,.1);border:1px solid #3b82f6;border-radius:4px;color:#3b82f6;cursor:pointer;margin-right:2px;">+Trx</button>
+   <button onclick="_rekonIgnore(${i})" style="font-size:10px;padding:2px 6px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--text2);cursor:pointer;">Lewati</button>`;
+  const rowBg = isMatched ? 'rgba(16,185,129,.05)' : isIgnored ? 'rgba(0,0,0,.02)' : '';
+  return `<tr style="background:${rowBg};opacity:${isIgnored?.5:1};">
+   <td style="padding:8px;border-bottom:1px solid var(--border);white-space:nowrap;">${b.tanggal}</td>
+   <td style="padding:8px;border-bottom:1px solid var(--border);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(b.keterangan)}">${escapeHtml(b.keterangan)}</td>
+   <td style="padding:8px;border-bottom:1px solid var(--border);text-align:right;font-family:var(--mono);color:${b.tipe==='masuk'?'#10b981':'var(--danger)'};">
+    ${b.tipe==='masuk'?'+':'−'}${fmtC(b.jumlah)}
+   </td>
+   <td style="padding:8px;border-bottom:1px solid var(--border);text-align:center;">${statusHtml}</td>
+  </tr>`;
+ }).join('') || '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text2);">Belum ada mutasi bank dimuat</td></tr>';
+}
+
+function _rekonRenderInternalTbody() {
+ const tbody = document.getElementById('rekon-internal-tbody');
+ if (!tbody) return;
+ if (!_rekon.akunBankId) {
+  tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text2);">Pilih akun bank terlebih dahulu</td></tr>';
+  return;
+ }
+
+ // Ambil journal_details untuk akun ini + join ke journal_entries
+ const jds = coFilter(DB.journal_details || []).filter(d => String(d.account_id) === String(_rekon.akunBankId));
+ const internal = jds.map((d, i) => {
+  const je = (DB.journal_entries || []).find(e => String(e.id) === String(d.journal_entry_id));
+  const jumlah = (d.debit || 0) > 0 ? d.debit : d.kredit;
+  const tipe = (d.debit || 0) > 0 ? 'masuk' : 'keluar';
+  return { idx: i, id: d.id, tanggal: je?.date || '', keterangan: je?.description || '', jumlah, tipe, jdId: d.id };
+ }).sort((a,b) => a.tanggal.localeCompare(b.tanggal));
+
+ _rekon._internalList = internal;
+ const count = document.getElementById('rekon-internal-count');
+ if (count) count.textContent = `${internal.length} entri`;
+
+ // Kumpulkan index internal yang sudah dicocokkan
+ const matchedInternalIdx = new Set(Object.values(_rekon.matches).filter(v => typeof v === 'number'));
+
+ tbody.innerHTML = internal.map((item, i) => {
+  const isMatched = matchedInternalIdx.has(i);
+  const rowBg = isMatched ? 'rgba(16,185,129,.05)' : '';
+  const statusHtml = isMatched
+   ? `<span style="color:#10b981;font-weight:700;font-size:11px;">✅ Cocok</span>`
+   : `<span style="color:var(--text3);font-size:11px;">Belum cocok</span>`;
+  return `<tr style="background:${rowBg};">
+   <td style="padding:8px;border-bottom:1px solid var(--border);white-space:nowrap;">${item.tanggal}</td>
+   <td style="padding:8px;border-bottom:1px solid var(--border);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHtml(item.keterangan)}">${escapeHtml(item.keterangan)}</td>
+   <td style="padding:8px;border-bottom:1px solid var(--border);text-align:right;font-family:var(--mono);color:${item.tipe==='masuk'?'#10b981':'var(--danger)'};">
+    ${item.tipe==='masuk'?'+':'−'}${fmtC(item.jumlah)}
+   </td>
+   <td style="padding:8px;border-bottom:1px solid var(--border);text-align:center;">${statusHtml}</td>
+  </tr>`;
+ }).join('') || '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text2);">Tidak ada transaksi untuk akun ini</td></tr>';
+}
+
+// ── Auto-Match ────────────────────────────────────────────────
+function _rekonAutoMatch() {
+ const internal = _rekon._internalList || [];
+ if (!_rekon.mutasiBank.length || !internal.length) {
+  toast('Pastikan file bank dan akun internal sudah dipilih', 'error'); return;
+ }
+ let matchCount = 0;
+ _rekon.mutasiBank.forEach((b, bi) => {
+  if (_rekon.matches[bi] !== undefined) return; // sudah di-match
+  // Cari kandidat: nominal sama persis & selisih tanggal ≤ 3 hari
+  const bTgl = new Date(b.tanggal);
+  for (let ii = 0; ii < internal.length; ii++) {
+   const matched = new Set(Object.values(_rekon.matches).filter(v=>typeof v==='number'));
+   if (matched.has(ii)) continue;
+   const item = internal[ii];
+   const iTgl = new Date(item.tanggal);
+   const selisihHari = Math.abs((bTgl - iTgl) / 86400000);
+   const samaNominal = Math.abs(b.jumlah - item.jumlah) < 1;
+   const samaTipe = b.tipe === item.tipe;
+   if (samaNominal && samaTipe && selisihHari <= 3) {
+    _rekon.matches[bi] = ii;
+    matchCount++;
+    break;
+   }
+  }
+ });
+ _rekonRenderBankTbody();
+ _rekonRenderInternalTbody();
+ _rekonUpdateSummary();
+ _rekonGenerateLaporan();
+ toast(`Auto-match selesai: ${matchCount} transaksi berhasil dicocokkan`, matchCount > 0 ? 'success' : 'info', 4000);
+}
+
+// ── Aksi per baris ────────────────────────────────────────────
+function _rekonIgnore(bankIdx) {
+ _rekon.matches[bankIdx] = 'ignored';
+ _rekonRenderBankTbody();
+ _rekonUpdateSummary();
+}
+
+function _rekonBuatTrxBaru(bankIdx) {
+ const b = _rekon.mutasiBank[bankIdx];
+ if (!b) return;
+ _rekon._pendingBankIdx = bankIdx;
+ const modal = document.getElementById('rekon-modal-trx');
+ if (!modal) return;
+ document.getElementById('rekon-trx-tanggal').value = b.tanggal || '';
+ document.getElementById('rekon-trx-desc').value = b.keterangan || '';
+ document.getElementById('rekon-trx-jumlah').value = b.jumlah || '';
+ document.getElementById('rekon-trx-tipe').value = b.tipe === 'masuk' ? 'masuk' : 'keluar';
+ modal.style.display = 'flex';
+}
+
+function _rekonTutupModalTrx() {
+ const modal = document.getElementById('rekon-modal-trx');
+ if (modal) modal.style.display = 'none';
+ _rekon._pendingBankIdx = null;
+}
+
+function _rekonSimpanTrxBaru() {
+ const tanggal = document.getElementById('rekon-trx-tanggal')?.value;
+ const desc    = document.getElementById('rekon-trx-desc')?.value?.trim();
+ const jumlah  = parseFloat(document.getElementById('rekon-trx-jumlah')?.value) || 0;
+ const tipe    = document.getElementById('rekon-trx-tipe')?.value;
+ const akunLawan = document.getElementById('rekon-trx-akun-lawan')?.value;
+
+ if (!tanggal || !desc || !jumlah || !akunLawan) {
+  toast('Semua field wajib diisi', 'error'); return;
+ }
+ if (!_rekon.akunBankId) { toast('Pilih akun bank terlebih dahulu', 'error'); return; }
+
+ // Buat journal_entry + journal_details
+ const nid = () => ++DB._id_counter;
+ const jeId = nid();
+ const now = new Date().toISOString();
+ DB.journal_entries.push({
+  id: jeId, company_id: co(), date: tanggal, description: desc,
+  jurnal_no: 'RK-' + jeId, _created_at: now, _updated_at: now
+ });
+
+ // Tentukan debit/kredit berdasarkan tipe
+ const [d_bank, k_bank, d_lawan, k_lawan] = tipe === 'masuk'
+  ? [jumlah, 0, 0, jumlah]   // masuk: debit bank, kredit akun lawan
+  : [0, jumlah, jumlah, 0];  // keluar: kredit bank, debit akun lawan
+
+ DB.journal_details.push({ id: nid(), company_id: co(), journal_entry_id: jeId, account_id: _rekon.akunBankId, debit: d_bank, kredit: k_bank, _created_at: now });
+ DB.journal_details.push({ id: nid(), company_id: co(), journal_entry_id: jeId, account_id: akunLawan, debit: d_lawan, kredit: k_lawan, _created_at: now });
+
+ autoSave();
+
+ // Tandai bank baris sebagai 'new'
+ const bi = _rekon._pendingBankIdx;
+ if (bi !== null && bi !== undefined) _rekon.matches[bi] = 'new';
+ _rekonTutupModalTrx();
+ _rekonUpdateSaldoBuku();
+ _rekonRenderBankTbody();
+ _rekonRenderInternalTbody();
+ _rekonUpdateSummary();
+ toast(`Transaksi "${desc}" berhasil disimpan`, 'success');
+}
+
+// ── Summary bar ───────────────────────────────────────────────
+function _rekonUpdateSummary() {
+ const bar = document.getElementById('rekon-summary-bar');
+ if (!bar) return;
+ const total = _rekon.mutasiBank.length;
+ const matched = Object.values(_rekon.matches).filter(v => typeof v === 'number').length;
+ const trxBaru = Object.values(_rekon.matches).filter(v => v === 'new').length;
+ const ignored = Object.values(_rekon.matches).filter(v => v === 'ignored').length;
+ const belum   = total - matched - trxBaru - ignored;
+
+ bar.innerHTML = `
+  <div style="background:rgba(16,185,129,.1);border:1px solid #10b981;border-radius:8px;padding:12px;text-align:center;">
+   <div style="font-size:22px;font-weight:800;color:#10b981;">${matched}</div>
+   <div style="font-size:11px;color:#065f46;">Cocok</div>
+  </div>
+  <div style="background:rgba(239,68,68,.08);border:1px solid var(--danger);border-radius:8px;padding:12px;text-align:center;">
+   <div style="font-size:22px;font-weight:800;color:var(--danger);">${belum}</div>
+   <div style="font-size:11px;color:var(--danger);">Belum Cocok</div>
+  </div>
+  <div style="background:rgba(37,99,235,.08);border:1px solid #3b82f6;border-radius:8px;padding:12px;text-align:center;">
+   <div style="font-size:22px;font-weight:800;color:#3b82f6;">${trxBaru}</div>
+   <div style="font-size:11px;color:#1e40af;">Trx Baru Dibuat</div>
+  </div>
+  <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+   <div style="font-size:22px;font-weight:800;color:var(--text2);">${ignored}</div>
+   <div style="font-size:11px;color:var(--text2);">Dilewati</div>
+  </div>`;
+ _rekonGenerateLaporan();
+}
+
+// ── Laporan Rekonsiliasi ──────────────────────────────────────
+function _rekonGenerateLaporan() {
+ const card = document.getElementById('rekon-laporan-card');
+ const body = document.getElementById('rekon-laporan-body');
+ if (!card || !body) return;
+ card.style.display = '';
+
+ const saldoBuku  = document.getElementById('rekon-saldo-buku')?._saldoNum || 0;
+ const saldoBank  = parseFloat(document.getElementById('rekon-saldo-bank')?.value) || 0;
+ const internal   = _rekon._internalList || [];
+ const matchedInternal = new Set(Object.values(_rekon.matches).filter(v=>typeof v==='number'));
+
+ // Setoran dalam perjalanan: ada di buku (masuk) tapi belum di bank
+ const setoranDalamPerjalanan = internal.filter((item,i) => !matchedInternal.has(i) && item.tipe === 'masuk');
+ // Cek yang masih beredar: ada di buku (keluar) tapi belum di bank
+ const cekBeredar = internal.filter((item,i) => !matchedInternal.has(i) && item.tipe === 'keluar');
+ // Bank tidak cocok: ada di bank tapi tidak ada di buku
+ const bankBelumCocok = _rekon.mutasiBank.filter((b,i) => _rekon.matches[i] === undefined);
+
+ const totSetoran = setoranDalamPerjalanan.reduce((s,i) => s+i.jumlah, 0);
+ const totCek     = cekBeredar.reduce((s,i) => s+i.jumlah, 0);
+ const saldoBankAdj = saldoBank + totCek - totSetoran;
+ const selisih = saldoBankAdj - saldoBuku;
+
+ const tgl = new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'});
+ const coData = getCompany();
+
+ body.innerHTML = `
+  <div style="font-family:var(--mono);font-size:13px;">
+   <div style="text-align:center;margin-bottom:20px;">
+    <div style="font-size:15px;font-weight:800;">${escapeHtml(coData?.name||'')}</div>
+    <div>LAPORAN REKONSILIASI BANK</div>
+    <div style="color:var(--text2);">Per ${tgl}</div>
+   </div>
+   <table style="width:100%;border-collapse:collapse;">
+    <tr style="border-bottom:2px solid var(--border);">
+     <th style="padding:8px 0;text-align:left;">SALDO MENURUT BANK</th>
+     <th style="padding:8px 0;text-align:right;">${fmtC(saldoBank)}</th>
+    </tr>
+    ${setoranDalamPerjalanan.length ? `
+    <tr><td colspan="2" style="padding:8px 0 4px;font-weight:700;">Ditambah: Setoran Dalam Perjalanan</td></tr>
+    ${setoranDalamPerjalanan.map(i=>`<tr style="color:var(--text2);"><td style="padding:2px 0 2px 16px;">${i.tanggal} — ${escapeHtml(i.keterangan)}</td><td style="text-align:right;color:#10b981;">+ ${fmtC(i.jumlah)}</td></tr>`).join('')}
+    <tr><td style="padding:4px 0;font-weight:600;">Total Setoran Dalam Perjalanan</td><td style="text-align:right;font-weight:600;color:#10b981;">+ ${fmtC(totSetoran)}</td></tr>` : ''}
+    ${cekBeredar.length ? `
+    <tr><td colspan="2" style="padding:8px 0 4px;font-weight:700;">Dikurangi: Cek/Pembayaran Masih Beredar</td></tr>
+    ${cekBeredar.map(i=>`<tr style="color:var(--text2);"><td style="padding:2px 0 2px 16px;">${i.tanggal} — ${escapeHtml(i.keterangan)}</td><td style="text-align:right;color:var(--danger);">− ${fmtC(i.jumlah)}</td></tr>`).join('')}
+    <tr><td style="padding:4px 0;font-weight:600;">Total Cek Beredar</td><td style="text-align:right;font-weight:600;color:var(--danger);">− ${fmtC(totCek)}</td></tr>` : ''}
+    <tr style="border-top:2px solid var(--border);font-weight:800;">
+     <td style="padding:10px 0;">Saldo Bank Disesuaikan</td>
+     <td style="text-align:right;">${fmtC(saldoBankAdj)}</td>
+    </tr>
+    <tr style="height:16px;"><td colspan="2"></td></tr>
+    <tr style="border-bottom:2px solid var(--border);">
+     <th style="padding:8px 0;text-align:left;">SALDO MENURUT BUKU</th>
+     <th style="padding:8px 0;text-align:right;">${fmtC(saldoBuku)}</th>
+    </tr>
+    ${bankBelumCocok.length ? `
+    <tr><td colspan="2" style="padding:8px 0 4px;font-weight:700;">Transaksi Bank Belum Tercatat di Buku</td></tr>
+    ${bankBelumCocok.map(b=>`<tr style="color:var(--text2);"><td style="padding:2px 0 2px 16px;">${b.tanggal} — ${escapeHtml(b.keterangan)}</td><td style="text-align:right;color:${b.tipe==='masuk'?'#10b981':'var(--danger)'};">${b.tipe==='masuk'?'+':'−'} ${fmtC(b.jumlah)}</td></tr>`).join('')}` : ''}
+    <tr style="height:16px;"><td colspan="2"></td></tr>
+    <tr style="border-top:2px solid var(--border);background:${Math.abs(selisih)<1?'rgba(16,185,129,.08)':'rgba(239,68,68,.07)'};">
+     <td style="padding:12px 0;font-size:14px;font-weight:800;">SELISIH TIDAK TEREKONSILISASI</td>
+     <td style="text-align:right;font-size:14px;font-weight:800;color:${Math.abs(selisih)<1?'#10b981':'var(--danger)'};">${Math.abs(selisih)<1?'✅ Nihil':fmtC(Math.abs(selisih))}</td>
+    </tr>
+   </table>
   </div>`;
 }
+
+// ── Simpan & muat sesi ────────────────────────────────────────
+function _rekonSimpanSesi() {
+ if (!_rekon.akunBankId) { toast('Pilih akun bank terlebih dahulu', 'error'); return; }
+ const saldoBuku = document.getElementById('rekon-saldo-buku')?._saldoNum || 0;
+ const saldoBank = parseFloat(document.getElementById('rekon-saldo-bank')?.value) || 0;
+ const id = 'rekon-' + Date.now();
+ const sesi = {
+  id, company_id: co(), tanggal: new Date().toISOString().split('T')[0],
+  akun_id: _rekon.akunBankId, saldo_buku: saldoBuku, saldo_bank: saldoBank,
+  mutasi_bank: _rekon.mutasiBank, matches: _rekon.matches,
+ };
+ if (!Array.isArray(DB.rekonsiliasi)) DB.rekonsiliasi = [];
+ DB.rekonsiliasi.push(sesi);
+ autoSave();
+ toast('Sesi rekonsiliasi berhasil disimpan', 'success');
+ // Refresh untuk tampilkan riwayat
+ setTimeout(() => renderRekonsiliasi(), 500);
+}
+
+function _rekonMuatSesi(sesiId) {
+ const sesi = (DB.rekonsiliasi||[]).find(s=>s.id===sesiId);
+ if (!sesi) { toast('Sesi tidak ditemukan', 'error'); return; }
+ renderRekonsiliasi();
+ setTimeout(() => {
+  const akunSel = document.getElementById('rekon-akun-id');
+  if (akunSel) { akunSel.value = sesi.akun_id; _rekonUpdateSaldoBuku(); }
+  const saldoBankEl = document.getElementById('rekon-saldo-bank');
+  if (saldoBankEl) { saldoBankEl.value = sesi.saldo_bank || 0; _rekonHitungSelisih(); }
+  _rekon.mutasiBank = sesi.mutasi_bank || [];
+  _rekon.matches = sesi.matches || {};
+  _rekon.akunBankId = sesi.akun_id;
+  const info = document.getElementById('rekon-file-info');
+  if (info) info.textContent = `✅ Sesi ${sesi.tanggal} dimuat — ${_rekon.mutasiBank.length} transaksi`;
+  _rekonTampilkanPanel();
+  toast('Sesi berhasil dimuat', 'success');
+ }, 100);
+}
+
+function _rekonHapusSesi(sesiId) {
+ if (!confirm('Hapus sesi rekonsiliasi ini?')) return;
+ DB.rekonsiliasi = (DB.rekonsiliasi||[]).filter(s=>s.id!==sesiId);
+ autoSave();
+ renderRekonsiliasi();
+ toast('Sesi dihapus', 'info');
+}
+
+function _rekonReset() {
+ _rekon.mutasiBank = [];
+ _rekon.matches = {};
+ const panel = document.getElementById('rekon-panel-utama');
+ if (panel) panel.style.display = 'none';
+ const info = document.getElementById('rekon-file-info');
+ if (info) info.textContent = '';
+ toast('Reset berhasil', 'info');
+}
+
+function _rekonCetakLaporan() {
+ _rekonGenerateLaporan();
+ setTimeout(() => window.print(), 300);
+}
+
 
 function renderTemplateTransaksi() {
  const container = document.getElementById('new-pages-container');
