@@ -3330,10 +3330,122 @@ function renderSubledgerSyncPanel() {
   panel.innerHTML=`<div style="margin-top:14px;padding:10px 14px;background:rgba(245,158,11,.07);border-radius:8px;border-left:3px solid var(--warning);font-size:11px;color:#92400e;">ℹ️ Sinkronisasi sub-ledger hanya berlaku saat <strong>membuat transaksi baru</strong>. Untuk mengubah sub-ledger, buka langsung modul terkait.</div>`;
   window._trxSubledgerMatches=[]; return;
  }
- let matches = _detectSubledgerRows();
+ let autoMatches = _detectSubledgerRows();
  // HPP Otomatis sudah tangani persediaan_keluar → skip agar tidak dobel
- if (window._hppPending) matches = matches.filter(m => m.role !== 'persediaan_keluar');
- if (!matches.length) { panel.style.display='none'; panel.innerHTML=''; window._trxSubledgerMatches=[]; return; }
+ if (window._hppPending) autoMatches = autoMatches.filter(m => m.role !== 'persediaan_keluar');
+ // Gabungkan dengan baris yang ditambahkan manual oleh user (jika ada)
+ const manualRows = window._trxSubledgerManual || [];
+ const matches = [...autoMatches, ...manualRows];
+ window._trxSubledgerMatches = matches;
+ _renderSubledgerPanelBody(panel, matches, autoMatches.length, manualRows.length);
+}
+
+// ── Tambah baris sub-ledger secara manual (fallback jika nama akun tidak terdeteksi) ──
+function openManualSubledgerPicker() {
+ const rows = document.querySelectorAll('#jd-tbody tr');
+ const accs = coFilter(DB.accounts);
+ const rowOpts = [];
+ rows.forEach((r, idx) => {
+  const sel = r.querySelector('select');
+  const inps = r.querySelectorAll('input[type=number]');
+  const accId = sel?.value;
+  const debit  = parseFloat(inps[0]?.value) || 0;
+  const kredit = parseFloat(inps[1]?.value) || 0;
+  if (!accId || (!debit && !kredit)) return;
+  const acc = accs.find(a => String(a.id) === String(accId));
+  if (!acc) return;
+  rowOpts.push({idx, acc, debit, kredit});
+ });
+ if (!rowOpts.length) { toast('Isi akun dan nominal di baris jurnal terlebih dahulu','error',4000); return; }
+
+ const rowOptsHtml = rowOpts.map((r,i) =>
+  `<option value="${i}">${escapeHtml(r.acc.name)} — ${r.debit>0?'Debit':'Kredit'} ${fmtC(r.debit||r.kredit)}</option>`
+ ).join('');
+ const roleOptsHtml = `
+  <option value="piutang_masuk">📥 Piutang Baru (debitur)</option>
+  <option value="hutang_masuk">📤 Hutang Baru (kreditur)</option>
+  <option value="persediaan_masuk">📦 Stok Masuk (pembelian)</option>
+  <option value="persediaan_keluar">📦 Stok Keluar (penjualan/pemakaian)</option>
+  <option value="perlengkapan_masuk">🗂️ Perlengkapan Baru</option>
+  <option value="perlengkapan_pakai">🗂️ Pemakaian Perlengkapan</option>
+  <option value="aset_tetap_masuk">🏭 Aset Tetap Baru</option>
+  <option value="aset_tetap_keluar">🏭 Pelepasan Aset Tetap</option>
+  <option value="akumulasi_update">📉 Update Akumulasi Penyusutan</option>`;
+
+ const html = `
+  <div style="padding:4px;">
+   <div style="font-size:12px;color:var(--text2);margin-bottom:10px;">
+    Pilih baris jurnal dan tentukan jenis sub-ledger secara manual — berguna jika nama akun Anda tidak otomatis terdeteksi sistem.
+   </div>
+   <div class="form-group" style="margin-bottom:10px;">
+    <label>Baris Jurnal</label>
+    <select class="form-control" id="manual-sl-row">${rowOptsHtml}</select>
+   </div>
+   <div class="form-group">
+    <label>Jenis Sub-Ledger</label>
+    <select class="form-control" id="manual-sl-role">${roleOptsHtml}</select>
+   </div>
+  </div>`;
+ _rowOptsCache = rowOpts;
+ _showSimpleConfirmDialog('Tambah Info Sub-Ledger Manual', html, () => {
+  const rowIdx = parseInt(document.getElementById('manual-sl-row').value);
+  const role = document.getElementById('manual-sl-role').value;
+  const r = _rowOptsCache[rowIdx];
+  if (!r) return;
+  const amount = r.debit > 0 ? r.debit : r.kredit;
+  if (!window._trxSubledgerManual) window._trxSubledgerManual = [];
+  window._trxSubledgerManual.push({rowIdx:'manual-'+Date.now(), accId:r.acc.id, role, amount, acc:r.acc, _manual:true});
+  renderSubledgerSyncPanel();
+  toast('Baris sub-ledger manual ditambahkan','success',2500);
+ });
+}
+
+// Hapus baris manual yang sudah ditambahkan
+function removeManualSubledgerRow(idx) {
+ if (!window._trxSubledgerManual) return;
+ window._trxSubledgerManual = window._trxSubledgerManual.filter(m => m.rowIdx !== idx);
+ renderSubledgerSyncPanel();
+}
+
+// Dialog konfirmasi sederhana generik (dipakai oleh manual picker)
+let _rowOptsCache = [];
+function _showSimpleConfirmDialog(title, bodyHtml, onConfirm) {
+ let modal = document.getElementById('modal-simple-confirm');
+ if (!modal) {
+  modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.id = 'modal-simple-confirm';
+  modal.innerHTML = `<div class="modal" style="max-width:440px;">
+   <div class="modal-header"><div class="modal-title" id="simple-confirm-title"></div>
+    <button class="modal-close" onclick="closeModal('modal-simple-confirm')"></button></div>
+   <div class="modal-body" id="simple-confirm-body"></div>
+   <div class="modal-footer">
+    <button class="btn btn-secondary" onclick="closeModal('modal-simple-confirm')">Batal</button>
+    <button class="btn btn-primary" id="simple-confirm-ok">OK</button>
+   </div></div>`;
+  document.body.appendChild(modal);
+ }
+ document.getElementById('simple-confirm-title').textContent = title;
+ document.getElementById('simple-confirm-body').innerHTML = bodyHtml;
+ const okBtn = document.getElementById('simple-confirm-ok');
+ okBtn.onclick = () => { onConfirm(); closeModal('modal-simple-confirm'); };
+ openModal('modal-simple-confirm');
+}
+
+function _renderSubledgerPanelBody(panel, matches, autoCount, manualCount) {
+ const manualBtnHtml = `<div style="margin-top:${matches.length?'10px':'0'};">
+  <button type="button" class="btn btn-secondary btn-sm" onclick="openManualSubledgerPicker()" style="font-size:11px;">
+   ➕ Tambah Info Sub-Ledger Manual
+  </button>
+  <span style="font-size:10px;color:var(--text3);margin-left:8px;">Gunakan ini jika akun Anda tidak otomatis terdeteksi di atas.</span>
+ </div>`;
+
+ if (!matches.length) {
+  panel.style.display='block';
+  panel.innerHTML = manualBtnHtml;
+  return;
+ }
+
  const cp = document.getElementById('trx-counterparty')?.value || '';
  const META = {
   piutang_masuk:      {icon:'📥', label:'Piutang Baru',              bg:'rgba(37,99,235,.08)',  bd:'rgba(37,99,235,.3)'},
@@ -3350,8 +3462,12 @@ function renderSubledgerSyncPanel() {
   <div style="font-size:12px;font-weight:800;color:var(--primary-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">🔗 Info Sub-Ledger — Berlaku untuk semua transaksi (tunai & kredit)</div>`;
  matches.forEach((m,i) => {
   const mt = META[m.role]||{icon:'🔗',label:m.role,bg:'rgba(0,0,0,.04)',bd:'rgba(0,0,0,.15)'};
-  h += `<div style="margin-bottom:10px;padding:10px 12px;background:${mt.bg};border-left:3px solid ${mt.bd};border-radius:8px;">
-   <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;">${mt.icon} ${mt.label} — <span style="color:var(--primary-light);">${escapeHtml(m.acc.name)}</span> <span style="font-weight:400;color:var(--text3);">${fmtC(m.amount)}</span></div>`;
+  h += `<div style="margin-bottom:10px;padding:10px 12px;background:${mt.bg};border-left:3px solid ${mt.bd};border-radius:8px;position:relative;">
+   <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+    ${mt.icon} ${mt.label} — <span style="color:var(--primary-light);">${escapeHtml(m.acc.name)}</span> <span style="font-weight:400;color:var(--text3);">${fmtC(m.amount)}</span>
+    ${m._manual?`<span style="font-size:9px;background:#7c3aed;color:#fff;padding:1px 6px;border-radius:8px;font-weight:700;">MANUAL</span>
+     <button type="button" onclick="removeManualSubledgerRow('${m.rowIdx}')" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--danger);font-size:13px;" title="Hapus baris manual ini">✕</button>`:''}
+   </div>`;
   if (m.role==='piutang_masuk') {
    h += _slRowPiuHut(i,'Nama Debitur *',cp);
   } else if (m.role==='hutang_masuk') {
@@ -3417,10 +3533,10 @@ function renderSubledgerSyncPanel() {
   }
   h += `</div>`;
  });
+ h += manualBtnHtml;
  h += `</div>`;
  panel.innerHTML = h;
  panel.style.display = 'block';
- window._trxSubledgerMatches = matches;
 }
 
 // Helper field piutang/hutang
@@ -3473,6 +3589,7 @@ function openTransactionModal() {
  const slPanel = document.getElementById('trx-subledger-panel');
  if (slPanel) { slPanel.style.display = 'none'; slPanel.innerHTML = ''; }
  window._trxSubledgerMatches = [];
+ window._trxSubledgerManual = [];
  // Init journal detail rows
  document.getElementById('jd-tbody').innerHTML = '';
  addJournalRow(); addJournalRow();
