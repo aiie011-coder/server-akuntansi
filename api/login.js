@@ -2,46 +2,26 @@
 // Endpoint: POST /api/login
 // Verifikasi username + PIN pengguna
 
-const { getLicenseByKey } = require('../lib/db');
+const { getLicenseByKey, query } = require('../lib/db');
+const { cekPin, hashPin, daftarHwid, alasanDitolak, tokenPengguna } = require('../lib/tanda');
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_KEY = process.env.SUPABASE_KEY;
+const BATAS_GAGAL = 5;                 // percobaan PIN salah berturut-turut
+const LAMA_KUNCI  = 15 * 60 * 1000;    // akun dikunci 15 menit
 
-// Hash PIN pakai SHA-256 bawaan Node.js — tidak perlu install bcrypt
-const crypto = require('crypto');
-
-function hashPin(pin) {
-  return crypto.createHash('sha256').update('zequi_salt_' + pin).digest('hex');
+function filterUser(licenseKey, username) {
+  return `license_users?license_key=eq.${encodeURIComponent(licenseKey)}&username=eq.${encodeURIComponent(username)}`;
 }
 
 async function getUser(licenseKey, username) {
-  const resp = await fetch(
-    `${SUPABASE_URL}/rest/v1/license_users?license_key=eq.${encodeURIComponent(licenseKey)}&username=eq.${encodeURIComponent(username)}&limit=1`,
-    {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Prefer': 'return=representation',
-      },
-    }
-  );
-  const rows = await resp.json();
+  const rows = await query('GET', filterUser(licenseKey, username) + '&limit=1');
   return rows?.[0] || null;
 }
 
-async function updatePinHash(licenseKey, username, newHash) {
-  await fetch(
-    `${SUPABASE_URL}/rest/v1/license_users?license_key=eq.${encodeURIComponent(licenseKey)}&username=eq.${encodeURIComponent(username)}`,
-    {
-      method: 'PATCH',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ pin_hash: newHash }),
-    }
-  );
+// Perubahan kecil pada baris pengguna; kolom baru (gagal_login, kunci_sampai)
+// mungkin belum dibuat — kegagalan di sini tidak boleh menggagalkan login.
+async function updateUser(licenseKey, username, perubahan) {
+  try { await query('PATCH', filterUser(licenseKey, username), perubahan); }
+  catch (e) { console.error('[login] update pengguna gagal:', e.message); }
 }
 
 module.exports = async function handler(req, res) {
@@ -53,7 +33,7 @@ module.exports = async function handler(req, res) {
 
   const { key, username, pin, hwid, app } = req.body || {};
 
-  if (!key || !username || !pin)
+  if (!key || !username || !pin || typeof key !== 'string' || typeof username !== 'string' || typeof pin !== 'string')
     return res.status(400).json({ valid: false, message: 'key, username, dan pin wajib diisi.' });
   if (app !== 'zequi-v1')
     return res.status(400).json({ valid: false, message: 'App tidak dikenal.' });
@@ -62,43 +42,53 @@ module.exports = async function handler(req, res) {
 
   try {
     const cleanKey = key.trim().toUpperCase();
+    const uname = username.trim().toLowerCase();
 
-    // Validasi lisensi
+    // Validasi lisensi: aktif, belum kedaluwarsa, dan perangkat terdaftar
     const license = await getLicenseByKey(cleanKey);
-    if (!license || license.is_active === false)
-      return res.json({ valid: false, message: 'Lisensi tidak valid atau tidak aktif.' });
+    const alasan = alasanDitolak(license);
+    if (alasan) return res.json({ valid: false, message: alasan });
+    if (!hwid || !daftarHwid(license).includes(hwid))
+      return res.json({ valid: false, message: 'Perangkat ini belum terdaftar untuk lisensi ini.' });
 
-    // Ambil data user (termasuk pin_hash)
-    const user = await getUser(cleanKey, username.trim().toLowerCase());
+    const user = await getUser(cleanKey, uname);
     if (!user || !user.is_active)
       return res.json({ valid: false, message: 'Pengguna tidak ditemukan atau tidak aktif.' });
 
-    const inputHash = hashPin(pin);
-
-    // Format sementara "pin:XXXXXX" — hash otomatis saat login pertama
-    if (user.pin_hash && user.pin_hash.startsWith('pin:')) {
-      const plainPin = user.pin_hash.replace('pin:', '');
-      if (pin !== plainPin) {
-        return res.json({ valid: false, message: 'PIN salah. Coba lagi.' });
-      }
-      // Login pertama berhasil — simpan hash yang aman
-      await updatePinHash(cleanKey, username.trim().toLowerCase(), inputHash);
-    } else {
-      // Verifikasi hash normal
-      if (inputHash !== user.pin_hash) {
-        return res.json({ valid: false, message: 'PIN salah. Coba lagi.' });
-      }
+    // Akun sedang dikunci karena terlalu banyak PIN salah?
+    if (user.kunci_sampai && new Date(user.kunci_sampai) > new Date()) {
+      const jam = new Date(user.kunci_sampai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
+      return res.json({ valid: false, terkunci: true, message: `Terlalu banyak PIN salah. Coba lagi setelah pukul ${jam} WIB.` });
     }
 
+    const hasil = cekPin(pin, user.pin_hash);
+    if (!hasil.cocok) {
+      const gagal = (Number(user.gagal_login) || 0) + 1;
+      if (gagal >= BATAS_GAGAL) {
+        await updateUser(cleanKey, uname, { gagal_login: 0, kunci_sampai: new Date(Date.now() + LAMA_KUNCI).toISOString() });
+        return res.json({ valid: false, terkunci: true, message: `PIN salah ${BATAS_GAGAL} kali. Akun dikunci 15 menit.` });
+      }
+      await updateUser(cleanKey, uname, { gagal_login: gagal });
+      return res.json({ valid: false, message: `PIN salah. Sisa ${BATAS_GAGAL - gagal} percobaan.` });
+    }
+
+    // Berhasil: reset hitungan, ganti hash lama ke format baru
+    const perubahan = {};
+    if (Number(user.gagal_login) > 0 || user.kunci_sampai) { perubahan.gagal_login = 0; perubahan.kunci_sampai = null; }
+    if (hasil.perluUpgrade) perubahan.pin_hash = hashPin(pin);
+    if (Object.keys(perubahan).length) await updateUser(cleanKey, uname, perubahan);
+
+    const dataUser = {
+      id: user.id,
+      username: user.username,
+      display_name: user.display_name,
+      role: user.role === 'admin' ? 'admin' : 'operator',
+    };
     return res.json({
       valid: true,
       message: `Selamat datang, ${user.display_name || user.username}!`,
-      user: {
-        id: user.id,
-        username: user.username,
-        display_name: user.display_name,
-        role: user.role,
-      },
+      user: dataUser,
+      token: tokenPengguna(cleanKey, hwid, dataUser),
     });
 
   } catch (err) {
