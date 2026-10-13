@@ -7,22 +7,19 @@ const { getLicenseByKey, updateLicense, getAllLicenses, query,
         getLicenseUsers, addLicenseUser, updateLicenseUserPin, deactivateLicenseUser } = require('../lib/db');
 
 const crypto = require('crypto');
+const { hashPin, samaAman } = require('../lib/tanda');
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || process.env.ADMIN_SECRET || '';
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
 const VALID_PLANS  = ['trial', 'starter', 'pro', 'enterprise'];
 
-function hashPin(pin) {
-  return crypto.createHash('sha256').update('zequi_salt_' + pin).digest('hex');
-}
-
 function generateKey() {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   let key = '';
   for (let s = 0; s < 4; s++) {
     if (s > 0) key += '-';
-    for (let i = 0; i < 5; i++) key += chars[Math.floor(Math.random() * chars.length)];
+    for (let i = 0; i < 5; i++) key += chars[crypto.randomInt(chars.length)];
   }
   return key;
 }
@@ -36,15 +33,13 @@ function getExpiry(type) {
   return d.toISOString().split('T')[0];
 }
 
+// Kunci admin hanya diterima lewat header Authorization atau isi body (admin_key).
+// Tidak lagi lewat URL (tercatat di log) atau cookie (berisi kunci dalam base64).
 function isAuthorized(req, body) {
-  const auth = req.headers['authorization'];
-  if (auth === `Bearer ${ADMIN_SECRET}`) return true;
-  const cookie = req.headers.cookie || '';
-  const sessionMatch = cookie.match(/akpro_session=([^;]+)/);
-  const expectedToken = Buffer.from(ADMIN_SECRET).toString('base64');
-  if (sessionMatch && sessionMatch[1] === expectedToken) return true;
-  const admin_key = body?.admin_key || req.query?.admin_key;
-  if (admin_key && admin_key === ADMIN_SECRET) return true;
+  if (ADMIN_SECRET.length < 12) return false; // kunci terlalu pendek = tolak semua
+  const auth = String(req.headers['authorization'] || '');
+  if (auth.startsWith('Bearer ') && samaAman(auth.slice(7), ADMIN_SECRET)) return true;
+  if (typeof body?.admin_key === 'string' && samaAman(body.admin_key, ADMIN_SECRET)) return true;
   return false;
 }
 
@@ -69,7 +64,11 @@ module.exports = async function handler(req, res) {
   const body   = req.body || {};
   const action = req.query.action || body.action;
 
-  if (!isAuthorized(req, body)) return res.status(401).json({ error: 'Unauthorized' });
+  if (!isAuthorized(req, body)) {
+    // Perlambat tebakan kunci admin
+    await new Promise(r => setTimeout(r, 1500));
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
 
   try {
 
@@ -335,6 +334,6 @@ module.exports = async function handler(req, res) {
 
   } catch (err) {
     console.error('[admin-router] Error:', err);
-    return res.status(500).json({ error: 'Server error', message: err.message });
+    return res.status(500).json({ error: 'Server error', message: 'Terjadi kesalahan server. Lihat log Vercel untuk detail.' });
   }
 };
