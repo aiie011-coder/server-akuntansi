@@ -15264,6 +15264,9 @@ function konfirmasiNeracaTidakBalance(onLanjut) {
 }
 
 function printReport(type) {
+ // Rekonsiliasi & pajak punya pencetak sendiri (tombol Print di kepala halaman sebelumnya mencetak halaman kosong)
+ if (type === 'rekonsiliasi') return _rekonCetakLaporan();
+ if (type === 'laporan-pajak') return cetakLaporanPajak();
  // ── Validasi Neraca sebelum cetak ──────────────────────────────
  // Intercept jika mencetak neraca atau semua laporan saat neraca tidak balance
  if ((type === 'neraca' || type === 'semua') && co() && coFilter(DB.journal_entries).length > 0) {
@@ -15691,6 +15694,38 @@ function _doPrintReport(type) {
  body = `<table> <thead><tr><th>Nama Aset</th><th class="num">Harga Perolehan</th><th>Thn</th><th>Metode Penyusutan</th><th class="num">Beban/Thn</th><th class="num">Akum. Penyusutan</th><th class="num">Nilai Buku</th><th>Tanggal</th></tr></thead> <tbody>${rows}</tbody> </table>`;
  }
 
+ else if (type === 'hutang' || type === 'piutang') {
+ // Daftar hutang/piutang per faktur (sebelumnya cetakan hanya berisi kop dan tanda tangan)
+ const isH = type === 'hutang';
+ title = isH ? 'Daftar Hutang' : 'Daftar Piutang';
+ const recs = coFilter(isH ? DB.hutang : DB.piutang).slice().sort((a,b)=>String(a.tanggal||'').localeCompare(String(b.tanggal||'')));
+ if (!recs.length) { toast(isH ? 'Belum ada data hutang' : 'Belum ada data piutang','error'); return; }
+ const nama = r => escapeHtml(isH ? (r.nama_kreditur||'—') : (r.nama_debitur||'—'));
+ let rows = recs.map(r => `<tr> <td>${escapeHtml(r.tanggal||'—')}</td> <td>${escapeHtml(r.nomor_ref||r.nomor_faktur||'—')}</td> <td class="w">${nama(r)}</td> <td class="w">${escapeHtml(r.keterangan||'')}</td> <td>${escapeHtml(r.jatuh_tempo||'—')}</td> <td class="num">${fmt(r.jumlah||0)}</td> <td class="num">${fmt(r.status==='Lunas'?0:(r.sisa||0))}</td> <td>${escapeHtml(r.status||'')}</td> </tr>`).join('');
+ const totJ = recs.reduce((t,r)=>t+(r.jumlah||0),0), totS = recs.filter(r=>r.status!=='Lunas').reduce((t,r)=>t+(r.sisa||0),0);
+ rows += `<tr class="total-row"> <td colspan="5"><strong>TOTAL</strong></td> <td class="num"><strong>${fmt(totJ)}</strong></td> <td class="num"><strong>${fmt(totS)}</strong></td> <td></td> </tr>`;
+ body = `<style>.zq-modul td{white-space:nowrap;padding:7px 8px;font-size:11px}.zq-modul th{padding:8px;font-size:10px}.zq-modul td.w{white-space:normal}</style><table class="zq-modul"> <thead><tr><th>Tanggal</th><th>No. Faktur</th><th>${isH?'Kreditur':'Debitur'}</th><th>Keterangan</th><th>Jatuh Tempo</th><th class="num">Jumlah (Rp)</th><th class="num">Sisa (Rp)</th><th>Status</th></tr></thead> <tbody>${rows}</tbody> </table>`;
+ }
+
+ else if (type === 'persediaan') {
+ title = 'Daftar Persediaan';
+ const recs = coFilter(DB.persediaan).filter(p => (p.jumlah||0) > 0).sort((a,b)=>String(a.nama_barang).localeCompare(String(b.nama_barang))||String(a.tanggal||'').localeCompare(String(b.tanggal||'')));
+ if (!recs.length) { toast('Belum ada stok persediaan','error'); return; }
+ const metodeCo = getCompany()?.metode_persediaan || 'fifo';
+ let rows = recs.map(p => `<tr> <td class="w">${escapeHtml(p.nama_barang||'—')}</td> <td>${escapeHtml(p.tanggal||'—')}</td> <td>${escapeHtml(p.nomor_ref||'')}</td> <td>${(p.metode_penilaian||metodeCo)==='average'?'Rata-rata':'FIFO'}</td> <td class="num">${fmt(p.jumlah||0)}</td> <td class="num">${fmt(p.harga_satuan||0)}</td> <td class="num">${fmt(p.total_nilai||0)}</td> </tr>`).join('');
+ rows += `<tr class="total-row"> <td colspan="4"><strong>TOTAL</strong></td> <td class="num"><strong>${fmt(recs.reduce((t,p)=>t+(p.jumlah||0),0))}</strong></td> <td></td> <td class="num"><strong>${fmt(recs.reduce((t,p)=>t+(p.total_nilai||0),0))}</strong></td> </tr>`;
+ body = `<style>.zq-modul td{white-space:nowrap;padding:7px 8px;font-size:11px}.zq-modul th{padding:8px;font-size:10px}.zq-modul td.w{white-space:normal}</style><table class="zq-modul"> <thead><tr><th>Nama Barang</th><th>Tanggal Masuk</th><th>No. Ref</th><th>Metode</th><th class="num">Qty</th><th class="num">Harga Satuan (Rp)</th><th class="num">Nilai (Rp)</th></tr></thead> <tbody>${rows}</tbody> </table>`;
+ }
+
+ else if (type === 'perlengkapan') {
+ title = 'Daftar Perlengkapan';
+ const recs = coFilter(DB.perlengkapan).filter(p => (p.nilai||0) > 0).sort((a,b)=>String(a.tanggal||'').localeCompare(String(b.tanggal||'')));
+ if (!recs.length) { toast('Belum ada perlengkapan','error'); return; }
+ let rows = recs.map(p => `<tr> <td class="w">${escapeHtml(p.nama_item||'—')}</td> <td>${escapeHtml(p.tanggal||'—')}</td> <td>${escapeHtml(p.nomor_ref||'')}</td> <td class="w">${escapeHtml(p.keterangan||'')}</td> <td class="num">${fmt(p.nilai||0)}</td> </tr>`).join('');
+ rows += `<tr class="total-row"> <td colspan="4"><strong>TOTAL</strong></td> <td class="num"><strong>${fmt(recs.reduce((t,p)=>t+(p.nilai||0),0))}</strong></td> </tr>`;
+ body = `<style>.zq-modul td{white-space:nowrap;padding:7px 8px;font-size:11px}.zq-modul th{padding:8px;font-size:10px}.zq-modul td.w{white-space:normal}</style><table class="zq-modul"> <thead><tr><th>Nama Item</th><th>Tanggal</th><th>No. Ref</th><th>Keterangan</th><th class="num">Nilai Tersisa (Rp)</th></tr></thead> <tbody>${rows}</tbody> </table>`;
+ }
+
  else if (type === 'dashboard') {
  // Print dashboard
  const co_data = getCompany();
@@ -15781,6 +15816,7 @@ function printPage() { printReport(currentPage); }
 // EXPORT EXCEL — menggunakan SheetJS
 // 
 function exportExcel(type) {
+ if (type === 'laporan-pajak') return exportLaporanPajak();
  // ── Validasi Neraca sebelum ekspor ─────────────────────────────
  if ((type === 'neraca' || type === 'semua') && co() && coFilter(DB.journal_entries).length > 0) {
   konfirmasiNeracaTidakBalance(() => _doExportExcel(type));
