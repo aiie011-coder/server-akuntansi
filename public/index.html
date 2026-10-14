@@ -2204,6 +2204,8 @@ function migrateDB() {
  if (!Array.isArray(DB.sl_delta)) DB.sl_delta = [];
  if (!Array.isArray(DB.audit_log)) DB.audit_log = [];
  if (!Array.isArray(DB.retur_penjualan)) DB.retur_penjualan = [];
+ // Metode penilaian hasil impor lama tersimpan 'Average'/'FIFO' (huruf besar) dan tidak dikenali
+ (DB.persediaan||[]).forEach(p => { if (p && typeof p.metode_penilaian === 'string' && p.metode_penilaian && p.metode_penilaian !== 'fifo' && p.metode_penilaian !== 'average') p.metode_penilaian = /avg|average|rata/i.test(p.metode_penilaian) ? 'average' : 'fifo'; });
  if (!DB.locked_periods) DB.locked_periods = {};
  if (!DB.shu_config) DB.shu_config = {};
  if (!Array.isArray(DB.rekonsiliasi)) DB.rekonsiliasi = []; // [FIX] migrate data lama
@@ -2679,6 +2681,8 @@ function fmt(n) {
  n = n||0;
  return new Intl.NumberFormat('id-ID').format(Math.round(n));
 }
+// Angka bertanda untuk kolom mutasi: +Rp 1.000 atau (Rp 1.000), bukan "Rp -1.000"
+function fmtTanda(v) { return v >= 0 ? '+' + fmtC(v) : '(' + fmtC(Math.abs(v)) + ')'; }
 function fmtC(n) { return 'Rp ' + fmt(n); }
 
 function filterTable(tbodyId, q, cols) {
@@ -4485,6 +4489,15 @@ function _namaKas(nama) {
 }
 // W5: Helper — cek peran akun eksplisit sebelum fallback ke keyword nama
 // Mengatasi peringatan "deteksi akun via keyword: mudah gagal jika penamaan tidak baku"
+// Akun hutang dagang default untuk pembelian kredit: peran → nama baku (hutang/utang usaha, dagang,
+// belanja [SAP], pemasok) → nama hutang lain selain pajak/gaji/bank/jangka panjang.
+function _akunHutangDagang(accs) {
+ const kew = accs.filter(a => a.type === 'Kewajiban' || a.type === 'Liabilitas' || a.type === 'Kewajiban Lancar');
+ return kew.find(a => a.account_role === 'hutang_usaha')
+  || kew.find(a => /\b(h?utang)\s+(usaha|dagang|belanja|pemasok)/i.test(a.name || ''))
+  || kew.find(a => _accHasRole(a, 'hutang_usaha') && !/jangka\s*panjang/i.test(a.name || ''));
+}
+
 function _accHasRole(acc, role) {
  if (!acc) return false;
  if (acc.account_role === role) return true;
@@ -4540,6 +4553,9 @@ function _findModalAcc(accs) {
    return n.includes('laba ditahan') || n.includes('retained earning') || n.includes('saldo laba');
  });
  if (byLabaDitahan) return byLabaDitahan;
+ // Koperasi: SHU ditutup ke akun SHU (atau Cadangan), tidak pernah ke Simpanan anggota
+ const bySHU = ek.find(a => /sisa hasil usaha|\bshu\b/i.test(a.name || '')) || ek.find(a => /cadangan/i.test(a.name || ''));
+ if (bySHU) return bySHU;
  // Prioritas 4: nama mengandung 'modal' tapi BUKAN agio/tambahan/preferens/saham (hindari Modal Disetor)
  const byModal = ek.find(a => {
    const n = a.name.toLowerCase();
@@ -4547,8 +4563,8 @@ function _findModalAcc(accs) {
           !n.includes('preferens') && !n.includes('saham preferen');
  });
  if (byModal) return byModal;
- // Prioritas 5: last resort — ekuitas kredit-normal pertama
- return ek[0] || null;
+ // Prioritas 5: last resort — ekuitas kredit-normal pertama (hindari Simpanan anggota bila ada pilihan lain)
+ return ek.find(a => !/simpanan/i.test(a.name || '')) || ek[0] || null;
 }
 
 // [FIX BUG 5] Helper: peringatan jika jurnal penutup sudah diposting
@@ -6936,25 +6952,25 @@ function saveHutang() {
  if (kategori==='pembelian_kredit') {
  debitAcc=accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('persediaan')||a.name.toLowerCase().includes('barang')));
  if (!debitAcc) debitAcc=_findAccByRole(accs,'persediaan');
- kreditAcc=_findAccByRole(accs,'hutang_usaha');
+ kreditAcc=_akunHutangDagang(accs);
  if (!kreditAcc) { kreditAcc=accs.find(a=>a.type==='Kewajiban'&&a.normal_balance==='Kredit'); fallbackWarn='(fallback: kewajiban kredit normal pertama)'; }
  descJurnal=keterangan||`Pembelian kredit dari ${nama}`;
  } else if (kategori==='pinjaman_bank') {
  debitAcc=_findAccByRole(accs,'kas_bank');
  if (!debitAcc) { debitAcc=accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'); fallbackWarn='(fallback: aset debit normal pertama)'; }
- kreditAcc=accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang bank')||a.name.toLowerCase().includes('pinjaman bank')||a.name.toLowerCase().includes('hutang jangka')||a.name.toLowerCase().includes('utang bank')));
+ kreditAcc=accs.find(a=>a.type==='Kewajiban'&&/(h?utang|pinjaman|pembiayaan)\b.*\bbank|h?utang jangka panjang|pinjaman jangka panjang/i.test(a.name||''));
  if (!kreditAcc) { kreditAcc=accs.find(a=>a.type==='Kewajiban'&&a.normal_balance==='Kredit'); fallbackWarn='(fallback: kewajiban kredit normal pertama — pastikan ada akun Hutang Bank)'; }
  descJurnal=keterangan||`Pinjaman bank dari ${nama}`;
  } else if (kategori==='pinjaman_pribadi') {
  debitAcc=_findAccByRole(accs,'kas_bank');
  if (!debitAcc) { debitAcc=accs.find(a=>a.type==='Aset'&&a.normal_balance==='Debit'); fallbackWarn='(fallback: aset debit pertama)'; }
- kreditAcc=accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang pemegang')||a.name.toLowerCase().includes('hutang pemilik')||a.name.toLowerCase().includes('hutang pribadi')||a.name.toLowerCase().includes('utang pemilik')));
+ kreditAcc=accs.find(a=>a.type==='Kewajiban'&&/h?utang (kepada )?(pemegang|pemilik|pribadi)/i.test(a.name||''));
  if (!kreditAcc) { kreditAcc=accs.find(a=>a.type==='Kewajiban'&&a.normal_balance==='Kredit'); fallbackWarn='(fallback: kewajiban kredit normal pertama — pastikan ada akun Hutang Pemilik)'; }
  descJurnal=keterangan||`Pinjaman pribadi dari ${nama}`;
  } else if (kategori==='hutang_gaji') {
  debitAcc=accs.find(a=>a.type==='Beban'&&(a.name.toLowerCase().includes('gaji')||a.name.toLowerCase().includes('upah')||a.name.toLowerCase().includes('salari')));
  if (!debitAcc) { debitAcc=accs.find(a=>a.type==='Beban'); fallbackWarn='(fallback: akun Beban pertama — pastikan ada akun Beban Gaji)'; }
- kreditAcc=accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang gaji')||a.name.toLowerCase().includes('hutang upah')||a.name.toLowerCase().includes('utang gaji')));
+ kreditAcc=accs.find(a=>a.type==='Kewajiban'&&/h?utang (gaji|upah)/i.test(a.name||''));
  if (!kreditAcc) { kreditAcc=accs.find(a=>a.type==='Kewajiban'&&a.normal_balance==='Kredit'); fallbackWarn=(fallbackWarn||'')+'(fallback kredit: kewajiban pertama — pastikan ada akun Hutang Gaji)'; }
  descJurnal=keterangan||`Hutang gaji kepada ${nama}`;
  } else if (kategori==='hutang_pajak') {
@@ -7601,7 +7617,7 @@ function populatePersediaanAccDropdowns(persAccId, kasAccId, hutAccId) {
  }
  if (!hutAccId) {
   const accs = coFilter(DB.accounts);
-  const suggest = accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')||a.name.toLowerCase().includes('utang usaha')));
+  const suggest = _akunHutangDagang(accs);
   if (suggest) document.getElementById('pers-acc-hutang').value = suggest.id;
  }
 }
@@ -7623,7 +7639,7 @@ function populatePerlengkapanAccDropdowns(perlAccId, kasAccId, hutAccId) {
  }
  if (!hutAccId) {
   const accs = coFilter(DB.accounts);
-  const suggest = accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('utang usaha')));
+  const suggest = _akunHutangDagang(accs);
   if (suggest) document.getElementById('perl-acc-hutang').value = suggest.id;
  }
 }
@@ -7646,7 +7662,7 @@ function populateAsetAccDropdowns(asetAccId, kasAccId, hutAccId) {
  }
  if (!hutAccId) {
   const accs = coFilter(DB.accounts);
-  const suggest = accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')||a.name.toLowerCase().includes('hutang jangka')||a.name.toLowerCase().includes('utang usaha')));
+  const suggest = _akunHutangDagang(accs) || accs.find(a=>a.type==='Kewajiban'&&/h?utang jangka/i.test(a.name||''));
   if (suggest) document.getElementById('aset-acc-hutang').value = suggest.id;
  }
 }
@@ -7823,7 +7839,7 @@ function savePersediaan() {
  const kasAcc  = selKasAccId  ? accs.find(a=>String(a.id)===String(selKasAccId))
                : accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||_namaKas(a.name)));
  const hutAcc  = selHutAccId  ? accs.find(a=>String(a.id)===String(selHutAccId))
-               : accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')));
+               : _akunHutangDagang(accs);
  const nilai=jumlah*harga;
  if (nilai>0) {
  if (metode==='tunai' && persAcc && kasAcc) {
@@ -9471,7 +9487,7 @@ function savePerlengkapan() {
  const kasAcc  = selKasAccId  ? accs.find(a=>String(a.id)===String(selKasAccId))
                : accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||_namaKas(a.name)));
  const hutAcc  = selHutAccId  ? accs.find(a=>String(a.id)===String(selHutAccId))
-               : accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')));
+               : _akunHutangDagang(accs);
  if (nilai>0) {
  if (metode==='tunai' && perlAcc && kasAcc) {
  const desc=ket||`Pembelian perlengkapan tunai: ${nama}`;
@@ -10161,7 +10177,7 @@ function saveAset() {
  const kasAcc = selKasAccId ? accs.find(a=>String(a.id)===String(selKasAccId))
               : accs.find(a=>a.type==='Aset'&&(a.name.toLowerCase().includes('bank')||_namaKas(a.name)));
  const hutAcc = selHutAccId ? accs.find(a=>String(a.id)===String(selHutAccId))
-              : accs.find(a=>a.type==='Kewajiban'&&(a.name.toLowerCase().includes('hutang usaha')||a.name.toLowerCase().includes('hutang dagang')||a.name.toLowerCase().includes('hutang jangka')));
+              : (_akunHutangDagang(accs) || accs.find(a=>a.type==='Kewajiban'&&/h?utang jangka/i.test(a.name||'')));
  if (metode==='tunai' && asetAcc && kasAcc) {
  const desc=ket||`Pembelian aset tetap tunai: ${nama}`;
  const tid=genId(),jeid=genId();
@@ -10778,7 +10794,8 @@ function selectEntityMode(mode) {
 function onStandardChange() {
  // Jika SAP dipilih, paksa mode komersial (SAP hanya untuk pemerintah)
  const std = document.getElementById('co-standard').value;
- if (std === 'SAP') selectEntityMode('komersial');
+ // selectEntityMode menyetel ulang saran standar (SAK EMKM) untuk perusahaan baru, jadi kembalikan pilihan SAP
+ if (std === 'SAP') { selectEntityMode('komersial'); document.getElementById('co-standard').value = 'SAP'; }
 }
 
 // Helper: dapatkan entity_mode perusahaan aktif
@@ -11483,6 +11500,12 @@ const DANA_ZIS = [
  { k: 'N', nama: 'DANA NONHALAL', label: 'Dana Nonhalal', warna: '#a8372f' },
  { k: 'L', nama: 'DANA LAINNYA (BELUM DIKLASIFIKASI)', label: 'Dana lainnya (belum diklasifikasi)', warna: '#64748b' },
 ];
+// Kelompok dana untuk akun saldo dana (Ekuitas) lembaga zakat — dipakai laporan & jurnal penutup
+function _kelompokEkZIS(a) {
+ const n = String(a?.name || '').toLowerCase(), has = kws => kws.some(k => n.includes(k));
+ return has(['nonhalal','non halal','bunga bank','denda']) ? 'N' : has(['amil','operasional','hak amil','bagian amil']) ? 'A'
+  : has(['zakat','zis']) ? 'Z' : has(['infak','infaq','sedekah','shodaqoh']) ? 'I' : 'L';
+}
 function _ringkasDanaZIS() {
  const kwZakat = ['zakat','zis'];
  const kwInfak = ['infak','infaq','sedekah','shodaqoh'];
@@ -11494,7 +11517,7 @@ function _ringkasDanaZIS() {
   : (/hak amil|bagian amil/i.test(a.name) ? 'A' : matchKw(a,kwZakat) ? 'Z' : matchKw(a,kwInfak) ? 'I' : 'A');
  const kelompokExp = a => matchKw(a,kwNonhal) ? 'N'
   : matchKw(a,kwInfak) ? 'I' : (matchKw(a,kwZakat) || a.name.toLowerCase().includes('penyaluran')) ? 'Z' : 'A';
- const kelompokEk = a => matchKw(a,kwNonhal) ? 'N' : matchKw(a,kwAmil) ? 'A' : matchKw(a,kwZakat) ? 'Z' : matchKw(a,kwInfak) ? 'I' : 'L';
+ const kelompokEk = _kelompokEkZIS;
  const arus = () => {
   const g = {}; DANA_ZIS.forEach(d => g[d.k] = { rev: [], exp: [], totRev: 0, totExp: 0 });
   getAccsByType('Pendapatan').filter(a => a.balance !== 0).forEach(a => { const x = g[kelompokRev(a)]; x.rev.push(a); x.totRev += a.balance; });
@@ -11715,7 +11738,7 @@ function renderPerubahanEkuitas() {
  return `<tr>
  <td style="padding:6px 10px;font-size:12px;">${a.code} ${a.name}</td>
  <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;">${fmtC(opening)}</td>
- <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;color:${mutasi>=0?'var(--accent2)':'var(--danger)'};">${mutasi>=0?'+':''}${fmtC(mutasi)}</td>
+ <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;color:${mutasi>=0?'var(--accent2)':'var(--danger)'};">${fmtTanda(mutasi)}</td>
  <td class="td-mono" style="padding:6px 10px;font-size:12px;text-align:right;font-weight:700;">${fmtC(total)}</td>
  </tr>`;
  }).join('');
@@ -11776,7 +11799,7 @@ function renderPerubahanEkuitas() {
  <tr style="border-top:1px solid var(--border);background:var(--bg);">
  <td style="padding:7px 10px;font-weight:700;">Subtotal ${ekLabel}</td>
  <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;">${fmtC(totalKreditOpening)}</td>
- <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;color:${totalKreditMutasi>=0?'var(--accent2)':'var(--danger)'};">${totalKreditMutasi>=0?'+':''}${fmtC(totalKreditMutasi)}</td>
+ <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;color:${totalKreditMutasi>=0?'var(--accent2)':'var(--danger)'};">${fmtTanda(totalKreditMutasi)}</td>
  <td class="td-mono" style="padding:7px 10px;font-weight:700;text-align:right;">${fmtC(kreditAcss.reduce((s,a)=>s+_totalEk(a),0))}</td>
  </tr>
  ${debitAcss.filter(a=>_totalEk(a)!==0 || getOpeningBal(a)!==0).length ? `
@@ -11896,7 +11919,7 @@ function renderNeraca() {
  n.includes('hutang gaji') || n.includes('hutang pajak') ||
  n.includes('pendapatan diterima dimuka') || n.includes('unearned') ||
  n.includes('hutang jangka pendek') || n.includes('beban yang masih harus') || n.includes('masih harus dibayar') ||
- n.includes('utang usaha') || n.includes('utang dagang') ||
+ n.includes('utang usaha') || n.includes('utang dagang') || n.includes('utang belanja') ||
  n.includes('utang gaji') || n.includes('utang pajak') ||
  n.includes('kewajiban lancar') || n.includes('current liabilit') ||
  n.includes('payable') || n.includes('accrued') ||
@@ -12341,13 +12364,13 @@ function renderArusKas() {
  const rowsAL = perubahanAsetLancar.map(x => `
   <div class="report-row indent">
    <span style="font-size:12px;">Perubahan ${x.name}${sumberLabel(x)}</span>
-   <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span>
+   <span class="report-amount" style="color:${clr(x.nilai)};">${fmtTanda(x.nilai)}</span>
   </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
 
  const rowsKL = perubahanKewLancar.map(x => `
   <div class="report-row indent">
    <span style="font-size:12px;">Perubahan ${x.name}${sumberLabel(x)}</span>
-   <span class="report-amount" style="color:${clr(x.nilai)};">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</span>
+   <span class="report-amount" style="color:${clr(x.nilai)};">${fmtTanda(x.nilai)}</span>
   </div>`).join('') || `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>—</span></div>`;
 
  _origInner(mkWarningBanner + `
@@ -12396,7 +12419,7 @@ function buildArusKasDetail(kategori) {
  const nilaiKat = r[kategori] || 0;
  if (Math.abs(nilaiKat) < 0.01) return; // tidak ada kontribusi ke kategori ini
  const labelProp = r.prop ? ` <span style="font-size:10px;color:var(--text3);"> (prop.)</span>` : '';
- rows.push(`<div class="report-row indent"> <span style="font-size:12px;">${escapeHtml(r.date)} — ${escapeHtml(r.description)}${labelProp}</span> <span class="report-amount" style="color:${nilaiKat>=0?'var(--accent2)':'var(--danger)'};">${nilaiKat>=0?'+':''}${fmtC(Math.round(nilaiKat))}</span> </div>`);
+ rows.push(`<div class="report-row indent"> <span style="font-size:12px;">${escapeHtml(r.date)} — ${escapeHtml(r.description)}${labelProp}</span> <span class="report-amount" style="color:${nilaiKat>=0?'var(--accent2)':'var(--danger)'};">${fmtTanda(Math.round(nilaiKat))}</span> </div>`);
  });
  return rows.length ? rows.join('')
  : `<div class="report-row indent" style="color:var(--text3);font-size:12px;"><span>Tidak ada transaksi ${kategori} yang melibatkan kas</span></div>`;
@@ -12412,6 +12435,29 @@ function buildArusKasDetail(kategori) {
 let __jpPreviewState = null;
 // [FIX #4] Preview penutupan dianggap basi begitu ada perubahan data apa pun (dipanggil dari autoSave)
 function __invalidateJpPreview() { try { __jpPreviewState = null; } catch(_) {} }
+
+// Alokasi hasil periode ke kelompok aset neto/dana (dihitung SEBELUM jurnal penutup diposting):
+// - Yayasan (ISAK 35): surplus dengan pembatasan → akun "Aset Neto Dengan Pembatasan", sisanya tanpa pembatasan
+// - Lembaga zakat (PSAK 109): kenaikan tiap dana (zakat, infak, amil, nonhalal) → akun saldo dananya
+// Kembalikan [{acc, jumlah}] — jumlah dipindah dari akun penutup utama ke akun tujuan (positif = kredit tujuan).
+function _alokasiPenutup(modalAcc) {
+ if (!modalAcc) return Object.assign([], { tanpaAkun: [] });
+ const ek = coFilter(DB.accounts).filter(a => a.type === 'Ekuitas' && a.normal_balance === 'Kredit');
+ const per = [], tanpaAkun = []; // [{acc, net}]
+ if (isNirlaba()) {
+  const r = _ringkasNirlaba();
+  const accT = ek.find(_isDenganPembatasan), accUT = ek.find(a => !_isDenganPembatasan(a));
+  if (accT) per.push({ acc: accT, net: r.surplusT });
+  if (accUT) per.push({ acc: accUT, net: r.surplusUT });
+ } else if (isBaznas()) {
+  const R = _ringkasDanaZIS();
+  R.dana.forEach(d => { const acc = ek.find(a => _kelompokEkZIS(a) === d.k);
+   if (acc) per.push({ acc, net: d.net }); else if (d.k !== 'L' && Math.abs(d.net) >= 0.005) tanpaAkun.push(d.label); });
+ }
+ const hasil = per.filter(x => String(x.acc.id) !== String(modalAcc.id) && Math.abs(x.net) >= 0.005).map(x => ({ acc: x.acc, jumlah: x.net }));
+ hasil.tanpaAkun = tanpaAkun; // dana yang belum punya akun saldo dana → tetap di akun penutup utama
+ return hasil;
+}
 
 function buatJurnalPenutup() {
  if (!co()) { toast('Pilih perusahaan terlebih dahulu', 'error'); return; }
@@ -12495,6 +12541,19 @@ function buatJurnalPenutup() {
  priveAcss.forEach(a => {
  rows += `<tr> <td></td><td></td> <td style="padding-left:24px;color:var(--warning);">${a.code} — ${a.name}</td> <td></td> <td class="td-mono" style="color:var(--warning);">${fmtR(a.balance)}</td> </tr>`;
  });
+ }
+
+ // Langkah 5 (yayasan/lembaga zakat): pindahkan hasil ke kelompok aset neto/dana masing-masing
+ const alokasi = _alokasiPenutup(modalAcc);
+ if (alokasi.length) {
+ rows += `<tr style="background:rgba(31,75,130,.06);"> <td>${tanggal}</td> <td style="font-weight:700;color:var(--primary-light);">Memindahkan hasil ke ${isNirlaba() ? 'kelompok aset neto' : 'saldo dana'} masing-masing</td> <td colspan="3"></td> </tr>`;
+ alokasi.forEach(x => {
+ const dari = x.jumlah >= 0 ? modalAcc : x.acc, ke = x.jumlah >= 0 ? x.acc : modalAcc;
+ rows += `<tr> <td></td><td></td> <td style="padding-left:12px;">${dari.code} — ${dari.name}</td> <td class="td-mono">${fmtR(Math.abs(x.jumlah))}</td> <td></td> </tr> <tr> <td></td><td></td> <td style="padding-left:24px;">${ke.code} — ${ke.name}</td> <td></td> <td class="td-mono">${fmtR(Math.abs(x.jumlah))}</td> </tr>`;
+ });
+ }
+ if (alokasi.tanpaAkun?.length) {
+ rows += `<tr><td colspan="5" style="padding:8px 14px;font-size:12px;color:#7a4d0f;background:rgba(183,121,31,.07);">Belum ada akun saldo dana untuk: <strong>${alokasi.tanpaAkun.join(', ')}</strong>. Hasilnya ikut masuk ke ${modalAcc.code} — ${modalAcc.name}. Tambahkan akun Ekuitas bernama sesuai dana (mis. "Dana Nonhalal") sebelum posting agar terpisah.</td></tr>`;
  }
 
  // Ringkasan Ekuitas Akhir 
@@ -12602,6 +12661,9 @@ function postingJurnalPenutup() {
  toast('Akun Modal/Ekuitas tidak ditemukan. Tambahkan akun Ekuitas (saldo normal Kredit) di CoA terlebih dahulu.', 'error', 6000);
  return;
  }
+
+ // Alokasi ke kelompok aset neto/dana dihitung sebelum saldo nominal ditutup
+ const alokasi = _alokasiPenutup(modalAcc);
 
  // Helper: buat satu journal entry + detail 
  const buatEntry = (desc, details) => {
@@ -12719,6 +12781,13 @@ function postingJurnalPenutup() {
  const details = [_jpLine(modalAcc.id, totalPrive)];
  priveAcss.forEach(a =>details.push(_jpLine(a.id, -a.balance)));
  buatEntry('Menutup akun Prive/Dividen ke Modal', details);
+ }
+
+ // Langkah 5 (yayasan/lembaga zakat): hasil dipindah ke kelompok aset neto/dana masing-masing
+ if (alokasi.length) {
+ const details = [];
+ alokasi.forEach(x => { details.push(_jpLine(modalAcc.id, x.jumlah)); details.push(_jpLine(x.acc.id, -x.jumlah)); });
+ buatEntry(isNirlaba() ? 'Memindahkan hasil ke kelompok aset neto' : 'Memindahkan hasil ke saldo dana masing-masing', details);
  }
 
  // [FIX BUG-S1] Reset preview state setelah posting — snapshot tidak berlaku lagi
@@ -13175,7 +13244,7 @@ function renderRekonsiliasi() {
         <td style="padding:10px;border-bottom:1px solid var(--border);">${escapeHtml(akun?.name||s.akun_id||'—')}</td>
         <td style="padding:10px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);">${fmtC(s.saldo_buku||0)}</td>
         <td style="padding:10px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);">${fmtC(s.saldo_bank||0)}</td>
-        <td style="padding:10px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);color:${Math.abs(selisih)<1?'#2f8a57':selisih<0?'var(--danger)':'#b7791f'};font-weight:700;">${selisih>=0?'+':''}${fmtC(selisih)}</td>
+        <td style="padding:10px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);color:${Math.abs(selisih)<1?'#2f8a57':selisih<0?'var(--danger)':'#b7791f'};font-weight:700;">${fmtTanda(selisih)}</td>
         <td style="padding:10px;text-align:center;border-bottom:1px solid var(--border);">
          <button class="btn btn-secondary btn-sm" onclick="_rekonMuatSesi('${s.id}')">Muat</button>
          <button class="btn btn-secondary btn-sm" style="color:var(--danger);" onclick="_rekonHapusSesi('${s.id}')">Hapus</button>
@@ -14709,6 +14778,32 @@ document.addEventListener('click', e => {
 // dan bisa dipanggil manual dari tombol di halaman Settings.
 // ═══════════════════════════════════════════════════════════════════
 
+// Akun GL yang dipakai jurnal record sub-ledger (sisi kredit untuk hutang, debit untuk piutang).
+// Record saldo awal tanpa jurnal dipetakan lewat kategorinya.
+function _rekonAkunDariSL(recs, sisi) {
+ const ids = new Set();
+ const accs = coFilter(DB.accounts);
+ const kunci = { pinjaman_bank:/pinjaman|bank|jangka panjang/i, pinjaman_pribadi:/pinjaman|pemegang saham|pribadi/i,
+  hutang_gaji:/gaji|upah/i, hutang_pajak:/pajak|pph|ppn/i };
+ recs.forEach(r => {
+  if (r.ref_journal_id) {
+   DB.journal_details.forEach(d => {
+    if (d.journal_id !== r.ref_journal_id || !(sisi === 'kredit' ? d.kredit > 0 : d.debit > 0)) return;
+    // Record hasil tutup buku menunjuk jurnal periode lama: cocokkan ke akun periode ini lewat kode/nama
+    const lama = DB.accounts.find(x => String(x.id) === String(d.account_id));
+    const kini = accs.find(x => String(x.id) === String(d.account_id)) ||
+     (lama && accs.find(x => (lama.code && x.code === lama.code) || x.name === lama.name));
+    if (kini) ids.add(String(kini.id));
+   });
+  } else if (kunci[r.kategori]) {
+   const tipe = sisi === 'kredit' ? 'Kewajiban' : 'Aset';
+   const a = accs.find(x => x.type === tipe && kunci[r.kategori].test(x.name||''));
+   if (a) ids.add(String(a.id));
+  }
+ });
+ return ids;
+}
+
 function cekRekonsiliasi(modul) {
  const accs = coFilter(DB.accounts);
  const hasil = { modul, ok: true, items: [] };
@@ -14716,28 +14811,35 @@ function cekRekonsiliasi(modul) {
  let glAccs = [], slRecords = [], slTotal = 0;
 
  if (modul === 'hutang') {
+  slRecords = coFilter(DB.hutang);
+  // Sub-ledger hutang juga memuat pinjaman bank, hutang gaji, dll. Ikutkan akun kewajiban
+  // yang benar-benar dipakai jurnal record tersebut, agar tidak dianggap selisih.
+  const _rekonAkunSL = _rekonAkunDariSL(slRecords, 'kredit');
   glAccs = accs.filter(a =>
    a.type === 'Kewajiban' && (
     a.name.toLowerCase().includes('hutang usaha') ||
     a.name.toLowerCase().includes('hutang dagang') ||
     a.name.toLowerCase().includes('utang usaha') ||
     a.name.toLowerCase().includes('utang dagang') ||
-    a.account_role === 'hutang_usaha'
+    a.name.toLowerCase().includes('utang belanja') ||
+    a.account_role === 'hutang_usaha' ||
+    _rekonAkunSL.has(String(a.id))
    )
   );
-  slRecords = coFilter(DB.hutang);
   slTotal   = slRecords.filter(h => h.status !== 'Lunas').reduce((s,h) => s+(h.sisa||0), 0);
 
  } else if (modul === 'piutang') {
+  slRecords = coFilter(DB.piutang);
+  const _rekonAkunSL = _rekonAkunDariSL(slRecords, 'debit');
   glAccs = accs.filter(a =>
    a.type === 'Aset' && (
     a.name.toLowerCase().includes('piutang usaha') ||
     a.name.toLowerCase().includes('piutang dagang') ||
     a.name.toLowerCase().includes('tagihan pelanggan') ||
-    a.account_role === 'piutang_usaha'
+    a.account_role === 'piutang_usaha' ||
+    (_rekonAkunSL.has(String(a.id)) && /piutang|tagihan/i.test(a.name||''))
    )
   );
-  slRecords = coFilter(DB.piutang);
   slTotal   = slRecords.filter(p => p.status !== 'Lunas').reduce((s,p) => s+(p.sisa||0), 0);
 
  } else if (modul === 'persediaan') {
@@ -14808,6 +14910,11 @@ function cekRekonsiliasi(modul) {
   return hasil;
  }
 
+ // Nama akun tidak baku (mis. "Piutang Retribusi", "Utang Belanja"): pakai pencocokan peran yang lebih luas
+ if (!glAccs.length && (modul === 'hutang' || modul === 'piutang')) {
+  const alt = modul === 'hutang' ? _akunHutangDagang(accs) : accs.find(a => _accHasRole(a, 'piutang_usaha'));
+  if (alt) glAccs = [alt];
+ }
  hasil.glAccs = glAccs;
  if (!glAccs.length) return hasil;
 
@@ -14827,11 +14934,12 @@ function cekRekonsiliasi(modul) {
 
  const slSaldoAwal = (modul === 'persediaan' || modul === 'perlengkapan')
   ? slSaldoAwalRec.filter(p=>(p.nilai||p.total_nilai||0)>0).reduce((s,p)=>s+(p.total_nilai||p.nilai||0),0)
-  : slSaldoAwalRec.filter(r=>r.status!=='Lunas').reduce((s,r)=>s+(r.sisa||0),0);
+  : slSaldoAwalRec.reduce((s,r)=>s+(r.jumlah||0),0); // nilai awal, termasuk yang sudah dilunasi
 
+ // Hutang/piutang: pelunasan saldo awal adalah mutasi periode, jadi mutasi = total − saldo awal
  const slMutasi = (modul === 'persediaan' || modul === 'perlengkapan')
   ? slMutasiRec.filter(p=>(p.jumlah||p.nilai||0)>0).reduce((s,p)=>s+(p.total_nilai||p.nilai||0),0)
-  : slMutasiRec.filter(r=>r.status!=='Lunas').reduce((s,r)=>s+(r.sisa||0),0);
+  : slTotal - slSaldoAwal;
 
  const selisihSaldoAwal = Math.abs(glSaldoAwal - slSaldoAwal);
  const selisihMutasi    = Math.abs(glMutasi - slMutasi);
@@ -15398,9 +15506,9 @@ function _doPrintReport(type) {
  const kasAkhirAK = _kasAwal3 + ko + ki + kp;
  const kasNeraca = calcKasAkhir();
 
- const rowsAL = perubahanAsetLancar.map(x => `<tr><td style="padding-left:28px;font-size:11px;color:#64748b;">Perubahan ${x.name}</td><td class="num" style="color:${colorKas(x.nilai)}">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</td></tr>`).join('')
+ const rowsAL = perubahanAsetLancar.map(x => `<tr><td style="padding-left:28px;font-size:11px;color:#64748b;">Perubahan ${x.name}</td><td class="num" style="color:${colorKas(x.nilai)}">${fmtTanda(x.nilai)}</td></tr>`).join('')
  || `<tr><td style="padding-left:28px;font-size:11px;color:#94a3b8;">—</td><td></td></tr>`;
- const rowsKL = perubahanKewLancar.map(x => `<tr><td style="padding-left:28px;font-size:11px;color:#64748b;">Perubahan ${x.name}</td><td class="num" style="color:${colorKas(x.nilai)}">${x.nilai>=0?'+':''}${fmtC(x.nilai)}</td></tr>`).join('')
+ const rowsKL = perubahanKewLancar.map(x => `<tr><td style="padding-left:28px;font-size:11px;color:#64748b;">Perubahan ${x.name}</td><td class="num" style="color:${colorKas(x.nilai)}">${fmtTanda(x.nilai)}</td></tr>`).join('')
  || `<tr><td style="padding-left:28px;font-size:11px;color:#94a3b8;">—</td><td></td></tr>`;
 
  const buildRowsTL = (kategori) => {
@@ -15409,7 +15517,7 @@ function _doPrintReport(type) {
  _daftarArusKas().forEach(r => {
  const nilai = r[kategori] || 0;
  if (Math.abs(nilai) < 0.01) return;
- out += `<tr><td style="padding-left:20px;font-size:11px;color:#64748b;">${escapeHtml(r.date)} — ${escapeHtml(r.description)}${r.prop?' (prop.)':''}</td><td class="num" style="color:${colorKas(nilai)}">${nilai>=0?'+':''}${fmtC(Math.round(nilai))}</td></tr>`;
+ out += `<tr><td style="padding-left:20px;font-size:11px;color:#64748b;">${escapeHtml(r.date)} — ${escapeHtml(r.description)}${r.prop?' (prop.)':''}</td><td class="num" style="color:${colorKas(nilai)}">${fmtTanda(Math.round(nilai))}</td></tr>`;
  });
  return out || `<tr><td colspan="2" style="padding-left:20px;color:#94a3b8;font-style:italic;">Tidak ada transaksi</td></tr>`;
  };
@@ -15436,7 +15544,7 @@ function _doPrintReport(type) {
  _daftarArusKas().forEach(r => {
  const nilai = r[kategori] || 0;
  if (Math.abs(nilai) < 0.01) return;
- out += `<tr><td style="padding-left:20px;font-size:11px;color:#64748b;">${escapeHtml(r.date)} — ${escapeHtml(r.description)}${r.prop?' (prop.)':''}</td><td class="num" style="color:${colorKas(nilai)}">${nilai>=0?'+':''}${fmtC(Math.round(nilai))}</td></tr>`;
+ out += `<tr><td style="padding-left:20px;font-size:11px;color:#64748b;">${escapeHtml(r.date)} — ${escapeHtml(r.description)}${r.prop?' (prop.)':''}</td><td class="num" style="color:${colorKas(nilai)}">${fmtTanda(Math.round(nilai))}</td></tr>`;
  });
  return out || `<tr><td colspan="2" style="padding-left:20px;color:#94a3b8;font-style:italic;">Tidak ada transaksi</td></tr>`;
  };
@@ -18847,7 +18955,7 @@ function renderLRA() {
  }
 
  function totalRow(label, angVal, realVal, colorReal) {
- return `<div style="display:grid;${LRA_GRID};margin-top:4px;padding:14px 4px;font-weight:800;border-top:2px solid var(--text);border-bottom:3px double var(--text);align-items:center;"> <span><strong>${label}</strong></span> <span class="report-amount"><strong>${fmtC(angVal)}</strong></span> <span class="report-amount" style="color:${colorReal};"><strong>${realVal < 0 ? '(' : ''}${fmtC(Math.abs(realVal))}${realVal < 0 ? ')' : ''}</strong></span> <span></span> <span></span> </div>`;
+ return `<div style="display:grid;${LRA_GRID};margin-top:4px;padding:14px 4px;font-weight:800;border-top:2px solid var(--text);border-bottom:3px double var(--text);align-items:center;"> <span><strong>${label}</strong></span> <span class="report-amount"><strong>${angVal < 0 ? '(' : ''}${fmtC(Math.abs(angVal))}${angVal < 0 ? ')' : ''}</strong></span> <span class="report-amount" style="color:${colorReal};"><strong>${realVal < 0 ? '(' : ''}${fmtC(Math.abs(realVal))}${realVal < 0 ? ')' : ''}</strong></span> <span></span> <span></span> </div>`;
  }
 
  const LRA_GRID = 'grid-template-columns:1fr 150px 150px 65px 140px';
@@ -18877,7 +18985,7 @@ function renderLRA() {
  <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;padding:8px 0 2px;">Pengeluaran Pembiayaan</div> ${buildRows(pengeluaranPembItems, true)}
  ${subtotalRow('Jumlah Pengeluaran Pembiayaan (C.2)', totAngKelPemb, totRealKelPemb, true)}` : ''}
 
- <div style="display:grid;${LRA_GRID};font-weight:700;border-top:2px solid var(--border);margin-top:4px;padding:8px 4px;align-items:center;"> <span><strong>Pembiayaan Neto (C.1) − (C.2)</strong></span> <span class="report-amount"><strong>${fmtC(totAngPembNeto)}</strong></span> <span class="report-amount" style="color:${totRealPembNeto>=0?'var(--accent2)':'var(--danger)'}"> <strong>${totRealPembNeto<0?'(':''}${fmtC(Math.abs(totRealPembNeto))}${totRealPembNeto<0?')':''}</strong> </span> <span></span><span></span> </div> </div>` : ''}
+ <div style="display:grid;${LRA_GRID};font-weight:700;border-top:2px solid var(--border);margin-top:4px;padding:8px 4px;align-items:center;"> <span><strong>Pembiayaan Neto (C.1) − (C.2)</strong></span> <span class="report-amount"><strong>${totAngPembNeto<0?'(':''}${fmtC(Math.abs(totAngPembNeto))}${totAngPembNeto<0?')':''}</strong></span> <span class="report-amount" style="color:${totRealPembNeto>=0?'var(--accent2)':'var(--danger)'}"> <strong>${totRealPembNeto<0?'(':''}${fmtC(Math.abs(totRealPembNeto))}${totRealPembNeto<0?')':''}</strong> </span> <span></span><span></span> </div> </div>` : ''}
 
  <!-- SiLPA / SiKPA --> <div style="margin-top:8px;"> ${totalRow(
  'SISA LEBIH/(KURANG) PEMBIAYAAN ANGGARAN — SiLPA/(SiKPA)',
@@ -19329,7 +19437,8 @@ function confirmImportCSV() {
 // ═══════════════════════════════════════════════════════════════════
 // IMPORT COA
 // ═══════════════════════════════════════════════════════════════════
-const TIPE_VALID = ['Aset','Kewajiban','Ekuitas','Pendapatan','Beban','Liabilitas','Aset Lancar','Kewajiban Lancar'];
+// Tipe SAP (Pendapatan-LO/LRA, Belanja, Pembiayaan) ikut diterima agar CoA pemerintahan bisa diimpor
+const TIPE_VALID = ['Aset','Kewajiban','Ekuitas','Pendapatan','Beban','Liabilitas','Aset Lancar','Kewajiban Lancar','Pendapatan-LO','Pendapatan-LRA','Belanja','Pembiayaan'];
 const SALDO_VALID = ['Debit','Kredit'];
 
 function openImportCoA() {
@@ -19670,7 +19779,9 @@ async function previewImportSL(input) {
   const qty=gNum(r,hdr,['qty','jumlah','quantity','stok']);
   const hs=gNum(r,hdr,['harga_satuan','harga','price','satuan']);
   const tgl=gDat(r,hdr,['tanggal','date','tgl']);
-  const met=gStr(r,hdr,['metode_penilaian','metode','method'])||'FIFO';
+  // Normalisasi: 'Average'/'Rata-rata' → 'average', selain itu 'fifo'; kosong → ikut metode perusahaan
+  const metRaw=gStr(r,hdr,['metode_penilaian','metode','method']);
+  const met=!metRaw ? (getCompany()?.metode_persediaan||'fifo') : (/avg|average|rata/i.test(metRaw) ? 'average' : 'fifo');
   const stokMin=gNum(r,hdr,['stok_minimum','stok_min','minimum','min'])||0;
   const ket=gStr(r,hdr,['keterangan','ket','desc']);
   if (!nm) return {_preview:['—',0,0,tgl,'',''],_err:'Nama barang kosong'};
