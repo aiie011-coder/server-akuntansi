@@ -3,7 +3,7 @@
 // Verifikasi username + PIN pengguna
 
 const { getLicenseByKey, query } = require('../lib/db');
-const { cekPin, hashPin, daftarHwid, alasanDitolak, tokenPengguna } = require('../lib/tanda');
+const { cekPin, hashPin, daftarHwid, daftarHwidPimpinan, hitungPaket, alasanDitolak, tokenPengguna } = require('../lib/tanda');
 
 const BATAS_GAGAL = 5;                 // percobaan PIN salah berturut-turut
 const LAMA_KUNCI  = 15 * 60 * 1000;    // akun dikunci 15 menit
@@ -55,6 +55,12 @@ module.exports = async function handler(req, res) {
     if (!user || !user.is_active)
       return res.json({ valid: false, message: 'Pengguna tidak ditemukan atau tidak aktif.' });
 
+    // Pimpinan hanya di paket yang punya kuota Pimpinan; perangkat Pimpinan hanya untuk akun Pimpinan
+    if (user.role === 'pimpinan' && !(hitungPaket(license).cfg.max_pimpinan > 0))
+      return res.json({ valid: false, message: 'Akun Pimpinan tersedia di paket Pro. Hubungi penjual untuk upgrade.' });
+    if (user.role !== 'pimpinan' && daftarHwidPimpinan(license).includes(hwid))
+      return res.json({ valid: false, message: 'Perangkat ini didaftarkan khusus untuk Pimpinan. Masuk dengan akun Pimpinan.' });
+
     // Akun sedang dikunci karena terlalu banyak PIN salah?
     if (user.kunci_sampai && new Date(user.kunci_sampai) > new Date()) {
       const jam = new Date(user.kunci_sampai).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' });
@@ -82,7 +88,7 @@ module.exports = async function handler(req, res) {
       id: user.id,
       username: user.username,
       display_name: user.display_name,
-      role: user.role === 'admin' ? 'admin' : 'operator',
+      role: ['admin', 'pimpinan'].includes(user.role) ? user.role : 'operator',
     };
     return res.json({
       valid: true,
