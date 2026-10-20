@@ -7,7 +7,7 @@ const { getLicenseByKey, updateLicense, getAllLicenses, query,
         getLicenseUsers, addLicenseUser, updateLicenseUserPin, deactivateLicenseUser } = require('../lib/db');
 
 const crypto = require('crypto');
-const { hashPin, samaAman } = require('../lib/tanda');
+const { hashPin, samaAman, hitungPaket, MODUL_WAJIB } = require('../lib/tanda');
 
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || process.env.ADMIN_SECRET || '';
 const SUPABASE_URL = process.env.SUPABASE_URL;
@@ -133,6 +133,13 @@ module.exports = async function handler(req, res) {
         hwid:           l.hwid,
         max_companies:  l.max_companies,
         max_devices:    l.max_devices,
+        max_pimpinan:   l.max_pimpinan,
+        export_enabled: l.export_enabled,
+        print_full:     l.print_full,
+        komparasi_enabled: l.komparasi_enabled,
+        locked_modules: l.locked_modules,
+        perangkat:      (() => { try { const h = Array.isArray(l.hwids) ? l.hwids : JSON.parse(l.hwids || '[]'); return h.length; } catch (e) { return 0; } })(),
+        perangkat_pimpinan: (() => { try { const h = Array.isArray(l.hwids_pimpinan) ? l.hwids_pimpinan : JSON.parse(l.hwids_pimpinan || '[]'); return h.length; } catch (e) { return 0; } })(),
         notes:          l.notes,
       }));
       return res.status(200).json({ licenses: safe, total: safe.length });
@@ -158,7 +165,7 @@ module.exports = async function handler(req, res) {
         plan:           plan || 'trial',
         expiry_date:    expiry_date || null,
         notes:          notes || null,
-        max_devices:    max_devices || 1,
+        max_devices:    max_devices || (hitungPaket({ plan: plan || 'trial' }).cfg.max_devices),
         is_active:      true,
         updated_at:     new Date().toISOString(),
         name:           customer_name,
@@ -179,7 +186,7 @@ module.exports = async function handler(req, res) {
         export_enabled, print_full, locked_modules, is_active,
         revoke_reason, notes, customer_name, customer_email,
         jurnal_penutup_enabled, aset_saldo_menurun, komparasi_enabled,
-        lra_lsal_enabled, reset_hwid,
+        lra_lsal_enabled, reset_hwid, max_pimpinan,
       } = body;
 
       if (!license_key)
@@ -202,18 +209,22 @@ module.exports = async function handler(req, res) {
       if (notes             !== undefined) updates.notes             = notes;
       if (customer_name     !== undefined) updates.customer_name     = customer_name;
       if (customer_email    !== undefined) updates.customer_email    = customer_email;
-      if (jurnal_penutup_enabled !== undefined) updates.jurnal_penutup_enabled = jurnal_penutup_enabled;
-      if (aset_saldo_menurun     !== undefined) updates.aset_saldo_menurun     = aset_saldo_menurun;
       if (komparasi_enabled      !== undefined) updates.komparasi_enabled      = komparasi_enabled;
-      if (lra_lsal_enabled       !== undefined) updates.lra_lsal_enabled       = lra_lsal_enabled;
+      if (max_pimpinan           !== undefined) updates.max_pimpinan           = max_pimpinan === null ? null : Math.max(0, parseInt(max_pimpinan) || 0);
+      // Jurnal penutup, saldo menurun, LRA/LSAL selalu aktif (lib/tanda.js); isian lama dikosongkan
+      if (jurnal_penutup_enabled !== undefined || aset_saldo_menurun !== undefined || lra_lsal_enabled !== undefined) {
+        updates.jurnal_penutup_enabled = null; updates.aset_saldo_menurun = null; updates.lra_lsal_enabled = null;
+      }
 
       if (locked_modules !== undefined) {
-        updates.locked_modules = normalizeLockedModules(locked_modules);
+        const arr = JSON.parse(normalizeLockedModules(locked_modules) || '[]').filter(m => !MODUL_WAJIB.includes(m));
+        updates.locked_modules = JSON.stringify(arr);
       }
 
       if (reset_hwid) {
         updates.hwid  = null;
         updates.hwids = '[]';
+        updates.hwids_pimpinan = [];
       }
 
       await updateLicense(license_key, updates);
@@ -276,7 +287,8 @@ module.exports = async function handler(req, res) {
     if (action === 'add-user') {
       // Tambah pengguna baru ke lisensi
       // Body: { license_key, username, display_name, pin, role }
-      const { license_key, username, display_name, pin, role } = body;
+      const { license_key, display_name, pin, role } = body;
+      const username = String(body.username || '').trim().toLowerCase();
       if (!license_key || !username || !pin)
         return res.status(400).json({ error: 'license_key, username, dan pin wajib diisi.' });
       if (!/^\d{6}$/.test(pin))
@@ -285,9 +297,13 @@ module.exports = async function handler(req, res) {
       const license = await getLicenseByKey(license_key);
       if (!license) return res.status(404).json({ error: 'Lisensi tidak ditemukan.' });
 
+      const peran = ['admin', 'operator', 'pimpinan'].includes(role) ? role : 'operator';
+      if (peran === 'pimpinan' && !(hitungPaket(license).cfg.max_pimpinan > 0))
+        return res.status(400).json({ error: 'Akun Pimpinan hanya untuk paket Pro dan Enterprise. Ubah paket lisensi ini dulu.' });
+
       const pin_hash = hashPin(pin);
       try {
-        const newUser = await addLicenseUser({ license_key, username, display_name, pin_hash, role });
+        const newUser = await addLicenseUser({ license_key, username, display_name, pin_hash, role: peran });
         return res.status(200).json({ success: true, message: `Pengguna "${username}" berhasil ditambahkan.`, user: newUser });
       } catch (err) {
         if (err.message && err.message.includes('duplicate')) {
