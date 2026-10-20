@@ -1,6 +1,6 @@
 // File: api/activate.js
-const { getLicense, activateLicense } = require('../lib/db');
-const { daftarHwid, hitungPaket, alasanDitolak, tokenLisensi } = require('../lib/tanda');
+const { getLicense, activateLicense, updateLicense } = require('../lib/db');
+const { daftarHwid, daftarHwidPimpinan, hitungPaket, alasanDitolak, tokenLisensi } = require('../lib/tanda');
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -10,7 +10,8 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { key, hwid } = req.body || {};
+    const { key, hwid, peran } = req.body || {};
+    const untukPimpinan = peran === 'pimpinan';
 
     if (!key || typeof key !== 'string')
       return res.status(400).json({ valid: false, message: 'Kode lisensi tidak boleh kosong.' });
@@ -24,13 +25,26 @@ module.exports = async function handler(req, res) {
     if (alasan) return res.json({ valid: false, message: alasan });
 
     const currentHwids = daftarHwid(license);
+    const hwidPimpinan = daftarHwidPimpinan(license);
+    const cfg          = hitungPaket(license).cfg;
     const maxDevices   = license.max_devices || 1;
+    const maxPimpinan  = Math.min(cfg.max_pimpinan || 0, maxDevices);
     const customerName = license.customer_name || license.name || 'Pengguna';
 
-    // Perangkat baru → daftarkan bila masih ada slot
+    // Perangkat baru → daftarkan bila masih ada slot.
+    // Slot Pimpinan disisihkan dari max_devices: perangkat kerja hanya boleh memakai sisanya.
     let baru = false;
     if (!currentHwids.includes(hwid)) {
-      if (currentHwids.length >= maxDevices) {
+      const kerja = currentHwids.length - hwidPimpinan.length;
+      if (untukPimpinan) {
+        if (!maxPimpinan)
+          return res.json({ valid: false, message: 'Perangkat Pimpinan tersedia di paket Pro. Hubungi penjual untuk upgrade.' });
+        if (hwidPimpinan.length >= maxPimpinan || currentHwids.length >= maxDevices)
+          return res.json({ valid: false, message: `Perangkat Pimpinan sudah terpakai (${hwidPimpinan.length} dari ${maxPimpinan}). Hubungi penjual untuk menambah atau mereset perangkat.` });
+      } else if (kerja >= maxDevices - maxPimpinan || currentHwids.length >= maxDevices) {
+        const sisaPimpinan = maxPimpinan - hwidPimpinan.length;
+        if (sisaPimpinan > 0 && currentHwids.length < maxDevices)
+          return res.json({ valid: false, message: 'Perangkat kerja untuk lisensi ini sudah terpakai. Slot yang tersisa khusus Pimpinan: centang "Perangkat ini untuk Pimpinan" bila perangkat ini milik pimpinan.' });
         if (maxDevices === 1)
           return res.json({ valid: false, message: 'Lisensi ini sudah terdaftar di perangkat lain. Hubungi penjual untuk reset.' });
         return res.json({ valid: false, message: `Lisensi ini sudah mencapai batas ${maxDevices} perangkat. Hubungi penjual untuk upgrade.` });
@@ -45,6 +59,18 @@ module.exports = async function handler(req, res) {
         }
         throw err;
       }
+      if (untukPimpinan) {
+        try {
+          await updateLicense(cleanKey, { hwids_pimpinan: [...hwidPimpinan, hwid] });
+          license.hwids_pimpinan = [...hwidPimpinan, hwid];
+        } catch (err) {
+          // Kolom hwids_pimpinan belum dibuat: batalkan pendaftaran perangkat ini
+          console.error('[activate] tandai perangkat pimpinan gagal:', err.message);
+          try { await updateLicense(cleanKey, { hwids: currentHwids, hwid: currentHwids[0] || null }); } catch (e) {}
+          return res.status(500).json({ valid: false, message: 'Server belum siap untuk perangkat Pimpinan. Hubungi penjual.' });
+        }
+      }
+      license.hwids = [...currentHwids, hwid];
     }
 
     // Trial dihitung sejak aktivasi pertama
@@ -59,6 +85,7 @@ module.exports = async function handler(req, res) {
       type:        license.type || 'lifetime',
       devices:     currentHwids.length + (baru ? 1 : 0),
       max_devices: maxDevices,
+      pimpinan:    daftarHwidPimpinan(license).includes(hwid),
       token:       tokenLisensi(license, cleanKey, hwid, paket),
     });
 
