@@ -1,0 +1,26 @@
+{
+  "name": "ZeQui — Zenith Quality Accounting System",
+  "short_name": "ZeQui",
+  "description": "Aplikasi akuntansi yang tetap berjalan tanpa internet",
+  "lang": "id",
+  "start_url": "/app/",
+  "scope": "/app/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1f4b82",
+  "icons": [
+    {
+      "src": "/app/ikon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/app/ikon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "id": "/app/"
+}
