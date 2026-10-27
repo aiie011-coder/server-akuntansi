@@ -111,11 +111,35 @@ ol.langkah p{color:var(--teks-2);font-size:.93rem;margin:0}
 .panggung .hp{position:absolute;right:-28px;bottom:-48px;width:210px;border-radius:26px;border:7px solid #101826;overflow:hidden;box-shadow:var(--bayang);background:#fff}
 @media (max-width:980px){.panggung .hp{right:8px;width:150px;bottom:-32px;border-width:5px}}
 @media (max-width:620px){.panggung{margin-bottom:56px}.panggung .layar{display:none}.panggung .hp{position:static;display:block;margin:0 auto;width:250px}}
+
+[hidden]{display:none!important}
+.cp-aksi{margin-top:24px}
+.judul-sec.baris{max-width:none;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.grid-berita{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.kartu-berita{display:flex;flex-direction:column;background:var(--kartu);border:1px solid var(--garis);border-radius:var(--radius);overflow:hidden;text-decoration:none;transition:.15s}
+.kartu-berita:hover{border-color:var(--biru);box-shadow:var(--bayang)}
+.kb-foto{display:block;aspect-ratio:16/10;background:var(--latar-2);overflow:hidden}.kb-foto img{width:100%;height:100%;object-fit:cover}
+.kb-kosong{background:linear-gradient(135deg,#e9eff8,#d7e2f1)}
+.kb-isi{display:flex;flex-direction:column;gap:8px;padding:20px 22px 22px;flex:1}
+.kb-meta{font-size:.8rem;font-weight:600;letter-spacing:.04em;color:var(--biru-teks);text-transform:uppercase}
+.kb-isi b{font-size:1.08rem;line-height:1.35;color:var(--judul)}.kb-ring{color:var(--teks-2);font-size:.93rem}
+.kb-baca{margin-top:auto;padding-top:6px;color:var(--biru-teks);font-weight:600;font-size:.9rem}.kb-baca::after{content:" \2192"}
+.ulasan-tab{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:-20px 0 28px}.ulasan-tab:empty{display:none}
+.ulasan-tab button{border:1px solid var(--garis-kuat);background:var(--kartu);border-radius:999px;padding:8px 18px;font:inherit;font-weight:600;font-size:.9rem;color:var(--teks-2);cursor:pointer}
+.ulasan-tab button.aktif{background:var(--biru);border-color:var(--biru);color:#fff}
+.grid-ulasan{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.kartu-ulasan{margin:0;background:var(--kartu);border:1px solid var(--garis);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column;gap:14px}
+.kartu-ulasan blockquote{margin:0;color:var(--teks);font-size:.98rem}.kartu-ulasan blockquote::before{content:"\201C";display:block;font-size:2.4rem;line-height:.8;color:var(--biru);font-family:Georgia,serif}
+.kartu-ulasan figcaption{margin-top:auto;border-top:1px solid var(--garis);padding-top:12px;font-size:.9rem}.kartu-ulasan figcaption b{display:block;color:var(--judul)}.kartu-ulasan figcaption span{color:var(--teks-2)}
+.bintang i{font-style:normal;color:#d5dae2;font-size:1.05rem}.bintang i.isi{color:#e0a526}
+.ulasan-aksi{margin:28px 0 0;text-align:center}.tengah{text-align:center}
+@media (max-width:980px){.grid-berita,.grid-ulasan{grid-template-columns:1fr 1fr}}
+@media (max-width:620px){.grid-berita,.grid-ulasan{grid-template-columns:1fr}.ulasan-tab{margin-top:-28px}}
 </style>
 </head><body class="kaki-gelap">
 <header class="nav"><div class="wrap nav-in">
   <a class="brand" href="#atas"><img class="ikon" src="assets/logo.png" alt="" width="40" height="40"><span class="kop"><img class="kop-gelap" src="assets/kop-nama.png" alt="PT Zenith Quality Consulting" width="819" height="62"><img class="kop-terang" src="assets/kop-nama-terang.png" alt="PT Zenith Quality Consulting" width="819" height="62"><small>Manajemen &middot; Akuntansi &middot; Konsultasi Bisnis &middot; Pelatihan</small></span></a>
-  <nav class="links"><a href="#layanan">Layanan</a><a href="#aplikasi">Aplikasi</a><a href="#harga">Harga</a><a href="#tentang">Tentang</a><a href="#kontak">Kontak</a></nav>
+  <nav class="links"><a href="#layanan">Layanan</a><a href="#aplikasi">Aplikasi</a><a href="#harga">Harga</a><a href="#tentang">Tentang</a><a class="js-berita" href="#berita" hidden>Berita</a><a href="#kontak">Kontak</a></nav>
   <a class="btn btn-sm btn-utama" href="/app/">Masuk Aplikasi</a>
 </div></header>
 <main><section class="hero" id="atas"><div class="wrap hero-in">
@@ -159,6 +183,11 @@ var tm;j.addEventListener('scroll',function(){clearTimeout(tm);tm=setTimeout(fun
   <div class="judul-sec"><p class="label">Harga aplikasi</p><h2>Harga perdana tahun pertama</h2><p>Semua laporan yang diwajibkan standar tersedia di setiap paket. Paket hanya berbeda pada jumlah usaha dan perangkat.</p></div>
   <div class="grid-3"><article class="kartu paket"><h3>Starter</h3><div class="harga"><s>Rp 799.000</s><strong>Rp 599.000</strong><span>per tahun</span></div><ul class="cek"><li>Hingga 3 usaha atau lembaga</li><li>1 perangkat</li><li>Semua laporan dan standar</li></ul><a class="btn btn-garis" href="#kontak">Pilih Starter</a></article><article class="kartu paket unggul"><span class="pita">Disarankan</span><h3>Pro</h3><div class="harga"><s>Rp 1.490.000</s><strong>Rp 1.090.000</strong><span>per tahun</span></div><ul class="cek"><li>Hingga 10 usaha atau lembaga</li><li>2 perangkat, termasuk 1 untuk pimpinan</li><li>Perbandingan 3 periode</li><li>Semua laporan dan standar</li></ul><a class="btn btn-utama" href="#kontak">Pilih Pro</a></article><article class="kartu paket"><h3>Enterprise</h3><div class="harga"><s class="kosong">&nbsp;</s><strong>Mulai Rp 5.000.000</strong><span>per tahun</span></div><ul class="cek"><li>Usaha dan perangkat sesuai kebutuhan</li><li>Hingga 10 akun pimpinan</li><li>Semua laporan dan standar</li></ul><a class="btn btn-garis" href="#kontak">Pilih Enterprise</a></article></div>
   <div class="catatan-harga"><p><b>Coba gratis 14 hari</b> untuk 1 usaha. <a href="#kontak">Minta kode coba</a></p><p>Tambahan perangkat pimpinan Rp 199.000 per tahun (normal Rp 249.000). Ditagih tahunan.</p></div>
+</div></section><section id="ulasan" class="sec sec-alt" hidden><div class="wrap">
+  <div class="judul-sec tengah"><p class="label">Ulasan</p><h2>Kata mereka tentang kami</h2><p>Pendapat peserta pelatihan dan pengguna aplikasi ZeQui.</p></div>
+  <div class="ulasan-tab tengah"></div>
+  <div class="grid-ulasan"></div>
+  <p class="tengah ulasan-aksi"><a class="btn btn-garis js-form-ulasan" href="#" target="_blank" rel="noopener" hidden>Beri ulasan</a></p>
 </div></section><section id="tentang" class="sec sec-alt"><div class="wrap tentang">
   <div class="foto-pendiri"><img src="assets/ari.png" alt="Ari Utomo Saputra" width="447" height="558"></div>
   <div>
@@ -168,7 +197,11 @@ var tm;j.addEventListener('scroll',function(){clearTimeout(tm);tm=setTimeout(fun
     <p>Berpraktik sebagai auditor di Kantor Akuntan Publik sejak 2017 dan mengajar akuntansi sebagai dosen sejak 2022. Pengalaman memeriksa laporan keuangan dan mengajar itulah yang membentuk cara kami bekerja: laporan yang benar, penjelasan yang mudah dipahami.</p>
     <ul class="kredensial"><li><b>ACPA</b><span>Associate Certified Public Accountant, IAPI</span></li><li><b>BNSP</b><span>Analis dan Penyusun Laporan Keuangan</span></li><li><b>BPK</b><span>Sertifikasi Pemeriksa</span></li><li><b>S.Ak., M.Ak.</b><span>Sarjana dan Magister Akuntansi</span></li></ul>
     <div class="pengalaman"><p class="kecil-judul">Pengalaman perusahaan</p><p>Pelatihan dan penguatan pengendalian internal untuk perusahaan umum daerah air minum.</p></div>
+    <div class="cp-aksi"><a class="btn btn-garis" href="dokumen/company-profile-zequi.pdf" target="_blank" rel="noopener">Unduh Company Profile (PDF)</a></div>
   </div>
+</div></section><section id="berita" class="sec" hidden><div class="wrap">
+  <div class="judul-sec baris"><div><p class="label">Berita</p><h2>Kabar terbaru</h2></div><a class="tautan js-semua-berita" href="berita.html">Semua berita</a></div>
+  <div class="grid-berita"></div>
 </div></section><section id="faq" class="sec"><div class="wrap sempit">
   <div class="judul-sec"><p class="label">Tanya jawab</p><h2>Pertanyaan yang sering diajukan</h2></div>
   <div class="faq"><details><summary>Apakah data keuangan saya aman?</summary><p>Data aplikasi ZeQui tersimpan di perangkat Anda sendiri, bukan di server kami. Aplikasi mengingatkan Anda untuk membuat backup secara rutin, dan backup bisa dipulihkan kapan saja.</p></details><details><summary>Apakah ZeQui bisa dipakai tanpa internet?</summary><p>Bisa. Internet hanya diperlukan saat aktivasi lisensi, pembaruan aplikasi, dan sinkron antarperangkat.</p></details><details><summary>Apakah cocok untuk koperasi, yayasan, atau lembaga zakat?</summary><p>Ya. Daftar akun, laporan, dan istilah menyesuaikan jenis lembaga, termasuk laporan SHU untuk koperasi, ISAK 335 untuk yayasan, dan PSAK 109 untuk lembaga zakat.</p></details><details><summary>Bagaimana cara berlangganan?</summary><p>Hubungi kami untuk mendapatkan kode coba gratis 14 hari. Setelah cocok, pilih paket, dan kami kirimkan kode lisensinya.</p></details><details><summary>Apa yang terjadi bila langganan berakhir?</summary><p>Data tetap bisa dibuka, dicetak, diekspor, dan di-backup. Pencatatan baru bisa dilanjutkan setelah langganan diperpanjang.</p></details><details><summary>Apakah Anda melayani audit laporan keuangan?</summary><p>Tidak. Opini atas laporan keuangan hanya dapat diberikan oleh Kantor Akuntan Publik. Kami membantu menyusun laporan, memperkuat pengendalian internal, dan menyiapkan lembaga Anda sebelum diaudit.</p></details></div>
@@ -178,11 +211,11 @@ var tm;j.addEventListener('scroll',function(){clearTimeout(tm);tm=setTimeout(fun
 </div></section>
 <footer class="kaki"><div class="wrap kaki-in">
   <div><a class="brand" href="#atas"><img class="ikon" src="assets/logo.png" alt="" width="40" height="40"><span class="kop"><img class="kop-gelap" src="assets/kop-nama.png" alt="PT Zenith Quality Consulting" width="819" height="62"><img class="kop-terang" src="assets/kop-nama-terang.png" alt="PT Zenith Quality Consulting" width="819" height="62"><small>Manajemen &middot; Akuntansi &middot; Konsultasi Bisnis &middot; Pelatihan</small></span></a>
-  <p>PT Zenith Quality Consulting (ZeQui Consulting)<br>NIB 2909260060836<br>Jl. Muhajirin, Komp. Pesona Madani A1, Kota Makassar, Sulawesi Selatan</p></div>
+  <p>PT Zenith Quality Consulting (ZeQui Consulting)<br>NIB 2909260060836<br>SK AHU-A125947.AH.01.30.Tahun 2026<br>Jl. Muhajirin, Komp. Pesona Madani A1, Kota Makassar, Sulawesi Selatan</p></div>
   <div><p class="kecil-judul">Layanan</p><a href="#layanan">Manajemen</a><a href="#layanan">Akuntansi</a><a href="#layanan">Konsultasi bisnis</a><a href="#layanan">Pelatihan</a><a href="#aplikasi">Aplikasi ZeQui</a></div>
-  <div><p class="kecil-judul">Informasi</p><a href="/app/">Masuk Aplikasi</a><a href="syarat-ketentuan.html">Syarat &amp; Ketentuan</a><a href="kebijakan-privasi.html">Kebijakan Privasi</a><a href="mailto:zequiconsulting@gmail.com">zequiconsulting@gmail.com</a></div>
+  <div><p class="kecil-judul">Informasi</p><a href="/app/">Masuk Aplikasi</a><a class="js-berita" href="berita.html" hidden>Berita</a><a href="dokumen/company-profile-zequi.pdf" target="_blank" rel="noopener">Company Profile (PDF)</a><a class="js-form-ulasan" href="#" target="_blank" rel="noopener" hidden>Beri ulasan</a><a href="syarat-ketentuan.html">Syarat &amp; Ketentuan</a><a href="kebijakan-privasi.html">Kebijakan Privasi</a><a href="mailto:zequiconsulting@gmail.com">zequiconsulting@gmail.com</a></div>
 </div><div class="wrap hak">&copy; 2026 PT Zenith Quality Consulting. Seluruh hak dilindungi.</div></footer></main>
-<script>/* Lepas service worker lama: dulu aplikasi ZeQui ada di alamat utama */
+<script src="konten/konten.js"></script><script src="assets/konten-tampil.js"></script><script>/* Lepas service worker lama: dulu aplikasi ZeQui ada di alamat utama */
 if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){var l=rs.filter(function(r){return r.scope===location.origin+'/'});if(!l.length)return;Promise.all(l.map(function(r){return r.unregister()})).then(function(){return window.caches?caches.keys():[]}).then(function(ks){return Promise.all(ks.filter(function(k){return k.indexOf('zequi-app-')!==0}).map(function(k){return caches.delete(k)}))}).then(function(){location.reload()})}).catch(function(){})}
 </script>
 </body></html>
