@@ -891,7 +891,7 @@ thead th { background:#f8f9fb; }
    <button class="lic-back-btn" id="lic-baca-saja" style="width:100%;" onclick="bukaBacaSaja()">Buka data saya (baca saja)</button>
    <div style="font-size:11px;color:rgba(148,163,184,.8);margin-top:6px;line-height:1.5;">Lihat laporan, cetak, export Excel, dan buat backup. Mencatat transaksi baru perlu lisensi yang aktif.</div>
   </div>
-  <div class="lic-footer">Belum punya lisensi? Hubungi pengembang untuk mendapatkan kode aktivasi.<br>
+  <div class="lic-footer">Belum punya lisensi? Hubungi ZeQui Consulting di WhatsApp 0853-9580-8334 untuk mendapatkan kode aktivasi.<br>
    <span style="font-family:monospace;">v1.0 — © 2026 ZeQui</span>
   </div>
  </div>
@@ -2060,7 +2060,7 @@ thead th { background:#f8f9fb; }
  </div> <div class="current-plan-badge">Paket aktif Anda: <span id="upgrade-modal-current">Trial</span></div> <div class="upgrade-plans"> <div class="upgrade-plan-card"> <div class="plan-name" style="color:#2f62a3;">Starter</div> <div class="plan-price">Untuk UMKM &amp; pemula</div> <div class="plan-features"> 3 perusahaan<br>Export Excel<br>Print lengkap<br>Jurnal Penutup<br>Jurnal Pembalik
  </div> </div> <div class="upgrade-plan-card recommended"> <div class="plan-name">Pro </div> <div class="plan-price">Untuk bisnis berkembang</div> <div class="plan-features"> 10 perusahaan<br>Semua fitur Starter<br>Aset Tetap (2 metode)<br>Komparasi Multi-Tahun<br>Modul SAP (LRA/LSAL)
  </div> </div> <div class="upgrade-plan-card"> <div class="plan-name" style="color:#2f8a57;">Enterprise</div> <div class="plan-price">Untuk organisasi besar</div> <div class="plan-features">Perusahaan tak terbatas<br>Semua fitur Pro<br>Multi-user / seat<br>Prioritas support<br>Konfigurasi khusus
- </div> </div> </div> </div> <div class="modal-footer" style="justify-content:center;gap:12px;"> <button class="btn btn-secondary" onclick="closeModal('modal-upgrade')">Nanti Saja</button> <button class="btn btn-primary" onclick="closeModal('modal-upgrade');toast('Hubungi pengembang untuk upgrade paket Anda.','info',5000);"> Hubungi Pengembang</button> </div> </div>
+ </div> </div> </div> </div> <div class="modal-footer" style="justify-content:center;gap:12px;"> <button class="btn btn-secondary" onclick="closeModal('modal-upgrade')">Nanti Saja</button> <button class="btn btn-primary" onclick="closeModal('modal-upgrade');toast('Hubungi ZeQui Consulting: WhatsApp 0853-9580-8334 atau zequiconsulting@gmail.com. Sebutkan kode lisensi dan paket yang Anda inginkan.','info',12000);"> Hubungi Kami</button> </div> </div>
 </div> <!-- Toast Container -->
 <div id="toast-container"></div> <!-- SCRIPT -->
 <script>
@@ -2135,6 +2135,7 @@ function openIDB() {
 // Tulis DB ke IndexedDB (async, debounced 800ms)
 function autoSave() {
  if (typeof _pimBlokSimpan === 'function' && _pimBlokSimpan()) return;
+ if (typeof _paketBlokSimpan === 'function' && _paketBlokSimpan()) return;
  _invalidateBalanceIndex();
  __invalidateJpPreview();
  __savePending = true;
@@ -2188,6 +2189,7 @@ window.addEventListener('pagehide', _simpanSebelumPergi);
 // Paksa simpan segera (tanpa debounce) — untuk operasi kritis
 async function forceSave() {
  if (typeof _pimBlokSimpan === 'function' && _pimBlokSimpan()) return;
+ if (typeof _paketBlokSimpan === 'function' && _paketBlokSimpan()) return;
  clearTimeout(__saveTimer);
  __savePending = false;
  try { _lacakPerubahan(); } catch(e) { console.error('lacak perubahan:', e); }
@@ -17629,18 +17631,18 @@ function showUpgradeModal(feature) {
  document.getElementById('upgrade-modal-plan').textContent = planNeeded;
  } else {
  if (judul) judul.textContent = 'Paket ZeQui';
- if (desc) desc.innerHTML = 'Semua paket memuat laporan wajib sesuai standar (termasuk LRA/LSAL, jurnal penutup, saldo menurun, dan perbandingan 2 periode). Paket dibedakan menurut jumlah perusahaan, perangkat, dan fitur pimpinan.';
+ if (desc) desc.innerHTML = 'Paket dibedakan menurut standar akuntansi yang dipakai, jumlah perusahaan, perangkat, dan fitur pimpinan. Setiap paket memuat semua laporan wajib untuk standarnya. Untuk penawaran khusus, hubungi kami.';
  }
  document.getElementById('upgrade-modal-current').textContent = __planConfig?.plan_label || __planConfig?.plan || 'Trial';
  const H = PAKET_HARGA, harga = k => `${H[k].normal}${H[k].pendiri ? `<br><span style="font-size:11px;color:var(--text3);">Harga Pendiri tahun pertama ${H[k].pendiri}</span>` : ''}`;
  const kartu = document.querySelector('#modal-upgrade .upgrade-plans');
  if (kartu) kartu.innerHTML = `
  <div class="upgrade-plan-card"><div class="plan-name" style="color:#2f62a3;">Starter</div><div class="plan-price">${harga('starter')}</div>
- <div class="plan-features">3 perusahaan<br>1 perangkat<br>Semua laporan wajib<br>Export Excel<br>Cetak semua laporan</div></div>
+ <div class="plan-features">SAK EMKM dan lembaga zakat (PSAK 409)<br>3 perusahaan<br>1 perangkat<br>Export Excel<br>Cetak semua laporan</div></div>
  <div class="upgrade-plan-card recommended"><div class="plan-name">Pro</div><div class="plan-price">${harga('pro')}</div>
- <div class="plan-features">10 perusahaan<br>1 perangkat kerja + 1 HP Pimpinan<br>Bagian pimpinan di Beranda &amp; akun Pimpinan<br>Bandingkan 3 periode<br>Tambah Pimpinan ${H.pimpinan.normal}</div></div>
+ <div class="plan-features">Ditambah SAK EP, yayasan (ISAK 335), syariah<br>10 perusahaan<br>1 perangkat kerja + 1 HP Pimpinan<br>Bagian pimpinan di Beranda &amp; akun Pimpinan<br>Bandingkan 3 periode<br>Tambah Pimpinan ${H.pimpinan.normal}</div></div>
  <div class="upgrade-plan-card"><div class="plan-name" style="color:#2f8a57;">Enterprise</div><div class="plan-price">${harga('enterprise')}</div>
- <div class="plan-features">Perusahaan tak terbatas<br>Banyak perangkat &amp; Pimpinan<br>Semua fitur Pro<br>Dukungan prioritas</div></div>`;
+ <div class="plan-features">Ditambah SAP (instansi pemerintah)<br>Perusahaan tak terbatas<br>Banyak perangkat &amp; Pimpinan<br>Dukungan prioritas</div></div>`;
  openModal('modal-upgrade');
 }
 
@@ -25741,6 +25743,175 @@ importJSON = function (input) {
  if (window.__modeBacaSaja) { toast(_pesanLihat(''), 'warning', 5000); try { if (input) input.value = ''; } catch (e) {} return; }
  return _bacaSajaImporAsli.apply(this, arguments);
 };
+
+// ── Standar akuntansi per paket (keputusan zean 27 Okt 2026) ────────
+// Starter: SAK EMKM dan lembaga zakat (PSAK 409). Pro: ditambah SAK EP, nirlaba/yayasan (ISAK 335), syariah,
+// dan SAK umum. Enterprise: ditambah SAP. Trial membuka semua standar. Izin khusus hasil negosiasi diberikan
+// per lisensi di panel admin sebagai "izin:<kelas>" di locked_modules, ikut ditandatangani server bersama paket.
+// Perusahaan yang standarnya di luar paket tetap bisa dilihat, dicetak, dan di-backup, tetapi tidak bisa mencatat.
+const STANDAR_KELAS = {
+ emkm: { nama: 'SAK EMKM', paket: 'starter' },
+ zakat: { nama: 'Lembaga zakat (PSAK 409)', paket: 'starter' },
+ ep: { nama: 'SAK EP', paket: 'pro' },
+ nirlaba: { nama: 'Yayasan / organisasi nirlaba (ISAK 335)', paket: 'pro' },
+ syariah: { nama: 'SAK Syariah', paket: 'pro' },
+ umum: { nama: 'SAK umum (PSAK)', paket: 'pro' },
+ sap: { nama: 'SAP (instansi pemerintah)', paket: 'enterprise' },
+};
+const _PAKET_URUT = { starter: 1, pro: 2, enterprise: 3 };
+const _PAKET_NAMA = { starter: 'Starter', pro: 'Pro', enterprise: 'Enterprise' };
+function _kelasStandar(std, mode) {
+ std = String(std || '').toUpperCase();
+ if (mode === 'baznas') return 'zakat';
+ if (std === 'SAP') return 'sap';
+ if (mode === 'nirlaba') return 'nirlaba';
+ if (std === 'SAK EMKM') return 'emkm';
+ if (std === 'SAK EP') return 'ep';
+ if (std === 'SAK SYARIAH') return 'syariah';
+ return 'umum';
+}
+function _standarBoleh(std, mode) {
+ const cfg = __planConfig;
+ if (!cfg || !_PAKET_URUT[cfg.plan]) return true; // trial, baca saja, atau belum aktivasi: semua terbuka
+ const k = _kelasStandar(std, mode);
+ if (_PAKET_URUT[cfg.plan] >= _PAKET_URUT[STANDAR_KELAS[k].paket]) return true;
+ return Array.isArray(cfg.locked_modules) && cfg.locked_modules.includes('izin:' + k);
+}
+function _perusahaanBoleh(c) { return !c || _isContoh(c) || _standarBoleh(c.standard, c.entity_mode); }
+function _paketMinimal(stds, mode) {
+ return (stds || []).map(s => STANDAR_KELAS[_kelasStandar(s, mode)].paket).sort((a, b) => _PAKET_URUT[a] - _PAKET_URUT[b])[0] || 'pro';
+}
+function _modalStandar(k) {
+ const info = STANDAR_KELAS[k] || STANDAR_KELAS.ep, perlu = _PAKET_NAMA[info.paket];
+ showUpgradeModal();
+ const judul = document.querySelector('#modal-upgrade .upgrade-title'), desc = document.querySelector('#modal-upgrade .upgrade-desc');
+ if (judul) judul.textContent = 'Standar ini memerlukan paket ' + perlu;
+ if (desc) desc.innerHTML = `<strong>${_fktE(info.nama)}</strong> termasuk paket <strong>${perlu}</strong>.<br>Naikkan paket, atau hubungi kami untuk penawaran khusus. Harga bisa dibicarakan sesuai ukuran lembaga Anda.`;
+}
+
+// Laman pembuka: jenis kegiatan dan standar di luar paket terkunci
+const _stdSetupGambarAsli = _setupGambar;
+_setupGambar = function () {
+ _stdSetupGambarAsli.apply(this, arguments);
+ const s = __setup, ov = document.getElementById('zq-setup');
+ if (!s || !ov || s.langkah !== 2) return;
+ ov.querySelectorAll('[onclick^="_setupPilihTpl("]').forEach(el => {
+  const k = (el.getAttribute('onclick').match(/'([^']+)'/) || [])[1], t = COA_TEMPLATE.find(x => x.kunci === k);
+  if (!t || t.std.some(x => _standarBoleh(x, t.mode))) return;
+  const p = _paketMinimal(t.std, t.mode);
+  el.setAttribute('onclick', `_modalStandar('${_kelasStandar(t.std[0], t.mode)}')`);
+  el.style.opacity = '.6'; el.style.borderStyle = 'dashed';
+  el.firstElementChild.insertAdjacentHTML('beforeend', ` <span class="std-kunci" style="font-size:10px;font-weight:700;color:var(--text2);background:var(--bg2,#eef1f5);border-radius:10px;padding:1px 7px;margin-left:4px;">Paket ${_PAKET_NAMA[p]}</span>`);
+ });
+ const sel = document.getElementById('su-std'), t = _setupTpl();
+ if (sel && sel.tagName === 'SELECT' && t) Array.from(sel.options).forEach(o => {
+  if (_standarBoleh(o.value, t.mode)) return;
+  o.disabled = true; o.textContent += ` (paket ${_PAKET_NAMA[STANDAR_KELAS[_kelasStandar(o.value, t.mode)].paket]})`;
+ });
+};
+const _stdSetupPilihAsli = _setupPilihTpl;
+_setupPilihTpl = function (k) {
+ _stdSetupPilihAsli.apply(this, arguments);
+ const t = _setupTpl();
+ if (t && __setup && !_standarBoleh(__setup.std, t.mode)) { __setup.std = t.std.find(x => _standarBoleh(x, t.mode)) || t.std[0]; _setupGambar(); }
+};
+const _stdSelesaiAsli = selesaiSetup;
+selesaiSetup = function () {
+ _setupBaca();
+ const t = _setupTpl();
+ if (t && __setup && !_standarBoleh(__setup.std || t.std[0], t.mode)) { _modalStandar(_kelasStandar(__setup.std || t.std[0], t.mode)); return; }
+ return _stdSelesaiAsli.apply(this, arguments);
+};
+
+// Form perusahaan (Pengaturan) dan Buka Periode Baru
+function _stdTandaiForm() {
+ const sel = document.getElementById('co-standard'); if (!sel) return;
+ const mode = document.getElementById('co-entity-mode')?.value || 'komersial';
+ Array.from(sel.options).forEach(o => {
+  if (!o.hasAttribute('value')) o.setAttribute('value', o.value); // teks diubah di bawah; nilainya harus tetap
+  o.textContent = o.value + (_standarBoleh(o.value, mode) ? '' : ` (paket ${_PAKET_NAMA[STANDAR_KELAS[_kelasStandar(o.value, mode)].paket]})`);
+ });
+}
+const _stdOpenModalAsli = openModal;
+openModal = function (id) {
+ const c = (typeof DB !== 'undefined' && DB) ? getCompany() : null;
+ if (c && !_perusahaanBoleh(c) && !isPimpinan() && !window.__modeBacaSaja && !PIM_MODAL_BOLEH.concat(['modal-company', 'modal-buka-periode']).includes(id)) {
+  const k = _kelasStandar(c.standard, c.entity_mode);
+  toast(`Perusahaan ini memakai ${STANDAR_KELAS[k].nama}, yang termasuk paket ${_PAKET_NAMA[STANDAR_KELAS[k].paket]}. Data bisa dilihat dan dicetak, tetapi tidak bisa mencatat.`, 'warning', 6000);
+  return;
+ }
+ const r = _stdOpenModalAsli.apply(this, arguments);
+ if (id === 'modal-company') _stdTandaiForm();
+ return r;
+};
+const _stdModeAsli = selectEntityMode;
+selectEntityMode = function () { const r = _stdModeAsli.apply(this, arguments); try { _stdTandaiForm(); } catch (e) {} return r; };
+const _stdSaveCoAsli = saveCompany;
+saveCompany = function () {
+ const std = document.getElementById('co-standard')?.value, mode = document.getElementById('co-entity-mode')?.value || 'komersial';
+ const id = document.getElementById('company-edit-id')?.value, lama = id && DB.companies.find(c => String(c.id) === String(id));
+ if (!(lama && _isContoh(lama)) && !_standarBoleh(std, mode)) { _modalStandar(_kelasStandar(std, mode)); return; }
+ __paketIzinSimpan = true;
+ try { return _stdSaveCoAsli.apply(this, arguments); } finally { __paketIzinSimpan = false; }
+};
+const _stdBukaPeriodeAsli = konfirmasiBukaPeriodeBaru;
+konfirmasiBukaPeriodeBaru = function () {
+ const c = getCompany(), std = document.getElementById('bp-standard')?.value || c?.standard;
+ if (c && !_standarBoleh(std, c.entity_mode)) { _modalStandar(_kelasStandar(std, c.entity_mode)); return; }
+ __paketIzinSimpan = true;
+ try { return _stdBukaPeriodeAsli.apply(this, arguments); } finally { __paketIzinSimpan = false; }
+};
+
+// Mencatat di perusahaan yang standarnya di luar paket ditolak di satu titik (autoSave/forceSave), seperti akun Pimpinan.
+// Menghapus perusahaan, memulihkan backup, data contoh, dan gabung sinkron tetap boleh.
+let __paketIzinSimpan = false, __paketIzinSampai = 0, __paketMemuat = false, __paketToast = 0;
+function _paketBlokSimpan() {
+ if (__paketIzinSimpan || Date.now() < __paketIzinSampai || __pimIzinSimpan || window.__modeBacaSaja) return false;
+ let c = null; try { c = getCompany(); } catch (e) { return false; }
+ if (_perusahaanBoleh(c)) return false;
+ if (!__paketMemuat) { __paketMemuat = true; setTimeout(_paketPulihkan, 300); }
+ return true;
+}
+async function _paketPulihkan() {
+ try {
+  const tersimpan = await loadFromIDB();
+  if (!tersimpan) return;
+  const kini = DB, aktif = DB.current_company_id;
+  DB = tersimpan;
+  try { migrateDB(); } catch (e) {}
+  if (DB.companies.some(c => String(c.id) === String(aktif))) DB.current_company_id = aktif;
+  _invalidateBalanceIndex();
+  if (JSON.stringify(DB) !== JSON.stringify(kini) && Date.now() - __paketToast > 8000) {
+   __paketToast = Date.now();
+   const c = getCompany(), k = c ? _kelasStandar(c.standard, c.entity_mode) : 'ep';
+   toast(`Perubahan tidak disimpan. ${STANDAR_KELAS[k].nama} termasuk paket ${_PAKET_NAMA[STANDAR_KELAS[k].paket]}. Naikkan paket atau hubungi kami untuk mencatat lagi.`, 'warning', 7000);
+  }
+  try { renderPage(currentPage); } catch (e) {}
+ } catch (e) { console.error('pulihkan data (standar di luar paket):', e); }
+ finally { setTimeout(() => { __paketMemuat = false; }, 500); }
+}
+const _stdHapusCoAsli = deleteCompany;
+deleteCompany = function () { __paketIzinSimpan = true; try { return _stdHapusCoAsli.apply(this, arguments); } finally { __paketIzinSimpan = false; } };
+[['importJSON', 120000], ['cobaDataContoh', 5000], ['hapusDataContoh', 5000]].forEach(([nama, lama]) => {
+ const asli = window[nama]; if (typeof asli !== 'function') return;
+ window[nama] = function () { __paketIzinSampai = Date.now() + lama; return asli.apply(this, arguments); };
+});
+
+// Spanduk di atas halaman saat perusahaan aktif di luar paket
+function _paketSpanduk() {
+ let d = document.getElementById('zq-std-paket');
+ let c = null; try { c = getCompany(); } catch (e) {}
+ if (!c || _perusahaanBoleh(c) || isPimpinan() || window.__modeBacaSaja) { if (d) d.remove(); return; }
+ const k = _kelasStandar(c.standard, c.entity_mode);
+ if (!d) {
+  d = document.createElement('div'); d.id = 'zq-std-paket';
+  d.style.cssText = 'position:sticky;top:0;z-index:60;background:#fef3c7;color:#78350f;border-bottom:1px solid #f59e0b;padding:8px 14px;font-size:12.5px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;';
+  const main = document.getElementById('main') || document.body; main.insertBefore(d, main.firstChild);
+ }
+ d.innerHTML = `<span style="flex:1;min-width:200px;"><strong>Baca saja untuk perusahaan ini.</strong> ${_fktE(STANDAR_KELAS[k].nama)} termasuk paket ${_PAKET_NAMA[STANDAR_KELAS[k].paket]}, sedangkan paket Anda ${_fktE(__planConfig?.plan_label || '')}. Laporan tetap bisa dilihat, dicetak, dan di-backup.</span><button class="btn btn-primary btn-sm" onclick="_modalStandar('${k}')">Naikkan paket</button>`;
+}
+const _stdUpdateHeaderAsli = updateHeader;
+updateHeader = function () { const r = _stdUpdateHeaderAsli.apply(this, arguments); try { _paketSpanduk(); } catch (e) {} return r; };
 
 // Kolom angka yang masih berisi 0: isinya terpilih saat diklik, jadi ketikan menggantikan 0 (bukan "014000")
 document.addEventListener('focusin', e => { const t = e.target; if (t && t.tagName === 'INPUT' && t.type === 'number' && (t.value === '0' || t.value === '0.00')) { try { t.select(); } catch (x) {} } });
