@@ -801,8 +801,14 @@ tbody tr:hover td { background:rgba(31,75,130,.04); }
 .toast { border-radius:3px; font-weight:500; }
 .toast.success { background:#2f6b45; }
 .toast.info { background:var(--primary); }
+/* Baris kartu yang mengisi penuh: kartu di baris terakhir melebar, tidak ada kolom kosong */
+.zq-baris { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:16px; }
+.zq-baris > * { flex:1 1 var(--min, 260px); min-width:0; margin-bottom:0 !important; }
+.zq-baris.zq-tiga > * { flex-basis:calc(33.333% - 8px); min-width:min(var(--min, 240px), 100%); }
+/* Enam kartu angka (Beranda): 3 + 3, bukan 5 + 1 */
+@media (min-width:641px) { .stats-grid:has(> .stat-card:nth-child(6):last-child) > .stat-card { flex-basis:calc(33.333% - 12px); } }
 /* Pengaturan: 3 kartu sejajar di layar lebar, bertumpuk di layar sempit (tidak ada kolom kosong) */
-.zq-set-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+.zq-set-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; align-items:start; }
 @media (max-width:1100px) { .zq-set-grid { grid-template-columns:1fr; } }
 
 /* Tampilan tenang: pemberitahuan, tombol, dan label tanpa warna mencolok (29 Okt).
@@ -1042,7 +1048,7 @@ thead th { background:#f8f9fb; }
  <div id="page-kunci-periode" class="page"> <div class="page-header"> <div> <div class="page-title">Status Kunci Periode</div> <div class="page-subtitle">Bulan yang sudah dikunci tidak bisa diubah atau dihapus pencatatnya.</div> </div> </div>
  <div class="card"><div class="card-body" id="kunci-periode-content"></div></div>
  </div>
- <!-- KOMPARASI MULTI-TAHUN --> <div id="page-komparasi" class="page"> <div class="page-header"> <div> <div class="page-title">Komparasi Multi-Tahun</div> <div class="page-subtitle">Bandingkan laporan keuangan antar periode/tahun</div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('komparasi')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('komparasi')">Excel</button> </div> </div> <!-- Pemilihan periode --> <div class="card" style="margin-bottom:20px;"> <div class="card-header"> <div class="card-title">Pilih Periode untuk Dibandingkan</div> </div> <div class="card-body"> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:16px;"> <div class="form-group"> <label>Periode 1 (Wajib)</label> <select class="form-control" id="komp-p1" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 2 (Wajib)</label> <select class="form-control" id="komp-p2" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label id="komp-p3-label">Periode 3 (Opsional)</label> <select class="form-control" id="komp-p3" onchange="renderKomparasi()"> <option value="">— Tidak dipilih —</option> </select> </div> <div class="form-group"> <label>Tampilkan</label> <select class="form-control" id="komp-jenis" onchange="renderKomparasi()"> <option value="laba-rugi">Laba Rugi</option> <option value="neraca">Neraca</option> <option value="perubahan-ekuitas">Perubahan Ekuitas</option> <option value="arus-kas">Arus Kas</option> <option value="ringkasan">Ringkasan KPI</option> </select> </div> </div> <div style="font-size:12px;color:var(--text2);">Setiap "Perusahaan" di ZeQui dapat mewakili satu tahun buku. Tambahkan perusahaan baru untuk setiap tahun fiskal.</div> </div> </div> <div id="komparasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih minimal dua periode di atas untuk melihat perbandingan.</p></div> </div> </div>
+ <!-- KOMPARASI MULTI-TAHUN --> <div id="page-komparasi" class="page"> <div class="page-header"> <div> <div class="page-title">Komparasi Multi-Tahun</div> <div class="page-subtitle">Bandingkan laporan keuangan antar periode/tahun</div> </div> <div class="page-actions"> <button class="btn btn-secondary" onclick="printReport('komparasi')">Print</button> <button class="btn btn-secondary" onclick="exportExcel('komparasi')">Excel</button> </div> </div> <!-- Pemilihan periode --> <div class="card" style="margin-bottom:20px;"> <div class="card-header"> <div class="card-title">Pilih Periode untuk Dibandingkan</div> </div> <div class="card-body"> <div class="zq-baris" style="--min:220px;"> <div class="form-group"> <label>Periode 1 (Wajib)</label> <select class="form-control" id="komp-p1" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label>Periode 2 (Wajib)</label> <select class="form-control" id="komp-p2" onchange="renderKomparasi()"> <option value="">— Pilih Periode —</option> </select> </div> <div class="form-group"> <label id="komp-p3-label">Periode 3 (Opsional)</label> <select class="form-control" id="komp-p3" onchange="renderKomparasi()"> <option value="">— Tidak dipilih —</option> </select> </div> <div class="form-group"> <label>Tampilkan</label> <select class="form-control" id="komp-jenis" onchange="renderKomparasi()"> <option value="laba-rugi">Laba Rugi</option> <option value="neraca">Neraca</option> <option value="perubahan-ekuitas">Perubahan Ekuitas</option> <option value="arus-kas">Arus Kas</option> <option value="ringkasan">Ringkasan KPI</option> </select> </div> </div> <div style="font-size:12px;color:var(--text2);">Setiap "Perusahaan" di ZeQui dapat mewakili satu tahun buku. Tambahkan perusahaan baru untuk setiap tahun fiskal.</div> </div> </div> <div id="komparasi-content"> <div class="empty-state"><div class="empty-icon"></div><p>Pilih minimal dua periode di atas untuk melihat perbandingan.</p></div> </div> </div>
 <!-- REKONSILIASI BANK -->
 <div id="page-rekonsiliasi" class="page">
  <div class="page-header">
@@ -1131,7 +1137,7 @@ thead th { background:#f8f9fb; }
  <button class="btn btn-secondary btn-sm" onclick="renderSettings()">Refresh</button>
  </div>
  <div class="card-body">
- <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px;">
+ <div class="zq-baris" style="--min:160px;gap:12px;">
  <div style="padding:14px 16px;background:rgba(47,138,87,.08);border-radius:10px;border:1px solid rgba(47,138,87,.2);text-align:center;">
  <div style="font-size:10px;font-weight:700;color:#1f5a3a;text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;">Status IDB</div>
  <div id="settings-idb-status" style="font-size:18px;font-weight:800;color:#2f8a57;">Aktif</div>
@@ -11637,7 +11643,7 @@ function renderPHU(co_data, lkNames, revenues, expenses, totRev, totExp, laba) {
  <div style="font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.5px;">PERHITUNGAN HASIL USAHA (PHU)</div>
  <div style="font-size:12px;color:var(--text3);">Periode: ${co_data?.period_start||'—'} s/d ${co_data?.period_end||'—'} | ${lkNames.standarNote}</div>
  </div>
- <div style="max-width:580px;">
+ <div>
  <div class="report-section">
  <div class="report-section-title">I. PENDAPATAN USAHA</div>
  <div style="font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.5px;padding:4px 0;">Partisipasi Anggota</div>
@@ -19454,7 +19460,7 @@ function renderLRA() {
  silpaReal >= 0 ? 'var(--accent2)' : 'var(--danger)'
  )}
  </div> <div style="margin-top:16px;padding:12px 16px;background:rgba(31,75,130,.07);border-radius:var(--radius2);border-left:4px solid var(--primary-lighter);font-size:11px;color:var(--text2);line-height:1.9;"> <strong>Rumus LRA (PP 71/2010):</strong><br> <span style="font-family:var(--mono);">Surplus/(Defisit) = Pendapatan − Belanja</span><br> <span style="font-family:var(--mono);">Pembiayaan Neto = Penerimaan Pembiayaan − Pengeluaran Pembiayaan</span>
-<br> <span style="font-family:var(--mono);font-weight:700;">SiLPA/(SiKPA) = Surplus/(Defisit) + Pembiayaan Neto</span><br> <div style="margin-top:6px;padding:6px 10px;background:${silpaReal>=0?'rgba(47,138,87,.1)':'rgba(194,69,60,.1)'};border-radius:6px;"> <strong>SiLPA Tahun Ini (Realisasi): ${silpaReal<0?'(':''}${fmtC(Math.abs(silpaReal))}${silpaReal<0?')':''}</strong> — Nilai ini akan menjadi <strong>Saldo Awal SAL</strong> pada LSAL periode berikutnya.
+<br> <span style="font-family:var(--mono);font-weight:700;">SiLPA/(SiKPA) = Surplus/(Defisit) + Pembiayaan Neto</span><br> <div style="margin-top:6px;padding:6px 10px;background:#f6f7f9;border-radius:6px;"> <strong>SiLPA Tahun Ini (Realisasi): ${silpaReal<0?'(':''}${fmtC(Math.abs(silpaReal))}${silpaReal<0?')':''}</strong> — Nilai ini akan menjadi <strong>Saldo Awal SAL</strong> pada LSAL periode berikutnya.
  </div> </div> `;
 }
 
@@ -24129,12 +24135,12 @@ function _pimBagian(d, semua, info) {
    <div class="stat-card ${d.bulanTahan !== null && d.bulanTahan < 3 ? 'red' : 'blue'}"><div class="stat-label">Daya tahan kas</div><div class="stat-value" style="font-size:18px;">${_pimTahanTeks(d)}</div><div class="stat-sub">${d.keluarRata ? `rata-rata kas keluar ${fmtC(d.keluarRata)}/bulan (${d.nBulanRata} bulan terakhir)` : 'belum ada kas keluar di bulan-bulan sebelumnya'}</div></div>
   </div>`;
  const tren = `<div class="card" id="dash-tren-card"><div class="card-header"><div class="card-title">Tren ${d.tren.length} bulan</div></div><div class="card-body"><div style="position:relative;height:220px;"><canvas id="pim-tren"></canvas></div></div></div>`;
- const rincian = `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px;">
+ const rincian = `<div class="zq-baris" style="--min:280px;">
    <div class="card"><div class="card-header"><div class="card-title">Piutang terbesar yang lewat jatuh tempo</div></div><div class="card-body">${daftar(d.piutTop.map(p => [_fktE(p.nama), fmtC(p.sisa)]), 'Tidak ada piutang yang lewat jatuh tempo.')}</div></div>
    <div class="card"><div class="card-header"><div class="card-title">Hutang jatuh tempo ≤30 hari</div></div><div class="card-body">${daftar(d.hutTop.map(h => [`${_fktE(h.nama)} <span style="color:var(--text3);">· ${_fktTgl(h.tempo)}</span>`, fmtC(h.sisa)]), 'Tidak ada hutang yang jatuh tempo dalam 30 hari.')}</div></div>
    ${d.adaStok ? `<div class="card"><div class="card-header"><div class="card-title">Stok menipis</div></div><div class="card-body">${daftar(d.stok.map(s => [_fktE(s.nama), `${fmt(s.stok)} ${_fktE(s.satuan)} (min ${fmt(s.min)})`]), 'Tidak ada stok di bawah batas minimum.')}</div></div>` : ''}
    ${d.topPlg.length ? `<div class="card"><div class="card-header"><div class="card-title">Terlaris ${_fktE(d.B.ini.nama)}</div></div><div class="card-body">${daftar(d.topPlg.map(p => [_fktE(p.nama), fmtC(p.jual)]), '')}<div style="height:10px;"></div>${daftar(d.topBrg.map(x => [_fktE(x.nama) + (x.jenis === 'jasa' ? ' <span style="color:var(--text3);">(jasa)</span>' : ''), fmtC(x.jual)]), '')}</div></div>` : ''}
-   ${d.indikator ? `<div class="card"><div class="card-header"><div class="card-title">${_fktE(d.indikator.judul)}</div></div><div class="card-body">${daftar(d.indikator.baris.map(b => [_fktE(b[0]), _fktE(b[1])]), '')}</div></div>` : ''}
+   ${d.indikator ? `<div class="card" style="flex-basis:100%;"><div class="card-header"><div class="card-title">${_fktE(d.indikator.judul)}</div></div><div class="card-body">${daftar(d.indikator.baris.map(b => [_fktE(b[0]), _fktE(b[1])]), '')}</div></div>` : ''}
    <div class="card"><div class="card-header"><div class="card-title">Catatan untuk pimpinan</div></div><div class="card-body">${isPimpinan()
     ? (d.catatan ? `<div style="font-size:13px;white-space:pre-wrap;">${_fktE(d.catatan)}</div><div style="font-size:11px;color:var(--text3);margin-top:6px;">${_fktE(d.c.catatan_pimpinan_oleh || '')}${d.catatanAt ? ', ' + new Date(d.catatanAt).toLocaleString('id-ID') : ''}</div>` : '<div style="font-size:13px;color:var(--text3);">Belum ada catatan.</div>')
     : `<textarea id="pim-catatan" class="form-control" rows="3" maxlength="600" placeholder="Misalnya: ada selisih kas Rp50.000, SHU belum dibagi, stok beras dipesan ulang Senin.">${_fktE(d.catatan)}</textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px;"><span style="font-size:11px;color:var(--text3);">Tampil di Beranda Pimpinan dan di PDF.</span><button class="btn btn-secondary btn-sm" onclick="simpanCatatanPimpinan()">Simpan catatan</button></div>`}</div></div>
@@ -25222,7 +25228,7 @@ function _langkahKartu() {
    <div class="card-title">Langkah awal ${n}/${xs.length}</div><button class="btn btn-secondary btn-sm" onclick="tutupLangkahAwal()">Sembunyikan</button></div>
   <div class="card-body" style="padding-top:6px;">
    <div style="height:6px;border-radius:3px;background:var(--border);overflow:hidden;margin-bottom:10px;"><div style="height:100%;width:${Math.round(n / xs.length * 100)}%;background:var(--primary);"></div></div>
-   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;">
+   <div class="zq-baris zq-tiga" style="--min:240px;gap:8px;margin-bottom:0;">
    ${xs.map((x, i) => `<div style="display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--border);border-radius:8px;${x.selesai ? 'opacity:.55;' : 'cursor:pointer;'}" ${x.selesai ? '' : `onclick="${x.aksi}"`}>
      <div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;${x.selesai ? 'background:#e3e6eb;color:#3d434c;' : 'border:1.5px solid var(--primary);color:var(--primary);'}">${x.selesai ? '✓' : i + 1}</div>
      <div><div style="font-size:13px;font-weight:700;${x.selesai ? 'text-decoration:line-through;' : ''}">${_fktE(x.judul)}</div><div style="font-size:11.5px;color:var(--text2);">${_fktE(x.ket)}</div></div></div>`).join('')}
@@ -25990,7 +25996,9 @@ function _zqTenang(root) {
    return;
   }
   if (/^\s*Rekonsiliasi OK/.test(x.textContent)) { x.classList.add('zq-ok'); return; }
-  x.classList.add('zq-tenang'); const s = x.id==='backup-reminder-danger' ? 'bahaya' : (garis || bingkai || tint); if (s!=='info') x.classList.add(s);
+  x.classList.add('zq-tenang'); const s = x.id==='backup-reminder-danger' ? 'bahaya' : (garis || bingkai || tint);
+  // Catatan di dalam laporan hanya keterangan (rujukan standar, rumus): garis abu-abu, bukan peringatan
+  if (s!=='info' && !(x.closest('[id$="-content"]') && x.id!=='zq-std-paket')) x.classList.add(s);
   _zqTanpaEmoji(x);
  });
  _zqCari(root,'tr').forEach(tr => { if (hue(getComputedStyle(tr).backgroundColor, 6)) tr.style.setProperty('background','transparent','important'); });
