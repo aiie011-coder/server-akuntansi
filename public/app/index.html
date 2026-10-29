@@ -801,6 +801,9 @@ tbody tr:hover td { background:rgba(31,75,130,.04); }
 .toast { border-radius:3px; font-weight:500; }
 .toast.success { background:#2f6b45; }
 .toast.info { background:var(--primary); }
+/* Pengaturan: 3 kartu sejajar di layar lebar, bertumpuk di layar sempit (tidak ada kolom kosong) */
+.zq-set-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+@media (max-width:1100px) { .zq-set-grid { grid-template-columns:1fr; } }
 
 /* Tampilan tenang: pemberitahuan, tombol, dan label tanpa warna mencolok (29 Okt).
    Biru ZeQui hanya untuk tombol utama; merah/kuning tua hanya sebagai garis tipis atau kata peringatan. */
@@ -1116,7 +1119,7 @@ thead th { background:#f8f9fb; }
  </div>
  </div>
 
- <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">
+ <div class="zq-set-grid">
 
  <!-- Status Penyimpanan -->
  <div class="card" style="grid-column:1/-1;">
