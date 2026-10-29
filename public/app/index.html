@@ -801,6 +801,9 @@ tbody tr:hover td { background:rgba(31,75,130,.04); }
 .toast { border-radius:3px; font-weight:500; }
 .toast.success { background:#2f6b45; }
 .toast.info { background:var(--primary); }
+/* Bilah lisensi di bawah (latar gelap): semua teks terang dan terbaca */
+#lic-info-bar, #lic-info-bar span, #lic-info-bar button { color:#c9d2de !important; }
+#lic-info-plan, #lic-info-username { color:#ffffff !important; }
 /* Baris kartu yang mengisi penuh: kartu di baris terakhir melebar, tidak ada kolom kosong */
 .zq-baris { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:16px; }
 .zq-baris > * { flex:1 1 var(--min, 260px); min-width:0; margin-bottom:0 !important; }
@@ -18335,7 +18338,7 @@ function licShowInfoBar(lic) {
  const planLabel = __planConfig?.plan_label || lic?.plan_label || lic?.plan || 'Trial';
  const planInfo = PLAN_LABELS[(__planConfig?.plan || lic?.plan || 'trial')] || PLAN_LABELS.trial;
  planInfoEl.textContent = planLabel;
- planInfoEl.style.color = planInfo.color;
+ planInfoEl.style.color = '#e6ebf2'; // netral, tanpa warna per paket
  }
  document.getElementById('lic-info-key').textContent = lic.key.substring(0,5) + '-***-***-' + lic.key.slice(-5);
  const expEl = document.getElementById('lic-info-exp');
@@ -24141,10 +24144,10 @@ function _pimBagian(d, semua, info) {
    ${d.adaStok ? `<div class="card"><div class="card-header"><div class="card-title">Stok menipis</div></div><div class="card-body">${daftar(d.stok.map(s => [_fktE(s.nama), `${fmt(s.stok)} ${_fktE(s.satuan)} (min ${fmt(s.min)})`]), 'Tidak ada stok di bawah batas minimum.')}</div></div>` : ''}
    ${d.topPlg.length ? `<div class="card"><div class="card-header"><div class="card-title">Terlaris ${_fktE(d.B.ini.nama)}</div></div><div class="card-body">${daftar(d.topPlg.map(p => [_fktE(p.nama), fmtC(p.jual)]), '')}<div style="height:10px;"></div>${daftar(d.topBrg.map(x => [_fktE(x.nama) + (x.jenis === 'jasa' ? ' <span style="color:var(--text3);">(jasa)</span>' : ''), fmtC(x.jual)]), '')}</div></div>` : ''}
    ${d.indikator ? `<div class="card" style="flex-basis:100%;"><div class="card-header"><div class="card-title">${_fktE(d.indikator.judul)}</div></div><div class="card-body">${daftar(d.indikator.baris.map(b => [_fktE(b[0]), _fktE(b[1])]), '')}</div></div>` : ''}
-   <div class="card"><div class="card-header"><div class="card-title">Catatan untuk pimpinan</div></div><div class="card-body">${isPimpinan()
-    ? (d.catatan ? `<div style="font-size:13px;white-space:pre-wrap;">${_fktE(d.catatan)}</div><div style="font-size:11px;color:var(--text3);margin-top:6px;">${_fktE(d.c.catatan_pimpinan_oleh || '')}${d.catatanAt ? ', ' + new Date(d.catatanAt).toLocaleString('id-ID') : ''}</div>` : '<div style="font-size:13px;color:var(--text3);">Belum ada catatan.</div>')
-    : `<textarea id="pim-catatan" class="form-control" rows="3" maxlength="600" placeholder="Misalnya: ada selisih kas Rp50.000, SHU belum dibagi, stok beras dipesan ulang Senin.">${_fktE(d.catatan)}</textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px;"><span style="font-size:11px;color:var(--text3);">Tampil di Beranda Pimpinan dan di PDF.</span><button class="btn btn-secondary btn-sm" onclick="simpanCatatanPimpinan()">Simpan catatan</button></div>`}</div></div>
    <div class="card"><div class="card-header"><div class="card-title">Pengawasan</div></div><div class="card-body">${sinyal.length ? sinyal.map(s => `<div style="font-size:13px;padding:6px 0;border-bottom:1px solid var(--border);">${s}</div>`).join('') : '<div style="font-size:13px;color:var(--text3);padding:6px 0;">Tidak ada catatan: tidak ada perubahan data dalam 30 hari, buku pembantu cocok, backup terbaru.</div>'}</div></div>
+   <div class="card" style="flex-basis:100%;"><div class="card-header"><div class="card-title">Catatan untuk pimpinan</div></div><div class="card-body">${isPimpinan()
+    ? (d.catatan ? `<div style="font-size:13px;white-space:pre-wrap;">${_fktE(d.catatan)}</div><div style="font-size:11px;color:var(--text3);margin-top:6px;">${_fktE(d.c.catatan_pimpinan_oleh || '')}${d.catatanAt ? ', ' + new Date(d.catatanAt).toLocaleString('id-ID') : ''}</div>` : '<div style="font-size:13px;color:var(--text3);">Belum ada catatan.</div>')
+    : `<textarea id="pim-catatan" class="form-control" style="width:100%;box-sizing:border-box;resize:vertical;" rows="4" maxlength="600" placeholder="Misalnya: ada selisih kas Rp50.000, SHU belum dibagi, stok beras dipesan ulang Senin.">${_fktE(d.catatan)}</textarea><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px;"><span style="font-size:11px;color:var(--text3);">Tampil di Beranda Pimpinan dan di PDF.</span><button class="btn btn-secondary btn-sm" onclick="simpanCatatanPimpinan()">Simpan catatan</button></div>`}</div></div>
   </div>`;
  return { baris, perhatian, tren, rincian };
 }
@@ -25980,7 +25983,9 @@ function _zqHitamkan(root) {
 // Tampilan tenang: kotak pemberitahuan berwarna jadi putih bergaris tipis, tombol hijau/abu/merah jadi tombol garis,
 // label status jadi abu-abu, teks berwarna jadi hitam. Berlaku juga untuk isi yang dibuat belakangan (observer).
 // Layar login dan kunci layar berlatar gelap dengan gaya sendiri: tidak ikut diubah
-function _zqCari(root, sel) { const a = [...root.querySelectorAll(sel)]; if (root.matches && root.matches(sel)) a.unshift(root); return a.filter(x => !x.closest('#license-overlay,#zq-kunci-layar')); }
+function _zqCari(root, sel) { const a = [...root.querySelectorAll(sel)]; if (root.matches && root.matches(sel)) a.unshift(root); return a.filter(x => !x.closest('#license-overlay,#zq-kunci-layar,#lic-info-bar')); }
+// Latar gelap (bilah lisensi, layar login): teks di atasnya tidak boleh dijadikan hitam
+function _zqLatarGelap(x) { for (let e = x; e && e.nodeType === 1; e = e.parentElement) { const v = getComputedStyle(e).backgroundColor.match(/[\d.]+/g); if (v && (v[3] === undefined || +v[3] > 0.5)) return (+v[0] * 0.299 + +v[1] * 0.587 + +v[2] * 0.114) < 110; } return false; }
 function _zqTanpaEmoji(x) { const w = document.createTreeWalker(x, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { const t = n.textContent.replace(/\p{Extended_Pictographic}️?/gu, '').replace(/ℹ️?\s?/g, ''); if (t !== n.textContent) n.textContent = t; } }
 function _zqTenang(root) {
  const hue = (c, min) => { const m=(c||'').match(/[\d.]+/g); if(!m || (m[3]!==undefined && +m[3]===0)) return null; const [r,g,b]=m.map(Number); const mx=Math.max(r,g,b), mn=Math.min(r,g,b); if(mx-mn<(min||20)) return null; return r>=g&&r>=b ? (g>r*0.62?'awas':'bahaya') : 'info'; };
@@ -26021,7 +26026,7 @@ function _zqTombolTeks(root) {
  _zqCari(root,'div,span,small,strong,b,td,label,p').forEach(x => {
   if (x.closest('button,.btn,a,.sidebar,#sidebar,.nav-item,.tab,.tab-btn,.toast,.zq-tenang,svg')) return;
   if (x.children.length>2) return; const t=(x.innerText||'').trim(); if(!t) return;
-  const cs=getComputedStyle(x), f=sat(cs.color); if(!f) return;
+  const cs=getComputedStyle(x), f=sat(cs.color); if(!f || _zqLatarGelap(x)) return;
   const bg=sat(cs.backgroundColor) || (parseFloat(cs.borderTopLeftRadius)>=8 && cs.backgroundColor!=='rgba(0, 0, 0, 0)') || /^[A-Z][A-Z ]{2,18}$|^(Aktif|Nonaktif|Lunas|Belum|Sebagian|Garis Lurus|Saldo Menurun)$/.test(t) && t.length<20;
   if (bg) x.classList.add('zq-label');
   else if (f.merah && !/\d/.test(t)) x.classList.add('zq-teks-merah');
