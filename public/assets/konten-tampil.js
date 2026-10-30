@@ -91,6 +91,54 @@
     ul.hidden = false;
   }
 
+  // Produk digital dari konten/produk.js; pembelian di halaman toko (Lynk)
+  var P = window.ZEQUI_PRODUK || {};
+  var PRODUK = (P.produk || []).filter(function (p) { return p && p.tampil !== false && p.nama && /^https:\/\//.test(p.tautan || ''); });
+  function rp(n) { return 'Rp ' + String(Math.round(+n || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  function kartuProduk(p) {
+    var g = aman(p.gambar), gratis = !(+p.harga);
+    return '<article class="kartu-produk">' +
+      (g ? '<a class="kp-foto" href="' + esc(p.tautan) + '" target="_blank" rel="noopener" tabindex="-1"><img src="' + esc(g) + '" alt="' + esc(p.nama) + '" loading="lazy" width="720" height="720"></a>' : '') +
+      // Sampul sudah memuat label, subjudul, dan isi; teksnya hanya ditulis bila produk tanpa gambar
+      '<div class="kp-isi">' + (!g && p.label ? '<span class="kp-label">' + esc(p.label) + '</span>' : '') +
+      '<h3>' + esc(p.nama) + '</h3>' + (!g && p.subjudul ? '<p class="kp-sub">' + esc(p.subjudul) + '</p>' : '') +
+      (!g && (p.poin || []).length ? '<ul class="cek">' + p.poin.slice(0, 4).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
+      '<div class="kp-bawah"><div class="kp-harga">' + (+p.hargaCoret > +p.harga ? '<s>' + rp(p.hargaCoret) + '</s>' : '') + '<strong>' + (gratis ? 'Gratis' : rp(p.harga)) + '</strong></div>' +
+      '<a class="btn btn-garis" href="' + esc(p.tautan) + '" target="_blank" rel="noopener">' + (gratis ? 'Ambil gratis' : 'Beli') + '</a></div></div></article>';
+  }
+  if (PRODUK.length) document.querySelectorAll('.js-produk').forEach(function (a) { a.hidden = false; });
+
+  // Landing page: produk unggulan (paling banyak 3)
+  var pr = document.getElementById('produk');
+  if (pr && PRODUK.length) {
+    var ung = PRODUK.filter(function (p) { return p.unggulan; });
+    if (!ung.length) ung = PRODUK;
+    pr.querySelector('.grid-produk').innerHTML = ung.slice(0, 3).map(kartuProduk).join('');
+    var lain = pr.querySelector('.js-semua-produk');
+    if (lain) { lain.textContent = 'Lihat semua ' + PRODUK.length + ' produk'; lain.hidden = PRODUK.length <= 3; }
+    pr.hidden = false;
+  }
+
+  // Halaman produk.html: semua produk, dikelompokkan
+  var hp = document.getElementById('produk-hal');
+  if (hp) {
+    var kel = [];
+    PRODUK.forEach(function (p) { var k = p.kelompok || 'Lainnya'; if (kel.indexOf(k) < 0) kel.push(k); });
+    hp.innerHTML = '<div class="judul-sec"><p class="label">Produk digital</p><h1>Alat kerja akuntansi dan audit siap pakai</h1><p>Template Excel dan dokumen yang kami susun dari praktik audit dan pendampingan. Pembayaran dan pengiriman file diproses oleh Lynk.id.</p></div>' +
+      (PRODUK.length ? (kel.length > 1 ? '<div class="ulasan-tab saring"><button type="button" class="aktif" data-k="">Semua</button>' + kel.map(function (k) { return '<button type="button" data-k="' + esc(k) + '">' + esc(k) + '</button>'; }).join('') + '</div>' : '') +
+        '<div class="isi-produk"></div><p class="catatan-produk">Ada pertanyaan tentang isi produk, atau ingin membeli untuk banyak pengguna di lembaga Anda? <a href="index.html?lihat#kontak">Hubungi kami</a>.</p>'
+        : '<p class="kosong-info">Belum ada produk. Silakan kembali lagi nanti.</p>');
+    var isiP = hp.querySelector('.isi-produk');
+    var saringP = function (k) {
+      isiP.innerHTML = kel.filter(function (x) { return !k || x === k; }).map(function (x) {
+        return '<section class="kelompok-produk"><h2>' + esc(x) + '</h2><div class="grid-produk">' + PRODUK.filter(function (p) { return (p.kelompok || 'Lainnya') === x; }).map(kartuProduk).join('') + '</div></section>';
+      }).join('');
+      hp.querySelectorAll('.saring button').forEach(function (t) { t.classList.toggle('aktif', t.getAttribute('data-k') === k); });
+    };
+    if (isiP) saringP('');
+    hp.querySelectorAll('.saring button').forEach(function (t) { t.addEventListener('click', function () { saringP(t.getAttribute('data-k')); }); });
+  }
+
   // Halaman berita.html: daftar semua berita, atau satu berita bila ada ?id=
   var hal = document.getElementById('berita-hal');
   if (!hal) return;
