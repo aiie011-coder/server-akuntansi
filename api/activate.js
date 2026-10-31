@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
     const hwidPimpinan = daftarHwidPimpinan(license);
     const cfg          = hitungPaket(license).cfg;
     const maxDevices   = license.max_devices || 1;
-    const maxPimpinan  = Math.min(cfg.max_pimpinan || 0, maxDevices);
+    const maxPimpinan  = Math.max(0, Math.min(cfg.max_pimpinan || 0, maxDevices - 1)); // minimal 1 slot kerja
     const customerName = license.customer_name || license.name || 'Pengguna';
 
     // Perangkat baru → daftarkan bila masih ada slot.
